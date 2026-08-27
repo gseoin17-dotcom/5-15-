@@ -465,7 +465,7 @@ with left_col:
   )
 
   if st.button(
-      "🔥 GOD MODE 강화 실행",
+      "🔥 강화 실행",
       use_container_width=True,
       disabled=(st.session_state.level >= 30),
   ):
@@ -477,7 +477,7 @@ with left_col:
 
   st.write("")
   if st.button(
-      "💰 현재 냄새 판매",
+      "💰 냄새 판매",
       use_container_width=True,
       disabled=(st.session_state.level == 0),
   ):
