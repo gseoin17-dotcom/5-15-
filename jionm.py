@@ -64,7 +64,9 @@ def get_leaderboard():
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="🏰", layout="wide"
+    page_title="지온냄새 강화하기 - TRASH MOUNTAIN EDITION",
+    page_icon="🗑️",
+    layout="wide",
 )
 
 # -----------------------------------------------------------------------------
@@ -478,13 +480,16 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (쓰레기 산 배경 적용)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+        background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)), url("https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=1920&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
@@ -494,7 +499,7 @@ st.markdown(
         max-width: 95% !important;
     }
     .glass-panel {
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -504,7 +509,7 @@ st.markdown(
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     }
     .stat-card {
-        background: rgba(15, 23, 42, 0.75);
+        background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.4);
         padding: 10px 8px;
@@ -512,21 +517,21 @@ st.markdown(
         text-align: center;
         transition: all 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        margin-bottom: 8px;
+        height: 100%;
     }
     .stat-card:hover {
         border-color: rgba(245, 158, 11, 0.9);
         box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
     .stat-title {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         color: #fde68a;
         margin-bottom: 4px;
         letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
@@ -556,64 +561,6 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
-  # --- 스탯 대시보드를 왼쪽 상단으로 이동 ---
-  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>📊 실시간"
-      " 상태</h4>",
-      unsafe_allow_html=True,
-  )
-
-  sc1, sc2 = st.columns(2)
-  with sc1:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💳 보유 금액</div>
-                <div class="stat-value">{format_gold(st.session_state.money)}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💧 지온의 눈물</div>
-                <div class="stat-value">{st.session_state.tears}개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-  with sc2:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">🛡️ 보유권 개수</div>
-                <div class="stat-value">{st.session_state.shield} / 2개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    if st.session_state.level < 30:
-      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-      crit_pct = int(CRITICAL_RATE * 100)
-      prob_str = f"성공:{sp}%(크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
-    else:
-      prob_str = "최고 단계 도달"
-
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">📊 상세 확률</div>
-                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-  st.markdown("</div>", unsafe_allow_html=True)
-
   # --- 닉네임 설정 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
@@ -634,8 +581,8 @@ with left_col:
   # --- 강화 및 판매 버튼 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
-      " 판타지 지온 강화</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🗑️ 쓰레기산"
+      " 지온 강화</h3>",
       unsafe_allow_html=True,
   )
 
@@ -744,6 +691,65 @@ with left_col:
   st.markdown("</div>", unsafe_allow_html=True)
 
 with right_col:
+  # --- 4가지 스탯 카드를 우측 상단에 가로(1행 4열)로 배치 ---
+  st.markdown('<div class="glass-panel" style="padding: 10px;">', unsafe_allow_html=True)
+  sc1, sc2, sc3, sc4 = st.columns(4)
+
+  with sc1:
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">💳 보유 금액</div>
+                <div class="stat-value">{format_gold(st.session_state.money)}</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with sc2:
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">🛡️ 보유권</div>
+                <div class="stat-value">{st.session_state.shield} / 2개</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with sc3:
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">💧 지온의 눈물</div>
+                <div class="stat-value">{st.session_state.tears}개</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with sc4:
+    if st.session_state.level < 30:
+      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
+      crit_pct = int(CRITICAL_RATE * 100)
+      prob_str = (
+          f"성공:{sp}%(크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
+      )
+    else:
+      prob_str = "최고 단계 도달"
+
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">📊 상세 확률</div>
+                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  # --- 3D 비주얼 화면 영역 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -819,21 +825,21 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
-            .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
-            .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
-            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 42px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 48px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 54px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 60px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
             @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
             @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
-            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 22px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 4px; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
+            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 20px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 20px rgba(0,0,0,0.9); }}
+            .cost-text {{ font-size: 15px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -928,7 +934,7 @@ with right_col:
             scene.add(bgGroup);
 
             const particleGroup = new THREE.Group();
-            const pCount = 2000;
+            const pCount = 1500;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
 
@@ -1103,4 +1109,4 @@ with right_col:
     </html>
     """
 
-  components.html(three_js_code, height=650, scrolling=False)
+  components.html(three_js_code, height=580, scrolling=False)
