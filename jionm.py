@@ -16,7 +16,7 @@ st.set_page_config(
 # -----------------------------------------------------------------------------
 def format_gold(amount):
     if amount == 0:
-        return "0 G"
+        return "0원"
     
     units = ["", "만", "억", "조", "경", "해"]
     result = []
@@ -30,7 +30,7 @@ def format_gold(amount):
         amount //= 10000
         unit_idx += 1
         
-    return "".join(result) + " G"
+    return "".join(result) + "원"
 
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 및 강화 확률표
@@ -134,7 +134,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (불필요한 공백 제거)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -143,24 +143,26 @@ st.markdown("""
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
     .glass-panel {
         background: rgba(43, 23, 56, 0.65);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(236, 178, 255, 0.2);
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
-
     .stat-card {
         background: rgba(58, 28, 77, 0.5);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 16px 12px;
-        border-radius: 12px;
+        padding: 10px 8px;
+        border-radius: 10px;
         text-align: center;
         transition: all 0.3s ease;
     }
@@ -169,23 +171,22 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     }
     .stat-title {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         color: #fde68a;
-        margin-bottom: 6px;
+        margin-bottom: 2px;
         letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
     }
-
     div.stButton > button {
-        border-radius: 10px !important;
+        border-radius: 8px !important;
         font-weight: 700 !important;
-        padding: 12px 20px !important;
+        padding: 8px 16px !important;
         transition: all 0.2s ease !important;
         border: 1px solid rgba(217, 119, 6, 0.3) !important;
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(217, 119, 6, 0.4)) !important;
@@ -201,11 +202,11 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 # 7. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([3, 7])
+left_col, right_col = st.columns([3, 7], gap="small")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top:0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin:0 0 8px 0; font-size: 18px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
@@ -218,24 +219,24 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
     st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
     
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
-        if st.button("구매 (50,000 G)", use_container_width=True):
+        if st.button("구매 (5만 원)", use_container_width=True):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
                 st.success("보호권 보유 중!")
                 st.rerun()
             else:
-                st.error("골드가 부족합니다.")
+                st.error("금액이 부족합니다.")
                 
     with tab_shop2:
         st.caption("눈물 15개로 1단계 확정 상승")
@@ -396,7 +397,6 @@ with right_col:
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
-            // ✨ 입자 효과
             const particleGroup = new THREE.Group();
             const pCount = 1500;
             const pGeo = new THREE.BufferGeometry();
@@ -416,7 +416,6 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
-            // 💳 아티팩트 카드
             const cardGroup = new THREE.Group();
 
             const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
@@ -439,7 +438,6 @@ with right_col:
 
             scene.add(cardGroup);
 
-            // 🛡️ 파괴 방지 보호막
             const shieldGeo = new THREE.SphereGeometry(2.8, 32, 32);
             const shieldMat = new THREE.MeshStandardMaterial({{
                 color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
@@ -448,13 +446,9 @@ with right_col:
             shieldDome.position.y = 0.8;
             scene.add(shieldDome);
 
-            // 💥 3D 파편 그룹
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // -----------------------------------------------------------------
-            // 강화 연출
-            // -----------------------------------------------------------------
             if (status === "SHIELD_SAVED") {{
                 gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
@@ -533,17 +527,17 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=560, scrolling=False)
+    components.html(three_js_code, height=520, scrolling=False)
 
     # -----------------------------------------------------------------------------
     # 9. 하단 스탯 대시보드
     # -----------------------------------------------------------------------------
-    b_col1, b_col2, b_col3 = st.columns([1, 1, 1])
+    b_col1, b_col2, b_col3 = st.columns([1, 1, 1], gap="small")
 
     with b_col1:
         st.markdown(f'''
             <div class="stat-card">
-                <div class="stat-title">💳 보유 골드</div>
+                <div class="stat-title">💳 보유 금액</div>
                 <div class="stat-value">{format_gold(st.session_state.money)}</div>
             </div>
         ''', unsafe_allow_html=True)
@@ -552,9 +546,9 @@ with right_col:
         st.markdown(f'''
             <div class="stat-card">
                 <div class="stat-title">💧 지온의 눈물</div>
-                <div class="stat-value">{st.session_state.tears} 개</div>
+                <div class="stat-value">{st.session_state.tears}개</div>
             </div>
-        ''', unsafe_allow_html=Thread if 'Thread' in globals() else True) # 안전장치 유지 위해 기본 마크다운 적용
+        ''', unsafe_allow_html=True)
 
     with b_col3:
         sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
@@ -563,6 +557,6 @@ with right_col:
         st.markdown(f'''
             <div class="stat-card">
                 <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
-                <div class="stat-value" style="font-size: 18px;">{prob_str}</div>
+                <div class="stat-value" style="font-size: 15px;">{prob_str}</div>
             </div>
         ''', unsafe_allow_html=True)
