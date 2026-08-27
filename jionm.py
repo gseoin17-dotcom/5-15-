@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - GOD MODE 3D",
+    page_title="지온냄새 강화하기",
     page_icon="👑",
     layout="wide"
 )
@@ -67,9 +67,9 @@ if "money" not in st.session_state:
 if "status" not in st.session_state:
     st.session_state.status = "READY"
 if "shield" not in st.session_state:
-    st.session_state.shield = 0  # 파괴 방지권 개수
+    st.session_state.shield = 0  
 if "tears" not in st.session_state:
-    st.session_state.tears = 0    # 지온의 눈물 개수
+    st.session_state.tears = 0    
 if "use_shield" not in st.session_state:
     st.session_state.use_shield = False
 
@@ -108,31 +108,32 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 대시보드
+# 5. 상단 대시보드 (크기 축소 반영)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp { background-color: #020403; color: #fff; }
     
+    /* 상단 대시보드 스탯 카드 크기 컴팩트화 */
     .stat-card {
         background: rgba(15, 23, 42, 0.95);
-        border: 2px solid #ffffff;
-        padding: 16px 10px;
-        border-radius: 12px;
+        border: 1.5px solid #ffffff;
+        padding: 8px 6px;
+        border-radius: 8px;
         text-align: center;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
     }
     .stat-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #e2e8f0;
-        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #cbd5e1;
+        margin-bottom: 2px;
     }
     .stat-value {
-        font-size: 28px;
-        font-weight: 900;
+        font-size: 18px;
+        font-weight: 800;
         color: #ffffff;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -208,9 +209,9 @@ with tab2:
     with s_col2:
         st.subheader("💧 지온의 눈물 교환소")
         st.write("강화 실패 시 쌓이는 눈물로 확정 강화권을 교환하세요.")
-        if st.button("100% 확정 1단계 상승 (눈물 20개)"):
-            if st.session_state.tears >= 20 and st.session_state.level < 30:
-                st.session_state.tears -= 20
+        if st.button("100% 확정 1단계 상승 (눈물 15개)"):  # 20개 -> 15개로 수정
+            if st.session_state.tears >= 15 and st.session_state.level < 30:  # 20개 -> 15개로 수정
+                st.session_state.tears -= 15  # 20개 -> 15개로 수정
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
                 st.success("지온의 눈물로 1단계 확정 강화 성공!")
@@ -219,7 +220,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 7. 3D Text FX Render (지온냄새 글씨 대폭 확대)
+# 7. 3D Render & 폭발 파티클 연출 추가
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -248,93 +249,21 @@ three_js_code = f"""
             pointer-events: none;
         }}
 
-        /* 지온냄새 타이틀 폰트 크기 대폭 확대 (52px ~ 85px) */
-        .title-tier-1 {{
-            font-size: 52px;
-            font-weight: 900;
-            color: #10b981;
-            text-shadow: 0 0 25px #10b981, 0 0 50px #047857;
-        }}
-        .title-tier-2 {{
-            font-size: 58px;
-            font-weight: 900;
-            color: #f59e0b;
-            text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706;
-            letter-spacing: 1px;
-        }}
-        .title-tier-3 {{
-            font-size: 64px;
-            font-weight: 900;
-            color: #ef4444;
-            text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c;
-            animation: pulse 1s infinite alternate;
-        }}
-        .title-tier-4 {{
-            font-size: 70px;
-            font-weight: 900;
-            color: #a855f7;
-            text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce;
-            letter-spacing: 2px;
-        }}
-        .title-tier-5 {{
-            font-size: 76px;
-            font-weight: 900;
-            background: linear-gradient(90deg, #ff007f, #00f0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 40px #ff007f);
-            animation: shake 0.5s infinite alternate;
-        }}
-        .title-tier-6 {{
-            font-size: 85px;
-            font-weight: 900;
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbow 1.5s linear infinite, superShake 0.1s infinite;
-            filter: drop-shadow(0 0 50px #ffffff);
-        }}
+        .title-tier-1 {{ font-size: 52px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
+        .title-tier-2 {{ font-size: 58px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
+        .title-tier-3 {{ font-size: 64px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
+        .title-tier-4 {{ font-size: 70px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
+        .title-tier-5 {{ font-size: 76px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
+        .title-tier-6 {{ font-size: 85px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
-        @keyframes pulse {{
-            0% {{ transform: scale(1); }}
-            100% {{ transform: scale(1.05); }}
-        }}
-        @keyframes shake {{
-            0% {{ transform: translate(2px, 2px) rotate(0deg); }}
-            100% {{ transform: translate(-2px, -2px) rotate(-1deg); }}
-        }}
-        @keyframes superShake {{
-            0% {{ transform: translate(3px, 1px); }}
-            50% {{ transform: translate(-3px, -2px); }}
-            100% {{ transform: translate(2px, -1px); }}
-        }}
-        @keyframes rainbow {{
-            0% {{ background-position: 0% center; }}
-            100% {{ background-position: 200% center; }}
-        }}
+        @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.05); }} }}
+        @keyframes shake {{ 0% {{ transform: translate(2px, 2px) rotate(0deg); }} 100% {{ transform: translate(-2px, -2px) rotate(-1deg); }} }}
+        @keyframes superShake {{ 0% {{ transform: translate(3px, 1px); }} 50% {{ transform: translate(-3px, -2px); }} 100% {{ transform: translate(2px, -1px); }} }}
+        @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-        .status-header {{
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            letter-spacing: 3px;
-        }}
-        .desc-text {{
-            font-size: 18px;
-            color: #e2e8f0;
-            margin-top: 10px;
-            font-family: sans-serif;
-            text-shadow: 0 0 10px #000;
-        }}
-        .price-text {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #fbbf24;
-            margin-top: 8px;
-            text-shadow: 0 0 15px rgba(251,191,36,0.8);
-            font-family: sans-serif;
-        }}
+        .status-header {{ font-size: 28px; font-weight: bold; margin-bottom: 8px; letter-spacing: 3px; }}
+        .desc-text {{ font-size: 18px; color: #e2e8f0; margin-top: 10px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
+        .price-text {{ font-size: 24px; font-weight: bold; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -406,6 +335,7 @@ three_js_code = f"""
 
         scene.add(cardGroup);
 
+        // 기본 배경 은하 파티클
         const particleCount = {tier * 150};
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(particleCount * 3);
@@ -421,7 +351,52 @@ three_js_code = f"""
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
-        if (status === "SUCCESS") {{
+        // 💥 파괴(DESTROYED) 시 3D 폭발 이펙트 추가
+        let explosionParticles = null;
+        let explosionVelocities = [];
+
+        if (status === "DESTROYED") {{
+            // 카메라 강렬한 충격파 셰이크
+            gsap.to(camera.position, {{ x: 0.3, y: 1.5, duration: 0.05, repeat: 8, yoyo: true, onComplete: () => {{
+                camera.position.set(0, 1.2, 9);
+            }}}});
+
+            // 카드 크기 0으로 축소 연출
+            gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.3, ease: "power4.in" }});
+
+            // 3D 폭발 파티클 생성 (붉은 화염 파편)
+            const expCount = 400;
+            const expGeo = new THREE.BufferGeometry();
+            const expPos = new Float32Array(expCount * 3);
+
+            for (let i = 0; i < expCount; i++) {{
+                expPos[i * 3] = 0;
+                expPos[i * 3 + 1] = 0.3;
+                expPos[i * 3 + 2] = 0;
+
+                // 방사형 랜덤 속도 벡터
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                const speed = Math.random() * 0.25 + 0.08;
+
+                explosionVelocities.push({{
+                    x: speed * Math.sin(phi) * Math.cos(theta),
+                    y: speed * Math.sin(phi) * Math.sin(theta),
+                    z: speed * Math.cos(phi)
+                }});
+            }}
+
+            expGeo.setAttribute('position', new THREE.BufferAttribute(expPos, 3));
+            const expMat = new THREE.PointsMaterial({{
+                color: 0xff2200,
+                size: 0.22,
+                transparent: true,
+                opacity: 1.0
+            }});
+
+            explosionParticles = new THREE.Points(expGeo, expMat);
+            scene.add(explosionParticles);
+        }} else if (status === "SUCCESS") {{
             gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
             gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
         }}
@@ -435,12 +410,25 @@ three_js_code = f"""
             cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
             cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.3;
 
+            // 배경 파티클 애니메이션
             const pos = pGeo.attributes.position.array;
             for(let i=1; i<particleCount*3; i+=3) {{
                 pos[i] -= 0.04;
                 if(pos[i] < -2) pos[i] = 8;
             }}
             pGeo.attributes.position.needsUpdate = true;
+
+            // 💥 폭발 파티클 확산 및 감쇄 애니메이션
+            if (explosionParticles) {{
+                const ePos = explosionParticles.geometry.attributes.position.array;
+                for (let i = 0; i < explosionVelocities.length; i++) {{
+                    ePos[i * 3] += explosionVelocities[i].x;
+                    ePos[i * 3 + 1] += explosionVelocities[i].y;
+                    ePos[i * 3 + 2] += explosionVelocities[i].z;
+                }}
+                explosionParticles.geometry.attributes.position.needsUpdate = true;
+                explosionParticles.material.opacity *= 0.96; // 점진적 소멸
+            }}
 
             renderer.render(scene, camera);
         }}
