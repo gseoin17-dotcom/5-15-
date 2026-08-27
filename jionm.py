@@ -12,15 +12,16 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 골드 단위 변환 함수 (원 단위 적용)
+# 2. 골드 단위 변환 함수
 # -----------------------------------------------------------------------------
 def format_gold(amount):
     if amount == 0:
-        return "0원"
+        return "0 G"
     
     units = ["", "만", "억", "조", "경", "해"]
     result = []
     
+    # 10000 단위로 자르기
     unit_idx = 0
     while amount > 0 and unit_idx < len(units):
         remainder = amount % 10000
@@ -29,7 +30,7 @@ def format_gold(amount):
         amount //= 10000
         unit_idx += 1
         
-    return "".join(result) + "원"
+    return "".join(result) + " G"
 
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 및 강화 확률표
@@ -90,7 +91,7 @@ if "tears" not in st.session_state: st.session_state.tears = 0
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
-# 5. 강화 및 판매 로직
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
 def enhance():
     curr = st.session_state.level
@@ -133,7 +134,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (불필요한 공백 제거 및 레이아웃 최적화)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -142,46 +143,57 @@ st.markdown("""
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
+    
     .glass-panel {
         background: rgba(43, 23, 56, 0.65);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(236, 178, 255, 0.2);
-        border-radius: 12px;
-        padding: 12px;
-        margin-bottom: 8px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
+
     .stat-card {
         background: rgba(58, 28, 77, 0.5);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 10px 8px;
-        border-radius: 10px;
+        padding: 16px 12px;
+        border-radius: 12px;
         text-align: center;
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        border-color: rgba(245, 158, 11, 0.7);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     }
     .stat-title {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: #fde68a;
-        margin-bottom: 2px;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 800;
         color: #ffffff;
+        text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
     }
+
     div.stButton > button {
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         font-weight: 700 !important;
-        padding: 8px 16px !important;
+        padding: 12px 20px !important;
+        transition: all 0.2s ease !important;
         border: 1px solid rgba(217, 119, 6, 0.3) !important;
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(217, 119, 6, 0.4)) !important;
         color: #ffffff !important;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(217, 119, 6, 0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -189,11 +201,11 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 # 7. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([3, 7], gap="small")
+left_col, right_col = st.columns([3, 7])
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 8px 0; font-size: 18px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top:0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
@@ -206,24 +218,24 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
     st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
     
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
-        if st.button("구매 (5만 원)", use_container_width=True):
+        if st.button("구매 (50,000 G)", use_container_width=True):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
                 st.success("보호권 보유 중!")
                 st.rerun()
             else:
-                st.error("금액이 부족합니다.")
+                st.error("골드가 부족합니다.")
                 
     with tab_shop2:
         st.caption("눈물 15개로 1단계 확정 상승")
@@ -240,6 +252,9 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
+    # -----------------------------------------------------------------------------
+    # 8. 3D 메인 연출 영역 (Three.js)
+    # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
@@ -253,29 +268,67 @@ with right_col:
     <html>
     <head>
         <style>
-            body {{ margin: 0; overflow: hidden; background: transparent; font-family: sans-serif; }}
-            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
-            #redFlashOverlay, #shieldFlashOverlay, #critFlashOverlay, #successFlashOverlay {{
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999; pointer-events: none; opacity: 0;
+            body {{ 
+                margin: 0; 
+                overflow: hidden; 
+                background: transparent; 
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             }}
-            #redFlashOverlay {{ background: rgba(239, 68, 68, 0.85); }}
-            #shieldFlashOverlay {{ background: rgba(59, 130, 246, 0.7); }}
-            #critFlashOverlay {{ background: rgba(245, 158, 11, 0.85); }}
-            #successFlashOverlay {{ background: rgba(16, 185, 129, 0.5); }}
+            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+
+            #redFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(239, 68, 68, 0.85);
+                box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
+            #shieldFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(59, 130, 246, 0.7);
+                box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
+            #critFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(245, 158, 11, 0.85);
+                box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
+            #successFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(16, 185, 129, 0.5);
+                box-shadow: inset 0 0 100px rgba(5, 150, 105, 0.8);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
 
             .cinematic-ui {{
-                position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 100; pointer-events: none;
+                position: absolute;
+                bottom: 30px; 
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                text-align: center;
+                z-index: 100;
+                pointer-events: none;
             }}
-            .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; }}
-            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; }}
-            .title-tier-3 {{ font-size: 42px; font-weight: 900; color: #ef4444; }}
-            .title-tier-4 {{ font-size: 46px; font-weight: 900; color: #c084fc; }}
-            .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 54px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
 
-            .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: 2px; }}
-            .desc-text {{ font-size: 14px; color: #f3e8ff; margin-top: 4px; }}
-            .price-text {{ font-size: 18px; font-weight: 800; color: #fbbf24; margin-top: 4px; }}
+            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 44px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 50px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 56px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 68px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+
+            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: 4px; }}
+            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
+            .price-text {{ font-size: 22px; font-weight: 800; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -289,7 +342,9 @@ with right_col:
 
         <div class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
-            <div class="title-tier-{tier}">{card_title}</div>
+            <div class="title-tier-{tier}">
+                {card_title}
+            </div>
             <div class="desc-text">"{card_desc}"</div>
             <div class="price-text">예상 가치: {card_price}</div>
         </div>
@@ -320,6 +375,8 @@ with right_col:
             }}
 
             const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x231133, 0.025);
+
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1.2, 9);
 
@@ -328,52 +385,165 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            scene.add(new THREE.AmbientLight(0xd8b4fe, 0.9));
+            const ambientLight = new THREE.AmbientLight(0xd8b4fe, 0.9);
+            scene.add(ambientLight);
+
             const sunsetLight = new THREE.DirectionalLight(0xf59e0b, 1.5);
             sunsetLight.position.set(5, 5, 5);
             scene.add(sunsetLight);
 
+            const cardPointLight = new THREE.PointLight("{card_color}", 6, 20);
+            cardPointLight.position.set(0, 2, 4);
+            scene.add(cardPointLight);
+
+            // ✨ 입자 효과
+            const particleGroup = new THREE.Group();
+            const pCount = 1500;
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(pCount * 3);
+
+            for(let i=0; i<pCount; i++) {{
+                pPos[i*3] = (Math.random() - 0.5) * 25;
+                pPos[i*3 + 1] = Math.random() * 15 - 5;
+                pPos[i*3 + 2] = (Math.random() - 0.5) * 25;
+            }}
+
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({{
+                color: 0xfde68a, size: 0.18, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
+            }});
+            const particles = new THREE.Points(pGeo, pMat);
+            particleGroup.add(particles);
+            scene.add(particleGroup);
+
+            // 💳 아티팩트 카드
             const cardGroup = new THREE.Group();
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(2.9, 4.3, 0.2), new THREE.MeshStandardMaterial({{ color: 0x2e1045, metalness: 0.85, roughness: 0.25 }}));
+
+            const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
+            const frameMat = new THREE.MeshStandardMaterial({{ color: 0x2e1045, metalness: 0.85, roughness: 0.25 }});
+            const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
-            const body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 4.0, 0.22), new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.65, roughness: 0.3 }}));
+            const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.65, roughness: 0.3 }});
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
             cardGroup.add(body);
 
-            const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({{ color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1 }}));
+            const coreGeo = new THREE.OctahedronGeometry(0.6, 0);
+            const coreMat = new THREE.MeshStandardMaterial({{
+                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1
+            }});
+            const core = new THREE.Mesh(coreGeo, coreMat);
             core.position.z = 0.16;
             cardGroup.add(core);
+
             scene.add(cardGroup);
 
+            // 🛡️ 파괴 방지 보호막
+            const shieldGeo = new THREE.SphereGeometry(2.8, 32, 32);
+            const shieldMat = new THREE.MeshStandardMaterial({{
+                color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
+            }});
+            const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
+            shieldDome.position.y = 0.8;
+            scene.add(shieldDome);
+
+            // 💥 3D 파편 그룹
+            let shardsGroup = new THREE.Group();
+            scene.add(shardsGroup);
+
+            // -----------------------------------------------------------------
+            // 강화 연출
+            // -----------------------------------------------------------------
+            if (status === "SHIELD_SAVED") {{
+                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
+                gsap.fromTo(shieldDome.scale, {{ x: 0.2, y: 0.2, z: 0.2 }}, {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }});
+                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
+            }} else if (status === "CRITICAL") {{
+                gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
+            }} else if (status === "DESTROYED") {{
+                gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
+                gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 1.2, 9); }} }});
+                cardGroup.visible = false;
+
+                const shardCount = 20;
+                for(let i = 0; i < shardCount; i++) {{
+                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.4 + 0.2);
+                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
+                    const shard = new THREE.Mesh(sGeo, sMat);
+                    shard.position.set(0, 0.8, 0);
+                    shardsGroup.add(shard);
+
+                    gsap.to(shard.position, {{
+                        x: (Math.random() - 0.5) * 6,
+                        y: (Math.random() - 0.5) * 6,
+                        z: (Math.random() - 0.5) * 6,
+                        duration: 1.2,
+                        ease: "power3.out"
+                    }});
+                    gsap.to(shard.rotation, {{
+                        x: Math.random() * Math.PI * 4,
+                        y: Math.random() * Math.PI * 4,
+                        duration: 1.2
+                    }});
+                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.2, ease: "power2.in" }});
+                }}
+            }} else if (status === "SUCCESS") {{
+                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
+            }}
+
             const clock = new THREE.Clock();
+
             function animate() {{
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
+
+                const pos = pGeo.attributes.position.array;
+                for(let i=1; i<pCount*3; i+=3) {{
+                    pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.008;
+                    if(pos[i] > 10) pos[i] = -5;
+                }}
+                pGeo.attributes.position.needsUpdate = true;
+
                 if (cardGroup.visible) {{
                     cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
                     cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.8;
                 }}
+                
                 core.rotation.x = time * 2;
                 core.rotation.y = time * 2;
+
                 renderer.render(scene, camera);
             }}
+
             animate();
+
+            window.addEventListener('resize', () => {{
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }});
         </script>
     </body>
     </html>
     """
 
-    components.html(three_js_code, height=480, scrolling=False)
+    components.html(three_js_code, height=560, scrolling=False)
 
     # -----------------------------------------------------------------------------
-    # 8. 하단 스탯 대시보드
+    # 9. 하단 스탯 대시보드
     # -----------------------------------------------------------------------------
-    b_col1, b_col2, b_col3 = st.columns(3, gap="small")
+    b_col1, b_col2, b_col3 = st.columns([1, 1, 1])
 
     with b_col1:
         st.markdown(f'''
             <div class="stat-card">
-                <div class="stat-title">💳 보유 금액</div>
+                <div class="stat-title">💳 보유 골드</div>
                 <div class="stat-value">{format_gold(st.session_state.money)}</div>
             </div>
         ''', unsafe_allow_html=True)
@@ -382,17 +552,17 @@ with right_col:
         st.markdown(f'''
             <div class="stat-card">
                 <div class="stat-title">💧 지온의 눈물</div>
-                <div class="stat-value">{st.session_state.tears}개</div>
+                <div class="stat-value">{st.session_state.tears} 개</div>
             </div>
-        ''', unsafe_allow_html=True)
+        ''', unsafe_allow_html=Thread if 'Thread' in globals() else True) # 안전장치 유지 위해 기본 마크다운 적용
 
     with b_col3:
         sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
         crit_pct = int(CRITICAL_RATE * 100)
-        prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}%/{crit_pct}%/{dp}%"
+        prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
         st.markdown(f'''
             <div class="stat-card">
-                <div class="stat-title">📊 성공/크리/파괴</div>
-                <div class="stat-value" style="font-size: 15px;">{prob_str}</div>
+                <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
+                <div class="stat-value" style="font-size: 18px;">{prob_str}</div>
             </div>
         ''', unsafe_allow_html=True)
