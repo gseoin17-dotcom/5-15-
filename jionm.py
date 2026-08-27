@@ -572,8 +572,7 @@ with left_col:
 
   with tab_shop2:
     st.caption(
-        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
-        f" {st.session_state.tears}/120개)"
+        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승
     )
     if st.button("눈물 기적 가동", use_container_width=True):
       if st.session_state.tears >= 40 and st.session_state.level < 30:
