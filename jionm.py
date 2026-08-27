@@ -88,6 +88,7 @@ if "status" not in st.session_state: st.session_state.status = "READY"
 if "shield" not in st.session_state: st.session_state.shield = 0  
 if "tears" not in st.session_state: st.session_state.tears = 0    
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
+if "is_enhancing" not in st.session_state: st.session_state.is_enhancing = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -200,7 +201,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (강화 화면을 넓게 2칼럼 비율 조정: [2.2, 7.8])
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -208,12 +209,14 @@ with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
-    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
-        enhance()
+    # 강화 버튼 클릭 시 상태 변경 후 rerun (애니메이션 구동을 위해)
+    btn_disabled = (st.session_state.level >= 30) or st.session_state.is_enhancing
+    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=btn_disabled):
+        st.session_state.is_enhancing = True
         st.rerun()
         
     st.write("")
-    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
+    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0 or st.session_state.is_enhancing)):
         sell()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -229,7 +232,7 @@ with left_col:
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
-        if st.button("구매 (5만 원)", use_container_width=True):
+        if st.button("구매 (5만 원)", use_container_width=True, disabled=st.session_state.is_enhancing):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
@@ -240,7 +243,7 @@ with left_col:
                 
     with tab_shop2:
         st.caption("눈물 15개로 1단계 확정 상승")
-        if st.button("1단계 확정 상승 (15개)", use_container_width=True):
+        if st.button("1단계 확정 상승 (15개)", use_container_width=True, disabled=st.session_state.is_enhancing):
             if st.session_state.tears >= 15 and st.session_state.level < 30:
                 st.session_state.tears -= 15
                 st.session_state.level += 1
@@ -254,7 +257,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (높이를 넓혀 화면을 크게 확장)
+    # 8. 3D 메인 연출 영역 (강화 연출 시간 길게 확장 및 타임라인 도입)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -262,7 +265,13 @@ with right_col:
     card_desc = curr_data['desc']
     card_price = format_gold(curr_data['price'])
     tier = curr_data['tier']
+    
+    # 연출이 시작될 때만 실제 강화 연산 실행 후 상태 부여
+    if st.session_state.is_enhancing:
+        enhance()
+
     status = st.session_state.status
+    is_enhancing_js = "true" if st.session_state.is_enhancing else "false"
 
     three_js_code = f"""
     <!DOCTYPE html>
@@ -351,28 +360,17 @@ with right_col:
         </div>
 
         <script>
+            const isEnhancing = {is_enhancing_js};
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
             const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
             const successOverlay = document.getElementById('successFlashOverlay');
-            
-            if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
-                statusText.style.color = "#ffe600";
-            }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
-                statusText.style.color = "#34d399";
-            }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
-                statusText.style.color = "#60a5fa";
-            }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 DESTROYED 💥";
-                statusText.style.color = "#ef4444";
-            }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 ENHANCE FAILED 🔻";
-                statusText.style.color = "#f59e0b";
+
+            if (!isEnhancing) {{
+                statusText.innerText = "READY";
+                statusText.style.color = "#38bdf8";
             }}
 
             const scene = new THREE.Scene();
@@ -467,46 +465,74 @@ with right_col:
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
-                gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
-                gsap.fromTo(shieldDome.scale, {{ x: 0.2, y: 0.2, z: 0.2 }}, {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }});
-                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
-            }} else if (status === "CRITICAL") {{
-                gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
-                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
-            }} else if (status === "DESTROYED") {{
-                gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
-                gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
-                cardGroup.visible = false;
+            // 긴 강화 시퀀스 애니메이션 (총 3.5초 소요)
+            if (isEnhancing) {{
+                const tl = gsap.timeline({{
+                    onComplete: () => {{
+                        // 연출 종료 후 Streamlit 상태 리셋을 위해 타이머 후 리로드
+                        setTimeout(() => {{
+                            window.location.href = window.location.pathname + "?reset=1";
+                        }}, 500);
+                    }}
+                }});
 
-                const shardCount = 20;
-                for(let i = 0; i < shardCount; i++) {{
-                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
-                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
-                    const shard = new THREE.Mesh(sGeo, sMat);
-                    shard.position.set(0, 0.2, 0);
-                    shardsGroup.add(shard);
+                // 1단계: 차징 (카드가 중앙으로 다가오며 고속 회전 및 웅장한 진동)
+                tl.to(cardGroup.position, {{ z: 2, duration: 1.0, ease: "power2.inOut" }});
+                tl.to(cardGroup.rotation, {{ y: Math.PI * 6, duration: 2.0, ease: "power1.inOut" }}, 0);
+                tl.to(camera.position, {{ z: 6, duration: 2.0, ease: "power2.inOut" }}, 0);
+                
+                // 징조 단계별 텍스트 업데이트
+                tl.call(() => {{ statusText.innerText = "🔮 지온의 기운을 끌어모으는 중..."; statusText.style.color = "#c084fc"; }}, [], 0.2);
+                tl.call(() => {{ statusText.innerText = "⚡ 차원 에너지가 포화상태에 도달합니다!"; statusText.style.color = "#fbbf24"; }}, [], 1.5);
 
-                    gsap.to(shard.position, {{
-                        x: (Math.random() - 0.5) * 7,
-                        y: (Math.random() - 0.5) * 7,
-                        z: (Math.random() - 0.5) * 7,
-                        duration: 1.2,
-                        ease: "power3.out"
-                    }});
-                    gsap.to(shard.rotation, {{
-                        x: Math.random() * Math.PI * 4,
-                        y: Math.random() * Math.PI * 4,
-                        duration: 1.2
-                    }});
-                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.2, ease: "power2.in" }});
-                }}
-            }} else if (status === "SUCCESS") {{
-                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 5 }}, {{ z: 9.5, duration: 1.2, ease: "power2.out" }});
-                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
+                // 2단계: 판정 및 결과 연출 (2.2초 시점)
+                tl.call(() => {{
+                    if (status === "CRITICAL") {{
+                        statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                        statusText.style.color = "#ffe600";
+                        gsap.to(critOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
+                        gsap.to(camera, {{ zoom: 1.2, duration: 0.3, yoyo: true, repeat: 1 }});
+                    }} else if (status === "SUCCESS") {{
+                        statusText.innerText = "✨ ENHANCE SUCCESS ✨";
+                        statusText.style.color = "#34d399";
+                        gsap.to(successOverlay, {{ opacity: 0.7, duration: 0.2, yoyo: true, repeat: 1 }});
+                    }} else if (status === "SHIELD_SAVED") {{
+                        statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
+                        statusText.style.color = "#60a5fa";
+                        gsap.to(shieldOverlay, {{ opacity: 0.8, duration: 0.3, yoyo: true, repeat: 1 }});
+                        gsap.to(shieldMat, {{ opacity: 0.9, duration: 0.3 }});
+                    }} else if (status === "DESTROYED") {{
+                        statusText.innerText = "💥 DESTROYED 💥";
+                        statusText.style.color = "#ef4444";
+                        gsap.to(flashOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
+                        cardGroup.visible = false;
+
+                        const shardCount = 25;
+                        for(let i = 0; i < shardCount; i++) {{
+                            const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
+                            const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
+                            const shard = new THREE.Mesh(sGeo, sMat);
+                            shard.position.set(0, 0.2, 0);
+                            shardsGroup.add(shard);
+
+                            gsap.to(shard.position, {{
+                                x: (Math.random() - 0.5) * 8,
+                                y: (Math.random() - 0.5) * 8,
+                                z: (Math.random() - 0.5) * 8,
+                                duration: 1.0,
+                                ease: "power3.out"
+                            }});
+                        }}
+                    }} else if (status === "FAILED") {{
+                        statusText.innerText = "🔻 ENHANCE FAILED 🔻";
+                        statusText.style.color = "#f59e0b";
+                        gsap.to(cardGroup.position, {{ x: 0.3, duration: 0.05, repeat: 6, yoyo: true }});
+                    }}
+                }}, [], 2.2);
+
+                // 3단계: 복귀 및 안정화
+                tl.to(cardGroup.position, {{ z: 0, x: 0, y: 0.2, duration: 0.8, ease: "power2.out" }}, 2.5);
+                tl.to(camera.position, {{ z: 9.5, duration: 0.8, ease: "power2.out" }}, 2.5);
             }}
 
             const clock = new THREE.Clock();
@@ -522,7 +548,7 @@ with right_col:
                 }}
                 pGeo.attributes.position.needsUpdate = true;
 
-                if (cardGroup.visible) {{
+                if (cardGroup.visible && !isEnhancing) {{
                     cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
                     cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
                 }}
@@ -547,8 +573,12 @@ with right_col:
 
     components.html(three_js_code, height=650, scrolling=False)
 
+    # 애니메이션이 끝난 후 is_enhancing 플래그를 자동으로 해제하기 위한 처리
+    if st.session_state.is_enhancing:
+        st.session_state.is_enhancing = False
+
 # -----------------------------------------------------------------------------
-# 9. 하단 스탯 대시보드 (맨 아래로 이동 완료)
+# 9. 하단 스탯 대시보드
 # -----------------------------------------------------------------------------
 st.write("")
 b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
