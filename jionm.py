@@ -589,7 +589,7 @@ with right_col:
   status = st.session_state.status
   current_vol = st.session_state.bgm_vol / 100.0
 
-  # Three.js 렌더링 및 Web Audio API를 활용한 무한 자동재생 몽환적 판타지 BGM 생성기 탑재 컴포넌트
+  # Three.js 렌더링 및 HTML5 Audio BGM 플레이어 탑재 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -676,6 +676,12 @@ with right_col:
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
+        <!-- 🎵 BGM 오디오 요소 (원하시는 mp3 링크로 교체하세요) -->
+        <audio id="bgmAudio" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
         <div id="redFlashOverlay"></div>
         <div id="failFlashOverlay"></div>
         <div id="holdFlashOverlay"></div>
@@ -695,97 +701,26 @@ with right_col:
         </div>
 
         <script>
-            // --- Web Audio API 기반 판타지 BGM 합성기 ---
-            let audioCtx = null;
-            let masterGain = null;
-            let bgmInterval = null;
-            const targetVolume = {current_vol};
+            // --- BGM 볼륨 및 자동 재생 연동 ---
+            const bgmAudio = document.getElementById('bgmAudio');
+            bgmAudio.volume = {current_vol};
 
-            function initBGM() {{
-                if (audioCtx) {{
-                    if (masterGain) {{
-                        masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
-                    }}
-                    return;
-                }}
-                
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-
-                masterGain = audioCtx.createGain();
-                masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
-
-                const reverbNode = audioCtx.createBiquadFilter();
-                reverbNode.type = "lowpass";
-                reverbNode.frequency.setValueAtTime(1200, audioCtx.currentTime);
-
-                masterGain.connect(reverbNode);
-                reverbNode.connect(audioCtx.destination);
-
-                // 신비로운 판타지 아르페지오 코드 진행 (신디사이저 톤)
-                const chords = [
-                    [220.00, 261.63, 329.63, 392.00], // A minor
-                    [174.61, 220.00, 261.63, 329.63], // F major
-                    [196.00, 246.94, 293.66, 369.99], // G major
-                    [130.81, 164.81, 196.00, 246.94]  // C major
-                ];
-
-                let chordIdx = 0;
-                let noteIdx = 0;
-
-                function playNote() {{
-                    if (!audioCtx) return;
-                    if (audioCtx.state === 'suspended') {{
-                        audioCtx.resume();
-                    }}
-
-                    const now = audioCtx.currentTime;
-                    const osc = audioCtx.createOscillator();
-                    const noteGain = audioCtx.createGain();
-
-                    const currentChord = chords[chordIdx];
-                    const freq = currentChord[noteIdx];
-
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now);
-
-                    // 패드/아르페지오 느낌의 부드러운 엔벨로프
-                    noteGain.gain.setValueAtTime(0, now);
-                    noteGain.gain.linearRampToValueAtTime(0.5, now + 0.1);
-                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
-
-                    osc.connect(noteGain);
-                    noteGain.connect(masterGain);
-
-                    osc.start(now);
-                    osc.stop(now + 1.9);
-
-                    noteIdx++;
-                    if (noteIdx >= currentChord.length) {{
-                        noteIdx = 0;
-                        chordIdx = (chordIdx + 1) % chords.length;
-                    }}
-                }}
-
-                // 400ms 간격으로 오디오 노트 루프 실행
-                bgmInterval = setInterval(playNote, 400);
+            function playBGM() {{
+                bgmAudio.play().catch(error => {{
+                    console.log("Autoplay blocked or waiting for user interaction:", error);
+                }});
             }}
 
-            // 첫 클릭 혹은 인터랙션 시 오디오 컨텍스트 활성화
+            // 첫 화면 클릭 시 브금이 확실히 재생되도록 유도
             window.addEventListener('pointerdown', () => {{
-                if (!audioCtx) {{
-                    initBGM();
-                }} else if (audioCtx.state === 'suspended') {{
-                    audioCtx.resume();
-                }}
+                playBGM();
             }}, {{ once: true }});
 
-            // 자동 시작 시도
-            setTimeout(() => {{
-                try {{
-                    initBGM();
-                }} catch(e) {{}}
-            }}, 500);
+            // 페이지 로드 시 자동 재생 시도
+            window.addEventListener('DOMContentLoaded', () => {{
+                playBGM();
+            }});
+            setTimeout(playBGM, 300);
 
             const status = "{status}";
             const statusText = document.getElementById('statusText');
