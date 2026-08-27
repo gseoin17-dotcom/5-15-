@@ -61,7 +61,7 @@ def get_leaderboard():
 
 
 # -----------------------------------------------------------------------------
-# 1. 페이지 기본 설정
+# 1. 페이지 설정 (상단 짤림 방지를 위해 패딩 넉넉히 확보)
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - TRASH MOUNTAIN EDITION",
@@ -480,7 +480,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (상단 짤림 방지를 위한 패딩 더 넉넉히 확보)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -494,7 +494,7 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 2rem !important;
+        padding-top: 3.5rem !important;
         padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
@@ -747,7 +747,7 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  # --- 초입체 리얼 3D Three.js 렌더링 영역 ---
+  # --- 초록색 연기 파티클 효과가 포함된 3D Three.js 영역 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -781,19 +781,19 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 30px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 34px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 40px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-            .title-tier-4 {{ font-size: 46px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 52px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 58px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+            .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+            .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+            .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+            .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+            .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 17px; font-weight: 800; margin-bottom: 2px; letter-spacing: 2px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
-            .desc-text {{ font-size: 13px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 2px; letter-spacing: 2px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+            .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+            .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -824,6 +824,7 @@ with right_col:
                 statusText.style.color = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
+                statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                 statusText.style.color = "#ef4444";
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
@@ -835,65 +836,60 @@ with right_col:
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0.5, 8.5);
+            camera.position.set(0, 0.6, 9.0);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 3D 조명 설정 (입체감 극대화)
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
             const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
             mainLight.position.set(5, 8, 5);
-            mainLight.castShadow = true;
             scene.add(mainLight);
 
             const pointLight = new THREE.PointLight("{card_color}", 15, 30);
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            const backLight = new THREE.PointLight(0xffffff, 5, 20);
-            backLight.position.set(-4, -2, -3);
-            scene.add(backLight);
+            // --- 지온냄새 특유의 '초록색 연기' 파티클 시스템 ---
+            const smokeCount = 800;
+            const smokeGeo = new THREE.BufferGeometry();
+            const smokePositions = new Float32Array(smokeCount * 3);
+            const smokeVelocities = [];
 
-            // 우주 행성 및 궤도 고리
-            const orbitGroup = new THREE.Group();
-            const ringGeo1 = new THREE.TorusGeometry(4.8, 0.05, 16, 100);
-            const ringMat1 = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 2.0, wireframe: true }});
-            const orbitRing1 = new THREE.Mesh(ringGeo1, ringMat1);
-            orbitRing1.rotation.x = Math.PI / 2.5;
-            orbitGroup.add(orbitRing1);
-
-            const ringGeo2 = new THREE.TorusGeometry(5.8, 0.03, 16, 100);
-            const orbitRing2 = new THREE.Mesh(ringGeo2, ringMat1);
-            orbitRing2.rotation.y = Math.PI / 3;
-            orbitGroup.add(orbitRing2);
-            scene.add(orbitGroup);
-
-            // 배경 입체 먼지 파티클
-            const pCount = 1200;
-            const pGeo = new THREE.BufferGeometry();
-            const pPos = new Float32Array(pCount * 3);
-            for(let i=0; i<pCount; i++) {{
-                pPos[i*3] = (Math.random() - 0.5) * 30;
-                pPos[i*3 + 1] = (Math.random() - 0.5) * 30;
-                pPos[i*3 + 2] = (Math.random() - 0.5) * 30;
+            for(let i=0; i<smokeCount; i++) {{
+                smokePositions[i*3] = (Math.random() - 0.5) * 4.0;
+                smokePositions[i*3 + 1] = -2.5 + Math.random() * 1.5;
+                smokePositions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
+                smokeVelocities.push({{
+                    x: (Math.random() - 0.5) * 0.03,
+                    y: 0.02 + Math.random() * 0.04,
+                    z: (Math.random() - 0.5) * 0.03,
+                    rot: (Math.random() - 0.5) * 0.02
+                }});
             }}
-            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-            const pMat = new THREE.PointsMaterial({{ color: "{card_color}", size: 0.12, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending }});
-            const particleSystem = new THREE.Points(pGeo, pMat);
-            scene.add(particleSystem);
+            smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
+            
+            // 몽환적이고 진한 초록색 오라 연기 재질
+            const smokeMat = new THREE.PointsMaterial({{
+                color: 0x22c55e,
+                size: 0.35,
+                transparent: true,
+                opacity: 0.75,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            }});
+            const smokeSystem = new THREE.Points(smokeGeo, smokeMat);
+            scene.add(smokeSystem);
 
-            // --- 중앙 3D 코어 오브젝트 (유리 및 다면체 구조) ---
+            // 중앙 오브젝트 그룹
             const objectGroup = new THREE.Group();
 
-            // 외곽 거대한 회전 다면체 프레임
-            const outerGeo = new THREE.DodecahedronGeometry(2.6, 0);
+            const outerGeo = new THREE.DodecahedronGeometry(2.5, 0);
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: "{card_color}",
                 metalness: 0.8,
@@ -906,27 +902,25 @@ with right_col:
             const outerMesh = new THREE.Mesh(outerGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            // 내부 영롱한 듀얼 크리스탈 코어
-            const coreGeo = new THREE.OctahedronGeometry(1.3, 0);
+            const coreGeo = new THREE.OctahedronGeometry(1.2, 0);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: "{card_color}",
                 emissiveIntensity: 2.5,
                 roughness: 0.05,
                 metalness: 0.9,
-                transmission: 0.7,
-                ior: 1.5
+                transmission: 0.7
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            // --- 강화 결과별 3D 카메라 & 모션 연출 (GSAP) ---
+            // 강화 결과별 모션 애니메이션
             if (status === "SUCCESS" || status === "CRITICAL") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1, y: 1, z: 1, duration: 0.7, ease: "elastic.out(1.2, 0.3)"}});
-                gsap.fromTo(camera.position, {{z: 4.0}}, {{z: 8.5, duration: 0.8, ease: "power2.out"}});
-                gsap.fromTo(pointLight, {{intensity: 40}}, {{intensity: 15, duration: 1.0}});
+                gsap.fromTo(camera.position, {{z: 4.5}}, {{z: 9.0, duration: 0.8, ease: "power2.out"}});
+                smokeMat.opacity = 0.95;
             }} else if (status === "FAILED" || status === "DESTROYED") {{
                 gsap.fromTo(objectGroup.position, {{x: -0.25}}, {{x: 0.25, duration: 0.04, repeat: 7, yoyo: true}});
                 if (status === "DESTROYED") {{
@@ -944,27 +938,29 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                // 궤도 및 코어 회전
-                orbitRing1.rotation.z = time * 0.4;
-                orbitRing2.rotation.z = -time * 0.5;
-
                 outerMesh.rotation.x = time * 0.5;
                 outerMesh.rotation.y = time * 0.7;
-
                 coreMesh.rotation.x = -time * 1.2;
                 coreMesh.rotation.y = -time * 1.5;
 
-                // 파티클 유영 효과
-                const positions = pGeo.attributes.position.array;
-                for(let i=1; i<pCount*3; i+=3) {{
-                    positions[i] += Math.sin(time + positions[i-1]) * 0.005 + 0.01;
-                    if(positions[i] > 15) positions[i] = -15;
-                }}
-                pGeo.attributes.position.needsUpdate = true;
+                // 초록색 연기 상승 및 퍼짐 애니메이션 루프
+                const positions = smokeGeo.attributes.position.array;
+                for(let i=0; i<smokeCount; i++) {{
+                    positions[i*3] += smokeVelocities[i].x + Math.sin(time + i) * 0.005;
+                    positions[i*3 + 1] += smokeVelocities[i].y;
+                    positions[i*3 + 2] += smokeVelocities[i].z + Math.cos(time + i) * 0.005;
 
-                // 오브젝트 전체 유기적 부유 모션
+                    // 화면 위로 올라가면 다시 아래로 리셋하여 순환
+                    if(positions[i*3 + 1] > 4.5) {{
+                        positions[i*3 + 1] = -2.5;
+                        positions[i*3] = (Math.random() - 0.5) * 4.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
+                    }}
+                }}
+                smokeGeo.attributes.position.needsUpdate = true;
+
                 objectGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-                objectGroup.position.y = Math.sin(time * 1.6) * 0.12;
+                objectGroup.position.y = Math.sin(time * 1.6) * 0.12 + 0.1;
 
                 renderer.render(scene, camera);
             }}
