@@ -366,15 +366,15 @@ with right_col:
 
         <div class="cinematic-ui">
             <div id="statusText" class="status-header"></div>
-            <div class="title-tier-{tier}">
-                {card_title}
+            <div class="title-tier-{{tier}}">
+                {{card_title}}
             </div>
-            <div class="desc-text">"{card_desc}"</div>
-            <div class="price-text">예상 가치: {card_price}</div>
+            <div class="desc-text">"{{card_desc}}"</div>
+            <div class="price-text">예상 가치: {{card_price}}</div>
         </div>
 
         <script>
-            const status = "{status}";
+            const status = "{{status}}";
             const statusText = document.getElementById('statusText');
             const introMsg = document.getElementById('introMsg');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -400,7 +400,7 @@ with right_col:
             sunsetLight.position.set(5, 5, 5);
             scene.add(sunsetLight);
 
-            const cardPointLight = new THREE.PointLight("{card_color}", 6, 20);
+            const cardPointLight = new THREE.PointLight("{{card_color}}", 6, 20);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
@@ -442,14 +442,14 @@ with right_col:
             cardGroup.add(inlay);
 
             const bodyGeo = new THREE.BoxGeometry(2.9, 2.9, 0.24);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{{card_color}}", metalness: 0.75, roughness: 0.25, emissive: "{{card_color}}", emissiveIntensity: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = 0.75;
             cardGroup.add(body);
 
             const coreGeo = new THREE.OctahedronGeometry(0.75, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
-                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
+                color: 0xffffff, emissive: "{{card_color}}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
             core.position.set(0, 0.75, 0.15);
@@ -469,9 +469,9 @@ with right_col:
             // [애니메이션 타임라인]
             const tl = gsap.timeline();
             
-            // 맨 처음 구문 페이드인 후 일정 시간 노출 뒤 페이드아웃
+            // 맨 처음 구문 페이드인 후 일정 시간 노출 뒤 페이드아웃 (지연 시간을 별도 객체로 분리하여 문법 오류 해결)
             tl.to(introMsg, {{ opacity: 1, duration: 0.4, ease: "power1.in" }});
-            tl.to(introMsg, {{ opacity: 0, duration: 0.4, ease: "power1.out" }, "+=0.8"});
+            tl.to(introMsg, {{ opacity: 0, duration: 0.4, ease: "power1.out" }}, "+=0.8");
 
             // 카메라가 카드로 극적으로 줌인하며 카드가 회전하기 시작
             tl.to(camera.position, {{ z: 6.5, duration: 1.2, ease: "power2.inOut" }}, "-=0.2");
@@ -508,7 +508,7 @@ with right_col:
                     const shardCount = 35;
                     for(let i = 0; i < shardCount; i++) {{
                         const sGeo = new THREE.BoxGeometry(Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15, 0.2);
-                        const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
+                        const sMat = new THREE.MeshStandardMaterial({{ color: "{{card_color}}", roughness: 0.2 }});
                         const shard = new THREE.Mesh(sGeo, sMat);
                         shard.position.set(0, 0, 0);
                         shardsGroup.add(shard);
