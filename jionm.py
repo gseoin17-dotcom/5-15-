@@ -346,7 +346,7 @@ if "shield" not in st.session_state:
 if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "sfx_vol" not in st.session_state:
-  st.session_state.sfx_vol = 50  # 효과음 볼륨 기본 50%
+  st.session_state.sfx_vol = 50
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -491,25 +491,25 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
-      " 판타지 지온 강화</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>💨 방귀 뀌기"
+      " 강화</h3>",
       unsafe_allow_html=True,
   )
 
   if st.button(
-      "🔥 강화 실행",
+      "💨 힘주기 (강화)",
       use_container_width=True,
       disabled=(st.session_state.level >= 30),
   ):
     enhance()
     if st.session_state.status == "NOT_ENOUGH_MONEY":
-      st.error("강화 비용이 부족합니다!")
+      st.error("힘을 줄 식사가 부족합니다!")
     else:
       st.rerun()
 
   st.write("")
   if st.button(
-      "💰 현재 냄새 판매",
+      "💨 방귀 배출 (판매)",
       use_container_width=True,
       disabled=(st.session_state.level == 0),
   ):
@@ -520,8 +520,8 @@ with left_col:
   # 효과음 볼륨 조절 패널
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🔊 효과음"
-      " 설정</h4>",
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🔊 방귀소리"
+      " 볼륨</h4>",
       unsafe_allow_html=True,
   )
   sfx_vol = st.slider(
@@ -538,28 +538,28 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
+  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방어권", "💧 눈물"])
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f"엉덩이 조이기 (파괴 방지)\n(20단계 이상부터 구매 가능)\n현재 가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
     can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
     if st.button(
-        "방지권 구매 (최대 2개)",
+        "조이기 구매 (최대 2개)",
         use_container_width=True,
         disabled=not can_buy_shield,
     ):
       if st.session_state.level < 20:
-        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
+        st.warning("엉덩이 조리개는 20단계 이상부터 구매 가능합니다.")
       elif st.session_state.shield >= 2:
-        st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
+        st.warning("최대 2개까지만 보유할 수 있습니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
-        st.success("파괴 방지권 구매 완료!")
+        st.success("엉덩이 조이기 구매 완료!")
         st.rerun()
       else:
         st.error("금액이 부족합니다.")
@@ -571,7 +571,7 @@ with left_col:
         st.session_state.tears -= 20
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
-        st.success("확정 강화 성공!")
+        st.success("확정 방귀 강화 성공!")
         st.rerun()
       else:
         st.error("조건이 부족합니다.")
@@ -589,7 +589,7 @@ with right_col:
   status = st.session_state.status
   current_sfx_vol = st.session_state.sfx_vol / 100.0
 
-  # Three.js 렌더링 및 Web Audio API 기반 상태별 SFX 효과음 생성 컴포넌트
+  # Web Audio API 기반 방귀 효과음 합성 시스템
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -695,7 +695,7 @@ with right_col:
         </div>
 
         <script>
-            // --- Web Audio API를 활용한 SFX 효과음 시스템 ---
+            // --- Web Audio API를 활용한 방귀 SFX 합성 시스템 ---
             const sfxVol = {current_sfx_vol};
             let audioCtx = null;
 
@@ -708,105 +708,77 @@ with right_col:
                 }}
             }}
 
-            function playSound(type) {{
+            // 화이트 노이즈(바람/마찰음)와 저주파 오실레이터(진동음)를 섞어 방귀 소리를 합성하는 함수
+            function playFartSound(duration, baseFreq, noiseGainVal, filterFreq) {{
                 if (sfxVol <= 0) return;
                 initAudio();
                 if (!audioCtx) return;
 
                 const now = audioCtx.currentTime;
 
+                // 1. 저주파 진동 성분 (부르르르 떨리는 톤)
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(baseFreq, now);
+                // 주파수가 미세하게 흔들리도록 변조
+                osc.frequency.linearRampToValueAtTime(baseFreq * 0.6, now + duration);
+
+                oscGain.gain.setValueAtTime(sfxVol * 0.5, now);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(oscGain);
+                oscGain.connect(audioCtx.destination);
+
+                // 2. 화이트 노이즈 성분 (바람 빠지는 소리)
+                const bufferSize = audioCtx.sampleRate * duration;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {{
+                    data[i] = Math.random() * 2 - 1;
+                }}
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(filterFreq, now);
+                filter.Q.value = 5;
+
+                const noiseGain = audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(sfxVol * noiseGainVal, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                noise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + duration);
+                noise.start(now);
+                noise.stop(now + duration);
+            }}
+
+            function playSound(type) {{
                 if (type === "SUCCESS") {{
-                    // 성공: 맑고 영롱한 고음 아르페지오 (C5 -> E5 -> G5)
-                    [523.25, 659.25, 783.99].forEach((freq, index) => {{
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(freq, now + index * 0.08);
-                        
-                        gain.gain.setValueAtTime(sfxVol * 0.4, now + index * 0.08);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.3);
-
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + index * 0.08);
-                        osc.stop(now + index * 0.08 + 0.35);
-                    }});
+                    // 성공: 뽕~ 하고 울리는 경쾌하고 깔끔한 방귀
+                    playFartSound(0.35, 130, 0.6, 600);
                 }} else if (type === "CRITICAL") {{
-                    // 대성공(크리티컬): 화려하고 웅장한 상승 화음
-                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, index) => {{
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(freq, now + index * 0.07);
-
-                        gain.gain.setValueAtTime(sfxVol * 0.5, now + index * 0.07);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.07 + 0.5);
-
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + index * 0.07);
-                        osc.stop(now + index * 0.07 + 0.55);
-                    }});
+                    // 대성공: 길고 우렁차며 웅장한 폭풍 방귀
+                    playFartSound(0.7, 90, 0.9, 800);
                 }} else if (type === "FAILED") {{
-                    // 실패: 기가 꺾이는 하강 음
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(250, now);
-                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
-
-                    gain.gain.setValueAtTime(sfxVol * 0.4, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.35);
+                    // 실패: 피식~하고 맥없이 빠지는 숏 방귀
+                    playFartSound(0.2, 180, 0.4, 400);
                 }} else if (type === "HOLD") {{
-                    // 유지: 둔탁한 중저음 탕 소리
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(180, now);
-                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
-
-                    gain.gain.setValueAtTime(sfxVol * 0.5, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
+                    // 유지: 묵직하지만 중간에 턱 막히는 엉덩이 소리
+                    playFartSound(0.25, 110, 0.5, 300);
                 }} else if (type === "SHIELD_SAVED") {{
-                    // 방어권 발동: 방패가 팅기는 금속성 맑은 공명음
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, now);
-                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.4);
-
-                    gain.gain.setValueAtTime(sfxVol * 0.6, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.45);
+                    // 방어권: 뿍! 하고 괄약근으로 틀어막는 방어 방귀
+                    playFartSound(0.4, 220, 0.7, 900);
                 }} else if (type === "DESTROYED") {{
-                    // 파괴: 쿵 하는 저음 충격음 + 노이즈 폭발음 느낌
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(120, now);
-                    osc.frequency.exponentialRampToValueAtTime(30, now + 0.6);
-
-                    gain.gain.setValueAtTime(sfxVol * 0.7, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.65);
+                    // 파괴: 뿌아아아앙! 사방으로 퍼지는 대재앙 설사 방귀
+                    playFartSound(0.9, 65, 1.0, 1000);
                 }}
             }}
 
@@ -824,27 +796,27 @@ with right_col:
             const successOverlay = document.getElementById('successFlashOverlay');
             
             if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusText.innerText = "💨 으마무시한 메가톤 방귀! (+2단계) 💨";
                 statusText.style.color = "#ffe600";
                 playSound("CRITICAL");
             }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
+                statusText.innerText = "💨 시원하게 뀐 성공 방귀! 💨";
                 statusText.style.color = "#34d399";
                 playSound("SUCCESS");
             }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
+                statusText.innerText = "🛡️ 괄약근 조이기 성공! (방어 발동) 🛡️";
                 statusText.style.color = "#60a5fa";
                 playSound("SHIELD_SAVED");
             }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 DESTROYED 💥";
+                statusText.innerText = "💥 지려버렸다... (파괴) 💥";
                 statusText.style.color = "#ef4444";
                 playSound("DESTROYED");
             }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
+                statusText.innerText = "🔻 피식... (방귀 하락) 🔻";
                 statusText.style.color = "#f59e0b";
                 playSound("FAILED");
             }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
+                statusText.innerText = "🔒 엉덩이에 걸쳤다 (유지) 🔒";
                 statusText.style.color = "#38bdf8";
                 playSound("HOLD");
             }}
@@ -1088,7 +1060,7 @@ with b_col2:
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">🛡️ 보유권 개수</div>
+            <div class="stat-title">🛡️ 조이기 개수</div>
             <div class="stat-value">{st.session_state.shield} / 2개</div>
         </div>
     """,
@@ -1110,14 +1082,14 @@ with b_col4:
   if st.session_state.level < 30:
     sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
     crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}% / 유지:{hold_p}%"
+    prob_str = f"성공:{sp}% (대방귀 {crit_pct}%)<br>하락:{down_p}% / 지림:{dp}% / 유지:{hold_p}%"
   else:
     prob_str = "최고 단계 도달"
 
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">📊 상세 확률표</div>
+            <div class="stat-title">📊 방귀 확률표</div>
             <div class="stat-value" style="font-size: 11px; line-height: 1.3;">{prob_str}</div>
         </div>
     """,
