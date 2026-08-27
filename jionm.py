@@ -345,8 +345,6 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "sfx_vol" not in st.session_state:
-  st.session_state.sfx_vol = 50
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -517,21 +515,6 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
-  # 효과음 볼륨 조절 패널
-  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🔊 방귀소리"
-      " 볼륨</h4>",
-      unsafe_allow_html=True,
-  )
-  sfx_vol = st.slider(
-      "효과음 볼륨", 0, 100, st.session_state.sfx_vol, key="slider_sfx_vol"
-  )
-  if sfx_vol != st.session_state.sfx_vol:
-    st.session_state.sfx_vol = sfx_vol
-    st.rerun()
-  st.markdown("</div>", unsafe_allow_html=True)
-
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
@@ -587,9 +570,7 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
-  current_sfx_vol = st.session_state.sfx_vol / 100.0
 
-  # Web Audio API 기반 방귀 효과음 합성 시스템
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -695,97 +676,6 @@ with right_col:
         </div>
 
         <script>
-            // --- Web Audio API를 활용한 방귀 SFX 합성 시스템 ---
-            const sfxVol = {current_sfx_vol};
-            let audioCtx = null;
-
-            function initAudio() {{
-                if (!audioCtx) {{
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }}
-                if (audioCtx.state === 'suspended') {{
-                    audioCtx.resume();
-                }}
-            }}
-
-            // 화이트 노이즈(바람/마찰음)와 저주파 오실레이터(진동음)를 섞어 방귀 소리를 합성하는 함수
-            function playFartSound(duration, baseFreq, noiseGainVal, filterFreq) {{
-                if (sfxVol <= 0) return;
-                initAudio();
-                if (!audioCtx) return;
-
-                const now = audioCtx.currentTime;
-
-                // 1. 저주파 진동 성분 (부르르르 떨리는 톤)
-                const osc = audioCtx.createOscillator();
-                const oscGain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(baseFreq, now);
-                // 주파수가 미세하게 흔들리도록 변조
-                osc.frequency.linearRampToValueAtTime(baseFreq * 0.6, now + duration);
-
-                oscGain.gain.setValueAtTime(sfxVol * 0.5, now);
-                oscGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-                osc.connect(oscGain);
-                oscGain.connect(audioCtx.destination);
-
-                // 2. 화이트 노이즈 성분 (바람 빠지는 소리)
-                const bufferSize = audioCtx.sampleRate * duration;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {{
-                    data[i] = Math.random() * 2 - 1;
-                }}
-
-                const noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(filterFreq, now);
-                filter.Q.value = 5;
-
-                const noiseGain = audioCtx.createGain();
-                noiseGain.gain.setValueAtTime(sfxVol * noiseGainVal, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-                noise.connect(filter);
-                filter.connect(noiseGain);
-                noiseGain.connect(audioCtx.destination);
-
-                osc.start(now);
-                osc.stop(now + duration);
-                noise.start(now);
-                noise.stop(now + duration);
-            }}
-
-            function playSound(type) {{
-                if (type === "SUCCESS") {{
-                    // 성공: 뽕~ 하고 울리는 경쾌하고 깔끔한 방귀
-                    playFartSound(0.35, 130, 0.6, 600);
-                }} else if (type === "CRITICAL") {{
-                    // 대성공: 길고 우렁차며 웅장한 폭풍 방귀
-                    playFartSound(0.7, 90, 0.9, 800);
-                }} else if (type === "FAILED") {{
-                    // 실패: 피식~하고 맥없이 빠지는 숏 방귀
-                    playFartSound(0.2, 180, 0.4, 400);
-                }} else if (type === "HOLD") {{
-                    // 유지: 묵직하지만 중간에 턱 막히는 엉덩이 소리
-                    playFartSound(0.25, 110, 0.5, 300);
-                }} else if (type === "SHIELD_SAVED") {{
-                    // 방어권: 뿍! 하고 괄약근으로 틀어막는 방어 방귀
-                    playFartSound(0.4, 220, 0.7, 900);
-                }} else if (type === "DESTROYED") {{
-                    // 파괴: 뿌아아아앙! 사방으로 퍼지는 대재앙 설사 방귀
-                    playFartSound(0.9, 65, 1.0, 1000);
-                }}
-            }}
-
-            window.addEventListener('pointerdown', () => {{
-                initAudio();
-            }}, {{ once: true }});
-
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -798,27 +688,21 @@ with right_col:
             if (status === "CRITICAL") {{
                 statusText.innerText = "💨 으마무시한 메가톤 방귀! (+2단계) 💨";
                 statusText.style.color = "#ffe600";
-                playSound("CRITICAL");
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "💨 시원하게 뀐 성공 방귀! 💨";
                 statusText.style.color = "#34d399";
-                playSound("SUCCESS");
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ 괄약근 조이기 성공! (방어 발동) 🛡️";
                 statusText.style.color = "#60a5fa";
-                playSound("SHIELD_SAVED");
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 지려버렸다... (파괴) 💥";
                 statusText.style.color = "#ef4444";
-                playSound("DESTROYED");
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 피식... (방귀 하락) 🔻";
                 statusText.style.color = "#f59e0b";
-                playSound("FAILED");
             }} else if (status === "HOLD") {{
                 statusText.innerText = "🔒 엉덩이에 걸쳤다 (유지) 🔒";
                 statusText.style.color = "#38bdf8";
-                playSound("HOLD");
             }}
 
             const scene = new THREE.Scene();
