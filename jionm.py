@@ -87,7 +87,6 @@ def enhance():
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
     elif r < (sp + dp):
-        # 파괴 판정 시 방지권 체크
         if st.session_state.use_shield and st.session_state.shield > 0:
             st.session_state.shield -= 1
             st.session_state.status = "SHIELD_SAVED"
@@ -109,36 +108,75 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 상점 & 대시보드
+# 5. 상단 대시보드 (하얀색 테두리 & 대형 폰트 스타일 적용)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp { background-color: #020403; color: #fff; }
+    
+    /* 흰색 테두리 및 대형 텍스트 스타일 지정 */
     .stat-card {
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #10b981;
-        padding: 10px;
-        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 2px solid #ffffff;
+        padding: 16px 10px;
+        border-radius: 12px;
         text-align: center;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+    .stat-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-bottom: 8px;
+    }
+    .stat-value {
+        font-size: 28px;
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
     </style>
 """, unsafe_allow_html=True)
 
 col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
 with col1:
-    st.markdown(f'<div class="stat-card">💰 보유 골드<br><b>{st.session_state.money:,} G</b></div>', unsafe_allow_html=True)
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">💰 보유 골드</div>
+            <div class="stat-value">{st.session_state.money:,} G</div>
+        </div>
+    ''', unsafe_allow_html=True)
+
 with col2:
-    st.markdown(f'<div class="stat-card">💧 지온의 눈물<br><b>{st.session_state.tears} 개</b></div>', unsafe_allow_html=True)
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">💧 지온의 눈물</div>
+            <div class="stat-value">{st.session_state.tears} 개</div>
+        </div>
+    ''', unsafe_allow_html=True)
+
 with col3:
-    st.markdown(f'<div class="stat-card">🛡️ 파괴 방지권<br><b>{st.session_state.shield} 개</b></div>', unsafe_allow_html=True)
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">🛡️ 파괴 방지권</div>
+            <div class="stat-value">{st.session_state.shield} 개</div>
+        </div>
+    ''', unsafe_allow_html=True)
+
 with col4:
     sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
-    st.markdown(f'<div class="stat-card">📊 성공/파괴 확률<br><b>{sp}% / {dp}%</b></div>', unsafe_allow_html=True)
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">📊 성공/파괴 확률</div>
+            <div class="stat-value">{sp}% / {dp}%</div>
+        </div>
+    ''', unsafe_allow_html=True)
 
 st.write("")
 
-# 탭 나누기 (강화 무대 / 아이템 상점)
+# -----------------------------------------------------------------------------
+# 6. 상점 & 강화 실행 컨트롤 탭
+# -----------------------------------------------------------------------------
 tab1, tab2 = st.tabs(["🔥 3D 강화 무대", "🛒 지온의 비밀 상점"])
 
 with tab1:
@@ -182,7 +220,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 6. 네모 박스 제거 & 중앙 정렬 3D Text FX Render
+# 7. 3D Text FX Render (중앙 정렬 텍스트 연출)
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -200,9 +238,6 @@ three_js_code = f"""
         body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
         #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-        /* -----------------------------------------------------------
-           네모 박스 전면 제거 & 화면 중앙 정렬 글자 시각 스타일
-        ----------------------------------------------------------- */
         .cinematic-ui {{
             position: absolute;
             bottom: 40px;
@@ -214,34 +249,29 @@ three_js_code = f"""
             pointer-events: none;
         }}
 
-        /* Tier 1: 은은한 사이버 녹색 */
         .title-tier-1 {{
             font-size: 36px;
             color: #10b981;
             text-shadow: 0 0 15px #10b981;
         }}
-        /* Tier 2: 크롬 골드 & 볼드 */
         .title-tier-2 {{
             font-size: 40px;
             color: #f59e0b;
             text-shadow: 0 0 20px #f59e0b, 0 0 40px #d97706;
             letter-spacing: 1px;
         }}
-        /* Tier 3: 불꽃 레드 & 스칼렛 엠보싱 */
         .title-tier-3 {{
             font-size: 44px;
             color: #ef4444;
             text-shadow: 0 0 25px #ef4444, 0 0 50px #b91c1c;
             animation: pulse 1s infinite alternate;
         }}
-        /* Tier 4: 사이버 네온 바이올렛 3D 글자 */
         .title-tier-4 {{
             font-size: 48px;
             color: #a855f7;
             text-shadow: 0 0 15px #a855f7, 0 0 30px #a855f7, 0 0 50px #7e22ce;
             letter-spacing: 2px;
         }}
-        /* Tier 5: 네온 핑크 & 사이언 그래디언트 */
         .title-tier-5 {{
             font-size: 52px;
             background: linear-gradient(90deg, #ff007f, #00f0ff);
@@ -250,7 +280,6 @@ three_js_code = f"""
             filter: drop-shadow(0 0 30px #ff007f);
             animation: shake 0.5s infinite alternate;
         }}
-        /* Tier 6: 🌈 GOD MODE 태초의 무지개 빛 3D 텍스트 */
         .title-tier-6 {{
             font-size: 58px;
             font-weight: 900;
@@ -262,7 +291,6 @@ three_js_code = f"""
             filter: drop-shadow(0 0 40px #ffffff);
         }}
 
-        /* Keyframe Animations */
         @keyframes pulse {{
             0% {{ transform: scale(1); }}
             100% {{ transform: scale(1.05); }}
@@ -335,7 +363,6 @@ three_js_code = f"""
             statusText.style.color = "#f59e0b";
         }}
 
-        // 1. Scene Setup
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.02);
 
@@ -347,7 +374,6 @@ three_js_code = f"""
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('container').appendChild(renderer.domElement);
 
-        // 2. Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -355,7 +381,6 @@ three_js_code = f"""
         spotLight.position.set(0, 10, 5);
         scene.add(spotLight);
 
-        // 3. 3D Card Stage
         const cardGroup = new THREE.Group();
 
         const cardGeo = new THREE.BoxGeometry(2.6, 4.0, 0.12);
@@ -375,7 +400,6 @@ three_js_code = f"""
 
         scene.add(cardGroup);
 
-        // 4. Extreme Particles
         const particleCount = {tier * 150};
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(particleCount * 3);
@@ -391,13 +415,11 @@ three_js_code = f"""
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
-        // 5. GSAP Camera Effects
         if (status === "SUCCESS") {{
             gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
             gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
         }}
 
-        // 6. Animation Loop
         const clock = new THREE.Clock();
 
         function animate() {{
