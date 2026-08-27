@@ -347,6 +347,8 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
+if "animating" not in st.session_state:
+  st.session_state.animating = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -361,6 +363,7 @@ def enhance():
   cost = get_enhance_cost(curr)
   if st.session_state.money < cost:
     st.session_state.status = "NOT_ENOUGH_MONEY"
+    st.session_state.animating = False
     return
 
   st.session_state.money -= cost
@@ -507,12 +510,14 @@ with left_col:
   if st.button(
       "🔥 강화 실행",
       use_container_width=True,
-      disabled=(st.session_state.level >= 30),
+      disabled=(st.session_state.level >= 30 or st.session_state.animating),
   ):
-    enhance()
-    if st.session_state.status == "NOT_ENOUGH_MONEY":
+    cost = get_enhance_cost(st.session_state.level)
+    if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
+      st.session_state.animating = True
+      enhance()
       st.rerun()
 
   if dev_mode:
@@ -571,7 +576,7 @@ with left_col:
 
   with tab_shop2:
     st.caption(
-        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유: 민"
+        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
         f" {st.session_state.tears}/120개)"
     )
     if st.button("눈물 기적 가동", use_container_width=True):
@@ -654,6 +659,7 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(current_level))
   tier = curr_data["tier"]
   status = st.session_state.status
+  is_animating = "true" if st.session_state.animating else "false"
 
   three_js_code = f"""
     <!DOCTYPE html>
@@ -677,6 +683,12 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+            }}
+
+            .cinematic-ui.visible {{
+                opacity: 1;
             }}
 
             .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
@@ -710,7 +722,7 @@ with right_col:
     <body>
         <div id="container"></div>
 
-        <div class="cinematic-ui">
+        <div id="cinematicUi" class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
             <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
             <div id="descText" class="desc-text">"{card_desc}"</div>
@@ -719,6 +731,9 @@ with right_col:
         </div>
 
         <script>
+            const isAnimating = {is_animating};
+            const uiElement = document.getElementById('cinematicUi');
+
             const currentLevel = {current_level};
             if (currentLevel >= 20) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
@@ -764,6 +779,8 @@ with right_col:
                 statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
                 statusColor = "#94a3b8";
                 particleSpeed = 0.6;
+            }} else {{
+                statusText.innerText = "READY";
             }}
             
             statusText.style.color = statusColor;
@@ -895,6 +912,23 @@ with right_col:
 
             scene.add(objectGroup);
 
+            // 애니메이션 연출 및 텍스트 지연 출력 처리
+            if (isAnimating) {{
+                // 강화 연출을 위해 초기 회전 속도 가속 및 줌인 효과 부여
+                gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.5)"}});
+                
+                // 1.5초 동안 애니메이션을 보여준 뒤 텍스트 UI 페이드인 및 파이썬 상태 갱신 트리거
+                setTimeout(() => {{
+                    uiElement.classList.add('visible');
+                }}, 1200);
+
+                setTimeout(() => {{
+                    window.location.reload(); // 파이썬 상태 리셋을 통한 UI 동기화
+                }}, 2200);
+            }} else {{
+                uiElement.classList.add('visible');
+            }}
+
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
@@ -951,14 +985,14 @@ with right_col:
                         }});
                     }}
                 }});
-            }} else if (status === "CRITICAL") {{
+            }} else if (status === "CRITICAL" && !isAnimating) {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
-            }} else if (status === "SUCCESS") {{
+            }} else if (status === "SUCCESS" && !isAnimating) {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
-            }} else if (status === "FAILED") {{
+            }} else if (status === "FAILED" && !isAnimating) {{
                 gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
-            }} else if (status === "SHIELD_SAVED") {{
+            }} else if (status === "SHIELD_SAVED" && !isAnimating) {{
                 gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
             }}
 
@@ -1007,3 +1041,7 @@ with right_col:
     """
 
   components.html(three_js_code, height=560, scrolling=False)
+
+# 애니메이션 플래그 초기화
+if st.session_state.animating:
+  st.session_state.animating = False
