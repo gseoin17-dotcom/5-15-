@@ -1,86 +1,274 @@
-import streamlit as st
 import random
+import streamlit as st
 import streamlit.components.v1 as components
 
 # -----------------------------------------------------------------------------
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - FANTASY CITY EDITION",
-    page_icon="🏰",
-    layout="wide"
+    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="🏰", layout="wide"
 )
 
 # -----------------------------------------------------------------------------
 # 2. 초반부는 싸고, 15단계 이후부터 가파르게 상승하는 강화 비용 함수
 # -----------------------------------------------------------------------------
+
+
 def format_gold(amount):
-    if amount == 0:
-        return "0원"
-    
-    units = ["", "만", "억", "조", "경", "해"]
-    result = []
-    
-    unit_idx = 0
-    while amount > 0 and unit_idx < len(units):
-        remainder = amount % 10000
-        if remainder > 0:
-            result.insert(0, f"{remainder:,}{units[unit_idx]}")
-        amount //= 10000
-        unit_idx += 1
-        
-    return "".join(result) + "원"
+  if amount == 0:
+    return "0원"
+
+  units = ["", "만", "억", "조", "경", "해"]
+  result = []
+
+  unit_idx = 0
+  while amount > 0 and unit_idx < len(units):
+    remainder = amount % 10000
+    if remainder > 0:
+      result.insert(0, f"{remainder:,}{units[unit_idx]}")
+    amount //= 10000
+    unit_idx += 1
+
+  return "".join(result) + "원"
+
 
 def get_enhance_cost(level):
-    if level == 0:
-        return 100
-    if level < 5:
-        # 초반 1~4단계: 아주 저렴하게 시작하여 누구나 쉽게 강화 체험 가능
-        return int(100 * (1.5 ** level))
-    elif level < 15:
-        # 중반 단계: 점진적인 상승
-        base_mid = 100 * (1.5 ** 4)
-        return int(base_mid * (1.18 ** (level - 4)))
-    else:
-        # 15단계 이후 후반부: 엄청난 고난이도 비용
-        base_high = (100 * (1.5 ** 4)) * (1.18 ** 11)
-        return int(base_high * (1.50 ** (level - 15)))
+  if level == 0:
+    return 100
+  if level < 5:
+    # 초반 1~4단계: 아주 저렴하게 시작하여 누구나 쉽게 강화 체험 가능
+    return int(100 * (1.5**level))
+  elif level < 15:
+    # 중반 단계: 점진적인 상승
+    base_mid = 100 * (1.5**4)
+    return int(base_mid * (1.18 ** (level - 4)))
+  else:
+    # 15단계 이후 후반부: 엄청난 고난이도 비용
+    base_high = (100 * (1.5**4)) * (1.18**11)
+    return int(base_high * (1.50 ** (level - 15)))
+
 
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 및 강화 확률표 (성공, 실패, 파괴)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
-    0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
-    1: {"name": "1단계 : 스쳐가는 지온냄새", "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.", "price": 150, "color": "#718096", "tier": 1},
-    2: {"name": "2단계 : 은은한 자이온냄새", "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.", "price": 400, "color": "#38a169", "tier": 1},
-    3: {"name": "3단계 : 습한 지온냄새", "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.", "price": 900, "color": "#276749", "tier": 1},
-    4: {"name": "4단계 : 진득한 자이온냄새", "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.", "price": 2000, "color": "#319795", "tier": 1},
-    5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 4500, "color": "#2c7a7b", "tier": 1},
-    6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 10000, "color": "#3182ce", "tier": 2},
-    7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.", "price": 25000, "color": "#2b6cb0", "tier": 2},
-    8: {"name": "8단계 : 폭발하는 자이온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 60000, "color": "#805ad5", "tier": 2},
-    9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.", "price": 130000, "color": "#6b46c1", "tier": 2},
-    10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.", "price": 300000, "color": "#d69e2e", "tier": 2},
-    11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 지구 흙밭을 거니는 환각을 본다.", "price": 700000, "color": "#b7791f", "tier": 3},
-    12: {"name": "12단계 : 공간지배 자이온냄새", "desc": "방 안의 모든 산소를 지온 분자로 채운다.", "price": 1500000, "color": "#dd6b20", "tier": 3},
-    13: {"name": "13단계 : 전설의 지온냄새", "desc": "역사서에서 언급되던 전설 속의 지구 향기.", "price": 3500000, "color": "#c05621", "tier": 3},
-    14: {"name": "14단계 : 신성한 자이온냄새", "desc": "마음이 경건해지며 흙과 하나가 되는 기분.", "price": 8000000, "color": "#e53e3e", "tier": 3},
-    15: {"name": "15단계 : 신화급 지온냄새", "desc": "신들이 세계를 창조할 때 맡았다는 향.", "price": 18000000, "color": "#9b2c2c", "tier": 3},
-    16: {"name": "16단계 : 우주관통 자이온냄새", "desc": "성층권을 뚫고 우주선까지 퍼져나간다.", "price": 45000000, "color": "#00f0ff", "tier": 4},
-    17: {"name": "17단계 : 차원균열 자이온냄새", "desc": "평행세계의 흙냄새까지 끌어당긴다.", "price": 110000000, "color": "#ff00ea", "tier": 4},
-    18: {"name": "18단계 : Absolute 자이온냄새", "desc": "만물의 요소를 지온 입자로 바꿔버린다.", "price": 280000000, "color": "#ffe600", "tier": 4},
-    19: {"name": "19단계 : 초월적 지온냄새", "desc": "인간의 감각으로는 수용 불가능한 향기.", "price": 700000000, "color": "#ff0055", "tier": 4},
-    20: {"name": "20단계 : 자이온맘의 포근한 집밥 냄새", "desc": "자이온맘의 강림! 따스하고 구수한 냄새.", "price": 1500000000, "color": "#ffaa00", "tier": 4},
-    21: {"name": "21단계 : 자이온맘의 엄격한 등짝 스매싱", "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.", "price": 3800000000, "color": "#ff4500", "tier": 5},
-    22: {"name": "22단계 : 자이온맘의 전설의 흙된장국", "desc": "극상의 흙내음과 깊은 손맛.", "price": 9000000000, "color": "#ff007f", "tier": 5},
-    23: {"name": "23단계 : 자이온맘의 100년 숙성 원액", "desc": "몰래 아껴둔 냄새의 결정체.", "price": 22000000000, "color": "#7b00ff", "tier": 5},
-    24: {"name": "24단계 : 자이온맘의 지온스프레이", "desc": "집안 가득 뿌리는 치명적인 청량함.", "price": 55000000000, "color": "#0088ff", "tier": 5},
-    25: {"name": "25단계 : 자이온맘의 무한한 은혜", "desc": "은하수 아이들에게 평화를 내리는 자애로움.", "price": 140000000000, "color": "#00ffaa", "tier": 5},
-    26: {"name": "26단계 : 자이온맘의 궁극 필살기", "desc": "우주 전체가 지온 향으로 뒤덮인다.", "price": 350000000000, "color": "#ccff00", "tier": 6},
-    27: {"name": "27단계 : 자이온맘의 창조와 구원", "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.", "price": 850000000000, "color": "#fffb00", "tier": 6},
-    28: {"name": "28단계 : 자이온맘의 권능 지온냄새", "desc": "창조주도 고개를 숙이고 냄새를 맡는다.", "price": 2100000000000, "color": "#ffffff", "tier": 6},
-    29: {"name": "29단계 : 만물의 어머니 ★자이온맘★", "desc": "우주 만물이 품으로 돌아가는 최종 오라.", "price": 5500000000000, "color": "#ff00aa", "tier": 6},
-    30: {"name": "30단계 : ★태초의 자이온맘★ 절대신성", "desc": "우주를 지온으로 통일한 자이온맘의 완성.", "price": 15000000000000, "color": "#00ffff", "tier": 6}
+    0: {
+        "name": "0단계 : 무취의 공간",
+        "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.",
+        "price": 0,
+        "color": "#4a5568",
+        "tier": 1,
+    },
+    1: {
+        "name": "1단계 : 스쳐가는 지온냄새",
+        "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.",
+        "price": 150,
+        "color": "#718096",
+        "tier": 1,
+    },
+    2: {
+        "name": "2단계 : 은은한 자이온냄새",
+        "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.",
+        "price": 400,
+        "color": "#38a169",
+        "tier": 1,
+    },
+    3: {
+        "name": "3단계 : 습한 지온냄새",
+        "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.",
+        "price": 900,
+        "color": "#276749",
+        "tier": 1,
+    },
+    4: {
+        "name": "4단계 : 진득한 자이온냄새",
+        "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.",
+        "price": 2000,
+        "color": "#319795",
+        "tier": 1,
+    },
+    5: {
+        "name": "5단계 : 자극적인 지온냄새",
+        "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.",
+        "price": 4500,
+        "color": "#2c7a7b",
+        "tier": 1,
+    },
+    6: {
+        "name": "6단계 : 풍부한 자이온냄새",
+        "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.",
+        "price": 10000,
+        "color": "#3182ce",
+        "tier": 2,
+    },
+    7: {
+        "name": "7단계 : 압도적인 지온냄새",
+        "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.",
+        "price": 25000,
+        "color": "#2b6cb0",
+        "tier": 2,
+    },
+    8: {
+        "name": "8단계 : 폭발하는 지온냄새",
+        "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.",
+        "price": 60000,
+        "color": "#805ad5",
+        "tier": 2,
+    },
+    9: {
+        "name": "9단계 : 시공을 뒤흔드는 지온냄새",
+        "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.",
+        "price": 130000,
+        "color": "#6b46c1",
+        "tier": 2,
+    },
+    10: {
+        "name": "10단계 : 치명적인 자이온냄새",
+        "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.",
+        "price": 300000,
+        "color": "#d69e2e",
+        "tier": 2,
+    },
+    11: {
+        "name": "11단계 : 환각을 부르는 지온냄새",
+        "desc": "태초의 지구 흙밭을 거니는 환각을 본다.",
+        "price": 700000,
+        "color": "#b7791f",
+        "tier": 3,
+    },
+    12: {
+        "name": "12단계 : 공간지배 자이온냄새",
+        "desc": "방 안의 모든 산소를 지온 분자로 채운다.",
+        "price": 1500000,
+        "color": "#dd6b20",
+        "tier": 3,
+    },
+    13: {
+        "name": "13단계 : 전설의 지온냄새",
+        "desc": "역사서에서 언급되던 전설 속의 지구 향기.",
+        "price": 3500000,
+        "color": "#c05621",
+        "tier": 3,
+    },
+    14: {
+        "name": "14단계 : 신성한 자이온냄새",
+        "desc": "마음이 경건해지며 흙과 하나가 되는 기분.",
+        "price": 8000000,
+        "color": "#e53e3e",
+        "tier": 3,
+    },
+    15: {
+        "name": "15단계 : 신화급 지온냄새",
+        "desc": "신들이 세계를 창조할 때 맡았다는 향.",
+        "price": 18000000,
+        "color": "#9b2c2c",
+        "tier": 3,
+    },
+    16: {
+        "name": "16단계 : 우주관통 자이온냄새",
+        "desc": "성층권을 뚫고 우주선까지 퍼져나간다.",
+        "price": 45000000,
+        "color": "#00f0ff",
+        "tier": 4,
+    },
+    17: {
+        "name": "17단계 : 차원균열 자이온냄새",
+        "desc": "평행세계의 흙냄새까지 끌어당긴다.",
+        "price": 110000000,
+        "color": "#ff00ea",
+        "tier": 4,
+    },
+    18: {
+        "name": "18단계 : Absolute 자이온냄새",
+        "desc": "만물의 요소를 지온 입자로 바꿔버린다.",
+        "price": 280000000,
+        "color": "#ffe600",
+        "tier": 4,
+    },
+    19: {
+        "name": "19단계 : 초월적 지온냄새",
+        "desc": "인간의 감각으로는 수용 불가능한 향기.",
+        "price": 700000000,
+        "color": "#ff0055",
+        "tier": 4,
+    },
+    20: {
+        "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
+        "desc": "자이온맘의 강림! 따스하고 구수한 냄새.",
+        "price": 1500000000,
+        "color": "#ffaa00",
+        "tier": 4,
+    },
+    21: {
+        "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱",
+        "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.",
+        "price": 3800000000,
+        "color": "#ff4500",
+        "tier": 5,
+    },
+    22: {
+        "name": "22단계 : 자이온맘의 전설의 흙된장국",
+        "desc": "극상의 흙내음과 깊은 손맛.",
+        "price": 9000000000,
+        "color": "#ff007f",
+        "tier": 5,
+    },
+    23: {
+        "name": "23단계 : 자이온맘의 100년 숙성 원액",
+        "desc": "몰래 아껴둔 냄새의 결정체.",
+        "price": 22000000000,
+        "color": "#7b00ff",
+        "tier": 5,
+    },
+    24: {
+        "name": "24단계 : 자이온맘의 지온스프레이",
+        "desc": "집안 가득 뿌리는 치명적인 청량함.",
+        "price": 55000000000,
+        "color": "#0088ff",
+        "tier": 5,
+    },
+    25: {
+        "name": "25단계 : 자이온맘의 무한한 은혜",
+        "desc": "은하수 아이들에게 평화를 내리는 자애로움.",
+        "price": 140000000000,
+        "color": "#00ffaa",
+        "tier": 5,
+    },
+    26: {
+        "name": "26단계 : 자이온맘의 궁극 필살기",
+        "desc": "우주 전체가 지온 향으로 뒤덮인다.",
+        "price": 350000000000,
+        "color": "#ccff00",
+        "tier": 6,
+    },
+    27: {
+        "name": "27단계 : 자이온맘의 창조와 구원",
+        "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.",
+        "price": 850000000000,
+        "color": "#fffb00",
+        "tier": 6,
+    },
+    28: {
+        "name": "28단계 : 자이온맘의 권능 지온냄새",
+        "desc": "창조주도 고개를 숙이고 냄새를 맡는다.",
+        "price": 2100000000000,
+        "color": "#ffffff",
+        "tier": 6,
+    },
+    29: {
+        "name": "29단계 : 만물의 어머니 ★자이온맘★",
+        "desc": "우주 만물이 품으로 돌아가는 최종 오라.",
+        "price": 5500000000000,
+        "color": "#ff00aa",
+        "tier": 6,
+    },
+    30: {
+        "name": "30단계 : ★태초의 자이온맘★ 절대신성",
+        "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
+        "price": 15000000000000,
+        "color": "#00ffff",
+        "tier": 6,
+    },
 }
 
 PROB_TABLE = {
@@ -113,7 +301,7 @@ PROB_TABLE = {
     26: (50.0, 25.0, 25.0),
     27: (40.0, 30.0, 30.0),
     28: (30.0, 35.0, 35.0),
-    29: (20.0, 40.0, 40.0)
+    29: (20.0, 40.0, 40.0),
 }
 
 CRITICAL_RATE = 0.05
@@ -121,67 +309,81 @@ CRITICAL_RATE = 0.05
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
-if "level" not in st.session_state: st.session_state.level = 0
-if "money" not in st.session_state: st.session_state.money = 5000  # 시작 자금도 넉넉하게 조정
-if "status" not in st.session_state: st.session_state.status = "READY"
-if "shield" not in st.session_state: st.session_state.shield = 0  
-if "tears" not in st.session_state: st.session_state.tears = 0    
-if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
+if "level" not in st.session_state:
+  st.session_state.level = 0
+if "money" not in st.session_state:
+  st.session_state.money = 5000  # 시작 자금도 넉넉하게 조정
+if "status" not in st.session_state:
+  st.session_state.status = "READY"
+if "shield" not in st.session_state:
+  st.session_state.shield = 0
+if "tears" not in st.session_state:
+  st.session_state.tears = 0
+if "dev_mode" not in st.session_state:
+  st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
+
+
 def enhance():
-    curr = st.session_state.level
-    if curr >= 30: return
-    
-    cost = get_enhance_cost(curr)
-    if st.session_state.money < cost:
-        st.session_state.status = "NOT_ENOUGH_MONEY"
-        return
-        
-    st.session_state.money -= cost
+  curr = st.session_state.level
+  if curr >= 30:
+    return
 
-    if st.session_state.dev_mode:
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
-        return
+  cost = get_enhance_cost(curr)
+  if st.session_state.money < cost:
+    st.session_state.status = "NOT_ENOUGH_MONEY"
+    return
 
-    sp, fp, dp = PROB_TABLE[curr]
-    r = random.uniform(0, 100)
-    
-    if r < sp:
-        if random.random() < CRITICAL_RATE and curr + 2 <= 30:
-            st.session_state.level += 2
-            st.session_state.status = "CRITICAL"
-        else:
-            st.session_state.level += 1
-            st.session_state.status = "SUCCESS"
-    elif r < (sp + dp):
-        if st.session_state.shield > 0:
-            st.session_state.shield -= 1
-            st.session_state.status = "SHIELD_SAVED"
-            st.session_state.tears += 1
-        else:
-            st.session_state.level = 0
-            st.session_state.status = "DESTROYED"
-            st.session_state.tears += 2
+  st.session_state.money -= cost
+
+  if st.session_state.dev_mode:
+    st.session_state.level += 1
+    st.session_state.status = "SUCCESS"
+    return
+
+  sp, fp, dp = PROB_TABLE[curr]
+  r = random.uniform(0, 100)
+
+  if r < sp:
+    if random.random() < CRITICAL_RATE and curr + 2 <= 30:
+      st.session_state.level += 2
+      st.session_state.status = "CRITICAL"
     else:
-        if curr > 0: st.session_state.level -= 1
-        st.session_state.status = "FAILED"
-        st.session_state.tears += 1
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+  elif r < (sp + dp):
+    if st.session_state.shield > 0:
+      st.session_state.shield -= 1
+      st.session_state.status = "SHIELD_SAVED"
+      st.session_state.tears += 1
+    else:
+      st.session_state.level = 0
+      st.session_state.status = "DESTROYED"
+      st.session_state.tears += 2
+  else:
+    if curr > 0:
+      st.session_state.level -= 1
+    st.session_state.status = "FAILED"
+    st.session_state.tears += 1
+
 
 def sell():
-    curr = st.session_state.level
-    if curr == 0: return
-    st.session_state.money += SMELL_DB[curr]['price']
-    st.session_state.level = 0
-    st.session_state.status = "READY"
+  curr = st.session_state.level
+  if curr == 0:
+    return
+  st.session_state.money += SMELL_DB[curr]["price"]
+  st.session_state.level = 0
+  st.session_state.status = "READY"
+
 
 # -----------------------------------------------------------------------------
 # 6. 테마 CSS (화면 전체 3D 우주 배경 및 글래스모피즘)
 # -----------------------------------------------------------------------------
-st.markdown("""
+st.markdown(
+    """
     <style>
     .stApp {
         background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
@@ -245,7 +447,9 @@ st.markdown("""
         box-shadow: 0 6px 25px rgba(217, 119, 6, 0.6);
     }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # -----------------------------------------------------------------------------
 # 7. 메인 레이아웃
@@ -253,70 +457,91 @@ st.markdown("""
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
-    
-    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
-        enhance()
-        if st.session_state.status == "NOT_ENOUGH_MONEY":
-            st.error("강화 비용이 부족합니다!")
-        else:
-            st.rerun()
-        
-    st.write("")
-    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
-        sell()
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
+      " 판타지 지온 강화</h3>",
+      unsafe_allow_html=True,
+  )
+
+  if st.button(
+      "🔥 GOD MODE 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= 30),
+  ):
+    enhance()
+    if st.session_state.status == "NOT_ENOUGH_MONEY":
+      st.error("강화 비용이 부족합니다!")
+    else:
+      st.rerun()
+
+  st.write("")
+  if st.button(
+      "💰 현재 냄새 판매",
+      use_container_width=True,
+      disabled=(st.session_state.level == 0),
+  ):
+    sell()
+    st.rerun()
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드"
+      " 설정</h4>",
+      unsafe_allow_html=True,
+  )
+  st.session_state.dev_mode = st.toggle(
+      "🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode
+  )
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
+      unsafe_allow_html=True,
+  )
+
+  tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
+  with tab_shop1:
+    st.caption("파괴 방지권 (보유 시 자동 발동)")
+    if st.button("구매 (25만 원)", use_container_width=True):
+      if st.session_state.money >= 250000:
+        st.session_state.money -= 250000
+        st.session_state.shield += 1
+        st.success("보호권 보유 중!")
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+      else:
+        st.error("금액이 부족합니다.")
 
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
-    st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
-    st.markdown('</div>', unsafe_allow_html=True)
+  with tab_shop2:
+    st.caption("눈물 15개로 1단계 확정 상승")
+    if st.button("1단계 확정 상승 (15개)", use_container_width=True):
+      if st.session_state.tears >= 15 and st.session_state.level < 30:
+        st.session_state.tears -= 15
+        st.session_state.level += 1
+        st.session_state.status = "SUCCESS"
+        st.success("확정 강화 성공!")
+        st.rerun()
+      else:
+        st.error("조건이 부족합니다.")
 
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
-    
-    tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
-    with tab_shop1:
-        st.caption("파괴 방지권 (보유 시 자동 발동)")
-        if st.button("구매 (25만 원)", use_container_width=True):
-            if st.session_state.money >= 250000:
-                st.session_state.money -= 250000
-                st.session_state.shield += 1
-                st.success("보호권 보유 중!")
-                st.rerun()
-            else:
-                st.error("금액이 부족합니다.")
-                
-    with tab_shop2:
-        st.caption("눈물 15개로 1단계 확정 상승")
-        if st.button("1단계 확정 상승 (15개)", use_container_width=True):
-            if st.session_state.tears >= 15 and st.session_state.level < 30:
-                st.session_state.tears -= 15
-                st.session_state.level += 1
-                st.session_state.status = "SUCCESS"
-                st.success("확정 강화 성공!")
-                st.rerun()
-            else:
-                st.error("조건이 부족합니다.")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+  st.markdown("</div>", unsafe_allow_html=True)
 
 with right_col:
-    # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (전면 3D 우주 입체 공간 효과)
-    # -----------------------------------------------------------------------------
-    curr_data = SMELL_DB[st.session_state.level]
-    card_color = curr_data['color']
-    card_title = curr_data['name']
-    card_desc = curr_data['desc']
-    card_price = format_gold(curr_data['price'])
-    current_cost = format_gold(get_enhance_cost(st.session_state.level))
-    tier = curr_data['tier']
-    status = st.session_state.status
+  # -----------------------------------------------------------------------------
+  # 8. 3D 메인 연출 영역 (전면 3D 우주 입체 공간 효과)
+  # -----------------------------------------------------------------------------
+  curr_data = SMELL_DB[st.session_state.level]
+  card_color = curr_data["color"]
+  card_title = curr_data["name"]
+  card_desc = curr_data["desc"]
+  card_price = format_gold(curr_data["price"])
+  current_cost = format_gold(get_enhance_cost(st.session_state.level))
+  tier = curr_data["tier"]
+  status = st.session_state.status
 
-    three_js_code = f"""
+  three_js_code = f"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -459,7 +684,6 @@ with right_col:
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
-            // 입체 배경 3D 우주 오브젝트 (다양한 각도로 회전하는 홀로그램 링)
             const bgGroup = new THREE.Group();
             
             const ringGeo1 = new THREE.TorusGeometry(6.0, 0.04, 16, 100);
@@ -480,7 +704,6 @@ with right_col:
 
             scene.add(bgGroup);
 
-            // 3D 우주 파티클 입자 시스템
             const particleGroup = new THREE.Group();
             const pCount = 2000;
             const pGeo = new THREE.BufferGeometry();
@@ -603,12 +826,10 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                // 우주 배경 링 구조물 역동적 회전
                 spaceRing1.rotation.z = time * 0.2;
                 spaceRing2.rotation.z = -time * 0.25;
                 spaceRing3.rotation.x = time * 0.15;
 
-                // 파티클 유영 효과
                 const pos = pGeo.attributes.position.array;
                 for(let i=1; i<pCount*3; i+=3) {{
                     pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.01;
@@ -639,7 +860,7 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=650, scrolling=False)
+  components.html(three_js_code, height=650, scrolling=False)
 
 # -----------------------------------------------------------------------------
 # 9. 하단 스탯 대시보드
@@ -648,36 +869,56 @@ st.write("")
 b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
 
 with b_col1:
-    st.markdown(f'''
+  st.markdown(
+      f"""
         <div class="stat-card">
             <div class="stat-title">💳 보유 금액</div>
             <div class="stat-value">{format_gold(st.session_state.money)}</div>
         </div>
-    ''', unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 with b_col2:
-    st.markdown(f'''
+  st.markdown(
+      f"""
         <div class="stat-card">
             <div class="stat-title">🛡️ 보유권 개수</div>
             <div class="stat-value">{st.session_state.shield}개</div>
         </div>
-    ''', unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 with b_col3:
-    st.markdown(f'''
+  st.markdown(
+      f"""
         <div class="stat-card">
             <div class="stat-title">💧 지온의 눈물</div>
             <div class="stat-value">{st.session_state.tears}개</div>
         </div>
-    ''', unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 with b_col4:
-    sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
-    crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
-    st.markdown(f'''
+  sp, fp, dp = (
+      PROB_TABLE[st.session_state.level]
+      if st.session_state.level < 30
+      else (0, 0, 0)
+  )
+  crit_pct = int(CRITICAL_RATE * 100)
+  prob_str = (
+      "100% (DEV)"
+      if st.session_state.dev_mode
+      else f"{sp}% / {crit_pct}% / {dp}%"
+  )
+  st.markdown(
+      f"""
         <div class="stat-card">
             <div class="stat-title">📊 성공 / 크리 / 파괴</div>
             <div class="stat-value" style="font-size: 14px;">{prob_str}</div>
         </div>
-    ''', unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
