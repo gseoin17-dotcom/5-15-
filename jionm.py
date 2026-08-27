@@ -383,19 +383,19 @@ def enhance():
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
-    st.session_state.tears += 1
+    st.session_state.tears = min(120, st.session_state.tears + 1)
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears += 1
+      st.session_state.tears = min(120, st.session_state.tears + 1)
     else:
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
-      st.session_state.tears += 2
+      st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
     st.session_state.status = "HOLD"
-    st.session_state.tears += 1
+    st.session_state.tears = min(120, st.session_state.tears + 1)
 
 
 def dev_force_success():
@@ -549,18 +549,18 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(18단계 이상 구매 가능)\n가격:"
+        f"파괴 방지권 (보유 3개 제한)\n(18단계 이상 구매 가능)\n가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 2
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
     if st.button(
         "방지권 구매", use_container_width=True, disabled=not can_buy_shield
     ):
       if st.session_state.level < 18:
         st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 2:
-        st.warning("최대 2개까지만 보유 가능합니다.")
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
@@ -570,7 +570,10 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승")
+    st.caption(
+        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유: 민"
+        f" {st.session_state.tears}/120개)"
+    )
     if st.button("눈물 기적 가동", use_container_width=True):
       if st.session_state.tears >= 40 and st.session_state.level < 30:
         st.session_state.tears -= 40
@@ -607,7 +610,7 @@ with right_col:
         f"""
             <div class="stat-card">
                 <div class="stat-title">🛡️ 방지권</div>
-                <div class="stat-value">{st.session_state.shield} / 2개</div>
+                <div class="stat-value">{st.session_state.shield} / 3개</div>
             </div>
         """,
         unsafe_allow_html=True,
@@ -618,7 +621,7 @@ with right_col:
         f"""
             <div class="stat-card">
                 <div class="stat-title">💧 눈물</div>
-                <div class="stat-value">{st.session_state.tears}개</div>
+                <div class="stat-value">{st.session_state.tears} / 120개</div>
             </div>
         """,
         unsafe_allow_html=True,
