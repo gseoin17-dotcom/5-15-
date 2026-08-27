@@ -488,7 +488,7 @@ with right_col:
             }} else if (status === "FAILED") {{
                 gsap.fromTo(failOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
                 gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
-                gsap.fromTo(cardGroup.rotation, {{ z: -0.15 }, {{ z: 0.15, duration: 0.08, repeat: 3, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
+                gsap.fromTo(cardGroup.rotation, {{ z: -0.15 }}, {{ z: 0.15, duration: 0.08, repeat: 3, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
                 gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
