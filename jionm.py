@@ -651,7 +651,7 @@ with right_col:
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 2px; letter-spacing: 2px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+            .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
             .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
             .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
             .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
@@ -674,39 +674,40 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             
-            let statusColor = "#22c55e";
-            let particleSize = 0.3;
-            let particleSpeed = 1.0;
-            let glowIntensity = 20;
+            const tierColor = "{card_color}";
+            let statusColor = "#38bdf8";
+            let particleSize = 0.25;
+            let particleSpeed = 0.8;
+            let glowIntensity = 12;
 
             if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ ABSOLUTE CRITICAL HIT!! (+2단계 대성공) ⚡";
-                statusColor = "#00ffff"; // 눈부신 시안/네온컬러
-                particleSize = 0.55;
-                particleSpeed = 3.5;
-                glowIntensity = 50;
+                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusColor = "#ffffff"; 
+                particleSize = 0.45;
+                particleSpeed = 2.0;
+                glowIntensity = 30;
             }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ GLORIOUS SUCCESS (찬란한 성공) ✨";
-                statusColor = "#ff00ea"; // 화려한 마젠타/핑크빛 성공 컬러
-                particleSize = 0.4;
-                particleSpeed = 2.2;
-                glowIntensity = 35;
+                statusText.innerText = "✨ SUCCESS (성공) ✨";
+                statusColor = tierColor; // 성공 시 n단계 텍스트 색상과 완벽 동기화
+                particleSize = 0.3;
+                particleSpeed = 1.2;
+                glowIntensity = 18;
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
                 statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                 statusColor = "#ef4444";
-                particleSpeed = 1.5;
+                particleSpeed = 1.0;
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
-                statusColor = "#64748b"; // 차분하고 어두운 회색빛으로 변경하여 하락 연출 축소
-                particleSpeed = 0.5;     // 느리고 차분하게 움직임
-                glowIntensity = 5;
+                statusColor = "#64748b";
+                particleSpeed = 0.4;
+                glowIntensity = 4;
             }} else if (status === "HOLD") {{
                 statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
                 statusColor = "#94a3b8";
-                particleSpeed = 0.7;
+                particleSpeed = 0.6;
             }}
             
             statusText.style.color = statusColor;
@@ -721,18 +722,19 @@ with right_col:
             renderer.shadowMap.enabled = true;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 35);
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            const particleCount = (status === "CRITICAL" || status === "SUCCESS") ? 1800 : 800;
+            // 파티클 개수를 줄여서 전반적으로 깔끔하고 정돈된 연출 제공
+            const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -743,12 +745,12 @@ with right_col:
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
                 
                 let spd = particleSpeed;
-                if (status === "FAILED") spd = 0.4; // 하락 시 파티클 기운 대폭 축소
+                if (status === "FAILED") spd = 0.3;
 
                 particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.03 * spd,
-                    y: (0.02 + Math.random() * 0.04) * spd,
-                    z: (Math.random() - 0.5) * 0.03 * spd,
+                    x: (Math.random() - 0.5) * 0.02 * spd,
+                    y: (0.015 + Math.random() * 0.03) * spd,
+                    z: (Math.random() - 0.5) * 0.02 * spd,
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
@@ -757,7 +759,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.3 : 0.9,
+                opacity: status === "FAILED" ? 0.25 : 0.75,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -776,14 +778,14 @@ with right_col:
             const baseGeo = geometries[{tier} % geometries.length];
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: (status === "SUCCESS" || status === "CRITICAL") ? statusColor : "{card_color}",
-                emissive: statusColor,
-                emissiveIntensity: (status === "SUCCESS" || status === "CRITICAL") ? 0.8 : 0.2,
-                metalness: 0.9,
-                roughness: 0.1,
-                transmission: 0.6,
+                color: tierColor,
+                emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
+                emissiveIntensity: status === "SUCCESS" ? 0.4 : (status === "CRITICAL" ? 0.7 : 0.1),
+                metalness: 0.85,
+                roughness: 0.2,
+                transmission: 0.5,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.6 : 0.95,
+                opacity: status === "FAILED" ? 0.55 : 0.92,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
@@ -793,31 +795,29 @@ with right_col:
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: (status === "SUCCESS" || status === "CRITICAL") ? 6.0 : 2.0,
-                roughness: 0.05,
-                metalness: 0.95,
-                transmission: 0.8
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 2.5 : 1.0,
+                roughness: 0.1,
+                metalness: 0.9,
+                transmission: 0.7
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            // 강화 결과별 애니메이션 연출 분기
+            // 과도한 애니메이션 스케일을 줄여 차분한 연출 적용
             if (status === "CRITICAL") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.05, y: 0.05, z: 0.05}}, {{x: 1.4, y: 1.4, z: 1.4, duration: 0.6, ease: "elastic.out(1.5, 0.2)"}});
-                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.4, delay: 0.6}});
-                gsap.fromTo(camera.position, {{z: 3.5}}, {{z: 9.5, duration: 0.9, ease: "power2.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
+                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
             }} else if (status === "SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.3, y: 0.3, z: 0.3}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.4, yoyo: true, repeat: 1, ease: "power1.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
             }} else if (status === "FAILED") {{
-                // 하락 시 요란한 흔들림 없이 차분하게 작아지는 연출로 변경
-                gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.9, y: 0.9, z: 0.9, duration: 0.4, ease: "power1.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
             }} else if (status === "DESTROYED") {{
-                gsap.fromTo(objectGroup.position, {{x: -0.4}}, {{x: 0.4, duration: 0.03, repeat: 10, yoyo: true}});
-                gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.3, yoyo: true, repeat: 1}});
+                gsap.fromTo(objectGroup.position, {{x: -0.25}}, {{x: 0.25, duration: 0.03, repeat: 8, yoyo: true}});
+                gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.25, yoyo: true, repeat: 1}});
             }} else if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.4, y: 1.4, z: 1.4}}, {{x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2.5)"}});
+                gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
             }}
 
             const clock = new THREE.Clock();
@@ -826,11 +826,11 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                const rotSpeed = status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" ? 1.5 : 0.7);
-                outerMesh.rotation.x = time * (0.6 * rotSpeed);
-                outerMesh.rotation.y = time * (0.8 * rotSpeed);
-                coreMesh.rotation.x = -time * (1.4 * rotSpeed);
-                coreMesh.rotation.y = -time * (1.7 * rotSpeed);
+                const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
+                outerMesh.rotation.x = time * (0.5 * rotSpeed);
+                outerMesh.rotation.y = time * (0.7 * rotSpeed);
+                coreMesh.rotation.x = -time * (1.1 * rotSpeed);
+                coreMesh.rotation.y = -time * (1.4 * rotSpeed);
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
@@ -846,7 +846,7 @@ with right_col:
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
 
-                objectGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
+                objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
 
                 renderer.render(scene, camera);
             }}
