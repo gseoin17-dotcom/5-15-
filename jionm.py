@@ -565,7 +565,7 @@ with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h3 style='margin:0 0 10px 0; font-size: 17px; color:#fde68a;'>🏆 유저"
-      " 랭킹 및 랭킹 확인</h3>",
+      " 랭킹 설정</h3>",
       unsafe_allow_html=True,
   )
 
@@ -578,10 +578,10 @@ with left_col:
         st.session_state.username, st.session_state.level, st.session_state.money
     )
 
-  # 다이얼로그나 팝업 대신 사용할 수 있는 토글 상태 또는 버튼 세션
   if "show_ranking" not in st.session_state:
     st.session_state.show_ranking = False
 
+  # 유저 랭킹 설정 영역 바로 옆(가로 배치)에 명예의 전당 버튼 배치
   col_btn1, col_btn2 = st.columns(2)
   with col_btn1:
     if st.button("🏆 명예의 전당", use_container_width=True):
@@ -662,18 +662,19 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f"파괴 방지권 (보유 2개 제한)\n(18단계 이상부터 구매 가능)\n현재 가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
-    can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
+    # 방지권 구매 가능 레벨을 18단계 이상으로 변경
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 2
     if st.button(
         "방지권 구매 (최대 2개)",
         use_container_width=True,
         disabled=not can_buy_shield,
     ):
-      if st.session_state.level < 20:
-        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
+      if st.session_state.level < 18:
+        st.warning("방지권은 18단계 이상부터 구매할 수 있습니다.")
       elif st.session_state.shield >= 2:
         st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
       elif st.session_state.money >= current_shield_cost:
@@ -690,13 +691,17 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 20개로 1단계 확정 상승")
-    if st.button("1단계 확정 상승 (20개)", use_container_width=True):
-      if st.session_state.tears >= 20 and st.session_state.level < 30:
-        st.session_state.tears -= 20
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
-        st.success("확정 강화 성공!")
+    st.caption("눈물 100개로 1~2단계 랜덤 상승")
+    if st.button("눈물 강화 (100개)", use_container_width=True):
+      if st.session_state.tears >= 100 and st.session_state.level < 30:
+        st.session_state.tears -= 100
+        # 1~2단계 랜덤 상승 (최대 30단계 제한)
+        add_lvl = random.choice([1, 2])
+        st.session_state.level = min(30, st.session_state.level + add_lvl)
+        st.session_state.status = (
+            "CRITICAL" if add_lvl == 2 else "SUCCESS"
+        )
+        st.success(f"눈물 기적! {add_lvl}단계 상승 성공!")
         save_score_to_db(
             st.session_state.username,
             st.session_state.level,
@@ -704,7 +709,7 @@ with left_col:
         )
         st.rerun()
       else:
-        st.error("조건이 부족합니다.")
+        st.error("조건이 부족합니다. (눈물 100개 필요)")
 
   st.markdown("</div>", unsafe_allow_html=True)
 
