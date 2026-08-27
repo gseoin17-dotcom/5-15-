@@ -874,7 +874,7 @@ with right_col:
                 transparent: true,
                 opacity: status === "FAILED" ? 0.55 : 0.92,
                 wireframe: false
-            }));
+            }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
@@ -886,19 +886,16 @@ with right_col:
                 roughness: 0.1,
                 metalness: 0.9,
                 transmission: 0.7
-            }));
+            }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            // 💥 파괴 시 오브젝트가 깨지며 사방으로 튀어나가는 파편 모션 구현
             if (status === "DESTROYED") {{
-                // 기존 통짜 메쉬 숨기기
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                // 조각난 파편(디브리스) 생성
                 const shardCount = 45;
                 const shards = [];
                 const shardGroup = new THREE.Group();
@@ -914,10 +911,8 @@ with right_col:
                     }});
                     const shard = new THREE.Mesh(sGeo, sMat);
                     
-                    // 중심에서 시작
                     shard.position.set(0, 0, 0);
                     
-                    // 무작위 폭발 방향 벡터 설정
                     const u = Math.random();
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
@@ -937,7 +932,6 @@ with right_col:
                 }}
                 scene.add(shardGroup);
 
-                // GSAP를 통한 폭발 애니메이션 연동
                 gsap.to(shardGroup.position, {{
                     duration: 1.2,
                     ease: "power2.out",
@@ -945,7 +939,7 @@ with right_col:
                         const progress = this.progress();
                         shards.forEach(s => {{
                             s.position.x += s.userData.vx * 0.02;
-                            s.position.y += s.userData.vy * 0.02 - 0.05; // 중력 낙하 느낌
+                            s.position.y += s.userData.vy * 0.02 - 0.05;
                             s.position.z += s.userData.vz * 0.02;
                             s.rotation.x += s.userData.rx * 0.02;
                             s.rotation.y += s.userData.ry * 0.02;
