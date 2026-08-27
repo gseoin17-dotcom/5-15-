@@ -31,7 +31,6 @@ def save_score_to_db(username, level, money):
     return
   conn = sqlite3.connect(DB_NAME)
   c = conn.cursor()
-  # 기존 기록 확인 후 최고 단계/자산일 때 갱신 또는 삽입
   c.execute("SELECT level, money FROM rankings WHERE username = ?", (username,))
   row = c.fetchone()
   if row is None:
@@ -40,7 +39,6 @@ def save_score_to_db(username, level, money):
         (username, level, money),
     )
   else:
-    # 단계가 더 높거나, 단계는 같은데 돈이 더 많을 때 갱신
     if level > row[0] or (level == row[0] and money > row[1]):
       c.execute(
           "UPDATE rankings SET level = ?, money = ? WHERE username = ?",
@@ -457,7 +455,6 @@ def enhance():
     st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
-  # 강화 후 점수 자동 DB 갱신
   save_score_to_db(
       st.session_state.username, st.session_state.level, st.session_state.money
   )
@@ -510,25 +507,26 @@ st.markdown(
         background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.4);
-        padding: 12px 10px;
+        padding: 10px 8px;
         border-radius: 10px;
         text-align: center;
         transition: all 0.3s ease;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        margin-bottom: 8px;
     }
     .stat-card:hover {
         border-color: rgba(245, 158, 11, 0.9);
         box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
     .stat-title {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         color: #fde68a;
         margin-bottom: 4px;
         letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
@@ -558,6 +556,65 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
+  # --- 스탯 대시보드를 왼쪽 상단으로 이동 ---
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>📊 실시간"
+      " 상태</h4>",
+      unsafe_allow_html=True,
+  )
+
+  sc1, sc2 = st.columns(2)
+  with sc1:
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">💳 보유 금액</div>
+                <div class="stat-value">{format_gold(st.session_state.money)}</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">💧 지온의 눈물</div>
+                <div class="stat-value">{st.session_state.tears}개</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with sc2:
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">🛡️ 보유권 개수</div>
+                <div class="stat-value">{st.session_state.shield} / 2개</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if st.session_state.level < 30:
+      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
+      crit_pct = int(CRITICAL_RATE * 100)
+      prob_str = f"성공:{sp}%(크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
+    else:
+      prob_str = "최고 단계 도달"
+
+    st.markdown(
+        f"""
+            <div class="stat-card">
+                <div class="stat-title">📊 상세 확률</div>
+                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  # --- 닉네임 설정 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h3 style='margin:0 0 12px 0; font-size: 18px; color:#fde68a;'>🏆 유저"
@@ -574,6 +631,7 @@ with left_col:
     )
   st.markdown("</div>", unsafe_allow_html=True)
 
+  # --- 강화 및 판매 버튼 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
@@ -602,6 +660,7 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
+  # --- 상점 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
@@ -658,7 +717,7 @@ with left_col:
 
   st.markdown("</div>", unsafe_allow_html=True)
 
-  # --- 실시간 랭킹 보드 패널 추가 ---
+  # --- 랭킹 보드 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🏆 명예의 전당"
@@ -1045,60 +1104,3 @@ with right_col:
     """
 
   components.html(three_js_code, height=650, scrolling=False)
-
-# -----------------------------------------------------------------------------
-# 9. 하단 스탯 대시보드
-# -----------------------------------------------------------------------------
-st.write("")
-b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
-
-with b_col1:
-  st.markdown(
-      f"""
-        <div class="stat-card">
-            <div class="stat-title">💳 보유 금액</div>
-            <div class="stat-value">{format_gold(st.session_state.money)}</div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
-with b_col2:
-  st.markdown(
-      f"""
-        <div class="stat-card">
-            <div class="stat-title">🛡️ 보유권 개수</div>
-            <div class="stat-value">{st.session_state.shield} / 2개</div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
-with b_col3:
-  st.markdown(
-      f"""
-        <div class="stat-card">
-            <div class="stat-title">💧 지온의 눈물</div>
-            <div class="stat-value">{st.session_state.tears}개</div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
-with b_col4:
-  if st.session_state.level < 30:
-    sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-    crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}% / 유지:{hold_p}%"
-  else:
-    prob_str = "최고 단계 도달"
-
-  st.markdown(
-      f"""
-        <div class="stat-card">
-            <div class="stat-title">📊 상세 확률표</div>
-            <div class="stat-value" style="font-size: 11px; line-height: 1.3;">{prob_str}</div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
