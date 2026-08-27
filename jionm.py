@@ -66,6 +66,12 @@ if "money" not in st.session_state:
     st.session_state.money = 10000
 if "status" not in st.session_state:
     st.session_state.status = "READY"
+if "shield" not in st.session_state:
+    st.session_state.shield = 0  # 파괴 방지권 개수
+if "tears" not in st.session_state:
+    st.session_state.tears = 0    # 지온의 눈물 개수
+if "use_shield" not in st.session_state:
+    st.session_state.use_shield = False
 
 # -----------------------------------------------------------------------------
 # 4. 강화 / 판매 로직
@@ -81,11 +87,19 @@ def enhance():
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
     elif r < (sp + dp):
-        st.session_state.level = 0
-        st.session_state.status = "DESTROYED"
+        # 파괴 판정 시 방지권 체크
+        if st.session_state.use_shield and st.session_state.shield > 0:
+            st.session_state.shield -= 1
+            st.session_state.status = "SHIELD_SAVED"
+            st.session_state.tears += 1
+        else:
+            st.session_state.level = 0
+            st.session_state.status = "DESTROYED"
+            st.session_state.tears += 2
     else:
         if curr > 0: st.session_state.level -= 1
         st.session_state.status = "FAILED"
+        st.session_state.tears += 1
 
 def sell():
     curr = st.session_state.level
@@ -95,7 +109,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 컨트롤 패널
+# 5. 상단 상점 & 대시보드
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -103,10 +117,10 @@ st.markdown("""
     .stat-card {
         background: rgba(15, 23, 42, 0.9);
         border: 1px solid #10b981;
-        padding: 12px;
+        padding: 10px;
         border-radius: 10px;
         text-align: center;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -115,21 +129,60 @@ col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
 with col1:
     st.markdown(f'<div class="stat-card">💰 보유 골드<br><b>{st.session_state.money:,} G</b></div>', unsafe_allow_html=True)
 with col2:
-    sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
-    st.markdown(f'<div class="stat-card">📊 성공 확률<br><b>{sp}%</b> (파괴 {dp}%)</div>', unsafe_allow_html=True)
-
+    st.markdown(f'<div class="stat-card">💧 지온의 눈물<br><b>{st.session_state.tears} 개</b></div>', unsafe_allow_html=True)
 with col3:
-    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
-        enhance()
-        st.rerun()
-
+    st.markdown(f'<div class="stat-card">🛡️ 파괴 방지권<br><b>{st.session_state.shield} 개</b></div>', unsafe_allow_html=True)
 with col4:
-    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
-        sell()
-        st.rerun()
+    sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
+    st.markdown(f'<div class="stat-card">📊 성공/파괴 확률<br><b>{sp}% / {dp}%</b></div>', unsafe_allow_html=True)
+
+st.write("")
+
+# 탭 나누기 (강화 무대 / 아이템 상점)
+tab1, tab2 = st.tabs(["🔥 3D 강화 무대", "🛒 지온의 비밀 상점"])
+
+with tab1:
+    btn_col1, btn_col2, btn_col3 = st.columns([2, 2, 2])
+    with btn_col1:
+        if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
+            enhance()
+            st.rerun()
+    with btn_col2:
+        if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
+            sell()
+            st.rerun()
+    with btn_col3:
+        st.session_state.use_shield = st.checkbox("🛡️ 강화 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
+
+with tab2:
+    s_col1, s_col2 = st.columns(2)
+    with s_col1:
+        st.subheader("🛡️ 파괴 방지권 구매")
+        st.write("강화 실패 시 카드가 파괴되어 0단계가 되는 것을 1회 막아줍니다.")
+        if st.button("구매하기 (50,000 G)"):
+            if st.session_state.money >= 50000:
+                st.session_state.money -= 50000
+                st.session_state.shield += 1
+                st.success("파괴 방지권 1개를 구매했습니다!")
+                st.rerun()
+            else:
+                st.error("골드가 부족합니다.")
+    
+    with s_col2:
+        st.subheader("💧 지온의 눈물 교환소")
+        st.write("강화 실패 시 쌓이는 눈물로 확정 강화권을 교환하세요.")
+        if st.button("100% 확정 1단계 상승 (눈물 20개)"):
+            if st.session_state.tears >= 20 and st.session_state.level < 30:
+                st.session_state.tears -= 20
+                st.session_state.level += 1
+                st.session_state.status = "SUCCESS"
+                st.success("지온의 눈물로 1단계 확정 강화 성공!")
+                st.rerun()
+            else:
+                st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 6. 3D & Extreme Text FX Render
+# 6. 네모 박스 제거 & 중앙 정렬 3D Text FX Render
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -148,87 +201,80 @@ three_js_code = f"""
         #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
         /* -----------------------------------------------------------
-           단계별 압도적인 글자 시각 스타일 (Tier 1 ~ 6)
+           네모 박스 전면 제거 & 화면 중앙 정렬 글자 시각 스타일
         ----------------------------------------------------------- */
         .cinematic-ui {{
             position: absolute;
-            bottom: 30px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 85%;
-            background: rgba(0, 0, 0, 0.85);
-            border-radius: 16px;
-            padding: 20px 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(20px);
+            width: 100%;
+            text-align: center;
             z-index: 100;
-            border: 2px solid {card_color};
-            box-shadow: 0 0 40px {card_color}88;
+            pointer-events: none;
         }}
 
         /* Tier 1: 은은한 사이버 녹색 */
         .title-tier-1 {{
-            font-size: 28px;
+            font-size: 36px;
             color: #10b981;
-            text-shadow: 0 0 10px #10b981;
+            text-shadow: 0 0 15px #10b981;
         }}
         /* Tier 2: 크롬 골드 & 볼드 */
         .title-tier-2 {{
-            font-size: 32px;
+            font-size: 40px;
             color: #f59e0b;
-            text-shadow: 0 0 15px #f59e0b, 0 0 30px #d97706;
+            text-shadow: 0 0 20px #f59e0b, 0 0 40px #d97706;
             letter-spacing: 1px;
         }}
         /* Tier 3: 불꽃 레드 & 스칼렛 엠보싱 */
         .title-tier-3 {{
-            font-size: 34px;
+            font-size: 44px;
             color: #ef4444;
-            text-shadow: 0 0 20px #ef4444, 0 0 40px #b91c1c;
+            text-shadow: 0 0 25px #ef4444, 0 0 50px #b91c1c;
             animation: pulse 1s infinite alternate;
         }}
         /* Tier 4: 사이버 네온 바이올렛 3D 글자 */
         .title-tier-4 {{
-            font-size: 36px;
+            font-size: 48px;
             color: #a855f7;
-            text-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7, 0 0 40px #7e22ce, 2px 2px 0px #000;
+            text-shadow: 0 0 15px #a855f7, 0 0 30px #a855f7, 0 0 50px #7e22ce;
             letter-spacing: 2px;
         }}
         /* Tier 5: 네온 핑크 & 사이언 그래디언트 */
         .title-tier-5 {{
-            font-size: 38px;
+            font-size: 52px;
             background: linear-gradient(90deg, #ff007f, #00f0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 25px #ff007f);
+            filter: drop-shadow(0 0 30px #ff007f);
             animation: shake 0.5s infinite alternate;
         }}
         /* Tier 6: 🌈 GOD MODE 태초의 무지개 빛 3D 텍스트 */
         .title-tier-6 {{
-            font-size: 42px;
+            font-size: 58px;
             font-weight: 900;
             background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: rainbow 1.5s linear infinite, superShake 0.1s infinite;
-            filter: drop-shadow(0 0 30px #ffffff);
+            filter: drop-shadow(0 0 40px #ffffff);
         }}
 
         /* Keyframe Animations */
         @keyframes pulse {{
             0% {{ transform: scale(1); }}
-            100% {{ transform: scale(1.03); }}
+            100% {{ transform: scale(1.05); }}
         }}
         @keyframes shake {{
-            0% {{ transform: translate(1px, 1px) rotate(0deg); }}
-            100% {{ transform: translate(-1px, -1px) rotate(-1deg); }}
+            0% {{ transform: translate(2px, 2px) rotate(0deg); }}
+            100% {{ transform: translate(-2px, -2px) rotate(-1deg); }}
         }}
         @keyframes superShake {{
-            0% {{ transform: translate(2px, 1px); }}
-            50% {{ transform: translate(-2px, -2px); }}
-            100% {{ transform: translate(1px, -1px); }}
+            0% {{ transform: translate(3px, 1px); }}
+            50% {{ transform: translate(-3px, -2px); }}
+            100% {{ transform: translate(2px, -1px); }}
         }}
         @keyframes rainbow {{
             0% {{ background-position: 0% center; }}
@@ -236,9 +282,24 @@ three_js_code = f"""
         }}
 
         .status-header {{
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            letter-spacing: 3px;
+        }}
+        .desc-text {{
+            font-size: 16px;
+            color: #e2e8f0;
+            margin-top: 6px;
+            font-family: sans-serif;
+            text-shadow: 0 0 8px #000;
+        }}
+        .price-text {{
+            font-size: 22px;
+            color: #fbbf24;
+            margin-top: 8px;
+            text-shadow: 0 0 15px rgba(251,191,36,0.8);
+            font-family: sans-serif;
         }}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -248,21 +309,12 @@ three_js_code = f"""
     <div id="container"></div>
 
     <div class="cinematic-ui">
-        <div>
-            <div id="statusText" class="status-header">READY</div>
-            <div class="title-tier-{tier}">
-                {card_title}
-            </div>
-            <div style="font-size: 14px; color: #cbd5e1; margin-top: 5px; font-family: sans-serif;">
-                "{card_desc}"
-            </div>
+        <div id="statusText" class="status-header">READY</div>
+        <div class="title-tier-{tier}">
+            {card_title}
         </div>
-        <div style="text-align: right;">
-            <div style="font-size: 13px; color: #94a3b8; font-family: sans-serif;">예상 냄새 가치</div>
-            <div style="font-size: 28px; color: #fbbf24; text-shadow: 0 0 15px rgba(251,191,36,0.6);">
-                {card_price}
-            </div>
-        </div>
+        <div class="desc-text">"{card_desc}"</div>
+        <div class="price-text">예상 가치: {card_price}</div>
     </div>
 
     <script>
@@ -272,6 +324,9 @@ three_js_code = f"""
         if (status === "SUCCESS") {{
             statusText.innerText = "✨ ENHANCE SUCCESS ✨";
             statusText.style.color = "#10b981";
+        }} else if (status === "SHIELD_SAVED") {{
+            statusText.innerText = "🛡️ SHIELD PROTECTED! 🛡️";
+            statusText.style.color = "#3b82f6";
         }} else if (status === "DESTROYED") {{
             statusText.innerText = "💥 DESTROYED 💥";
             statusText.style.color = "#ef4444";
@@ -285,14 +340,14 @@ three_js_code = f"""
         scene.fog = new THREE.FogExp2(0x000000, 0.02);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.5, 9);
+        camera.position.set(0, 1.2, 9);
 
         const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('container').appendChild(renderer.domElement);
 
-        // 2. Dynamic Lights
+        // 2. Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -312,7 +367,6 @@ three_js_code = f"""
         const card = new THREE.Mesh(cardGeo, cardMat);
         cardGroup.add(card);
 
-        // 골드 크롬 테두리
         const borderGeo = new THREE.BoxGeometry(2.75, 4.15, 0.08);
         const borderMat = new THREE.MeshStandardMaterial({{ color: 0xffd700, metalness: 1.0, roughness: 0.0 }});
         const border = new THREE.Mesh(borderGeo, borderMat);
@@ -321,7 +375,7 @@ three_js_code = f"""
 
         scene.add(cardGroup);
 
-        // 4. Extreme Particles (단계가 클수록 파티클 급증)
+        // 4. Extreme Particles
         const particleCount = {tier * 150};
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(particleCount * 3);
@@ -351,7 +405,7 @@ three_js_code = f"""
             const time = clock.getElapsedTime();
 
             cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-            cardGroup.position.y = Math.sin(time * 1.8) * 0.12;
+            cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.3;
 
             const pos = pGeo.attributes.position.array;
             for(let i=1; i<particleCount*3; i+=3) {{
