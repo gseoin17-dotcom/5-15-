@@ -1,64 +1,6 @@
 import random
-import sqlite3
 import streamlit as st
 import streamlit.components.v1 as components
-
-# -----------------------------------------------------------------------------
-# 0. SQLite DB 초기화 (랭킹용)
-# -----------------------------------------------------------------------------
-DB_NAME = "ranking.db"
-
-
-def init_db():
-  conn = sqlite3.connect(DB_NAME)
-  c = conn.cursor()
-  c.execute("""
-        CREATE TABLE IF NOT EXISTS rankings (
-            username TEXT PRIMARY KEY,
-            level INTEGER,
-            money REAL
-        )
-    """)
-  conn.commit()
-  conn.close()
-
-
-init_db()
-
-
-def save_score_to_db(username, level, money):
-  if not username:
-    return
-  conn = sqlite3.connect(DB_NAME)
-  c = conn.cursor()
-  c.execute("SELECT level, money FROM rankings WHERE username = ?", (username,))
-  row = c.fetchone()
-  if row is None:
-    c.execute(
-        "INSERT INTO rankings (username, level, money) VALUES (?, ?, ?)",
-        (username, level, money),
-    )
-  else:
-    if level > row[0] or (level == row[0] and money > row[1]):
-      c.execute(
-          "UPDATE rankings SET level = ?, money = ? WHERE username = ?",
-          (level, money, username),
-      )
-  conn.commit()
-  conn.close()
-
-
-def get_leaderboard():
-  conn = sqlite3.connect(DB_NAME)
-  c = conn.cursor()
-  c.execute(
-      "SELECT username, level, money FROM rankings ORDER BY level DESC, money"
-      " DESC LIMIT 10"
-  )
-  data = c.fetchall()
-  conn.close()
-  return data
-
 
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
@@ -395,8 +337,6 @@ CRITICAL_RATE = 0.05
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
-if "username" not in st.session_state:
-  st.session_state.username = "지온러"
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "money" not in st.session_state:
@@ -457,10 +397,6 @@ def enhance():
     st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
-  save_score_to_db(
-      st.session_state.username, st.session_state.level, st.session_state.money
-  )
-
 
 def sell():
   curr = st.session_state.level
@@ -473,10 +409,6 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
-
-  save_score_to_db(
-      st.session_state.username, st.session_state.level, st.session_state.money
-  )
 
 
 # -----------------------------------------------------------------------------
@@ -548,66 +480,6 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
   st.markdown(
-      "<h4 style='margin:0 0 6px 0; font-size: 15px; color:#fde68a;'>🏆 유저"
-      " 랭킹 설정</h4>",
-      unsafe_allow_html=True,
-  )
-  user_input = st.text_input(
-      "내 닉네임 입력", value=st.session_state.username, max_chars=10, label_visibility="collapsed"
-  )
-  if user_input != st.session_state.username:
-    st.session_state.username = user_input
-    save_score_to_db(
-        st.session_state.username, st.session_state.level, st.session_state.money
-    )
-
-  if "show_ranking" not in st.session_state:
-    st.session_state.show_ranking = False
-
-  col_btn1, col_btn2 = st.columns(2)
-  with col_btn1:
-    if st.button("🏆 명예의 전당", use_container_width=True):
-      st.session_state.show_ranking = not st.session_state.show_ranking
-  with col_btn2:
-    if st.button("🔄 랭킹 닫기", use_container_width=True):
-      st.session_state.show_ranking = False
-
-  if st.session_state.show_ranking:
-    st.markdown(
-        "<hr style='margin:8px 0; border-color:rgba(255,255,255,0.2);'>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<h5 style='margin:0 0 6px 0; font-size: 14px; color:#fde68a;'>👑 Top"
-        " 10 랭킹</h5>",
-        unsafe_allow_html=True,
-    )
-    leaderboard_data = get_leaderboard()
-    if leaderboard_data:
-      rank_html = (
-          "<table style='width:100%; font-size:11px; color:#f8fafc;"
-          " border-collapse: collapse;'>"
-          "<tr style='border-bottom: 1px solid rgba(255,255,255,0.2);"
-          " color:#fde68a;'><th>순위</th><th>닉네임</th><th>단계</th></tr>"
-      )
-      for idx, (uname, lvl, mny) in enumerate(leaderboard_data, 1):
-        crown = (
-            "🥇"
-            if idx == 1
-            else ("🥈" if idx == 2 else ("🥉" if idx == 3 else ""))
-        )
-        rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:3px;'>{crown} {idx}위</td><td style='padding:3px;'>{uname}</td><td style='padding:3px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
-      rank_html += "</table>"
-      st.markdown(rank_html, unsafe_allow_html=True)
-    else:
-      st.caption("등록된 랭킹 데이터 없음")
-
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
       " 강화 제어</h4>",
       unsafe_allow_html=True,
@@ -664,11 +536,6 @@ with left_col:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
         st.success("파괴 방지권 구매 완료!")
-        save_score_to_db(
-            st.session_state.username,
-            st.session_state.level,
-            st.session_state.money,
-        )
         st.rerun()
       else:
         st.error("금액이 부족합니다.")
@@ -684,11 +551,6 @@ with left_col:
             "CRITICAL" if add_lvl == 2 else "SUCCESS"
         )
         st.success(f"눈물 기적 발동! {add_lvl}단계 상승!")
-        save_score_to_db(
-            st.session_state.username,
-            st.session_state.level,
-            st.session_state.money,
-        )
         st.rerun()
       else:
         st.error("눈물 100개가 필요합니다.")
@@ -813,25 +675,38 @@ with right_col:
             const statusText = document.getElementById('statusText');
             
             let statusColor = "#22c55e";
+            let particleSize = 0.3;
+            let particleSpeed = 1.0;
+            let glowIntensity = 20;
 
             if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
-                statusColor = "#ffe600";
+                statusText.innerText = "⚡ ABSOLUTE CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusColor = "#00ffff"; // 눈부신 시안/네온컬러
+                particleSize = 0.55;
+                particleSpeed = 3.5;
+                glowIntensity = 50;
             }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
-                statusColor = "#22c55e";
+                statusText.innerText = "✨ GLORIOUS SUCCESS (찬란한 성공) ✨";
+                statusColor = "#ff00ea"; // 화려한 마젠타/핑크빛 성공 컬러
+                particleSize = 0.4;
+                particleSpeed = 2.2;
+                glowIntensity = 35;
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
                 statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                 statusColor = "#ef4444";
+                particleSpeed = 1.5;
             }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
-                statusColor = "#f59e0b";
+                statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
+                statusColor = "#64748b"; // 차분하고 어두운 회색빛으로 변경하여 하락 연출 축소
+                particleSpeed = 0.5;     // 느리고 차분하게 움직임
+                glowIntensity = 5;
             }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
-                statusColor = "#38bdf8";
+                statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
+                statusColor = "#94a3b8";
+                particleSpeed = 0.7;
             }}
             
             statusText.style.color = statusColor;
@@ -853,34 +728,36 @@ with right_col:
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, 20, 35);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            const particleCount = 1200;
+            const particleCount = (status === "CRITICAL" || status === "SUCCESS") ? 1800 : 800;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
 
             for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 4.5;
+                particlePositions[i*3] = (Math.random() - 0.5) * 5.0;
                 particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 4.5;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
                 
-                const speedMultiplier = (status === "DESTROYED" || status === "FAILED" || status === "CRITICAL") ? 2.5 : 1.0;
+                let spd = particleSpeed;
+                if (status === "FAILED") spd = 0.4; // 하락 시 파티클 기운 대폭 축소
+
                 particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.04 * speedMultiplier,
-                    y: (0.025 + Math.random() * 0.05) * speedMultiplier,
-                    z: (Math.random() - 0.5) * 0.04 * speedMultiplier,
+                    x: (Math.random() - 0.5) * 0.03 * spd,
+                    y: (0.02 + Math.random() * 0.04) * spd,
+                    z: (Math.random() - 0.5) * 0.03 * spd,
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
             
             const particleMat = new THREE.PointsMaterial({{
                 color: new THREE.Color(statusColor),
-                size: (status === "DESTROYED" || status === "CRITICAL") ? 0.45 : 0.3,
+                size: particleSize,
                 transparent: true,
-                opacity: 0.85,
+                opacity: status === "FAILED" ? 0.3 : 0.9,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -890,7 +767,6 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            // 단계별/상태별 다채로운 다각형 형태 및 색상 매핑
             const geometries = [
                 new THREE.DodecahedronGeometry(2.5, 0),
                 new THREE.IcosahedronGeometry(2.3, 0),
@@ -900,24 +776,24 @@ with right_col:
             const baseGeo = geometries[{tier} % geometries.length];
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: "{card_color}",
+                color: (status === "SUCCESS" || status === "CRITICAL") ? statusColor : "{card_color}",
                 emissive: statusColor,
-                emissiveIntensity: 0.35,
-                metalness: 0.85,
-                roughness: 0.15,
-                transmission: 0.5,
+                emissiveIntensity: (status === "SUCCESS" || status === "CRITICAL") ? 0.8 : 0.2,
+                metalness: 0.9,
+                roughness: 0.1,
+                transmission: 0.6,
                 transparent: true,
-                opacity: 0.92,
+                opacity: status === "FAILED" ? 0.6 : 0.95,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(1.1, 32, 32);
+            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: 4.0,
+                emissiveIntensity: (status === "SUCCESS" || status === "CRITICAL") ? 6.0 : 2.0,
                 roughness: 0.05,
                 metalness: 0.95,
                 transmission: 0.8
@@ -927,20 +803,19 @@ with right_col:
 
             scene.add(objectGroup);
 
+            // 강화 결과별 애니메이션 연출 분기
             if (status === "CRITICAL") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.05, y: 0.05, z: 0.05}}, {{x: 1.2, y: 1.2, z: 1.2, duration: 0.5, ease: "elastic.out(1.5, 0.2)"}});
-                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
-                gsap.fromTo(camera.position, {{z: 4.0}}, {{z: 9.5, duration: 0.8, ease: "power2.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 0.05, y: 0.05, z: 0.05}}, {{x: 1.4, y: 1.4, z: 1.4, duration: 0.6, ease: "elastic.out(1.5, 0.2)"}});
+                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.4, delay: 0.6}});
+                gsap.fromTo(camera.position, {{z: 3.5}}, {{z: 9.5, duration: 0.9, ease: "power2.out"}});
             }} else if (status === "SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1, y: 1, z: 1, duration: 0.6, ease: "elastic.out(1.2, 0.3)"}});
-            }} else if (status === "FAILED" || status === "DESTROYED") {{
-                const shakeIntensity = status === "DESTROYED" ? 0.6 : 0.35;
-                gsap.fromTo(objectGroup.position, {{x: -shakeIntensity}}, {{x: shakeIntensity, duration: 0.03, repeat: 12, yoyo: true}});
-                
-                if (status === "DESTROYED") {{
-                    gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.3, yoyo: true, repeat: 1}});
-                    gsap.to(pointLight, {{intensity: 50, duration: 0.15, yoyo: true, repeat: 1}});
-                }}
+                gsap.fromTo(objectGroup.scale, {{x: 0.3, y: 0.3, z: 0.3}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.4, yoyo: true, repeat: 1, ease: "power1.out"}});
+            }} else if (status === "FAILED") {{
+                // 하락 시 요란한 흔들림 없이 차분하게 작아지는 연출로 변경
+                gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.9, y: 0.9, z: 0.9, duration: 0.4, ease: "power1.out"}});
+            }} else if (status === "DESTROYED") {{
+                gsap.fromTo(objectGroup.position, {{x: -0.4}}, {{x: 0.4, duration: 0.03, repeat: 10, yoyo: true}});
+                gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.3, yoyo: true, repeat: 1}});
             }} else if (status === "SHIELD_SAVED") {{
                 gsap.fromTo(objectGroup.scale, {{x: 1.4, y: 1.4, z: 1.4}}, {{x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2.5)"}});
             }}
@@ -951,21 +826,22 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                outerMesh.rotation.x = time * 0.6;
-                outerMesh.rotation.y = time * 0.8;
-                coreMesh.rotation.x = -time * 1.4;
-                coreMesh.rotation.y = -time * 1.7;
+                const rotSpeed = status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" ? 1.5 : 0.7);
+                outerMesh.rotation.x = time * (0.6 * rotSpeed);
+                outerMesh.rotation.y = time * (0.8 * rotSpeed);
+                coreMesh.rotation.x = -time * (1.4 * rotSpeed);
+                coreMesh.rotation.y = -time * (1.7 * rotSpeed);
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
-                    positions[i*3] += particleVelocities[i].x + Math.sin(time * 2 + i) * 0.008;
+                    positions[i*3] += particleVelocities[i].x;
                     positions[i*3 + 1] += particleVelocities[i].y;
-                    positions[i*3 + 2] += particleVelocities[i].z + Math.cos(time * 2 + i) * 0.008;
+                    positions[i*3 + 2] += particleVelocities[i].z;
 
                     if(positions[i*3 + 1] > 4.0) {{
                         positions[i*3 + 1] = -3.2;
-                        positions[i*3] = (Math.random() - 0.5) * 4.5;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 4.5;
+                        positions[i*3] = (Math.random() - 0.5) * 5.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
