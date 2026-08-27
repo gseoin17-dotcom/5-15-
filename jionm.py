@@ -205,7 +205,7 @@ left_col, right_col = st.columns([3, 7], gap="medium")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'> 지온 냄 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'> 지온 냄새 강화</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
