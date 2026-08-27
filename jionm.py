@@ -108,13 +108,12 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 대시보드 (하얀색 테두리 & 대형 폰트 스타일 적용)
+# 5. 상단 대시보드
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp { background-color: #020403; color: #fff; }
     
-    /* 흰색 테두리 및 대형 텍스트 스타일 지정 */
     .stat-card {
         background: rgba(15, 23, 42, 0.95);
         border: 2px solid #ffffff;
@@ -220,7 +219,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 7. 3D Text FX Render (중앙 정렬 텍스트 연출)
+# 7. 3D Text FX Render (지온냄새 글씨 대폭 확대)
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -240,7 +239,7 @@ three_js_code = f"""
 
         .cinematic-ui {{
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
@@ -249,46 +248,52 @@ three_js_code = f"""
             pointer-events: none;
         }}
 
+        /* 지온냄새 타이틀 폰트 크기 대폭 확대 (52px ~ 85px) */
         .title-tier-1 {{
-            font-size: 36px;
+            font-size: 52px;
+            font-weight: 900;
             color: #10b981;
-            text-shadow: 0 0 15px #10b981;
+            text-shadow: 0 0 25px #10b981, 0 0 50px #047857;
         }}
         .title-tier-2 {{
-            font-size: 40px;
+            font-size: 58px;
+            font-weight: 900;
             color: #f59e0b;
-            text-shadow: 0 0 20px #f59e0b, 0 0 40px #d97706;
+            text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706;
             letter-spacing: 1px;
         }}
         .title-tier-3 {{
-            font-size: 44px;
+            font-size: 64px;
+            font-weight: 900;
             color: #ef4444;
-            text-shadow: 0 0 25px #ef4444, 0 0 50px #b91c1c;
+            text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c;
             animation: pulse 1s infinite alternate;
         }}
         .title-tier-4 {{
-            font-size: 48px;
+            font-size: 70px;
+            font-weight: 900;
             color: #a855f7;
-            text-shadow: 0 0 15px #a855f7, 0 0 30px #a855f7, 0 0 50px #7e22ce;
+            text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce;
             letter-spacing: 2px;
         }}
         .title-tier-5 {{
-            font-size: 52px;
+            font-size: 76px;
+            font-weight: 900;
             background: linear-gradient(90deg, #ff007f, #00f0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px #ff007f);
+            filter: drop-shadow(0 0 40px #ff007f);
             animation: shake 0.5s infinite alternate;
         }}
         .title-tier-6 {{
-            font-size: 58px;
+            font-size: 85px;
             font-weight: 900;
             background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: rainbow 1.5s linear infinite, superShake 0.1s infinite;
-            filter: drop-shadow(0 0 40px #ffffff);
+            filter: drop-shadow(0 0 50px #ffffff);
         }}
 
         @keyframes pulse {{
@@ -310,20 +315,21 @@ three_js_code = f"""
         }}
 
         .status-header {{
-            font-size: 26px;
+            font-size: 28px;
             font-weight: bold;
             margin-bottom: 8px;
             letter-spacing: 3px;
         }}
         .desc-text {{
-            font-size: 16px;
+            font-size: 18px;
             color: #e2e8f0;
-            margin-top: 6px;
+            margin-top: 10px;
             font-family: sans-serif;
-            text-shadow: 0 0 8px #000;
+            text-shadow: 0 0 10px #000;
         }}
         .price-text {{
-            font-size: 22px;
+            font-size: 24px;
+            font-weight: bold;
             color: #fbbf24;
             margin-top: 8px;
             text-shadow: 0 0 15px rgba(251,191,36,0.8);
