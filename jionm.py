@@ -1,6 +1,66 @@
 import random
+import sqlite3
 import streamlit as st
 import streamlit.components.v1 as components
+
+# -----------------------------------------------------------------------------
+# 0. SQLite DB 초기화 (랭킹용)
+# -----------------------------------------------------------------------------
+DB_NAME = "ranking.db"
+
+
+def init_db():
+  conn = sqlite3.connect(DB_NAME)
+  c = conn.cursor()
+  c.execute("""
+        CREATE TABLE IF NOT EXISTS rankings (
+            username TEXT PRIMARY KEY,
+            level INTEGER,
+            money REAL
+        )
+    """)
+  conn.commit()
+  conn.close()
+
+
+init_db()
+
+
+def save_score_to_db(username, level, money):
+  if not username:
+    return
+  conn = sqlite3.connect(DB_NAME)
+  c = conn.cursor()
+  # 기존 기록 확인 후 최고 단계/자산일 때 갱신 또는 삽입
+  c.execute("SELECT level, money FROM rankings WHERE username = ?", (username,))
+  row = c.fetchone()
+  if row is None:
+    c.execute(
+        "INSERT INTO rankings (username, level, money) VALUES (?, ?, ?)",
+        (username, level, money),
+    )
+  else:
+    # 단계가 더 높거나, 단계는 같은데 돈이 더 많을 때 갱신
+    if level > row[0] or (level == row[0] and money > row[1]):
+      c.execute(
+          "UPDATE rankings SET level = ?, money = ? WHERE username = ?",
+          (level, money, username),
+      )
+  conn.commit()
+  conn.close()
+
+
+def get_leaderboard():
+  conn = sqlite3.connect(DB_NAME)
+  c = conn.cursor()
+  c.execute(
+      "SELECT username, level, money FROM rankings ORDER BY level DESC, money"
+      " DESC LIMIT 10"
+  )
+  data = c.fetchall()
+  conn.close()
+  return data
+
 
 # -----------------------------------------------------------------------------
 # 1. 페이지 기본 설정
@@ -15,15 +75,15 @@ st.set_page_config(
 
 
 def format_gold(amount):
-  if amount == 0:
-    return "0원"
+  if amount == 0 or amount == float("inf"):
+    return "0원" if amount == 0 else "무한대(INF)"
 
   units = ["", "만", "억", "조", "경", "해"]
   result = []
 
   unit_idx = 0
   while amount > 0 and unit_idx < len(units):
-    remainder = amount % 10000
+    remainder = int(amount % 10000)
     if remainder > 0:
       result.insert(0, f"{remainder:,}{units[unit_idx]}")
     amount //= 10000
@@ -75,7 +135,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (파괴 확률을 하락으로, 유지 확률 추가)
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -335,6 +395,8 @@ CRITICAL_RATE = 0.05
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
+if "username" not in st.session_state:
+  st.session_state.username = "지온러"
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "money" not in st.session_state:
@@ -395,6 +457,11 @@ def enhance():
     st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
+  # 강화 후 점수 자동 DB 갱신
+  save_score_to_db(
+      st.session_state.username, st.session_state.level, st.session_state.money
+  )
+
 
 def sell():
   curr = st.session_state.level
@@ -407,6 +474,10 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
+
+  save_score_to_db(
+      st.session_state.username, st.session_state.level, st.session_state.money
+  )
 
 
 # -----------------------------------------------------------------------------
@@ -489,6 +560,22 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
+      "<h3 style='margin:0 0 12px 0; font-size: 18px; color:#fde68a;'>🏆 유저"
+      " 랭킹 설정</h3>",
+      unsafe_allow_html=True,
+  )
+  user_input = st.text_input(
+      "내 닉네임 입력", value=st.session_state.username, max_chars=10
+  )
+  if user_input != st.session_state.username:
+    st.session_state.username = user_input
+    save_score_to_db(
+        st.session_state.username, st.session_state.level, st.session_state.money
+    )
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
       "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
       " 판타지 지온 강화</h3>",
       unsafe_allow_html=True,
@@ -543,22 +630,58 @@ with left_col:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
         st.success("파괴 방지권 구매 완료!")
+        save_score_to_db(
+            st.session_state.username,
+            st.session_state.level,
+            st.session_state.money,
+        )
         st.rerun()
       else:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 100개로 1단계 확정 상승")
-    if st.button("1단계 확정 상승 (100개)", use_container_width=True):
-      if st.session_state.tears >= 100 and st.session_state.level < 30:
-        st.session_state.tears -= 100
+    st.caption("눈물 20개로 1단계 확정 상승")
+    if st.button("1단계 확정 상승 (20개)", use_container_width=True):
+      if st.session_state.tears >= 20 and st.session_state.level < 30:
+        st.session_state.tears -= 20
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
         st.success("확정 강화 성공!")
+        save_score_to_db(
+            st.session_state.username,
+            st.session_state.level,
+            st.session_state.money,
+        )
         st.rerun()
       else:
         st.error("조건이 부족합니다.")
 
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  # --- 실시간 랭킹 보드 패널 추가 ---
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🏆 명예의 전당"
+      " (Top 10)</h4>",
+      unsafe_allow_html=True,
+  )
+  leaderboard_data = get_leaderboard()
+  if leaderboard_data:
+    rank_html = (
+        "<table style='width:100%; font-size:13px; color:#f8fafc; border-collapse:"
+        " collapse;'>"
+        "<tr style='border-bottom: 1px solid rgba(255,255,255,0.2); "
+        "color:#fde68a;'><th>순위</th><th>닉네임</th><th>단계</th></tr>"
+    )
+    for idx, (uname, lvl, mny) in enumerate(leaderboard_data, 1):
+      crown = (
+          "🥇" if idx == 1 else ("🥈" if idx == 2 else ("🥉" if idx == 3 else ""))
+      )
+      rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:4px;'>{crown} {idx}위</td><td style='padding:4px;'>{uname}</td><td style='padding:4px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
+    rank_html += "</table>"
+    st.markdown(rank_html, unsafe_allow_html=True)
+  else:
+    st.caption("아직 등록된 랭킹 데이터가 없습니다.")
   st.markdown("</div>", unsafe_allow_html=True)
 
 with right_col:
@@ -571,7 +694,6 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
-  # 초고품질 홀로그램 카드 디자인이 적용된 Three.js 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -765,10 +887,8 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
-            // --- 고품질 홀로그램 카드 그룹 구성 ---
             const cardGroup = new THREE.Group();
 
-            // 1. 화려한 이중 메탈릭 외곽 프레임
             const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
             const outerFrameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xffd700, 
@@ -780,7 +900,6 @@ with right_col:
             const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
             cardGroup.add(outerFrame);
 
-            // 2. 내부 유리 글래스 플레이트 (Glassmorphism)
             const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
             const glassMat = new THREE.MeshPhysicalMaterial({{ 
                 color: 0x0f172a, 
@@ -794,7 +913,6 @@ with right_col:
             const glassPlate = new THREE.Mesh(glassGeo, glassMat);
             cardGroup.add(glassPlate);
 
-            // 3. 상단 일러스트 배경 패널 (네온 홀로그램)
             const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
             const bodyMat = new THREE.MeshStandardMaterial({{ 
                 color: "{card_color}", 
@@ -807,7 +925,6 @@ with right_col:
             body.position.y = 0.85;
             cardGroup.add(body);
 
-            // 4. 회전하는 중앙 다면체 크리스털 코어 (에너지 코어 입체화)
             const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, 
@@ -820,7 +937,6 @@ with right_col:
             core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
 
-            // 5. 하단 네임플레이트
             const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
