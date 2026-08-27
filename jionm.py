@@ -890,27 +890,37 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            const outerGeo = new THREE.DodecahedronGeometry(2.5, 0);
+            // 단계별/상태별 다채로운 다각형 형태 및 색상 매핑
+            const geometries = [
+                new THREE.DodecahedronGeometry(2.5, 0),
+                new THREE.IcosahedronGeometry(2.3, 0),
+                new THREE.OctahedronGeometry(2.7, 0),
+                new THREE.TorusKnotGeometry(1.6, 0.5, 64, 16)
+            ];
+            const baseGeo = geometries[{tier} % geometries.length];
+
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: "{card_color}",
-                metalness: 0.8,
-                roughness: 0.2,
-                transmission: 0.4,
+                emissive: statusColor,
+                emissiveIntensity: 0.35,
+                metalness: 0.85,
+                roughness: 0.15,
+                transmission: 0.5,
                 transparent: true,
-                opacity: 0.9,
-                wireframe: true
+                opacity: 0.92,
+                wireframe: false
             }});
-            const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.OctahedronGeometry(1.2, 0);
+            const coreGeo = new THREE.SphereGeometry(1.1, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: 3.0,
+                emissiveIntensity: 4.0,
                 roughness: 0.05,
-                metalness: 0.9,
-                transmission: 0.7
+                metalness: 0.95,
+                transmission: 0.8
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
