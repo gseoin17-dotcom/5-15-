@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표
+# 3. 게임 데이터베이스 및 강화 확률표 (성공, 파괴, 하락)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -297,6 +297,7 @@ SMELL_DB = {
     },
 }
 
+# (성공 확률, 파괴 확률, 하락 확률) -> 남은 잔여 확률은 '유지' 확률이 됨
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0),
@@ -333,20 +334,18 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화 (초기 자본 100만 원 설정)
+# 4. 세션 상태 초기화 (초기 자본 100만 원)
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "money" not in st.session_state:
-  st.session_state.money = 1000000  # 100만 원으로 설정
+  st.session_state.money = 1000000
 if "status" not in st.session_state:
   st.session_state.status = "READY"
 if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "dev_mode" not in st.session_state:
-  st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -365,12 +364,10 @@ def enhance():
 
   st.session_state.money -= cost
 
-  if st.session_state.dev_mode:
-    st.session_state.level += 1
-    st.session_state.status = "SUCCESS"
-    return
+  sp, dp, down_p = PROB_TABLE[curr]
+  # 남은 확률은 단계 유지 확률
+  hold_p = max(0.0, 100.0 - (sp + dp + down_p))
 
-  sp, fp, dp = PROB_TABLE[curr]
   r = random.uniform(0, 100)
 
   if r < sp:
@@ -389,10 +386,14 @@ def enhance():
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
       st.session_state.tears += 2
-  else:
+  elif r < (sp + dp + down_p):
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
+    st.session_state.tears += 1
+  else:
+    # 단계 유지
+    st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
 
@@ -495,7 +496,7 @@ with left_col:
   )
 
   if st.button(
-      "🔥 GOD MODE 강화 실행",
+      "🔥 강화 실행",
       use_container_width=True,
       disabled=(st.session_state.level >= 30),
   ):
@@ -513,17 +514,6 @@ with left_col:
   ):
     sell()
     st.rerun()
-  st.markdown("</div>", unsafe_allow_html=True)
-
-  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드"
-      " 설정</h4>",
-      unsafe_allow_html=True,
-  )
-  st.session_state.dev_mode = st.toggle(
-      "🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode
-  )
   st.markdown("</div>", unsafe_allow_html=True)
 
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
@@ -555,10 +545,10 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 15개로 1단계 확정 상승")
-    if st.button("1단계 확정 상승 (15개)", use_container_width=True):
-      if st.session_state.tears >= 15 and st.session_state.level < 30:
-        st.session_state.tears -= 15
+    st.caption("눈물 20개로 1단계 확정 상승")
+    if st.button("1단계 확정 상승 (20개)", use_container_width=True):
+      if st.session_state.tears >= 20 and st.session_state.level < 30:
+        st.session_state.tears -= 20
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
         st.success("확정 강화 성공!")
@@ -698,6 +688,9 @@ with right_col:
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
                 statusText.style.color = "#f59e0b";
+            }} else if (status === "HOLD") {{
+                statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
+                statusText.style.color = "#38bdf8";
             }}
 
             const scene = new THREE.Scene();
@@ -819,10 +812,9 @@ with right_col:
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
-            }} else if (status === "FAILED") {{
-                gsap.fromTo(failOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+            }} else if (status === "FAILED" || status === "HOLD") {{
+                gsap.fromTo(failOverlay, {{ opacity: 0.6 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
                 gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
-                gsap.fromTo(cardGroup.rotation, {{ z: -0.15 }}, {{ z: 0.15, duration: 0.08, repeat: 3, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
                 gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
@@ -938,22 +930,20 @@ with b_col3:
   )
 
 with b_col4:
-  sp, fp, dp = (
-      PROB_TABLE[st.session_state.level]
-      if st.session_state.level < 30
-      else (0, 0, 0)
-  )
-  crit_pct = int(CRITICAL_RATE * 100)
-  prob_str = (
-      "100% (DEV)"
-      if st.session_state.dev_mode
-      else f"{sp}% / {crit_pct}% / {dp}%"
-  )
+  if st.session_state.level < 30:
+    sp, dp, down_p = PROB_TABLE[st.session_state.level]
+    hold_p = max(0.0, 100.0 - (sp + dp + down_p))
+    crit_pct = int(CRITICAL_RATE * 100)
+    # 성공 / 크리 / 파괴 / 하락 / 유지 표시
+    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>파괴:{dp}% / 하락:{down_p}% / 유지:{hold_p:.1f}%"
+  else:
+    prob_str = "최고 단계 도달"
+
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">📊 성공 / 크리 / 파괴</div>
-            <div class="stat-value" style="font-size: 14px;">{prob_str}</div>
+            <div class="stat-title">📊 상세 확률표</div>
+            <div class="stat-value" style="font-size: 11px; line-height: 1.3;">{prob_str}</div>
         </div>
     """,
       unsafe_allow_html=True,
