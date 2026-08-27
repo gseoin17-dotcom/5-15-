@@ -3,27 +3,37 @@ import random
 import time
 
 # -----------------------------------------------------------------------------
-# 1. 페이지 설정 및 애니메이션 / 스타일 CSS
+# 1. 페이지 설정 및 지독한 냄새 테마 / 애니메이션 CSS
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - 30단계 도전!",
-    page_icon="👃",
+    page_icon="🤢",
     layout="centered"
 )
 
-# 자이온 연출용 CSS (파괴 시 화면 흔들림, 강화 오라 효과)
+# 냄새나고 눅눅한 썩은 늪지대 스타일 커스텀 CSS
 st.markdown("""
     <style>
+    /* 배경: 썩은 독성 습지 및 냄새 안개 그라데이션 */
     .stApp {
-        background-color: #0d120e;
-        color: #e0e0e0;
+        background: linear-gradient(135deg, #050e06 0%, #111e0e 50%, #0a1309 100%);
+        color: #d2e8d4;
         font-family: 'Malgun Gothic', 'Dotum', sans-serif;
     }
+
+    /* 화면 전체에 냄새/연기가 일렁이는 듯한 독성 애니메이션 */
+    @keyframes stinkyFog {
+        0% { box-shadow: inset 0 0 50px rgba(45, 90, 39, 0.3); }
+        50% { box-shadow: inset 0 0 100px rgba(100, 160, 40, 0.5); }
+        100% { box-shadow: inset 0 0 50px rgba(45, 90, 39, 0.3); }
+    }
     
+    .stApp > header { background-color: transparent !important; }
+
     /* 화면 흔들림 (파괴 시 적용) */
     @keyframes shake {
         0% { transform: translate(1px, 1px) rotate(0deg); }
-        10% { transform: translate(-1px, -2px) rotate(-1deg); }
+        10% { transform: translate(-2px, -2px) rotate(-1deg); }
         20% { transform: translate(-3px, 0px) rotate(1deg); }
         30% { transform: translate(3px, 2px) rotate(0deg); }
         40% { transform: translate(1px, -1px) rotate(1deg); }
@@ -35,79 +45,82 @@ st.markdown("""
         100% { transform: translate(1px, -2px) rotate(-1deg); }
     }
     
-    .destroyed-screen {
-        animation: shake 0.5s;
-        border: 4px solid #ff0000 !important;
-        background-color: #3d0000 !important;
-    }
-    
-    /* 게임 메인 박스 */
+    /* 냄새나는 게임 메인 박스 */
     .game-box {
-        background: #141c16;
-        border: 3px solid #3d5e44;
-        border-radius: 15px;
+        background: rgba(18, 31, 20, 0.85);
+        border: 3px solid #5a8a4f;
+        border-radius: 18px;
         padding: 25px;
         text-align: center;
-        box-shadow: 0 0 25px rgba(0, 255, 128, 0.15);
+        box-shadow: 0 0 30px rgba(80, 200, 60, 0.25);
         margin-bottom: 20px;
+        animation: stinkyFog 4s infinite ease-in-out;
         position: relative;
-        overflow: hidden;
+    }
+
+    .destroyed-screen {
+        animation: shake 0.5s !important;
+        border: 4px solid #ff2222 !important;
+        background: rgba(60, 10, 10, 0.9) !important;
+        box-shadow: 0 0 40px rgba(255, 0, 0, 0.6) !important;
     }
     
     .smell-level {
         font-size: 1.3rem;
-        color: #8bbd93;
+        color: #92d480;
         font-weight: bold;
     }
     
     .smell-title {
         font-size: 2.2rem;
-        color: #00ff88;
+        color: #55ff66;
         font-weight: 900;
-        text-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
+        text-shadow: 0 0 15px rgba(85, 255, 102, 0.8);
         margin: 15px 0;
     }
     
     .smell-desc {
         font-size: 1.05rem;
-        color: #b0d4b8;
+        color: #c0ebbd;
         font-style: italic;
-        background: rgba(0,0,0,0.4);
+        background: rgba(5, 15, 7, 0.7);
         padding: 12px;
         border-radius: 8px;
+        border: 1px solid #3d6337;
     }
     
     .stat-badge {
-        background: #1c2b1f;
-        border: 1px solid #3d6144;
-        padding: 8px 15px;
+        background: rgba(15, 30, 17, 0.9);
+        border: 1px solid #52804b;
+        padding: 8px 16px;
         border-radius: 20px;
         font-weight: bold;
-        color: #f0f0f0;
+        color: #e1f5e2;
         display: inline-block;
         margin: 5px;
     }
     
     .prob-info {
         font-size: 0.95rem;
-        color: #d1d1d1;
-        background: #121913;
+        color: #e0e0e0;
+        background: rgba(10, 20, 11, 0.9);
         padding: 12px;
         border-radius: 8px;
-        border-left: 4px solid #f39c12;
+        border-left: 5px solid #d4ac0d;
     }
     
     /* 빡침 경고창 */
     .rage-box {
         background: #4a0000;
-        color: #ff9999;
-        border: 2px dashed #ff0000;
+        color: #ffb3b3;
+        border: 2px dashed #ff3333;
         padding: 15px;
         border-radius: 10px;
         font-weight: bold;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         margin-bottom: 15px;
+        box-shadow: 0 0 15px rgba(255,0,0,0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -164,7 +177,7 @@ PROB_TABLE = {
 }
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화 및 킹받는 멘트 목록
+# 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state:
     st.session_state.level = 0
@@ -172,8 +185,6 @@ if "money" not in st.session_state:
     st.session_state.money = 1000
 if "max_level" not in st.session_state:
     st.session_state.max_level = 0
-if "history" not in st.session_state:
-    st.session_state.history = ["게임을 시작했습니다."]
 if "is_destroyed" not in st.session_state:
     st.session_state.is_destroyed = False
 if "rage_msg" not in st.session_state:
@@ -183,7 +194,7 @@ RAGE_QUOTES = [
     "🖐️ 자이온맘: '어딜 감히 손을 대! 마르지도 않은 냄새 억지로 피우다가 다 터졌잖아!'",
     "💥 팡-!! 냄새 분자가 수용량을 초과하여 증발했습니다. 0단계부터 다시 하세요 ㅋㅋㅋ",
     "👋 자이온맘의 등짝 스매싱이 불을 뿜었습니다! (지온 농도 0%로 초기화)",
-    "🤣 방금 그 확률을 못 뚫고 터지셨나요? 능지 능상 추천드립니다!",
+    "🤣 방금 그 확률을 못 뚫고 터지셨나요? 능지 상승 추천드립니다!",
     "💸 강화 스노우볼 깔끔하게 폭파! 소중한 자이온냄새는 공기 중으로 사라졌습니다."
 ]
 
@@ -198,9 +209,9 @@ def enhance():
     if curr_lvl >= 30:
         return
 
-    # 강화 연출 (스피너 & 시각 효과)
-    with st.spinner("🌀 지온 입자를 응축하는 중... (냄새 강화 시도!)"):
-        time.sleep(0.8) # 냄새 증폭 몰입감을 위한 딜레이
+    # 강화 시 냄새 응축 연출
+    with st.spinner("🤢 눅눅한 지온 입자를 응축하는 중..."):
+        time.sleep(0.8)
 
     succ_p, fail_p, dest_p = PROB_TABLE[curr_lvl]
     rand_val = random.uniform(0, 100)
@@ -211,25 +222,21 @@ def enhance():
         new_lvl = st.session_state.level
         if new_lvl > st.session_state.max_level:
             st.session_state.max_level = new_lvl
-        st.session_state.history.insert(0, f"✨ [성공] {SMELL_DB[new_lvl]['name']}(으)로 강화 성공!")
-        st.toast(f"🎉 성공! {new_lvl}단계 달성!", icon="✨")
+        st.toast(f"✨ 성공! {new_lvl}단계 달성!", icon="🤢")
         if new_lvl >= 20:
             st.balloons()
             
-    # 파괴 (개빡치는 연출 발동)
+    # 파괴
     elif rand_val < (succ_p + dest_p):
-        old_name = SMELL_DB[curr_lvl]['name']
         st.session_state.level = 0
         st.session_state.is_destroyed = True
         st.session_state.rage_msg = random.choice(RAGE_QUOTES)
-        st.session_state.history.insert(0, f"💥 [파괴] {old_name} 증폭 실패로 폭발!! (0단계 초기화)")
         st.toast("💥 펑!! 냄새가 터졌습니다!!", icon="💣")
         
     # 실패 (하락)
     else:
         if curr_lvl > 0:
             st.session_state.level -= 1
-            st.session_state.history.insert(0, f"🔻 [실패] 냄새가 약해져 1단계 하락했습니다... ({SMELL_DB[st.session_state.level]['name']})")
             st.toast("🔻 실패... 1단계 하락", icon="🌧️")
 
 def sell():
@@ -239,17 +246,15 @@ def sell():
         
     price = SMELL_DB[curr_lvl]['price']
     st.session_state.money += price
-    sold_name = SMELL_DB[curr_lvl]['name']
     st.session_state.level = 0
     st.session_state.is_destroyed = False
-    st.session_state.history.insert(0, f"💰 [판매] {sold_name}을(를) {price:,} G에 판매!")
     st.toast(f"💰 {price:,} 골드 획득!", icon="💵")
 
 # -----------------------------------------------------------------------------
 # 6. 메인 UI
 # -----------------------------------------------------------------------------
-st.title("👃 지온냄새 강화하기")
-st.caption("후반부 자이온맘 강림 | 극악의 파괴 확률 및 냄새 연출 탑재")
+st.title("🤢 지온냄새 강화하기")
+st.caption("독성 안개 연출 탑재 | 후반부 자이온맘 강림")
 
 # 상단 상태바
 c1, c2 = st.columns(2)
@@ -260,27 +265,27 @@ with c2:
 
 st.write("")
 
-# 💥 개빡치는 파괴 메시지 박스 (터졌을 때만 출력)
+# 💥 파괴 시 출력되는 빡침 메시지 박스
 if st.session_state.is_destroyed:
     st.markdown(f'<div class="rage-box">{st.session_state.rage_msg}</div>', unsafe_allow_html=True)
 
-# 메인 강화 디스플레이 (파괴 시 .destroyed-screen 클래스 적용되어 화면이 흔들림)
+# 메인 강화 디스플레이
 box_class = "game-box destroyed-screen" if st.session_state.is_destroyed else "game-box"
 curr_data = SMELL_DB[st.session_state.level]
 
 st.markdown(f"""
     <div class="{box_class}">
-        <div class="smell-level">현재 농도 [ {st.session_state.level} / 30 단계 ]</div>
+        <div class="smell-level">현재 지온 농도 [ {st.session_state.level} / 30 단계 ]</div>
         <div class="smell-title">{curr_data['name']}</div>
         <div class="smell-desc">"{curr_data['desc']}"</div>
         <br>
-        <div style="font-size: 1.1rem; color: #ffd700; font-weight: bold;">
+        <div style="font-size: 1.1rem; color: #75ff85; font-weight: bold;">
             현재 판매 가치: {curr_data['price']:,} G
         </div>
     </div>
 """, unsafe_allow_html=True)
 
-# 확률 안내
+# 강화 확률 안내
 if st.session_state.level < 30:
     sp, fp, dp = PROB_TABLE[st.session_state.level]
     st.markdown(f"""
@@ -307,10 +312,3 @@ with btn2:
     if st.button("💰 냄새 판매하기", use_container_width=True, disabled=(st.session_state.level == 0)):
         sell()
         st.rerun()
-
-st.divider()
-
-# 로그
-st.subheader("📜 강화 기록")
-for log in st.session_state.history[:5]:
-    st.write(log)
