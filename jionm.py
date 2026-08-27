@@ -486,7 +486,6 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
-  # 개발자 모드 설정 토글
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
       " 설정</h4>",
@@ -516,7 +515,6 @@ with left_col:
     else:
       st.rerun()
 
-  # 개발자 모드가 켜져 있을 때만 노출되는 무조건 성공 버튼
   if dev_mode:
     st.write("")
     if st.button(
@@ -799,13 +797,26 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            const geometries = [
-                new THREE.DodecahedronGeometry(2.5, 0),
-                new THREE.IcosahedronGeometry(2.3, 0),
-                new THREE.OctahedronGeometry(2.7, 0),
-                new THREE.TorusKnotGeometry(1.6, 0.5, 64, 16)
-            ];
-            const baseGeo = geometries[{tier} % geometries.length];
+            // 16~30단계(티어 4~6) 및 기타 티어별 맞춤형 다면체 기하학 구조 생성
+            const tier = {tier};
+            let baseGeo;
+
+            if (tier === 1) {{
+                baseGeo = new THREE.DodecahedronGeometry(2.5, 0);
+            }} else if (tier === 2) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.3, 0);
+            }} else if (tier === 3) {{
+                baseGeo = new THREE.OctahedronGeometry(2.7, 1);
+            }} else if (tier === 4) {{
+                // 16~20단계 (티어 4): 정교하게 세분화된 Icosahedron 보석 형태
+                baseGeo = new THREE.IcosahedronGeometry(2.4, 2);
+            }} else if (tier === 5) {{
+                // 21~25단계 (티어 5): 역동적이고 복잡한 토러스 컷 (TorusKnot)
+                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.5, 96, 20, 2, 3);
+            }} else {{
+                // 26~30단계 (티어 6): 최고 단계용 입체 다면체 (고급 Dodecahedron)
+                baseGeo = new THREE.DodecahedronGeometry(2.6, 2);
+            }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
