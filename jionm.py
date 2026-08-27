@@ -638,12 +638,13 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  curr_data = SMELL_DB[st.session_state.level]
+  current_level = st.session_state.level
+  curr_data = SMELL_DB[current_level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
   card_desc = curr_data["desc"]
   card_price = format_gold(curr_data["price"])
-  current_cost = format_gold(get_enhance_cost(st.session_state.level))
+  current_cost = format_gold(get_enhance_cost(current_level))
   tier = curr_data["tier"]
   status = st.session_state.status
 
@@ -680,6 +681,18 @@ with right_col:
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
+            /* 20단계 이상부터 적용될 텍스트 흔들림(바이브/글리치) 효과 */
+            .shaking-text {{
+                animation: textVibe 0.18s infinite alternate ease-in-out;
+            }}
+            @keyframes textVibe {{
+                0% {{ transform: translate(0px, 0px) rotate(0deg); }}
+                25% {{ transform: translate(-2px, 1px) rotate(-0.5deg); }}
+                50% {{ transform: translate(2px, -2px) rotate(0.8deg); }}
+                75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
+                100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
+            }}
+
             .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
             .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
             .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
@@ -693,13 +706,22 @@ with right_col:
 
         <div class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
-            <div class="title-tier-{tier}">{card_title}</div>
-            <div class="desc-text">"{card_desc}"</div>
-            <div class="price-text">예상 가치: {card_price}</div>
-            <div class="cost-text">필요 강화 비용: {current_cost}</div>
+            <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
+            <div id="descText" class="desc-text">"{card_desc}"</div>
+            <div id="priceText" class="price-text">예상 가치: {card_price}</div>
+            <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
         </div>
 
         <script>
+            // 20단계 이상부터 UI 텍스트 전체 흔들림(바이브) 부여
+            const currentLevel = {current_level};
+            if (currentLevel >= 20) {{
+                document.getElementById('mainTitle').classList.add('shaking-text');
+                document.getElementById('descText').classList.add('shaking-text');
+                document.getElementById('priceText').classList.add('shaking-text');
+                document.getElementById('costText').classList.add('shaking-text');
+            }}
+
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             
@@ -797,25 +819,50 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            // 16~30단계(티어 4~6) 및 기타 티어별 맞춤형 다면체 기하학 구조 생성
-            const tier = {tier};
+            // -----------------------------------------------------------------
+            // 16단계~30단계 및 전 구간별 '고유 다각형 도형' 정밀 매핑 (삼각형~팔각형, 별, 원기둥 등)
+            // -----------------------------------------------------------------
             let baseGeo;
+            const lvl = {current_level};
 
-            if (tier === 1) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.5, 0);
-            }} else if (tier === 2) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.3, 0);
-            }} else if (tier === 3) {{
-                baseGeo = new THREE.OctahedronGeometry(2.7, 1);
-            }} else if (tier === 4) {{
-                // 16~20단계 (티어 4): 정교하게 세분화된 Icosahedron 보석 형태
-                baseGeo = new THREE.IcosahedronGeometry(2.4, 2);
-            }} else if (tier === 5) {{
-                // 21~25단계 (티어 5): 역동적이고 복잡한 토러스 컷 (TorusKnot)
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.5, 96, 20, 2, 3);
+            if (lvl <= 2) {{
+                baseGeo = new THREE.TetrahedronGeometry(2.4); // 정삼각형 기반 사면체
+            }} else if (lvl <= 5) {{
+                baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2); // 정육면체 (사각형)
+            }} else if (lvl <= 8) {{
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5); // 정오각형 기둥
+            }} else if (lvl <= 11) {{
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6); // 정육각형 기둥
+            }} else if (lvl <= 14) {{
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7); // 칠각형 기둥
+            }} else if (lvl <= 17) {{
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8); // 팔각형 기둥 (우주관통~차원균열)
+            }} else if (lvl == 18) {{
+                baseGeo = new THREE.OctahedronGeometry(2.6); // 팔면체 (Absolute)
+            }} else if (lvl == 19) {{
+                baseGeo = new THREE.DodecahedronGeometry(2.5); // 십면체 (초월적)
+            }} else if (lvl == 20) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.5); // 이십면체 (자이온맘 집밥)
+            }} else if (lvl == 21) {{
+                baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6); // 육각뿔 (스매싱)
+            }} else if (lvl == 22) {{
+                baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32); // 도넛 형태의 링 (된장국)
+            }} else if (lvl == 23) {{
+                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3); // 꼬인 매듭 (숙성 원액)
+            }} else if (lvl == 24) {{
+                baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12); // 스프레이 분사형 원뿔뿔체
+            }} else if (lvl == 25) {{
+                baseGeo = new THREE.SphereGeometry(2.3, 16, 16); // 거대한 은혜의 구체
+            }} else if (lvl == 26) {{
+                baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8); // 팔각 뾰족 필살기 탑
+            }} else if (lvl == 27) {{
+                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4); // 고차원 복잡 매듭 (창조와 구원)
+            }} else if (lvl == 28) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.6, 1); // 고도화된 다면체 (권능)
+            }} else if (lvl == 29) {{
+                baseGeo = new THREE.DodecahedronGeometry(2.7, 1); // 만물의 어머니성 오라 덩어리
             }} else {{
-                // 26~30단계 (티어 6): 최고 단계용 입체 다면체 (고급 Dodecahedron)
-                baseGeo = new THREE.DodecahedronGeometry(2.6, 2);
+                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5); // 태초의 절대신성 최종 오라 매듭
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
