@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import time
 import streamlit.components.v1 as components
 
 # -----------------------------------------------------------------------------
@@ -44,7 +43,7 @@ SMELL_DB = {
     5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 3500, "color": "#2c7a7b", "tier": 1},
     6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 8000, "color": "#3182ce", "tier": 2},
     7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.", "price": 18000, "color": "#2b6cb0", "tier": 2},
-    8: {"name": "8단계 : 폭발하는 자이온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 40000, "color": "#805ad5", "tier": 2},
+    8: {"name": "8단계 : 폭발하는 지온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 40000, "color": "#805ad5", "tier": 2},
     9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.", "price": 90000, "color": "#6b46c1", "tier": 2},
     10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.", "price": 200000, "color": "#d69e2e", "tier": 2},
     11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 지구 흙밭을 거니는 환각을 본다.", "price": 450000, "color": "#b7791f", "tier": 3},
@@ -201,7 +200,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 만약 강화 실행 버튼이 눌렸다면, 파이썬 단에서 먼저 결과를 계산해둠
 if st.session_state.trigger_enhance:
     run_enhance_logic()
     st.session_state.trigger_enhance = False
@@ -260,9 +258,6 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
-    # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (자바스크립트 내장 타임라인 애니메이션)
-    # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
@@ -325,16 +320,12 @@ with right_col:
 
             .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
             .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
-            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
-            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
-            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
-
-            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; }}
+            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; opacity: 0; transition: opacity 0.5s ease-in-out; }}
             .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
             .price-text {{ font-size: 24px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
         </style>
@@ -365,8 +356,12 @@ with right_col:
             const critOverlay = document.getElementById('critFlashOverlay');
             const successOverlay = document.getElementById('successFlashOverlay');
 
+            // 초기 상태 메시지 설정 및 지연 노출
             statusText.innerText = "READY";
             statusText.style.color = "#38bdf8";
+            setTimeout(() => {{
+                statusText.style.opacity = 1;
+            }}, 1500); // 1.5초 뒤에 메시지 등장
 
             const scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
@@ -460,23 +455,32 @@ with right_col:
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // 긴 강화 시퀀스 애니메이션 (총 3초 연출)
+            // [수정된 애니메이션 타임라인]
+            // 회전 대신 '흔들림 -> 합쳐짐(붙음) -> 결과 모션/폭발' 연출
             const tl = gsap.timeline();
             
-            // 1단계: 차징 (카드가 화면 앞으로 다가오며 격렬하게 회전)
-            tl.to(cardGroup.position, {{ z: 2.5, duration: 1.2, ease: "power2.inOut" }});
-            tl.to(cardGroup.rotation, {{ y: Math.PI * 6, duration: 2.2, ease: "power1.inOut" }}, 0);
-            tl.to(camera.position, {{ z: 6, duration: 2.2, ease: "power2.inOut" }}, 0);
+            // 1단계: 카드가 좌우로 거칠게 흔들림 (좌우 진동)
+            tl.to(cardGroup.position, {{ x: 0.4, duration: 0.08, repeat: 10, yoyo: true, ease: "power1.inOut" }});
             
-            tl.call(() => {{ statusText.innerText = "🔮 지온의 기운을 끌어모으는 중..."; statusText.style.color = "#c084fc"; }}, [], 0.2);
-            tl.call(() => {{ statusText.innerText = "⚡ 차원 에너지가 포화상태에 도달합니다!"; statusText.style.color = "#fbbf24"; }}, [], 1.4);
+            // 2단계: 카드가 중앙으로 쾅 하고 달라붙으며 집중됨 (Scale 압축 후 팽창)
+            tl.to(cardGroup.scale, {{ x: 1.2, y: 0.8, z: 1.2, duration: 0.15, ease: "power2.in" }});
+            tl.to(cardGroup.scale, {{ x: 1.0, y: 1.0, z: 1.0, duration: 0.3, ease: "elastic.out(1.5, 0.3)" }});
 
-            // 2단계: 결과 판정 연출 (2.2초 시점)
+            // 메시지는 연출 중간~후반부에 늦게 등장하도록 배치
             tl.call(() => {{
+                statusText.style.opacity = 0; // 순간 깜빡임
+            }}, [], 1.8);
+
+            // 3단계: 결과 판정 및 최종 모션 (2.2초 시점)
+            tl.call(() => {{
+                statusText.style.opacity = 1; // 늦게 뜨는 결과 메시지
+                
                 if (status === "CRITICAL") {{
                     statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                     statusText.style.color = "#ffe600";
                     gsap.to(critOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
+                    // 대성공 임팩트 진동
+                    gsap.to(cardGroup.scale, {{ x: 1.3, y: 1.3, z: 1.3, duration: 0.2, yoyo: true, repeat: 1 }});
                 }} else if (status === "SUCCESS") {{
                     statusText.innerText = "✨ ENHANCE SUCCESS ✨";
                     statusText.style.color = "#34d399";
@@ -492,7 +496,8 @@ with right_col:
                     gsap.to(flashOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
                     cardGroup.visible = false;
 
-                    const shardCount = 25;
+                    // 파괴 시 카드 파편이 사방으로 터지는 모션
+                    const shardCount = 30;
                     for(let i = 0; i < shardCount; i++) {{
                         const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
                         const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
@@ -501,11 +506,16 @@ with right_col:
                         shardsGroup.add(shard);
 
                         gsap.to(shard.position, {{
-                            x: (Math.random() - 0.5) * 8,
-                            y: (Math.random() - 0.5) * 8,
-                            z: (Math.random() - 0.5) * 8,
-                            duration: 1.0,
+                            x: (Math.random() - 0.5) * 10,
+                            y: (Math.random() - 0.5) * 10,
+                            z: (Math.random() - 0.5) * 10,
+                            duration: 1.2,
                             ease: "power3.out"
+                        }});
+                        gsap.to(shard.rotation, {{
+                            x: Math.random() * 10,
+                            y: Math.random() * 10,
+                            duration: 1.2
                         }});
                     }}
                 }} else if (status === "FAILED") {{
@@ -514,10 +524,6 @@ with right_col:
                     gsap.to(cardGroup.position, {{ x: 0.3, duration: 0.05, repeat: 6, yoyo: true }});
                 }}
             }}, [], 2.2);
-
-            // 3단계: 복귀 및 안정화
-            tl.to(cardGroup.position, {{ z: 0, x: 0, y: 0.2, duration: 0.8, ease: "power2.out" }}, 2.5);
-            tl.to(camera.position, {{ z: 9.5, duration: 0.8, ease: "power2.out" }}, 2.5);
 
             const clock = new THREE.Clock();
 
@@ -533,7 +539,7 @@ with right_col:
                 pGeo.attributes.position.needsUpdate = true;
 
                 if (cardGroup.visible) {{
-                    cardGroup.rotation.y += 0.005;
+                    // 기본 상태에서는 회전 없이 부드럽게 상하로만 떠있음
                     cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
                 }}
                 
