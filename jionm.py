@@ -345,6 +345,8 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
+if "bgm_vol" not in st.session_state:
+  st.session_state.bgm_vol = 30  # 기본 볼륨 30%
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -489,29 +491,44 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>💨 방귀 뀌기"
-      " 강화</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
+      " 판타지 지온 강화</h3>",
       unsafe_allow_html=True,
   )
 
   if st.button(
-      "💨 힘주기 (강화)",
+      "🔥 강화 실행",
       use_container_width=True,
       disabled=(st.session_state.level >= 30),
   ):
     enhance()
     if st.session_state.status == "NOT_ENOUGH_MONEY":
-      st.error("힘을 줄 식사가 부족합니다!")
+      st.error("강화 비용이 부족합니다!")
     else:
       st.rerun()
 
   st.write("")
   if st.button(
-      "💨 방귀 배출 (판매)",
+      "💰 현재 냄새 판매",
       use_container_width=True,
       disabled=(st.session_state.level == 0),
   ):
     sell()
+    st.rerun()
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  # BGM 설정 패널
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🎵 BGM"
+      " 플레이어</h4>",
+      unsafe_allow_html=True,
+  )
+  bgm_vol = st.slider(
+      "브금 볼륨 조절", 0, 100, st.session_state.bgm_vol, key="slider_bgm_vol"
+  )
+  if bgm_vol != st.session_state.bgm_vol:
+    st.session_state.bgm_vol = bgm_vol
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
@@ -521,28 +538,28 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방어권", "💧 눈물"])
+  tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"엉덩이 조이기 (파괴 방지)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
     can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
     if st.button(
-        "조이기 구매 (최대 2개)",
+        "방지권 구매 (최대 2개)",
         use_container_width=True,
         disabled=not can_buy_shield,
     ):
       if st.session_state.level < 20:
-        st.warning("엉덩이 조리개는 20단계 이상부터 구매 가능합니다.")
+        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
       elif st.session_state.shield >= 2:
-        st.warning("최대 2개까지만 보유할 수 있습니다.")
+        st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
-        st.success("엉덩이 조이기 구매 완료!")
+        st.success("파괴 방지권 구매 완료!")
         st.rerun()
       else:
         st.error("금액이 부족합니다.")
@@ -554,7 +571,7 @@ with left_col:
         st.session_state.tears -= 20
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
-        st.success("확정 방귀 강화 성공!")
+        st.success("확정 강화 성공!")
         st.rerun()
       else:
         st.error("조건이 부족합니다.")
@@ -570,7 +587,9 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
+  current_vol = st.session_state.bgm_vol / 100.0
 
+  # Three.js 렌더링 및 Web Audio API를 활용한 무한 자동재생 몽환적 판타지 BGM 생성기 탑재 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -676,6 +695,98 @@ with right_col:
         </div>
 
         <script>
+            // --- Web Audio API 기반 판타지 BGM 합성기 ---
+            let audioCtx = null;
+            let masterGain = null;
+            let bgmInterval = null;
+            const targetVolume = {current_vol};
+
+            function initBGM() {{
+                if (audioCtx) {{
+                    if (masterGain) {{
+                        masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+                    }}
+                    return;
+                }}
+                
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+
+                const reverbNode = audioCtx.createBiquadFilter();
+                reverbNode.type = "lowpass";
+                reverbNode.frequency.setValueAtTime(1200, audioCtx.currentTime);
+
+                masterGain.connect(reverbNode);
+                reverbNode.connect(audioCtx.destination);
+
+                // 신비로운 판타지 아르페지오 코드 진행 (신디사이저 톤)
+                const chords = [
+                    [220.00, 261.63, 329.63, 392.00], // A minor
+                    [174.61, 220.00, 261.63, 329.63], // F major
+                    [196.00, 246.94, 293.66, 369.99], // G major
+                    [130.81, 164.81, 196.00, 246.94]  // C major
+                ];
+
+                let chordIdx = 0;
+                let noteIdx = 0;
+
+                function playNote() {{
+                    if (!audioCtx) return;
+                    if (audioCtx.state === 'suspended') {{
+                        audioCtx.resume();
+                    }}
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+
+                    const currentChord = chords[chordIdx];
+                    const freq = currentChord[noteIdx];
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    // 패드/아르페지오 느낌의 부드러운 엔벨로프
+                    noteGain.gain.setValueAtTime(0, now);
+                    noteGain.gain.linearRampToValueAtTime(0.5, now + 0.1);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+                    osc.connect(noteGain);
+                    noteGain.connect(masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 1.9);
+
+                    noteIdx++;
+                    if (noteIdx >= currentChord.length) {{
+                        noteIdx = 0;
+                        chordIdx = (chordIdx + 1) % chords.length;
+                    }}
+                }}
+
+                // 400ms 간격으로 오디오 노트 루프 실행
+                bgmInterval = setInterval(playNote, 400);
+            }}
+
+            // 첫 클릭 혹은 인터랙션 시 오디오 컨텍스트 활성화
+            window.addEventListener('pointerdown', () => {{
+                if (!audioCtx) {{
+                    initBGM();
+                }} else if (audioCtx.state === 'suspended') {{
+                    audioCtx.resume();
+                }}
+            }}, {{ once: true }});
+
+            // 자동 시작 시도
+            setTimeout(() => {{
+                try {{
+                    initBGM();
+                }} catch(e) {{}}
+            }}, 500);
+
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -686,22 +797,22 @@ with right_col:
             const successOverlay = document.getElementById('successFlashOverlay');
             
             if (status === "CRITICAL") {{
-                statusText.innerText = "💨 으마무시한 메가톤 방귀! (+2단계) 💨";
+                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                 statusText.style.color = "#ffe600";
             }} else if (status === "SUCCESS") {{
-                statusText.innerText = "💨 시원하게 뀐 성공 방귀! 💨";
+                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
                 statusText.style.color = "#34d399";
             }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ 괄약근 조이기 성공! (방어 발동) 🛡️";
+                statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
                 statusText.style.color = "#60a5fa";
             }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 지려버렸다... (파괴) 💥";
+                statusText.innerText = "💥 DESTROYED 💥";
                 statusText.style.color = "#ef4444";
             }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 피식... (방귀 하락) 🔻";
+                statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
                 statusText.style.color = "#f59e0b";
             }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 엉덩이에 걸쳤다 (유지) 🔒";
+                statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
                 statusText.style.color = "#38bdf8";
             }}
 
@@ -944,7 +1055,7 @@ with b_col2:
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">🛡️ 조이기 개수</div>
+            <div class="stat-title">🛡️ 보유권 개수</div>
             <div class="stat-value">{st.session_state.shield} / 2개</div>
         </div>
     """,
@@ -966,14 +1077,14 @@ with b_col4:
   if st.session_state.level < 30:
     sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
     crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = f"성공:{sp}% (대방귀 {crit_pct}%)<br>하락:{down_p}% / 지림:{dp}% / 유지:{hold_p}%"
+    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}% / 유지:{hold_p}%"
   else:
     prob_str = "최고 단계 도달"
 
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">📊 방귀 확률표</div>
+            <div class="stat-title">📊 상세 확률표</div>
             <div class="stat-value" style="font-size: 11px; line-height: 1.3;">{prob_str}</div>
         </div>
     """,
