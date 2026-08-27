@@ -561,13 +561,14 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
-  # --- 닉네임 설정 패널 ---
+  # --- 닉네임 설정 및 명예의 전당 버튼 패널 ---
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 18px; color:#fde68a;'>🏆 유저"
-      " 랭킹 설정</h3>",
+      "<h3 style='margin:0 0 10px 0; font-size: 17px; color:#fde68a;'>🏆 유저"
+      " 랭킹 및 랭킹 확인</h3>",
       unsafe_allow_html=True,
   )
+
   user_input = st.text_input(
       "내 닉네임 입력", value=st.session_state.username, max_chars=10
   )
@@ -576,6 +577,49 @@ with left_col:
     save_score_to_db(
         st.session_state.username, st.session_state.level, st.session_state.money
     )
+
+  # 다이얼로그나 팝업 대신 사용할 수 있는 토글 상태 또는 버튼 세션
+  if "show_ranking" not in st.session_state:
+    st.session_state.show_ranking = False
+
+  col_btn1, col_btn2 = st.columns(2)
+  with col_btn1:
+    if st.button("🏆 명예의 전당", use_container_width=True):
+      st.session_state.show_ranking = not st.session_state.show_ranking
+  with col_btn2:
+    if st.button("🔄 랭킹 닫기", use_container_width=True):
+      st.session_state.show_ranking = False
+
+  if st.session_state.show_ranking:
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.2);'>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 15px; color:#fde68a;'>👑 명예의"
+        " 전당 (Top 10)</h4>",
+        unsafe_allow_html=True,
+    )
+    leaderboard_data = get_leaderboard()
+    if leaderboard_data:
+      rank_html = (
+          "<table style='width:100%; font-size:12px; color:#f8fafc;"
+          " border-collapse: collapse;'>"
+          "<tr style='border-bottom: 1px solid rgba(255,255,255,0.2);"
+          " color:#fde68a;'><th>순위</th><th>닉네임</th><th>단계</th></tr>"
+      )
+      for idx, (uname, lvl, mny) in enumerate(leaderboard_data, 1):
+        crown = (
+            "🥇"
+            if idx == 1
+            else ("🥈" if idx == 2 else ("🥉" if idx == 3 else ""))
+        )
+        rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:4px;'>{crown} {idx}위</td><td style='padding:4px;'>{uname}</td><td style='padding:4px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
+      rank_html += "</table>"
+      st.markdown(rank_html, unsafe_allow_html=True)
+    else:
+      st.caption("아직 등록된 랭킹 데이터가 없습니다.")
+
   st.markdown("</div>", unsafe_allow_html=True)
 
   # --- 강화 및 판매 버튼 패널 ---
@@ -662,32 +706,6 @@ with left_col:
       else:
         st.error("조건이 부족합니다.")
 
-  st.markdown("</div>", unsafe_allow_html=True)
-
-  # --- 랭킹 보드 패널 ---
-  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🏆 명예의 전당"
-      " (Top 10)</h4>",
-      unsafe_allow_html=True,
-  )
-  leaderboard_data = get_leaderboard()
-  if leaderboard_data:
-    rank_html = (
-        "<table style='width:100%; font-size:13px; color:#f8fafc; border-collapse:"
-        " collapse;'>"
-        "<tr style='border-bottom: 1px solid rgba(255,255,255,0.2); "
-        "color:#fde68a;'><th>순위</th><th>닉네임</th><th>단계</th></tr>"
-    )
-    for idx, (uname, lvl, mny) in enumerate(leaderboard_data, 1):
-      crown = (
-          "🥇" if idx == 1 else ("🥈" if idx == 2 else ("🥉" if idx == 3 else ""))
-      )
-      rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:4px;'>{crown} {idx}위</td><td style='padding:4px;'>{uname}</td><td style='padding:4px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
-    rank_html += "</table>"
-    st.markdown(rank_html, unsafe_allow_html=True)
-  else:
-    st.caption("아직 등록된 랭킹 데이터가 없습니다.")
   st.markdown("</div>", unsafe_allow_html=True)
 
 with right_col:
