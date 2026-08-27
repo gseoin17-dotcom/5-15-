@@ -57,6 +57,9 @@ PROB_TABLE = {
     25: (2, 28, 70), 26: (1.5, 23.5, 75), 27: (1.0, 19.0, 80), 28: (0.5, 14.5, 85), 29: (0.1, 9.9, 90)
 }
 
+# 크리티컬 확률 (5%)
+CRITICAL_RATE = 0.05
+
 # -----------------------------------------------------------------------------
 # 3. 세션 상태 초기화
 # -----------------------------------------------------------------------------
@@ -84,8 +87,8 @@ def enhance():
     r = random.uniform(0, 100)
     
     if r < sp:
-        # 성공 시 15% 확률로 크리티컬(+2단계) 발동
-        if random.random() < 0.15 and curr + 2 <= 30:
+        # 성공 시 5% 확률로 크리티컬(+2단계) 발동
+        if random.random() < CRITICAL_RATE and curr + 2 <= 30:
             st.session_state.level += 2
             st.session_state.status = "CRITICAL"
         else:
@@ -169,10 +172,12 @@ with col3:
 
 with col4:
     sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
+    # 성공 확률 계산 시 크리티컬 발동 시 명시
+    crit_pct = int(CRITICAL_RATE * 100)
     st.markdown(f'''
         <div class="stat-card">
-            <div class="stat-title">📊 성공/파괴 확률</div>
-            <div class="stat-value">{sp}% / {dp}%</div>
+            <div class="stat-title">📊 성공 / ⚡크리티컬 / 파괴</div>
+            <div class="stat-value">{sp}% / <span style="color:#ffe600;">{crit_pct}%</span> / {dp}%</div>
         </div>
     ''', unsafe_allow_html=True)
 
@@ -224,7 +229,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 7. 3D Render & 오버레이 연출 (크리티컬 + 위치 상향 조정)
+# 7. 3D Render & 오버레이 연출
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -242,7 +247,6 @@ three_js_code = f"""
         body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
         #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-        /* 화면 전체 붉은 섬광 오버레이 */
         #redFlashOverlay {{
             position: fixed;
             top: 0;
@@ -256,7 +260,6 @@ three_js_code = f"""
             opacity: 0;
         }}
 
-        /* 화면 전체 크리티컬 황금 섬광 오버레이 */
         #critFlashOverlay {{
             position: fixed;
             top: 0;
@@ -270,7 +273,6 @@ three_js_code = f"""
             opacity: 0;
         }}
 
-        /* 텍스트 위치를 위로 올리기 위해 bottom 값 수정 */
         .cinematic-ui {{
             position: absolute;
             bottom: 110px; 
@@ -393,7 +395,6 @@ three_js_code = f"""
         let explosionParticles = null;
         let explosionVelocities = [];
 
-        // ⚡ 크리티컬(CRITICAL) 시 황금 섬광 연출
         if (status === "CRITICAL") {{
             gsap.fromTo(critOverlay, 
                 {{ opacity: 0.9 }}, 
@@ -401,9 +402,7 @@ three_js_code = f"""
             );
             gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
             gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4 }}, {{ y: 0, duration: 1.5, ease: "power3.out" }});
-        }}
-        // 💥 파괴(DESTROYED) 시 전체 화면 붉은 플래시 효과
-        else if (status === "DESTROYED") {{
+        }} else if (status === "DESTROYED") {{
             gsap.fromTo(flashOverlay, 
                 {{ opacity: 0.85 }}, 
                 {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
@@ -457,7 +456,6 @@ three_js_code = f"""
             const time = clock.getElapsedTime();
 
             cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-            // 카드를 화면 위쪽에 더 가깝게 위치 조정
             cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.8;
 
             const pos = pGeo.attributes.position.array;
