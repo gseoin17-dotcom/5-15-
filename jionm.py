@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 골드 단위 변환 및 완화된 강화 비용 계산 함수
+# 2. 골드 단위 변환 및 후반부 비용이 가파라지는 강화 비용 계산 함수
 # -----------------------------------------------------------------------------
 def format_gold(amount):
     if amount == 0:
@@ -33,9 +33,14 @@ def format_gold(amount):
 
 def get_enhance_cost(level):
     if level == 0:
-        return 500
-    # 기존 1.35배에서 1.22배로 낮추어 비용이 너무 가파르게 상승하지 않도록 조정
-    return int(500 * (1.22 ** level))
+        return 1000
+    if level < 15:
+        # 1~14단계: 완만한 상승
+        return int(1000 * (1.25 ** level))
+    else:
+        # 15단계 이후부터는 비용이 급격하게 상승하여 후반 난이도 조절
+        base_cost = 1000 * (1.25 ** 14)
+        return int(base_cost * (1.55 ** (level - 14)))
 
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 및 강화 확률표 (성공, 실패, 파괴)
@@ -297,7 +302,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역
+    # 8. 3D 메인 연출 영역 (풍부한 입체 배경 적용)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -440,31 +445,49 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
             scene.add(ambientLight);
 
-            const sunsetLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            sunsetLight.position.set(5, 5, 5);
-            scene.add(sunsetLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            dirLight.position.set(5, 8, 5);
+            scene.add(dirLight);
 
-            const cardPointLight = new THREE.PointLight("{card_color}", 6, 20);
+            const cardPointLight = new THREE.PointLight("{card_color}", 7, 25);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
+            // 입체적인 3D 공간 연출을 위한 배경 링 및 회전하는 기하학 오브젝트들 생성
+            const bgGroup = new THREE.Group();
+            
+            // 거대한 회전 공간 링 (Sci-Fi 환형 구조물)
+            const ringGeo = new THREE.TorusGeometry(6.5, 0.05, 16, 100);
+            const ringMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 0.8, roughness: 0.2 }});
+            const spaceRing = new THREE.Mesh(ringGeo, ringMat);
+            spaceRing.rotation.x = Math.PI / 3;
+            bgGroup.add(spaceRing);
+
+            const ringGeo2 = new THREE.TorusGeometry(8.0, 0.04, 16, 100);
+            const spaceRing2 = new THREE.Mesh(ringGeo2, ringMat);
+            spaceRing2.rotation.y = Math.PI / 4;
+            bgGroup.add(spaceRing2);
+
+            scene.add(bgGroup);
+
+            // 3D 입체 파티클 시스템
             const particleGroup = new THREE.Group();
-            const pCount = 1000;
+            const pCount = 1500;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
 
             for(let i=0; i<pCount; i++) {{
-                pPos[i*3] = (Math.random() - 0.5) * 25;
-                pPos[i*3 + 1] = Math.random() * 15 - 5;
-                pPos[i*3 + 2] = (Math.random() - 0.5) * 25;
+                pPos[i*3] = (Math.random() - 0.5) * 35;
+                pPos[i*3 + 1] = (Math.random() - 0.5) * 35;
+                pPos[i*3 + 2] = (Math.random() - 0.5) * 35;
             }}
 
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({{
-                color: 0xffffff, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
+                color: "{card_color}", size: 0.18, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending
             }});
             const particles = new THREE.Points(pGeo, pMat);
             particleGroup.add(particles);
@@ -573,10 +596,15 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
+                // 배경 구조물 회전으로 입체적인 공간감 부여
+                spaceRing.rotation.z = time * 0.15;
+                spaceRing2.rotation.z = -time * 0.2;
+
+                // 파티클 유영 효과
                 const pos = pGeo.attributes.position.array;
                 for(let i=1; i<pCount*3; i+=3) {{
                     pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.008;
-                    if(pos[i] > 10) pos[i] = -5;
+                    if(pos[i] > 15) pos[i] = -15;
                 }}
                 pGeo.attributes.position.needsUpdate = true;
 
