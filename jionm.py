@@ -309,7 +309,7 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 20px; 
+                bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -318,22 +318,21 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 34px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
-            .title-tier-2 {{ font-size: 40px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 46px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
-            .title-tier-4 {{ font-size: 52px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 58px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
-            .title-tier-6 {{ font-size: 64px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
+            .title-tier-4 {{ font-size: 50px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
+            .title-tier-6 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            /* 핵심: 텍스트를 완전히 숨긴 상태로 시작하여 JS 타이밍에만 나타나게 함 */
+            /* 텍스트 내용물이 아예 보이지 않도록 완전 초기 차단 */
             .status-header {{ 
-                font-size: 26px; 
+                font-size: 28px; 
                 font-weight: 900; 
                 margin-bottom: 6px; 
                 letter-spacing: 3px; 
                 opacity: 0; 
                 visibility: hidden; 
-                transition: opacity 0.3s ease; 
             }}
             .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
             .price-text {{ font-size: 20px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
@@ -349,7 +348,8 @@ with right_col:
         <div id="container"></div>
 
         <div class="cinematic-ui">
-            <div id="statusText" class="status-header">PROCESSING...</div>
+            <!-- 텍스트 내용 내부 빈 칸 유지 (미리보기 방지) -->
+            <div id="statusText" class="status-header"></div>
             <div class="title-tier-{tier}">
                 {card_title}
             </div>
@@ -369,7 +369,7 @@ with right_col:
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 9.0);
+            camera.position.set(0, 0, 11.0); // 초기 멀리서 바라보는 피파 스타일 뷰
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -449,19 +449,19 @@ with right_col:
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // [새로운 애니메이션 시퀀스]
-            // 1단계: 카드가 사방으로 미세하게 떨리며 에너지를 모음 (흔들림)
-            // 2단계: 중앙으로 꾹 뭉쳤다가(붙음 모션) 폭발적으로 커졌다가 제치로 돌아옴
+            // [피파 스타일 롱 타임라인 애니메이션 설계]
+            // 총 길이 약 3.2초의 긴장감 넘치는 연출
             const tl = gsap.timeline();
             
-            // 미세 진동 및 긴장감 연출
-            tl.to(cardGroup.rotation, {{ z: 0.05, duration: 0.05, repeat: 14, yoyo: true, ease: "power1.inOut" }});
-            
-            // 중앙 응축 후 순간 임팩트
-            tl.to(cardGroup.scale, {{ x: 0.8, y: 1.3, z: 0.8, duration: 0.15, ease: "power2.in" }});
-            tl.to(cardGroup.scale, {{ x: 1.15, y: 1.15, z: 1.15, duration: 0.2, ease: "back.out(2)" }});
+            // 1단계: 카메라가 카드로 극적으로 줌인하며 카드가 회전하기 시작
+            tl.to(camera.position, {{ z: 6.5, duration: 1.2, ease: "power2.inOut" }});
+            tl.to(cardGroup.rotation, {{ y: Math.PI * 4, duration: 1.5, ease: "power1.inOut" }}, 0);
 
-            // 3단계: 애니메이션이 거의 끝난 시점에만 결과 텍스트를 화면에 표시 (미리보기 원천 차단)
+            // 2단계: 카드가 중앙에 멈춰 서서 강하게 바이브레이션(떨림)
+            tl.to(cardGroup.position, {{ x: 0.15, duration: 0.04, repeat: 18, yoyo: true, ease: "power1.inOut" }});
+            tl.to(cardGroup.scale, {{ x: 1.15, y: 1.15, z: 1.15, duration: 0.8, ease: "power2.out" }}, "-=0.5");
+
+            // 3단계: 애니메이션의 클라이맥스(정점) 직후에만 결과 텍스트 인젝션 및 화면 노출
             tl.call(() => {{
                 statusText.style.visibility = 'visible';
                 statusText.style.opacity = 1;
@@ -469,24 +469,24 @@ with right_col:
                 if (status === "CRITICAL") {{
                     statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                     statusText.style.color = "#ffe600";
-                    gsap.to(critOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
-                    gsap.to(cardGroup.scale, {{ x: 1.3, y: 1.3, z: 1.3, duration: 0.2, yoyo: true, repeat: 1 }});
+                    gsap.to(critOverlay, {{ opacity: 0.95, duration: 0.2, yoyo: true, repeat: 1 }});
+                    gsap.to(cardGroup.scale, {{ x: 1.4, y: 1.4, z: 1.4, duration: 0.2, yoyo: true, repeat: 1 }});
                 }} else if (status === "SUCCESS") {{
                     statusText.innerText = "✨ ENHANCE SUCCESS (성공/붙음) ✨";
                     statusText.style.color = "#34d399";
-                    gsap.to(successOverlay, {{ opacity: 0.7, duration: 0.2, yoyo: true, repeat: 1 }});
+                    gsap.to(successOverlay, {{ opacity: 0.8, duration: 0.2, yoyo: true, repeat: 1 }});
                 }} else if (status === "SHIELD_SAVED") {{
                     statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
                     statusText.style.color = "#60a5fa";
-                    gsap.to(shieldOverlay, {{ opacity: 0.8, duration: 0.3, yoyo: true, repeat: 1 }});
+                    gsap.to(shieldOverlay, {{ opacity: 0.85, duration: 0.3, yoyo: true, repeat: 1 }});
                 }} else if (status === "DESTROYED") {{
                     statusText.innerText = "💥 DESTROYED (폭발/터짐) 💥";
                     statusText.style.color = "#ef4444";
-                    gsap.to(flashOverlay, {{ opacity: 0.9, duration: 0.2, yoyo: true, repeat: 1 }});
+                    gsap.to(flashOverlay, {{ opacity: 0.95, duration: 0.2, yoyo: true, repeat: 1 }});
                     cardGroup.visible = false;
 
-                    // 파괴 시 조각들이 사방으로 비산하는 모션
-                    const shardCount = 30;
+                    // 피파식 강력한 폭발 조각 분산 연출
+                    const shardCount = 35;
                     for(let i = 0; i < shardCount; i++) {{
                         const sGeo = new THREE.BoxGeometry(Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15, 0.2);
                         const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
@@ -495,27 +495,27 @@ with right_col:
                         shardsGroup.add(shard);
 
                         gsap.to(shard.position, {{
-                            x: (Math.random() - 0.5) * 10,
-                            y: (Math.random() - 0.5) * 10,
-                            z: (Math.random() - 0.5) * 10,
-                            duration: 1.2,
+                            x: (Math.random() - 0.5) * 12,
+                            y: (Math.random() - 0.5) * 12,
+                            z: (Math.random() - 0.5) * 12,
+                            duration: 1.5,
                             ease: "power3.out"
                         }});
                         gsap.to(shard.rotation, {{
-                            x: Math.random() * 10,
-                            y: Math.random() * 10,
-                            duration: 1.2
+                            x: Math.random() * 12,
+                            y: Math.random() * 12,
+                            duration: 1.5
                         }});
                     }}
                 }} else if (status === "FAILED") {{
                     statusText.innerText = "🔻 ENHANCE FAILED (실패) 🔻";
                     statusText.style.color = "#f59e0b";
-                    gsap.to(cardGroup.position, {{ x: 0.2, duration: 0.05, repeat: 5, yoyo: true }});
+                    gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 6, yoyo: true }});
                 }} else {{
                     statusText.innerText = "READY";
                     statusText.style.color = "#38bdf8";
                 }}
-            }}, [], 1.2);
+            }}, [], 2.4);
 
             const clock = new THREE.Clock();
 
