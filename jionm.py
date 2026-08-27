@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (파괴 확률을 하락으로, 유지 확률 추가)
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -345,6 +345,8 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
+if "bgm_vol" not in st.session_state:
+  st.session_state.bgm_vol = 30  # 기본 볼륨 30%
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -515,6 +517,21 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
+  # BGM 설정 패널
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🎵 BGM"
+      " 플레이어</h4>",
+      unsafe_allow_html=True,
+  )
+  bgm_vol = st.slider(
+      "브금 볼륨 조절", 0, 100, st.session_state.bgm_vol, key="slider_bgm_vol"
+  )
+  if bgm_vol != st.session_state.bgm_vol:
+    st.session_state.bgm_vol = bgm_vol
+    st.rerun()
+  st.markdown("</div>", unsafe_allow_html=True)
+
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
@@ -570,8 +587,9 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
+  current_vol = st.session_state.bgm_vol / 100.0
 
-  # 초고품질 홀로그램 카드 디자인이 적용된 Three.js 컴포넌트
+  # Three.js 렌더링 및 교체된 두 번째 BGM 합성기 탑재 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -677,6 +695,87 @@ with right_col:
         </div>
 
         <script>
+            // --- 두 번째 BGM 소스 기반 오디오 합성기 ---
+            let audioCtx = null;
+            let masterGain = null;
+            let bgmInterval = null;
+            const targetVolume = {current_vol};
+
+            function initBGM() {{
+                if (audioCtx) {{
+                    if (masterGain) {{
+                        masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+                    }}
+                    return;
+                }}
+                
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+
+                const reverbNode = audioCtx.createBiquadFilter();
+                reverbNode.type = "lowpass";
+                reverbNode.frequency.setValueAtTime(1500, audioCtx.currentTime);
+
+                masterGain.connect(reverbNode);
+                reverbNode.connect(audioCtx.destination);
+
+                // 두 번째 브금의 멜로디 및 코드 시퀀스
+                const melodyNotes = [
+                    523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50,
+                    880.00, 783.99, 698.46, 659.25, 587.33, 523.25, 440.00, 392.00
+                ];
+
+                let noteIdx = 0;
+
+                function playNote() {{
+                    if (!audioCtx) return;
+                    if (audioCtx.state === 'suspended') {{
+                        audioCtx.resume();
+                    }}
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+
+                    const freq = melodyNotes[noteIdx];
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    noteGain.gain.setValueAtTime(0, now);
+                    noteGain.gain.linearRampToValueAtTime(0.4, now + 0.05);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                    osc.connect(noteGain);
+                    noteGain.connect(masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+
+                    noteIdx = (noteIdx + 1) % melodyNotes.length;
+                }}
+
+                // 200ms 간격 루프 실행
+                bgmInterval = setInterval(playNote, 200);
+            }}
+
+            window.addEventListener('pointerdown', () => {{
+                if (!audioCtx) {{
+                    initBGM();
+                }} else if (audioCtx.state === 'suspended') {{
+                    audioCtx.resume();
+                }}
+            }}, {{ once: true }});
+
+            setTimeout(() => {{
+                try {{
+                    initBGM();
+                }} catch(e) {{}}
+            }}, 500);
+
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -765,10 +864,8 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
-            // --- 고품질 홀로그램 카드 그룹 구성 ---
             const cardGroup = new THREE.Group();
 
-            // 1. 화려한 이중 메탈릭 외곽 프레임
             const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
             const outerFrameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xffd700, 
@@ -780,7 +877,6 @@ with right_col:
             const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
             cardGroup.add(outerFrame);
 
-            // 2. 내부 유리 글래스 플레이트 (Glassmorphism)
             const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
             const glassMat = new THREE.MeshPhysicalMaterial({{ 
                 color: 0x0f172a, 
@@ -794,7 +890,6 @@ with right_col:
             const glassPlate = new THREE.Mesh(glassGeo, glassMat);
             cardGroup.add(glassPlate);
 
-            // 3. 상단 일러스트 배경 패널 (네온 홀로그램)
             const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
             const bodyMat = new THREE.MeshStandardMaterial({{ 
                 color: "{card_color}", 
@@ -807,7 +902,6 @@ with right_col:
             body.position.y = 0.85;
             cardGroup.add(body);
 
-            // 4. 회전하는 중앙 다면체 크리스털 코어 (에너지 코어 입체화)
             const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, 
@@ -820,7 +914,6 @@ with right_col:
             core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
 
-            // 5. 하단 네임플레이트
             const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
