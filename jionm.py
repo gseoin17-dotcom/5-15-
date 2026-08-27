@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - GOD MODE 3D",
-    page_icon="👑",
+    page_title="지온냄새 강화하기 - ULTRA NEBULA 3D",
+    page_icon="🌌",
     layout="wide"
 )
 
@@ -84,7 +84,6 @@ def enhance():
     curr = st.session_state.level
     if curr >= 30: return
     
-    # 개발자 모드 켜진 경우 무조건 성공
     if st.session_state.dev_mode:
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
@@ -122,47 +121,80 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 대시보드 Style 및 현황
+# 5. 테마 CSS 개편 (모던 사이버 글래스모피즘 & 깔끔한 레이아웃)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
-    .stApp { background-color: #020403; color: #fff; }
+    /* 전체 배경 스타일 커스텀 */
+    .stApp {
+        background: radial-gradient(circle at 50% 20%, #0b0f19 0%, #030712 60%, #000000 100%);
+        color: #f8fafc;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
     
+    /* 패널 컨테이너 (글래스모피즘 적용) */
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 대시보드 카드 */
     .stat-card {
-        background: rgba(15, 23, 42, 0.95);
-        border: 1.5px solid #00f0ff;
-        padding: 8px 6px;
-        border-radius: 8px;
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        padding: 12px 10px;
+        border-radius: 12px;
         text-align: center;
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        border-color: rgba(56, 189, 248, 0.5);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
     .stat-title {
         font-size: 13px;
-        font-weight: 500;
-        color: #cbd5e1;
-        margin-bottom: 2px;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 800;
-        color: #ffffff;
-        text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+        color: #f8fafc;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
-    .ctrl-box {
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid #334155;
-        border-radius: 12px;
-        padding: 18px;
-        margin-top: 20px;
+
+    /* 버튼 모던 스타일링 */
+    div.stButton > button {
+        border-radius: 10px !important;
+        font-weight: 700 !important;
+        padding: 12px 20px !important;
+        transition: all 0.2s ease !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
     }
     </style>
 """, unsafe_allow_html=True)
 
+# -----------------------------------------------------------------------------
+# 6. 상단 스탯 대시보드
+# -----------------------------------------------------------------------------
 col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
 with col1:
     st.markdown(f'''
         <div class="stat-card">
-            <div class="stat-title">💰 보유 골드</div>
+            <div class="stat-title">💳 보유 골드</div>
             <div class="stat-value">{st.session_state.money:,} G</div>
         </div>
     ''', unsafe_allow_html=True)
@@ -189,7 +221,7 @@ with col4:
     prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
     st.markdown(f'''
         <div class="stat-card">
-            <div class="stat-title">📊 성공 / ⚡크리티컬 / 파괴</div>
+            <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
             <div class="stat-value" style="font-size: 16px;">{prob_str}</div>
         </div>
     ''', unsafe_allow_html=True)
@@ -197,60 +229,68 @@ with col4:
 st.write("")
 
 # -----------------------------------------------------------------------------
-# 6. 메인 레이아웃 (왼쪽 조작 패널 / 오른쪽 3D 스테이지)
+# 7. 메인 2칼럼 레이아웃 (좌: 모던 컨트롤러 / 우: 우주 3D 뷰어)
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([3, 7])
 
 with left_col:
-    st.markdown("### 🎮 조작 컨트롤러")
+    # 강화 & 액션 패널
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top:0; font-size: 20px; color:#38bdf8;'>⚡ 강화 컨트롤러</h3>", unsafe_allow_html=True)
     
-    # 조작 버튼 그룹
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
         st.rerun()
         
+    st.write("")
     if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
         sell()
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.write("---")
-    st.session_state.use_shield = st.checkbox("🛡️ 강화 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
+    # 설정 패널
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#cbd5e1;'>⚙️ 모드 & 옵션 설정</h4>", unsafe_allow_html=True)
+    st.session_state.use_shield = st.checkbox("🛡️ 강화 실패 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
     
-    # 개발자 모드 토글 스위치
-    st.session_state.dev_mode = st.toggle("🛠️ 개발자 모드: 무조건 성공", value=st.session_state.dev_mode)
-    if st.session_state.dev_mode:
-        st.caption("⚠️ 개발자 테스트 모드가 활성화되어 모든 강화가 100% 성공합니다.")
-
     st.write("---")
-    st.markdown("#### 🛒 상점 & 아이템")
+    st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
+    if st.session_state.dev_mode:
+        st.caption("⚠️ 치트 모드가 활성화되었습니다.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 상점 패널
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#cbd5e1;'>🛒 자이온 상점</h4>", unsafe_allow_html=True)
     
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
     with tab_shop1:
-        st.write("강화 실패 시 카드가 파괴되어 0단계가 되는 것을 막아줍니다.")
+        st.caption("강화 실패 시 카드가 파괴되는 것을 막아줍니다.")
         if st.button("구매 (50,000 G)", use_container_width=True):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
-                st.success("파괴 방지권 1개 구매 완료!")
+                st.success("구매 완료!")
                 st.rerun()
             else:
                 st.error("골드가 부족합니다.")
                 
     with tab_shop2:
-        st.write("강화 실패 시 쌓이는 눈물로 확정 상승시킵니다.")
-        if st.button("1단계 확정 상승 (눈물 15개)", use_container_width=True):
+        st.caption("강화 실패로 모은 눈물 15개로 1단계 확정 업그레이드!")
+        if st.button("1단계 확정 상승 (15개)", use_container_width=True):
             if st.session_state.tears >= 15 and st.session_state.level < 30:
                 st.session_state.tears -= 15
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
-                st.success("1단계 확정 강화 성공!")
+                st.success("확정 강화 성공!")
                 st.rerun()
             else:
-                st.error("눈물이 부족하거나 최고 단계입니다.")
+                st.error("조건이 부족합니다.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 7. 3D Render & 오버레이 연출 (입체 아티팩트 코어 카드 + 워프 터널 배경)
+    # 8. 개쩌는 우주/성운 배경 3D Three.js 캔버스
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -265,28 +305,33 @@ with right_col:
     <html>
     <head>
         <style>
-            body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
+            body {{ 
+                margin: 0; 
+                overflow: hidden; 
+                background: transparent; 
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
             #redFlashOverlay {{
                 position: fixed;
                 top: 0; left: 0; width: 100vw; height: 100vh;
-                background: rgba(255, 0, 0, 0.85);
-                box-shadow: inset 0 0 100px rgba(139, 0, 0, 0.9);
+                background: rgba(239, 68, 68, 0.85);
+                box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             #critFlashOverlay {{
                 position: fixed;
                 top: 0; left: 0; width: 100vw; height: 100vh;
-                background: rgba(255, 215, 0, 0.85);
-                box-shadow: inset 0 0 100px rgba(255, 140, 0, 0.9);
+                background: rgba(245, 158, 11, 0.85);
+                box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 80px; 
+                bottom: 60px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -295,21 +340,20 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 40px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
-            .title-tier-2 {{ font-size: 46px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 52px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
-            .title-tier-4 {{ font-size: 58px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 64px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
-            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981; }}
+            .title-tier-2 {{ font-size: 44px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 50px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 56px; font-weight: 900; color: #a855f7; text-shadow: 0 0 40px #a855f7; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 68px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.05); }} }}
-            @keyframes shake {{ 0% {{ transform: translate(2px, 2px) rotate(0deg); }} 100% {{ transform: translate(-2px, -2px) rotate(-1deg); }} }}
-            @keyframes superShake {{ 0% {{ transform: translate(3px, 1px); }} 50% {{ transform: translate(-3px, -2px); }} 100% {{ transform: translate(2px, -1px); }} }}
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 22px; font-weight: bold; margin-bottom: 6px; letter-spacing: 3px; }}
-            .desc-text {{ font-size: 16px; color: #e2e8f0; margin-top: 6px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
-            .price-text {{ font-size: 20px; font-weight: bold; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
+            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: 4px; }}
+            .desc-text {{ font-size: 15px; color: #cbd5e1; margin-top: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
+            .price-text {{ font-size: 22px; font-weight: 800; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -352,7 +396,7 @@ with right_col:
             }}
 
             const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x020208, 0.015);
+            scene.fog = new THREE.FogExp2(0x030712, 0.012);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1.2, 9);
@@ -363,74 +407,77 @@ with right_col:
             document.getElementById('container').appendChild(renderer.domElement);
 
             // 조명 세팅
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
 
-            const spotLight = new THREE.SpotLight("{card_color}", 8);
-            spotLight.position.set(0, 12, 8);
-            scene.add(spotLight);
+            const mainSpot = new THREE.SpotLight("{card_color}", 10);
+            mainSpot.position.set(0, 12, 8);
+            scene.add(mainSpot);
 
-            const blueLight = new THREE.PointLight(0x00f0ff, 4, 20);
-            blueLight.position.set(-5, -2, 3);
-            scene.add(blueLight);
+            const pointLight1 = new THREE.PointLight(0x00f0ff, 5, 25);
+            pointLight1.position.set(-6, -2, 4);
+            scene.add(pointLight1);
 
-            const purpleLight = new THREE.PointLight(0xff00ea, 4, 20);
-            purpleLight.position.set(5, 5, -2);
-            scene.add(purpleLight);
+            const pointLight2 = new THREE.PointLight(0xff00ea, 5, 25);
+            pointLight2.position.set(6, 6, -2);
+            scene.add(pointLight2);
 
-            // 사이버 워프 터널
-            const tunnelGroup = new THREE.Group();
-            const tunnelGeo = new THREE.CylinderGeometry(8, 8, 120, 16, 40, true);
-            const tunnelMat = new THREE.MeshBasicMaterial({{
-                color: 0x111827,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.15
-            }});
-            const tunnel = new THREE.Mesh(tunnelGeo, tunnelMat);
-            tunnel.rotation.x = Math.PI / 2;
-            tunnelGroup.add(tunnel);
-            scene.add(tunnelGroup);
+            // 🌌 [배경 개편] 우주 성운 입자 & 링 프레임
+            const galaxyGroup = new THREE.Group();
+            
+            // 1. 성운 먼지 클러스터
+            const starCount = 1500;
+            const starGeo = new THREE.BufferGeometry();
+            const starPos = new Float32Array(starCount * 3);
+            const starColors = new Float32Array(starCount * 3);
 
-            // 바닥 사이버 그리드
-            const gridHelper = new THREE.GridHelper(60, 40, 0x00f0ff, 0x1e1b4b);
-            gridHelper.position.y = -4;
-            scene.add(gridHelper);
+            for(let i=0; i<starCount*3; i+=3) {{
+                starPos[i] = (Math.random() - 0.5) * 40;
+                starPos[i+1] = (Math.random() - 0.5) * 40;
+                starPos[i+2] = (Math.random() - 0.5) * 40;
 
-            // 카드 모델링
+                starColors[i] = Math.random() * 0.5 + 0.5;
+                starColors[i+1] = Math.random() * 0.5 + 0.5;
+                starColors[i+2] = 1.0;
+            }}
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+            const starMat = new THREE.PointsMaterial({{ size: 0.12, vertexColors: true, transparent: true, opacity: 0.7 }});
+            const starField = new THREE.Points(starGeo, starMat);
+            galaxyGroup.add(starField);
+
+            // 2. 아우라 궤도 링
+            const orbitRingGeo = new THREE.TorusGeometry(5.5, 0.02, 16, 100);
+            const orbitRingMat = new THREE.MeshBasicMaterial({{ color: 0x38bdf8, transparent: true, opacity: 0.3 }});
+            const orbitRing = new THREE.Mesh(orbitRingGeo, orbitRingMat);
+            orbitRing.rotation.x = Math.PI / 3;
+            galaxyGroup.add(orbitRing);
+
+            scene.add(galaxyGroup);
+
+            // 💳 아티팩트 코어 카드 모델링
             const cardGroup = new THREE.Group();
 
             const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
-            const frameMat = new THREE.MeshStandardMaterial({{ 
-                color: 0x1e293b, 
-                metalness: 0.9, 
-                roughness: 0.2 
-            }});
+            const frameMat = new THREE.MeshStandardMaterial({{ color: 0x0f172a, metalness: 0.95, roughness: 0.1 }});
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
             const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
-            const bodyMat = new THREE.MeshStandardMaterial({{ 
-                color: "{card_color}", 
-                metalness: 0.8, 
-                roughness: 0.15 
-            }});
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.85, roughness: 0.2 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             cardGroup.add(body);
 
             const edgeGeo = new THREE.BoxGeometry(2.7, 4.1, 0.24);
-            const edgeMat = new THREE.MeshBasicMaterial({{
-                color: "{card_color}",
-                wireframe: true
-            }});
+            const edgeMat = new THREE.MeshBasicMaterial({{ color: "{card_color}", wireframe: true }});
             const edge = new THREE.Mesh(edgeGeo, edgeMat);
             cardGroup.add(edge);
 
-            const coreGeo = new THREE.OctahedronGeometry(0.55, 0);
+            const coreGeo = new THREE.OctahedronGeometry(0.6, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff,
                 emissive: "{card_color}",
-                emissiveIntensity: 0.8,
+                emissiveIntensity: 1.0,
                 roughness: 0.1,
                 metalness: 0.9
             }});
@@ -438,51 +485,26 @@ with right_col:
             core.position.z = 0.16;
             cardGroup.add(core);
 
-            const ringGeo = new THREE.TorusGeometry(1.2, 0.02, 16, 100);
-            const ringMat = new THREE.MeshBasicMaterial({{ color: 0x00f0ff, transparent: true, opacity: 0.6 }});
+            const ringGeo = new THREE.TorusGeometry(1.25, 0.025, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({{ color: 0x38bdf8, transparent: true, opacity: 0.7 }});
             const ring1 = new THREE.Mesh(ringGeo, ringMat);
             ring1.position.z = 0.15;
             cardGroup.add(ring1);
 
             scene.add(cardGroup);
 
-            // 파티클
-            const particleCount = {tier * 200 + 100};
-            const pGeo = new THREE.BufferGeometry();
-            const pPos = new Float32Array(particleCount * 3);
-
-            for(let i=0; i<particleCount*3; i+=3) {{
-                pPos[i] = (Math.random() - 0.5) * 20;
-                pPos[i+1] = Math.random() * 12 - 3;
-                pPos[i+2] = (Math.random() - 0.5) * 20;
-            }}
-
-            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-            const pMat = new THREE.PointsMaterial({{ color: "{card_color}", size: 0.1, transparent: true, opacity: 0.8 }});
-            const particles = new THREE.Points(pGeo, pMat);
-            scene.add(particles);
-
+            // 폭발 파티클 변수
             let explosionParticles = null;
             let explosionVelocities = [];
 
-            // 애니메이션 연출
+            // 강화 연출 GSAP
             if (status === "CRITICAL") {{
-                gsap.fromTo(critOverlay, 
-                    {{ opacity: 0.9 }}, 
-                    {{ opacity: 0, duration: 1.0, ease: "power2.out" }}
-                );
+                gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
             }} else if (status === "DESTROYED") {{
-                gsap.fromTo(flashOverlay, 
-                    {{ opacity: 0.85 }}, 
-                    {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
-                );
-
-                gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{
-                    camera.position.set(0, 1.2, 9);
-                }}}});
-
+                gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
+                gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 1.2, 9); }} }});
                 gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.25, ease: "power4.in" }});
 
                 const expCount = 600;
@@ -490,14 +512,10 @@ with right_col:
                 const expPos = new Float32Array(expCount * 3);
 
                 for (let i = 0; i < expCount; i++) {{
-                    expPos[i * 3] = 0;
-                    expPos[i * 3 + 1] = 0.8;
-                    expPos[i * 3 + 2] = 0;
-
+                    expPos[i * 3] = 0; expPos[i * 3 + 1] = 0.8; expPos[i * 3 + 2] = 0;
                     const theta = Math.random() * Math.PI * 2;
                     const phi = Math.acos((Math.random() * 2) - 1);
                     const speed = Math.random() * 0.35 + 0.1;
-
                     explosionVelocities.push({{
                         x: speed * Math.sin(phi) * Math.cos(theta),
                         y: speed * Math.sin(phi) * Math.sin(theta),
@@ -506,13 +524,7 @@ with right_col:
                 }}
 
                 expGeo.setAttribute('position', new THREE.BufferAttribute(expPos, 3));
-                const expMat = new THREE.PointsMaterial({{
-                    color: 0xff0055,
-                    size: 0.22,
-                    transparent: true,
-                    opacity: 1.0
-                }});
-
+                const expMat = new THREE.PointsMaterial({{ color: 0xef4444, size: 0.22, transparent: true, opacity: 1.0 }});
                 explosionParticles = new THREE.Points(expGeo, expMat);
                 scene.add(explosionParticles);
             }} else if (status === "SUCCESS") {{
@@ -526,22 +538,15 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                tunnel.rotation.z += 0.003;
-                gridHelper.position.z = (time * 2) % 1.5;
+                galaxyGroup.rotation.y = time * 0.05;
+                orbitRing.rotation.z = time * 0.1;
 
-                cardGroup.rotation.y = Math.sin(time * 0.8) * 0.3;
-                cardGroup.position.y = Math.sin(time * 1.8) * 0.15 + 0.8;
+                cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
+                cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.8;
                 
                 core.rotation.x = time * 2;
                 core.rotation.y = time * 2;
                 ring1.rotation.z = -time * 1.5;
-
-                const pos = pGeo.attributes.position.array;
-                for(let i=1; i<particleCount*3; i+=3) {{
-                    pos[i] -= 0.05;
-                    if(pos[i] < -3) pos[i] = 9;
-                }}
-                pGeo.attributes.position.needsUpdate = true;
 
                 if (explosionParticles) {{
                     const ePos = explosionParticles.geometry.attributes.position.array;
@@ -569,4 +574,4 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=650, scrolling=False)
+    components.html(three_js_code, height=680, scrolling=False)
