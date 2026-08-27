@@ -77,7 +77,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표
+# 3. 게임 데이터베이스 및 강화 확률표 (16~30단계 개성 부여)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -193,108 +193,108 @@ SMELL_DB = {
         "tier": 3,
     },
     16: {
-        "name": "16단계 : 우주관통 자이온냄새",
-        "desc": "성층권을 뚫고 우주선까지 퍼져나간다.",
+        "name": "16단계 : 네온 싸이버 지온냄새",
+        "desc": "사이버네틱한 불빛이 흐르는 미래형 흙내음.",
         "price": 14200000,
-        "color": "#00f0ff",
+        "color": "#00ffcc",
         "tier": 4,
     },
     17: {
-        "name": "17단계 : 차원균열 자이온냄새",
-        "desc": "평행세계의 흙냄새까지 끌어당긴다.",
+        "name": "17단계 : 플라즈마 자이온 분자",
+        "desc": "고열의 플라즈마 파동 속에서 타오르는 아로마.",
         "price": 20000000,
-        "color": "#ff00ea",
+        "color": "#ff007f",
         "tier": 4,
     },
     18: {
-        "name": "18단계 : Absolute 자이온냄새",
-        "desc": "만물의 요소를 지온 입자로 바꿔버린다.",
+        "name": "18단계 : 레이저 코어 아로마",
+        "desc": "광선처럼 곧게 뻗어 나가는 강력한 집속 향기.",
         "price": 30000000,
-        "color": "#ffe600",
+        "color": "#ffee00",
         "tier": 4,
     },
     19: {
-        "name": "19단계 : 초월적 지온냄새",
-        "desc": "인간의 감각으로는 수용 불가능한 향기.",
+        "name": "19단계 : 네온 매트릭스 냄새",
+        "desc": "가상 현실의 데이터 망을 뒤덮은 푸른 흙냄새.",
         "price": 47500000,
-        "color": "#ff0055",
+        "color": "#00d2ff",
         "tier": 4,
     },
     20: {
-        "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
-        "desc": "자이온맘의 강림! 따스하고 구수한 냄새.",
+        "name": "20단계 : 크리스탈 자이온 코어",
+        "desc": "투명하게 빛나는 결정체 속에서 진동하는 순수 향.",
         "price": 68300000,
-        "color": "#ffaa00",
+        "color": "#e056fd",
         "tier": 4,
     },
     21: {
-        "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱",
-        "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.",
+        "name": "21단계 : 지옥불 마그마 지온냄새",
+        "desc": "끓어오르는 용암 속에서 건져낸 매콤한 대지의 향.",
         "price": 101000000,
-        "color": "#ff4500",
+        "color": "#ff3838",
         "tier": 5,
     },
     22: {
-        "name": "22단계 : 자이온맘의 전설의 흙된장국",
-        "desc": "극상의 흙내음과 깊은 손맛.",
+        "name": "22단계 : 절대 제로 빙하 지온",
+        "desc": "모든 것을 얼려버릴 듯한 청량한 극저온 흙내음.",
         "price": 160000000,
-        "color": "#ff007f",
+        "color": "#70a1ff",
         "tier": 5,
     },
     23: {
-        "name": "23단계 : 자이온맘의 100년 숙성 원액",
-        "desc": "몰래 아껴둔 냄새의 결정체.",
+        "name": "23단계 : 항성 가속 자이온 아로마",
+        "desc": "초신성 폭발 직전의 에너지를 품은 폭발적인 향.",
         "price": 230000000,
-        "color": "#7b00ff",
+        "color": "#ff9f1a",
         "tier": 5,
     },
     24: {
-        "name": "24단계 : 자이온맘의 지온스프레이",
-        "desc": "집안 가득 뿌리는 치명적인 청량함.",
+        "name": "24단계 : 블랙홀 싱귤래리티 냄새",
+        "desc": "모든 빛과 냄새를 집어삼키는 초중력의 향기.",
         "price": 300000000,
-        "color": "#0088ff",
+        "color": "#7d5fff",
         "tier": 5,
     },
     25: {
-        "name": "25단계 : 자이온맘의 무한한 은혜",
-        "desc": "은하수 아이들에게 평화를 내리는 자애로움.",
+        "name": "25단계 : 게이트웨이 차원 지온",
+        "desc": "다른 차원으로 통하는 문을 여는 초월적 향.",
         "price": 400000000,
-        "color": "#00ffaa",
+        "color": "#2ed573",
         "tier": 5,
     },
     26: {
-        "name": "26단계 : 자이온맘의 궁극 필살기",
-        "desc": "우주 전체가 지온 향으로 뒤덮인다.",
+        "name": "26단계 : 오메가 다이아몬드 아로마",
+        "desc": "단단한 탄소 격자 구조로 영원히 박제된 흙내음.",
         "price": 1800000000,
-        "color": "#ccff00",
+        "color": "#3742fa",
         "tier": 6,
     },
     27: {
-        "name": "27단계 : 자이온맘의 창조와 구원",
-        "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.",
+        "name": "27단계 : 인피니티 코스믹 오라",
+        "desc": "끝없는 우주의 허공을 채우는 태고의 기운.",
         "price": 2500000000,
-        "color": "#fffb00",
+        "color": "#ff4757",
         "tier": 6,
     },
     28: {
-        "name": "28단계 : 자이온맘의 권능 지온냄새",
-        "desc": "창조주도 고개를 숙이고 냄새를 맡는다.",
+        "name": "28단계 : 프리즘 일루미네이션 지온",
+        "desc": "모든 빛의 스펙트럼이 굴절되어 쏟아지는 향.",
         "price": 5500000000,
         "color": "#ffffff",
         "tier": 6,
     },
     29: {
-        "name": "29단계 : 만물의 어머니 ★자이온맘★",
-        "desc": "우주 만물이 품으로 돌아가는 최종 오라.",
+        "name": "29단계 : 하이퍼 볼텍스 자이온맘",
+        "desc": "초고속 소용돌이 속에서 완성된 어머니의 전설.",
         "price": 10500000000,
-        "color": "#ff00aa",
+        "color": "#ff6b81",
         "tier": 6,
     },
     30: {
-        "name": "30단계 : ★태초의 자이온맘★ 절대신성",
-        "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
+        "name": "30단계 : ★절대신성 궁극 자이온맘★",
+        "desc": "시공간을 초월하여 우주의 이치 그 자체가 된 향.",
         "price": float("inf"),
-        "color": "#00ffff",
+        "color": "#ffa502",
         "tier": 6,
     },
 }
@@ -419,7 +419,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (배경 박스 제거 및 텍스트 크기 확대)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -440,26 +440,24 @@ st.markdown(
     .element-container, .stMarkdown {
         background: transparent !important;
     }
-    .stat-card {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        padding: 8px 6px;
-        border-radius: 8px;
+    /* 배경 박스 제거 및 텍스트 강조(크기 키움) 스타일 */
+    .stat-text-container {
+        background: transparent !important;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        height: 100%;
+        padding: 4px;
     }
     .stat-title {
-        font-size: 11px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         color: #fde68a;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
     .stat-value {
-        font-size: 14px;
-        font-weight: 800;
+        font-size: 19px;
+        font-weight: 900;
         color: #ffffff;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
     }
     div.stButton > button {
         border-radius: 8px !important;
@@ -486,7 +484,6 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
-  # 개발자 모드 설정 토글
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
       " 설정</h4>",
@@ -516,7 +513,6 @@ with left_col:
     else:
       st.rerun()
 
-  # 개발자 모드가 켜져 있을 때만 노출되는 무조건 성공 버튼
   if dev_mode:
     st.write("")
     if st.button(
@@ -589,10 +585,11 @@ with left_col:
 with right_col:
   sc1, sc2, sc3, sc4 = st.columns(4)
 
+  # 배경 박스 없이 텍스트만 보이게 출력 및 크기 키움
   with sc1:
     st.markdown(
         f"""
-            <div class="stat-card">
+            <div class="stat-text-container">
                 <div class="stat-title">💳 보유 금액</div>
                 <div class="stat-value">{format_gold(st.session_state.money)}</div>
             </div>
@@ -603,7 +600,7 @@ with right_col:
   with sc2:
     st.markdown(
         f"""
-            <div class="stat-card">
+            <div class="stat-text-container">
                 <div class="stat-title">🛡️ 방지권</div>
                 <div class="stat-value">{st.session_state.shield} / 2개</div>
             </div>
@@ -614,7 +611,7 @@ with right_col:
   with sc3:
     st.markdown(
         f"""
-            <div class="stat-card">
+            <div class="stat-text-container">
                 <div class="stat-title">💧 눈물</div>
                 <div class="stat-value">{st.session_state.tears}개</div>
             </div>
@@ -632,9 +629,9 @@ with right_col:
 
     st.markdown(
         f"""
-            <div class="stat-card">
+            <div class="stat-text-container">
                 <div class="stat-title">📊 상세 확률</div>
-                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
+                <div class="stat-value" style="font-size: 13px; line-height: 1.3;">{prob_str}</div>
             </div>
         """,
         unsafe_allow_html=True,
@@ -799,11 +796,13 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
+            // 16~30단계 전용 기하학적 형태 다양화 (Icosahedron, Octahedron, Dodecahedron, TorusKnot 조합 등)
             const geometries = [
                 new THREE.DodecahedronGeometry(2.5, 0),
                 new THREE.IcosahedronGeometry(2.3, 0),
                 new THREE.OctahedronGeometry(2.7, 0),
-                new THREE.TorusKnotGeometry(1.6, 0.5, 64, 16)
+                new THREE.TorusKnotGeometry(1.5, 0.45, 64, 16),
+                new THREE.CylinderGeometry(0.1, 2.6, 2.8, 6)
             ];
             const baseGeo = geometries[{tier} % geometries.length];
 
