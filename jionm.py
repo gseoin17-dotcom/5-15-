@@ -133,7 +133,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (배경 이미지를 적용하고 투명 패널 활용)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -256,6 +256,9 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
+    # -----------------------------------------------------------------------------
+    # 8. 3D 메인 연출 영역 (Three.js 캔버스를 투명하게 처리하여 새 배경과 조화)
+    # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
@@ -279,36 +282,36 @@ with right_col:
 
             #redFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(185, 28, 28, 0.95) 100%);
-                box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.9);
+                background: rgba(239, 68, 68, 0.85);
+                box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             #failFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, rgba(180, 83, 9, 0.8) 100%);
-                box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.8);
+                background: rgba(245, 158, 11, 0.4);
+                box-shadow: inset 0 0 100px rgba(217, 119, 6, 0.7);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             #shieldFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(29, 78, 216, 0.9) 100%);
-                box-shadow: inset 0 0 120px rgba(37, 99, 235, 0.9);
+                background: rgba(59, 130, 246, 0.7);
+                box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             #critFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: radial-gradient(circle, rgba(250, 204, 21, 0.9) 0%, rgba(202, 138, 4, 0.95) 100%);
-                box-shadow: inset 0 0 150px rgba(255, 215, 0, 1);
+                background: rgba(245, 158, 11, 0.85);
+                box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
             #successFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, rgba(4, 120, 87, 0.85) 100%);
-                box-shadow: inset 0 0 120px rgba(5, 150, 105, 0.8);
+                background: rgba(16, 185, 129, 0.5);
+                box-shadow: inset 0 0 100px rgba(5, 150, 105, 0.8);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
@@ -325,10 +328,14 @@ with right_col:
 
             .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
             .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
-            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
             .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
             .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
@@ -390,31 +397,31 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambientLight);
 
-            const sunsetLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            const sunsetLight = new THREE.DirectionalLight(0xffffff, 1.2);
             sunsetLight.position.set(5, 5, 5);
             scene.add(sunsetLight);
 
-            const cardPointLight = new THREE.PointLight("{card_color}", 8, 25);
+            const cardPointLight = new THREE.PointLight("{card_color}", 6, 20);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
             const particleGroup = new THREE.Group();
-            const pCount = 1200;
+            const pCount = 1000;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
 
             for(let i=0; i<pCount; i++) {{
-                pPos[i*3] = (Math.random() - 0.5) * 30;
-                pPos[i*3 + 1] = Math.random() * 20 - 5;
-                pPos[i*3 + 2] = (Math.random() - 0.5) * 30;
+                pPos[i*3] = (Math.random() - 0.5) * 25;
+                pPos[i*3 + 1] = Math.random() * 15 - 5;
+                pPos[i*3 + 2] = (Math.random() - 0.5) * 25;
             }}
 
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({{
-                color: 0xffffff, size: 0.18, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending
+                color: 0xffffff, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
             }});
             const particles = new THREE.Points(pGeo, pMat);
             particleGroup.add(particles);
@@ -428,7 +435,7 @@ with right_col:
                 metalness: 0.95, 
                 roughness: 0.15,
                 emissive: 0xd97706,
-                emissiveIntensity: 0.3
+                emissiveIntensity: 0.2
             }});
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
@@ -439,14 +446,14 @@ with right_col:
             cardGroup.add(inlay);
 
             const bodyGeo = new THREE.BoxGeometry(3.3, 3.3, 0.26);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.4 }});
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = 0.85;
             cardGroup.add(body);
 
             const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
-                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 2.0, roughness: 0.05, metalness: 0.9
+                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
             core.position.set(0, 0.85, 0.18);
@@ -462,7 +469,7 @@ with right_col:
 
             const shieldGeo = new THREE.SphereGeometry(3.8, 32, 32);
             const shieldMat = new THREE.MeshStandardMaterial({{
-                color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 1.0, transparent: true, opacity: 0.0, wireframe: true
+                color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
             }});
             const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
             shieldDome.position.y = 0.2;
@@ -472,54 +479,49 @@ with right_col:
             scene.add(shardsGroup);
 
             if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(shieldOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
-                gsap.fromTo(shieldMat, {{ opacity: 1.0, wireframe: true }}, {{ opacity: 0, duration: 1.8, ease: "power2.inOut" }});
-                gsap.fromTo(shieldDome.scale, {{ x: 0.1, y: 0.1, z: 0.1 }}, {{ x: 1.3, y: 1.3, z: 1.3, duration: 0.9, ease: "back.out(1.7)" }});
-                gsap.to(cardGroup.position, {{ z: -2.5, duration: 0.12, yoyo: true, repeat: 5 }});
-                gsap.fromTo(camera.position, {{ z: 6 }}, {{ z: 9.5, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
+                gsap.fromTo(shieldDome.scale, {{ x: 0.2, y: 0.2, z: 0.2 }}, {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }});
+                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
             }} else if (status === "CRITICAL") {{
-                gsap.fromTo(critOverlay, {{ opacity: 1.0 }}, {{ opacity: 0, duration: 1.5, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 3.5 }}, {{ z: 9.5, duration: 1.8, ease: "elastic.out(1, 0.4)" }});
-                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 8, z: Math.PI * 3 }}, {{ y: 0, z: 0, duration: 1.8, ease: "power3.out" }});
-                gsap.fromTo(cardPointLight, {{ intensity: 25 }, {{ intensity: 8, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
             }} else if (status === "FAILED") {{
-                gsap.fromTo(failOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 0.9, ease: "power2.out" }});
-                gsap.to(cardGroup.position, {{ x: 0.3, duration: 0.04, repeat: 6, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
-                gsap.fromTo(cardGroup.rotation, {{ z: -0.2 }, {{ z: 0.2, duration: 0.07, repeat: 4, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
+                gsap.fromTo(failOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
+                gsap.fromTo(cardGroup.rotation, {{ z: -0.15 }}, {{ z: 0.15, duration: 0.08, repeat: 3, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
             }} else if (status === "DESTROYED") {{
-                gsap.fromTo(flashOverlay, {{ opacity: 0.95 }}, {{ opacity: 0, duration: 1.5, ease: "power2.out" }});
-                gsap.to(camera.position, {{ x: 0.6, y: 0.9, duration: 0.03, repeat: 12, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
+                gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
+                gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
                 cardGroup.visible = false;
 
-                const shardCount = 35;
+                const shardCount = 20;
                 for(let i = 0; i < shardCount; i++) {{
-                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.6 + 0.3);
-                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.1, emissive: "{card_color}", emissiveIntensity: 0.8 }});
+                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
+                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
                     const shard = new THREE.Mesh(sGeo, sMat);
                     shard.position.set(0, 0.2, 0);
                     shardsGroup.add(shard);
 
                     gsap.to(shard.position, {{
-                        x: (Math.random() - 0.5) * 9,
-                        y: (Math.random() - 0.5) * 9,
-                        z: (Math.random() - 0.5) * 9,
-                        duration: 1.4,
+                        x: (Math.random() - 0.5) * 7,
+                        y: (Math.random() - 0.5) * 7,
+                        z: (Math.random() - 0.5) * 7,
+                        duration: 1.2,
                         ease: "power3.out"
                     }});
                     gsap.to(shard.rotation, {{
-                        x: Math.random() * Math.PI * 6,
-                        y: Math.random() * Math.PI * 6,
-                        duration: 1.4
+                        x: Math.random() * Math.PI * 4,
+                        y: Math.random() * Math.PI * 4,
+                        duration: 1.2
                     }});
-                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.4, ease: "power2.in" }});
+                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.2, ease: "power2.in" }});
                 }}
             }} else if (status === "SUCCESS") {{
-                gsap.fromTo(successOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 4.5 }, {{ z: 9.5, duration: 1.4, ease: "back.out(1.2)" }});
-                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2.5 }, {{ y: 0, duration: 1.4, ease: "power2.out" }});
-            }} else {{
-                gsap.fromTo(camera.position, {{ z: 15, y: 2 }, {{ z: 9.5, y: 0.4, duration: 1.2, ease: "power3.out" }});
-                gsap.fromTo(cardGroup.rotation, {{ x: 0.5, y: Math.PI }, {{ x: 0, y: 0, duration: 1.2, ease: "power3.out" }});
+                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 5 }}, {{ z: 9.5, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
             }}
 
             const clock = new THREE.Clock();
@@ -530,8 +532,8 @@ with right_col:
 
                 const pos = pGeo.attributes.position.array;
                 for(let i=1; i<pCount*3; i+=3) {{
-                    pos[i] += Math.sin(time + pos[i-1]) * 0.006 + 0.01;
-                    if(pos[i] > 12) pos[i] = -5;
+                    pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.008;
+                    if(pos[i] > 10) pos[i] = -5;
                 }}
                 pGeo.attributes.position.needsUpdate = true;
 
