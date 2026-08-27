@@ -61,7 +61,7 @@ def get_leaderboard():
 
 
 # -----------------------------------------------------------------------------
-# 1. 페이지 기본 설정
+# 1. 페이지 기본 설정 (상단 짤림 방지를 위한 패딩 조정)
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - TRASH MOUNTAIN EDITION",
@@ -480,7 +480,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (회색 박스 제거 및 시각 개선)
+# 6. 테마 CSS (상단 짤림 방지를 위한 패딩 최적화 및 투명 박스)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -494,11 +494,10 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 1.5rem !important;
-        padding-bottom: 1.5rem !important;
+        padding-top: 2.5rem !important;
+        padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
-    /* 회색 박스 효과 원천 차단 및 투명 레이아웃 적용 */
     .element-container, .stMarkdown {
         background: transparent !important;
     }
@@ -543,7 +542,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (회색 패널 태그 완전 제거)
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -752,7 +751,7 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  # --- 화려해진 3D 다각형 카드 및 우주 오라 비주얼 화면 ---
+  # --- 결과 모션 및 애니메이션이 포함된 3D 카드 시각화 화면 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -775,13 +774,6 @@ with right_col:
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-            #redFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(239, 68, 68, 0.85); z-index: 999; pointer-events: none; opacity: 0; }}
-            #failFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(245, 158, 11, 0.4); z-index: 999; pointer-events: none; opacity: 0; }}
-            #holdFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(56, 189, 248, 0.5); z-index: 999; pointer-events: none; opacity: 0; }}
-            #shieldFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(59, 130, 246, 0.7); z-index: 999; pointer-events: none; opacity: 0; }}
-            #critFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(245, 158, 11, 0.85); z-index: 999; pointer-events: none; opacity: 0; }}
-            #successFlashOverlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(16, 185, 129, 0.5); z-index: 999; pointer-events: none; opacity: 0; }}
-
             .cinematic-ui {{
                 position: absolute;
                 bottom: 15px; 
@@ -793,31 +785,24 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 34px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; animation: pulse 1s infinite alternate; }}
-            .title-tier-4 {{ font-size: 50px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+            .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 36px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+            .title-tier-3 {{ font-size: 42px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+            .title-tier-4 {{ font-size: 48px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+            .title-tier-5 {{ font-size: 54px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+            .title-tier-6 {{ font-size: 60px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
-            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.03); }} }}
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
             .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 2px; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }}
-            .desc-text {{ font-size: 14px; color: #f3e8ff; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 18px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+            .desc-text {{ font-size: 13px; color: #f3e8ff; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 16px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+            .cost-text {{ font-size: 13px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
-        <div id="redFlashOverlay"></div>
-        <div id="failFlashOverlay"></div>
-        <div id="holdFlashOverlay"></div>
-        <div id="shieldFlashOverlay"></div>
-        <div id="critFlashOverlay"></div>
-        <div id="successFlashOverlay"></div>
         <div id="container"></div>
 
         <div class="cinematic-ui">
@@ -831,12 +816,6 @@ with right_col:
         <script>
             const status = "{status}";
             const statusText = document.getElementById('statusText');
-            const flashOverlay = document.getElementById('redFlashOverlay');
-            const failOverlay = document.getElementById('failFlashOverlay');
-            const holdOverlay = document.getElementById('holdFlashOverlay');
-            const shieldOverlay = document.getElementById('shieldFlashOverlay');
-            const critOverlay = document.getElementById('critFlashOverlay');
-            const successOverlay = document.getElementById('successFlashOverlay');
             
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
@@ -874,11 +853,11 @@ with right_col:
             dirLight.position.set(5, 8, 5);
             scene.add(dirLight);
 
-            const cardPointLight = new THREE.PointLight("{card_color}", 10, 30);
+            const cardPointLight = new THREE.PointLight("{card_color}", 12, 35);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
-            // 화려한 우주 고리 배경 오라
+            // 우주 고리 배경 오라
             const bgGroup = new THREE.Group();
             const ringMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 1.5, wireframe: true }});
             
@@ -892,7 +871,7 @@ with right_col:
 
             scene.add(bgGroup);
 
-            // 다중 입자 파티클
+            // 파티클 생성
             const particleGroup = new THREE.Group();
             const pCount = 2000;
             const pGeo = new THREE.BufferGeometry();
@@ -907,10 +886,9 @@ with right_col:
             particleGroup.add(new THREE.Points(pGeo, pMat));
             scene.add(particleGroup);
 
-            // 개쩌는 다각형 입체 카드 그룹 생성
+            // 다각형 입체 카드 구조체
             const cardGroup = new THREE.Group();
 
-            // 다각형 외곽 프레임 (Icosahedron / Dodecahedron 기하학 요소 결합)
             const polyFrameGeo = new THREE.IcosahedronGeometry(3.2, 0);
             const polyFrameMat = new THREE.MeshStandardMaterial({{ 
                 color: "{card_color}", 
@@ -923,7 +901,6 @@ with right_col:
             const polyFrame = new THREE.Mesh(polyFrameGeo, polyFrameMat);
             cardGroup.add(polyFrame);
 
-            // 중앙 핵심 다각형 크리스탈
             const coreGeo = new THREE.OctahedronGeometry(1.6, 0);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff, 
@@ -938,7 +915,25 @@ with right_col:
 
             scene.add(cardGroup);
 
-            // 피격/특수 효과 애니메이션
+            // --- 강화 결과 모션 애니메이션 (GSAP 적용) ---
+            if (status === "SUCCESS" || status === "CRITICAL") {{
+                // 폭발적인 줌인 및 회전 가속 모션
+                gsap.fromTo(cardGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1, y: 1, z: 1, duration: 0.8, ease: "elastic.out(1, 0.3)"}});
+                gsap.fromTo(cardPointLight, {{intensity: 40}}, {{intensity: 12, duration: 1.0}});
+            }} else if (status === "FAILED" || status === "DESTROYED") {{
+                // 찌그러짐 및 글리치 / 충격 셰이크 모션
+                gsap.fromTo(cardGroup.position, {{x: -0.3}}, {{x: 0.3, duration: 0.05, repeat: 5, yoyo: true}});
+                if (status === "DESTROYED") {{
+                    gsap.to(cardGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.4, yoyo: true, repeat: 1}});
+                }}
+            }} else if (status === "SHIELD_SAVED") {{
+                // 푸른 보호막 펄스 모션
+                gsap.fromTo(cardGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.6, ease: "back.out(1.7)"}});
+            }} else if (status === "HOLD") {{
+                // 잔잔한 흔들림 모션
+                gsap.fromTo(cardGroup.rotation, {{z: -0.2}}, {{z: 0, duration: 0.5, ease: "power1.out"}});
+            }}
+
             const clock = new THREE.Clock();
 
             function animate() {{
