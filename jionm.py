@@ -398,6 +398,13 @@ def enhance():
     st.session_state.tears += 1
 
 
+def dev_force_success():
+  curr = st.session_state.level
+  if curr < 30:
+    st.session_state.level += 1
+    st.session_state.status = "SUCCESS"
+
+
 def sell():
   curr = st.session_state.level
   if curr == 0:
@@ -479,6 +486,19 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
+  # 개발자 모드 설정 토글
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
+      " 설정</h4>",
+      unsafe_allow_html=True,
+  )
+  dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
+
+  st.markdown(
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
       " 강화 제어</h4>",
@@ -494,6 +514,17 @@ with left_col:
     if st.session_state.status == "NOT_ENOUGH_MONEY":
       st.error("강화 비용 부족!")
     else:
+      st.rerun()
+
+  # 개발자 모드가 켜져 있을 때만 노출되는 무조건 성공 버튼
+  if dev_mode:
+    st.write("")
+    if st.button(
+        "✨ [DEV] 무조건 성공",
+        use_container_width=True,
+        disabled=(st.session_state.level >= 30),
+    ):
+      dev_force_success()
       st.rerun()
 
   st.write("")
@@ -688,7 +719,7 @@ with right_col:
                 glowIntensity = 30;
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ SUCCESS (성공) ✨";
-                statusColor = tierColor; // 성공 시 n단계 텍스트 색상과 완벽 동기화
+                statusColor = tierColor;
                 particleSize = 0.3;
                 particleSpeed = 1.2;
                 glowIntensity = 18;
@@ -733,7 +764,6 @@ with right_col:
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            // 파티클 개수를 줄여서 전반적으로 깔끔하고 정돈된 연출 제공
             const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -805,7 +835,6 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // 과도한 애니메이션 스케일을 줄여 차분한 연출 적용
             if (status === "CRITICAL") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
