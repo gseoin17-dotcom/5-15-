@@ -133,12 +133,13 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (배경을 완전한 검정색으로 변경)
+# 6. 테마 CSS (배경 이미지를 적용하고 투명 패널 활용)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp {
-        background: #000000;
+        background: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+        background-size: cover;
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
@@ -148,27 +149,28 @@ st.markdown("""
         max-width: 95% !important;
     }
     .glass-panel {
-        background: rgba(20, 20, 20, 0.85);
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
         padding: 14px;
         margin-bottom: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     }
     .stat-card {
-        background: rgba(30, 30, 30, 0.8);
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(245, 158, 11, 0.3);
+        border: 1px solid rgba(245, 158, 11, 0.4);
         padding: 12px 10px;
         border-radius: 10px;
         text-align: center;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
     .stat-card:hover {
-        border-color: rgba(245, 158, 11, 0.7);
-        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        border-color: rgba(245, 158, 11, 0.9);
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
     .stat-title {
         font-size: 14px;
@@ -188,13 +190,14 @@ st.markdown("""
         font-weight: 700 !important;
         padding: 10px 18px !important;
         transition: all 0.2s ease !important;
-        border: 1px solid rgba(217, 119, 6, 0.3) !important;
-        background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(217, 119, 6, 0.4)) !important;
+        border: 1px solid rgba(217, 119, 6, 0.4) !important;
+        background: linear-gradient(135deg, rgba(147, 51, 234, 0.6), rgba(217, 119, 6, 0.6)) !important;
         color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     div.stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(217, 119, 6, 0.4);
+        box-shadow: 0 6px 25px rgba(217, 119, 6, 0.6);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -254,7 +257,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역
+    # 8. 3D 메인 연출 영역 (Three.js 캔버스를 투명하게 처리하여 새 배경과 조화)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -272,7 +275,7 @@ with right_col:
             body {{ 
                 margin: 0; 
                 overflow: hidden; 
-                background: #000000; 
+                background: transparent; 
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
@@ -334,9 +337,9 @@ with right_col:
             @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; }}
-            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
-            .price-text {{ font-size: 24px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
+            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
+            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 24px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -385,7 +388,6 @@ with right_col:
             }}
 
             const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0.4, 9.5);
@@ -395,7 +397,7 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambientLight);
 
             const sunsetLight = new THREE.DirectionalLight(0xffffff, 1.2);
@@ -407,7 +409,7 @@ with right_col:
             scene.add(cardPointLight);
 
             const particleGroup = new THREE.Group();
-            const pCount = 1500;
+            const pCount = 1000;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
 
@@ -419,7 +421,7 @@ with right_col:
 
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({{
-                color: 0xffffff, size: 0.18, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending
+                color: 0xffffff, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
             }});
             const particles = new THREE.Points(pGeo, pMat);
             particleGroup.add(particles);
