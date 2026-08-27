@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="👃", layout="wide"
+    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="🏰", layout="wide"
 )
 
 # -----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표
+# 3. 게임 데이터베이스 및 강화 확률표 (파괴/하락 교체 및 유지 확률 명시)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -297,37 +297,38 @@ SMELL_DB = {
     },
 }
 
+# (성공 확률, 기존 파괴 확률과 하락 확률의 위치를 맞바꿈: (성공, 하락, 파괴, 유지))
 PROB_TABLE = {
-    0: (100.0, 0.0, 0.0),
-    1: (100.0, 0.0, 0.0),
-    2: (100.0, 0.0, 0.0),
-    3: (95.0, 5.0, 0.0),
-    4: (95.0, 5.0, 0.0),
-    5: (90.0, 10.0, 0.0),
-    6: (90.0, 8.0, 2.0),
-    7: (90.0, 5.0, 5.0),
-    8: (85.0, 10.0, 5.0),
-    9: (80.0, 15.0, 5.0),
-    10: (80.0, 15.0, 5.0),
-    11: (75.0, 20.0, 5.0),
-    12: (70.0, 25.0, 5.0),
-    13: (70.0, 23.0, 7.0),
-    14: (65.0, 25.0, 10.0),
-    15: (60.0, 30.0, 10.0),
-    16: (60.0, 28.0, 12.0),
-    17: (55.0, 30.0, 15.0),
-    18: (50.0, 33.0, 17.0),
-    19: (50.0, 30.0, 20.0),
-    20: (45.0, 32.0, 23.0),
-    21: (40.0, 35.0, 25.0),
-    22: (40.0, 33.0, 27.0),
-    23: (40.0, 30.0, 30.0),
-    24: (40.0, 28.0, 32.0),
-    25: (35.0, 30.0, 35.0),
-    26: (50.0, 25.0, 25.0),
-    27: (40.0, 30.0, 30.0),
-    28: (30.0, 35.0, 35.0),
-    29: (20.0, 40.0, 40.0),
+    0: (100.0, 0.0, 0.0, 0.0),
+    1: (100.0, 0.0, 0.0, 0.0),
+    2: (100.0, 0.0, 0.0, 0.0),
+    3: (95.0, 0.0, 5.0, 0.0),
+    4: (95.0, 0.0, 5.0, 0.0),
+    5: (90.0, 0.0, 10.0, 0.0),
+    6: (90.0, 2.0, 8.0, 0.0),
+    7: (90.0, 5.0, 5.0, 0.0),
+    8: (85.0, 5.0, 10.0, 0.0),
+    9: (80.0, 5.0, 15.0, 0.0),
+    10: (80.0, 5.0, 15.0, 0.0),
+    11: (75.0, 5.0, 20.0, 0.0),
+    12: (70.0, 5.0, 25.0, 0.0),
+    13: (70.0, 7.0, 23.0, 0.0),
+    14: (65.0, 10.0, 25.0, 0.0),
+    15: (60.0, 10.0, 30.0, 0.0),
+    16: (60.0, 12.0, 28.0, 0.0),
+    17: (55.0, 15.0, 30.0, 0.0),
+    18: (50.0, 17.0, 33.0, 0.0),
+    19: (50.0, 20.0, 30.0, 0.0),
+    20: (45.0, 23.0, 32.0, 0.0),
+    21: (40.0, 25.0, 35.0, 0.0),
+    22: (40.0, 27.0, 33.0, 0.0),
+    23: (40.0, 30.0, 30.0, 0.0),
+    24: (40.0, 32.0, 28.0, 0.0),
+    25: (35.0, 35.0, 30.0, 0.0),
+    26: (50.0, 25.0, 25.0, 0.0),
+    27: (40.0, 30.0, 30.0, 0.0),
+    28: (30.0, 35.0, 35.0, 0.0),
+    29: (20.0, 40.0, 40.0, 0.0),
 }
 
 CRITICAL_RATE = 0.05
@@ -347,7 +348,7 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 로직 (유지 확률 분기 추가)
 # -----------------------------------------------------------------------------
 
 
@@ -363,7 +364,7 @@ def enhance():
 
   st.session_state.money -= cost
 
-  sp, dp, down_p = PROB_TABLE[curr]
+  sp, down_p, dp, hold_p = PROB_TABLE[curr]
   r = random.uniform(0, 100)
 
   if r < sp:
@@ -373,22 +374,22 @@ def enhance():
     else:
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
-  elif r < (sp + dp):
+  elif r < (sp + down_p):
+    if curr > 0:
+      st.session_state.level -= 1
+    st.session_state.status = "FAILED"  # 단계 하락
+    st.session_state.tears += 1
+  elif r < (sp + down_p + dp):
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.status = "SHIELD_SAVED"
       st.session_state.tears += 1
     else:
       st.session_state.level = 0
-      st.session_state.status = "DESTROYED"
+      st.session_state.status = "DESTROYED"  # 파괴
       st.session_state.tears += 2
-  elif r < (sp + dp + down_p):
-    if curr > 0:
-      st.session_state.level -= 1
-    st.session_state.status = "FAILED"
-    st.session_state.tears += 1
   else:
-    st.session_state.status = "HOLD"
+    st.session_state.status = "HOLD"  # 단계 유지
     st.session_state.tears += 1
 
 
@@ -485,8 +486,8 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰"
-      " 지온지온온라인</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
+      " 판타지 지온 강화</h3>",
       unsafe_allow_html=True,
   )
 
@@ -594,6 +595,13 @@ with right_col:
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
+            #holdFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(56, 189, 248, 0.5);
+                box-shadow: inset 0 0 100px rgba(14, 165, 233, 0.8);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
             #shieldFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(59, 130, 246, 0.7);
@@ -648,6 +656,7 @@ with right_col:
     <body>
         <div id="redFlashOverlay"></div>
         <div id="failFlashOverlay"></div>
+        <div id="holdFlashOverlay"></div>
         <div id="shieldFlashOverlay"></div>
         <div id="critFlashOverlay"></div>
         <div id="successFlashOverlay"></div>
@@ -668,6 +677,7 @@ with right_col:
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
             const failOverlay = document.getElementById('failFlashOverlay');
+            const holdOverlay = document.getElementById('holdFlashOverlay');
             const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
             const successOverlay = document.getElementById('successFlashOverlay');
@@ -811,7 +821,10 @@ with right_col:
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
-            }} else if (status === "FAILED" || status === "HOLD") {{
+            }} else if (status === "HOLD") {{
+                gsap.fromTo(holdOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ z: -0.2 }}, {{ z: 0.2, duration: 0.15, repeat: 3, yoyo: true, ease: "power1.inOut" }});
+            }} else if (status === "FAILED") {{
                 gsap.fromTo(failOverlay, {{ opacity: 0.6 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
                 gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
             }} else if (status === "DESTROYED") {{
@@ -930,10 +943,9 @@ with b_col3:
 
 with b_col4:
   if st.session_state.level < 30:
-    sp, dp, down_p = PROB_TABLE[st.session_state.level]
-    hold_p = max(0.0, 100.0 - (sp + dp + down_p))
+    sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
     crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>파괴:{dp}% / 하락:{down_p}% / 유지:{hold_p:.1f}%"
+    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}% / 유지:{hold_p}%"
   else:
     prob_str = "최고 단계 도달"
 
