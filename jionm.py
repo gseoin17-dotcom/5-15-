@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - FANTASY CITY EDITION",
+    page_title="지온냄새 강화하기",
     page_icon="🏰",
     layout="wide"
 )
@@ -21,7 +21,6 @@ def format_gold(amount):
     units = ["", "만", "억", "조", "경", "해"]
     result = []
     
-    # 10000 단위로 자르기
     unit_idx = 0
     while amount > 0 and unit_idx < len(units):
         remainder = amount % 10000
@@ -134,7 +133,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (불필요한 공백 제거)
+# 6. 테마 CSS (상단 여백을 주고 전체 레이아웃을 아래로 내림)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -144,8 +143,8 @@ st.markdown("""
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
+        padding-top: 3.5rem !important; /* 상단 여백을 늘려 전체 내용을 아래로 내림 */
+        padding-bottom: 2rem !important;
     }
     .glass-panel {
         background: rgba(43, 23, 56, 0.65);
@@ -153,15 +152,15 @@ st.markdown("""
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(236, 178, 255, 0.2);
         border-radius: 12px;
-        padding: 12px;
-        margin-bottom: 8px;
+        padding: 14px;
+        margin-bottom: 12px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .stat-card {
         background: rgba(58, 28, 77, 0.5);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 10px 8px;
+        padding: 12px 10px;
         border-radius: 10px;
         text-align: center;
         transition: all 0.3s ease;
@@ -171,14 +170,14 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     }
     .stat-title {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: #fde68a;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
         letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
@@ -186,7 +185,7 @@ st.markdown("""
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
-        padding: 8px 16px !important;
+        padding: 10px 18px !important;
         transition: all 0.2s ease !important;
         border: 1px solid rgba(217, 119, 6, 0.3) !important;
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(217, 119, 6, 0.4)) !important;
@@ -202,11 +201,11 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 # 7. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([3, 7], gap="small")
+left_col, right_col = st.columns([3, 7], gap="medium")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 8px 0; font-size: 18px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
@@ -219,12 +218,12 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
     st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin:0 0 4px 0; font-size: 15px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
     
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
@@ -254,7 +253,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (Three.js)
+    # 8. 3D 메인 연출 영역 (Three.js - 카드 크기 키움 및 UI 위치 조정)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -307,7 +306,7 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 30px; 
+                bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -316,20 +315,20 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
-            .title-tier-2 {{ font-size: 44px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 50px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
-            .title-tier-4 {{ font-size: 56px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
-            .title-tier-6 {{ font-size: 68px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
             @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
             @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: 4px; }}
-            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
-            .price-text {{ font-size: 22px; font-weight: 800; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
+            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; }}
+            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
+            .price-text {{ font-size: 24px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -379,7 +378,7 @@ with right_col:
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.2, 9);
+            camera.position.set(0, 0.4, 9.5); // 카메라 위치를 살짝 내려서 카드가 화면 중앙~약간 위쪽에 안착하도록 조정
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -418,32 +417,33 @@ with right_col:
 
             const cardGroup = new THREE.Group();
 
-            const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
+            // 카드 크기 전면 확대 (기존 대비 약 1.35배 키움)
+            const frameGeo = new THREE.BoxGeometry(3.9, 5.8, 0.25);
             const frameMat = new THREE.MeshStandardMaterial({{ color: 0x2e1045, metalness: 0.85, roughness: 0.25 }});
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
-            const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
+            const bodyGeo = new THREE.BoxGeometry(3.5, 5.4, 0.28);
             const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.65, roughness: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             cardGroup.add(body);
 
-            const coreGeo = new THREE.OctahedronGeometry(0.6, 0);
+            const coreGeo = new THREE.OctahedronGeometry(0.8, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.z = 0.16;
+            core.position.z = 0.2;
             cardGroup.add(core);
 
             scene.add(cardGroup);
 
-            const shieldGeo = new THREE.SphereGeometry(2.8, 32, 32);
+            const shieldGeo = new THREE.SphereGeometry(3.6, 32, 32);
             const shieldMat = new THREE.MeshStandardMaterial({{
                 color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
             }});
             const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
-            shieldDome.position.y = 0.8;
+            shieldDome.position.y = 0.2;
             scene.add(shieldDome);
 
             let shardsGroup = new THREE.Group();
@@ -456,25 +456,25 @@ with right_col:
                 gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
             }} else if (status === "CRITICAL") {{
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
-                gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 1.2, 9); }} }});
+                gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
                 cardGroup.visible = false;
 
                 const shardCount = 20;
                 for(let i = 0; i < shardCount; i++) {{
-                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.4 + 0.2);
+                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
                     const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
                     const shard = new THREE.Mesh(sGeo, sMat);
-                    shard.position.set(0, 0.8, 0);
+                    shard.position.set(0, 0.2, 0);
                     shardsGroup.add(shard);
 
                     gsap.to(shard.position, {{
-                        x: (Math.random() - 0.5) * 6,
-                        y: (Math.random() - 0.5) * 6,
-                        z: (Math.random() - 0.5) * 6,
+                        x: (Math.random() - 0.5) * 7,
+                        y: (Math.random() - 0.5) * 7,
+                        z: (Math.random() - 0.5) * 7,
                         duration: 1.2,
                         ease: "power3.out"
                     }});
@@ -487,7 +487,7 @@ with right_col:
                 }}
             }} else if (status === "SUCCESS") {{
                 gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
-                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 5 }}, {{ z: 9.5, duration: 1.2, ease: "power2.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
             }}
 
@@ -506,7 +506,7 @@ with right_col:
 
                 if (cardGroup.visible) {{
                     cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
-                    cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.8;
+                    cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
                 }}
                 
                 core.rotation.x = time * 2;
@@ -527,7 +527,7 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=520, scrolling=False)
+    components.html(three_js_code, height=560, scrolling=False)
 
     # -----------------------------------------------------------------------------
     # 9. 하단 스탯 대시보드
