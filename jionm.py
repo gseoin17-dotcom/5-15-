@@ -60,7 +60,7 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 
 # -----------------------------------------------------------------------------
-# 3. 세션 상태 초기화
+# 3. 세션 상태 초기화 (새로운 기록/로그 변수 추가)
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state: st.session_state.level = 0
 if "money" not in st.session_state: st.session_state.money = 10000
@@ -68,6 +68,12 @@ if "status" not in st.session_state: st.session_state.status = "READY"
 if "shield" not in st.session_state: st.session_state.shield = 0  
 if "tears" not in st.session_state: st.session_state.tears = 0    
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
+if "max_level" not in st.session_state: st.session_state.max_level = 0
+if "logs" not in st.session_state: st.session_state.logs = []
+
+def add_log(msg):
+    st.session_state.logs.insert(0, msg)
+    st.session_state.logs = st.session_state.logs[:5]
 
 # -----------------------------------------------------------------------------
 # 4. 강화 로직
@@ -79,6 +85,8 @@ def enhance():
     if st.session_state.dev_mode:
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
+        st.session_state.max_level = max(st.session_state.max_level, st.session_state.level)
+        add_log(f"🛠️ [개발자] {st.session_state.level}단계 성공")
         return
 
     sp, fp, dp = PROB_TABLE[curr]
@@ -88,29 +96,38 @@ def enhance():
         if random.random() < CRITICAL_RATE and curr + 2 <= 30:
             st.session_state.level += 2
             st.session_state.status = "CRITICAL"
+            add_log(f"⚡ [대성공] {st.session_state.level}단계 도달!!")
         else:
             st.session_state.level += 1
             st.session_state.status = "SUCCESS"
+            add_log(f"✨ [성공] {st.session_state.level}단계 달성")
     elif r < (sp + dp):
         if st.session_state.shield > 0:
             st.session_state.shield -= 1
             st.session_state.status = "SHIELD_SAVED"
             st.session_state.tears += 1
+            add_log(f"🛡️ [방어] {curr}단계 파괴 방지됨!")
         else:
             st.session_state.level = 0
             st.session_state.status = "DESTROYED"
             st.session_state.tears += 2
+            add_log(f"💥 [파괴] {curr}단계에서 파괴됨...")
     else:
         if curr > 0: st.session_state.level -= 1
         st.session_state.status = "FAILED"
         st.session_state.tears += 1
+        add_log(f"🔻 [실패] {st.session_state.level}단계로 하락")
+        
+    st.session_state.max_level = max(st.session_state.max_level, st.session_state.level)
 
 def sell():
     curr = st.session_state.level
     if curr == 0: return
-    st.session_state.money += SMELL_DB[curr]['price']
+    earned = SMELL_DB[curr]['price']
+    st.session_state.money += earned
     st.session_state.level = 0
     st.session_state.status = "READY"
+    add_log(f"💰 {curr}단계 판매 (+{earned:,} G)")
 
 # -----------------------------------------------------------------------------
 # 5. 테마 CSS
@@ -205,9 +222,9 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점 및 활동</h4>", unsafe_allow_html=True)
     
-    tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
+    tab_shop1, tab_shop2, tab_shop3 = st.tabs(["🛡️ 상점", "💧 눈물", "⛏️ 알바"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
         if st.button("구매 (50,000 G)", use_container_width=True):
@@ -215,6 +232,7 @@ with left_col:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
                 st.success("보호권 보유 중!")
+                add_log("🛒 파괴 방지권 구매")
                 st.rerun()
             else:
                 st.error("골드가 부족합니다.")
@@ -226,16 +244,35 @@ with left_col:
                 st.session_state.tears -= 15
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
+                st.session_state.max_level = max(st.session_state.max_level, st.session_state.level)
                 st.success("확정 강화 성공!")
+                add_log(f"💧 [확정강화] {st.session_state.level}단계 상승")
                 st.rerun()
             else:
                 st.error("조건이 부족합니다.")
 
+    with tab_shop3:
+        st.caption("돈이 모자랄 땐 흙을 파서 골드를 모으세요!")
+        if st.button("⛏️ 흙 파서 골드 벌기 (+1,000 G)", use_container_width=True):
+            st.session_state.money += 1000
+            st.toast("1,000 골드를 획득했습니다! ⛏️")
+            st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 📜 최근 강화 로그 표시 영역
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 15px; color:#fde68a;'>📜 최근 강화 기록</h4>", unsafe_allow_html=True)
+    if not st.session_state.logs:
+        st.caption("기록이 없습니다.")
+    else:
+        for log in st.session_state.logs:
+            st.caption(log)
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 7. 3D 메인 연출 영역 (Three.js)
+    # 7. 3D 메인 연출 영역 (Three.js + Web Audio API 사운드 추가)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -332,6 +369,52 @@ with right_col:
         </div>
 
         <script>
+            // 🔊 사운드 연출 (Web Audio API 기반 합성음)
+            const playSound = (type) => {{
+                try {{
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    const now = ctx.currentTime;
+                    if (type === 'success') {{
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(523.25, now); // C5
+                        osc.frequency.exponentialRampToValueAtTime(880, now + 0.3); // A5
+                        gain.gain.setValueAtTime(0.3, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        osc.start(now);
+                        osc.stop(now + 0.3);
+                    }} else if (type === 'critical') {{
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(440, now);
+                        osc.frequency.exponentialRampToValueAtTime(1760, now + 0.5);
+                        gain.gain.setValueAtTime(0.5, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                        osc.start(now);
+                        osc.stop(now + 0.5);
+                    }} else if (type === 'destroy') {{
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(180, now);
+                        osc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+                        gain.gain.setValueAtTime(0.5, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                    }} else if (type === 'shield') {{
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(600, now + 0.4);
+                        gain.gain.setValueAtTime(0.4, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                    }}
+                }} catch(e) {{ console.log(e); }}
+            }};
+
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -342,18 +425,23 @@ with right_col:
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                 statusText.style.color = "#ffe600";
+                playSound('critical');
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ ENHANCE SUCCESS ✨";
                 statusText.style.color = "#34d399";
+                playSound('success');
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
                 statusText.style.color = "#60a5fa";
+                playSound('shield');
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED 💥";
                 statusText.style.color = "#ef4444";
+                playSound('destroy');
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 ENHANCE FAILED 🔻";
                 statusText.style.color = "#f59e0b";
+                playSound('destroy');
             }}
 
             const scene = new THREE.Scene();
@@ -518,9 +606,9 @@ with right_col:
     components.html(three_js_code, height=560, scrolling=False)
 
     # -----------------------------------------------------------------------------
-    # 8. 하단 스탯 대시보드 (요청 사항 반영)
+    # 8. 하단 스탯 대시보드 (최고 달성 단계 추가 반영)
     # -----------------------------------------------------------------------------
-    b_col1, b_col2, b_col3 = st.columns([1, 1, 1])
+    b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1])
 
     with b_col1:
         st.markdown(f'''
@@ -539,12 +627,20 @@ with right_col:
         ''', unsafe_allow_html=True)
 
     with b_col3:
+        st.markdown(f'''
+            <div class="stat-card">
+                <div class="stat-title">🏆 최고 도달 단계</div>
+                <div class="stat-value">{st.session_state.max_level} 단계</div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+    with b_col4:
         sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
         crit_pct = int(CRITICAL_RATE * 100)
         prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
         st.markdown(f'''
             <div class="stat-card">
                 <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
-                <div class="stat-value" style="font-size: 18px;">{prob_str}</div>
+                <div class="stat-value" style="font-size: 16px;">{prob_str}</div>
             </div>
         ''', unsafe_allow_html=True)
