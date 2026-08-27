@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기",
+    page_title="지온냄새 강화하기 - FANTASY CITY EDITION",
     page_icon="🏰",
     layout="wide"
 )
@@ -133,7 +133,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (상단 여백을 주고 전체 레이아웃을 아래로 내림)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -143,7 +143,7 @@ st.markdown("""
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 3.5rem !important; /* 상단 여백을 늘려 전체 내용을 아래로 내림 */
+        padding-top: 3.5rem !important;
         padding-bottom: 2rem !important;
     }
     .glass-panel {
@@ -205,14 +205,14 @@ left_col, right_col = st.columns([3, 7], gap="medium")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'> 지온 냄 강화</h3>", unsafe_allow_html=True)
     
-    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
+    if st.button("🔥 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
         st.rerun()
         
     st.write("")
-    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
+    if st.button("💰 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
         sell()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -253,7 +253,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (Three.js - 카드 크기 키움 및 UI 위치 조정)
+    # 8. 3D 메인 연출 영역 (고급 TCG 카드 테두리 및 홀로그램 효과 적용)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -378,7 +378,7 @@ with right_col:
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0.4, 9.5); // 카메라 위치를 살짝 내려서 카드가 화면 중앙~약간 위쪽에 안착하도록 조정
+            camera.position.set(0, 0.4, 9.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -417,28 +417,50 @@ with right_col:
 
             const cardGroup = new THREE.Group();
 
-            // 카드 크기 전면 확대 (기존 대비 약 1.35배 키움)
-            const frameGeo = new THREE.BoxGeometry(3.9, 5.8, 0.25);
-            const frameMat = new THREE.MeshStandardMaterial({{ color: 0x2e1045, metalness: 0.85, roughness: 0.25 }});
+            // 고급 TCG 카드 외곽 프레임 (금속성 골드/실버 느낌 테두리)
+            const frameGeo = new THREE.BoxGeometry(4.0, 5.9, 0.22);
+            const frameMat = new THREE.MeshStandardMaterial({{ 
+                color: 0xfbbf24, 
+                metalness: 0.95, 
+                roughness: 0.15,
+                emissive: 0xd97706,
+                emissiveIntensity: 0.2
+            }});
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
-            const bodyGeo = new THREE.BoxGeometry(3.5, 5.4, 0.28);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.65, roughness: 0.3 }});
+            // 카드 내부 배경 패널 (신비로운 블랙 인레이)
+            const inlayGeo = new THREE.BoxGeometry(3.7, 5.6, 0.24);
+            const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x11081f, metalness: 0.5, roughness: 0.5 }});
+            const inlay = new THREE.Mesh(inlayGeo, inlayMat);
+            cardGroup.add(inlay);
+
+            // 보석처럼 빛나는 중앙 일러스트 플레이트
+            const bodyGeo = new THREE.BoxGeometry(3.3, 3.3, 0.26);
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 0.85;
             cardGroup.add(body);
 
-            const coreGeo = new THREE.OctahedronGeometry(0.8, 0);
+            // 홀로그램 크리스탈 코어
+            const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
-                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1
+                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.z = 0.2;
+            core.position.set(0, 0.85, 0.18);
             cardGroup.add(core);
+
+            // 카드 하단 명판 (텍스처 영역)
+            const nameplateGeo = new THREE.BoxGeometry(3.3, 1.4, 0.26);
+            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e1b4b, metalness: 0.8, roughness: 0.3 }});
+            const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
+            nameplate.position.y = -1.55;
+            cardGroup.add(nameplate);
 
             scene.add(cardGroup);
 
-            const shieldGeo = new THREE.SphereGeometry(3.6, 32, 32);
+            const shieldGeo = new THREE.SphereGeometry(3.8, 32, 32);
             const shieldMat = new THREE.MeshStandardMaterial({{
                 color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
             }});
@@ -530,9 +552,9 @@ with right_col:
     components.html(three_js_code, height=560, scrolling=False)
 
     # -----------------------------------------------------------------------------
-    # 9. 하단 스탯 대시보드
+    # 9. 하단 스탯 대시보드 (보유권 개수 항목 추가)
     # -----------------------------------------------------------------------------
-    b_col1, b_col2, b_col3 = st.columns([1, 1, 1], gap="small")
+    b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
 
     with b_col1:
         st.markdown(f'''
@@ -545,18 +567,26 @@ with right_col:
     with b_col2:
         st.markdown(f'''
             <div class="stat-card">
+                <div class="stat-title">🛡️ 보유권 개수</div>
+                <div class="stat-value">{st.session_state.shield}개</div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+    with b_col3:
+        st.markdown(f'''
+            <div class="stat-card">
                 <div class="stat-title">💧 지온의 눈물</div>
                 <div class="stat-value">{st.session_state.tears}개</div>
             </div>
         ''', unsafe_allow_html=True)
 
-    with b_col3:
+    with b_col4:
         sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
         crit_pct = int(CRITICAL_RATE * 100)
         prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
         st.markdown(f'''
             <div class="stat-card">
-                <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
-                <div class="stat-value" style="font-size: 15px;">{prob_str}</div>
+                <div class="stat-title">📊 성공 / 크리 / 파괴</div>
+                <div class="stat-value" style="font-size: 14px;">{prob_str}</div>
             </div>
         ''', unsafe_allow_html=True)
