@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표
+# 3. 게임 데이터베이스 및 강화 확률표 (파괴 확률을 하락으로, 유지 확률 추가)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -345,8 +345,6 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "bgm_vol" not in st.session_state:
-  st.session_state.bgm_vol = 30  # 기본 볼륨 30%
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -517,21 +515,6 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
-  # BGM 설정 패널
-  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🎵 BGM"
-      " 플레이어</h4>",
-      unsafe_allow_html=True,
-  )
-  bgm_vol = st.slider(
-      "브금 볼륨 조절", 0, 100, st.session_state.bgm_vol, key="slider_bgm_vol"
-  )
-  if bgm_vol != st.session_state.bgm_vol:
-    st.session_state.bgm_vol = bgm_vol
-    st.rerun()
-  st.markdown("</div>", unsafe_allow_html=True)
-
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
@@ -587,8 +570,8 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
-  current_vol = st.session_state.bgm_vol / 100.0
 
+  # 초고품질 홀로그램 카드 디자인이 적용된 Three.js 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -683,10 +666,6 @@ with right_col:
         <div id="successFlashOverlay"></div>
         <div id="container"></div>
 
-        <audio id="bgmAudio" loop autoplay>
-            <source src="https://od.lk/s/OTJfNDcwNDIzMzlf/mixkit-game-level-music-689.mp3" type="audio/mp3">
-        </audio>
-
         <div class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
             <div class="title-tier-{tier}">
@@ -698,23 +677,6 @@ with right_col:
         </div>
 
         <script>
-            const audio = document.getElementById('bgmAudio');
-            audio.volume = {current_vol};
-
-            function playAudio() {{
-                audio.play().catch(e => {{
-                    console.log("Autoplay blocked, waiting for interaction");
-                }});
-            }}
-
-            window.addEventListener('pointerdown', () => {{
-                playAudio();
-            }}, {{ once: true }});
-
-            setTimeout(() => {{
-                playAudio();
-            }}, 300);
-
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -803,8 +765,10 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
+            // --- 고품질 홀로그램 카드 그룹 구성 ---
             const cardGroup = new THREE.Group();
 
+            // 1. 화려한 이중 메탈릭 외곽 프레임
             const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
             const outerFrameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xffd700, 
@@ -816,6 +780,7 @@ with right_col:
             const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
             cardGroup.add(outerFrame);
 
+            // 2. 내부 유리 글래스 플레이트 (Glassmorphism)
             const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
             const glassMat = new THREE.MeshPhysicalMaterial({{ 
                 color: 0x0f172a, 
@@ -829,6 +794,7 @@ with right_col:
             const glassPlate = new THREE.Mesh(glassGeo, glassMat);
             cardGroup.add(glassPlate);
 
+            // 3. 상단 일러스트 배경 패널 (네온 홀로그램)
             const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
             const bodyMat = new THREE.MeshStandardMaterial({{ 
                 color: "{card_color}", 
@@ -841,6 +807,7 @@ with right_col:
             body.position.y = 0.85;
             cardGroup.add(body);
 
+            // 4. 회전하는 중앙 다면체 크리스털 코어 (에너지 코어 입체화)
             const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, 
@@ -853,6 +820,7 @@ with right_col:
             core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
 
+            // 5. 하단 네임플레이트
             const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
