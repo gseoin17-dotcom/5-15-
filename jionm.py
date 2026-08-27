@@ -480,7 +480,7 @@ with right_col:
             }} else if (status === "CRITICAL") {{
                 gsap.fromTo(critOverlay, {{ opacity: 1.0 }}, {{ opacity: 0, duration: 1.5, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 3.5 }}, {{ z: 9.5, duration: 1.8, ease: "elastic.out(1, 0.4)" }});
-                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 8, z: Math.PI * 3 }, {{ y: 0, z: 0, duration: 1.8, ease: "power3.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 8, z: Math.PI * 3 }}, {{ y: 0, z: 0, duration: 1.8, ease: "power3.out" }});
                 gsap.fromTo(cardPointLight, {{ intensity: 25 }, {{ intensity: 8, duration: 1.2, ease: "power2.out" }});
             }} else if (status === "FAILED") {{
                 gsap.fromTo(failOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 0.9, ease: "power2.out" }});
