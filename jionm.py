@@ -347,15 +347,15 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "animating" not in st.session_state:
-  st.session_state.animating = False
+if "is_animating" not in st.session_state:
+  st.session_state.is_animating = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
 
 
-def enhance():
+def run_enhance():
   curr = st.session_state.level
   if curr >= 30:
     return
@@ -363,7 +363,6 @@ def enhance():
   cost = get_enhance_cost(curr)
   if st.session_state.money < cost:
     st.session_state.status = "NOT_ENOUGH_MONEY"
-    st.session_state.animating = False
     return
 
   st.session_state.money -= cost
@@ -510,14 +509,14 @@ with left_col:
   if st.button(
       "🔥 강화 실행",
       use_container_width=True,
-      disabled=(st.session_state.level >= 30 or st.session_state.animating),
+      disabled=(st.session_state.level >= 30 or st.session_state.is_animating),
   ):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
-      st.session_state.animating = True
-      enhance()
+      st.session_state.is_animating = True
+      run_enhance()
       st.rerun()
 
   if dev_mode:
@@ -659,7 +658,7 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(current_level))
   tier = curr_data["tier"]
   status = st.session_state.status
-  is_animating = "true" if st.session_state.animating else "false"
+  is_animating_val = "true" if st.session_state.is_animating else "false"
 
   three_js_code = f"""
     <!DOCTYPE html>
@@ -731,7 +730,7 @@ with right_col:
         </div>
 
         <script>
-            const isAnimating = {is_animating};
+            const isAnimating = {is_animating_val};
             const uiElement = document.getElementById('cinematicUi');
 
             const currentLevel = {current_level};
@@ -912,19 +911,13 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // 애니메이션 연출 및 텍스트 지연 출력 처리
+            // 애니메이션 연출 및 텍스트 지연 출력 처리 (새로고침 없이 상태 변수만 백그라운드에서 전환)
             if (isAnimating) {{
-                // 강화 연출을 위해 초기 회전 속도 가속 및 줌인 효과 부여
                 gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.5)"}});
                 
-                // 1.5초 동안 애니메이션을 보여준 뒤 텍스트 UI 페이드인 및 파이썬 상태 갱신 트리거
                 setTimeout(() => {{
                     uiElement.classList.add('visible');
                 }}, 1200);
-
-                setTimeout(() => {{
-                    window.location.reload(); // 파이썬 상태 리셋을 통한 UI 동기화
-                }}, 2200);
             }} else {{
                 uiElement.classList.add('visible');
             }}
@@ -1042,6 +1035,6 @@ with right_col:
 
   components.html(three_js_code, height=560, scrolling=False)
 
-# 애니메이션 플래그 초기화
-if st.session_state.animating:
-  st.session_state.animating = False
+# 최초 렌더링 애니메이션 루프 종료 후 상태 해제
+if st.session_state.is_animating:
+  st.session_state.is_animating = False
