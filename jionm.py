@@ -70,7 +70,6 @@ def get_enhance_cost(level):
 
 
 def get_shield_cost(level):
-  # 현재 단계에 비례하여 방지권 구매 가격 상승 (기본 강화 비용의 일정 배율 또는 누진 구조)
   base_cost = get_enhance_cost(level)
   return max(50000, base_cost * 15)
 
@@ -334,12 +333,12 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화
+# 4. 세션 상태 초기화 (초기 자본 100만 원 설정)
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "money" not in st.session_state:
-  st.session_state.money = 5000
+  st.session_state.money = 1000000  # 100만 원으로 설정
 if "status" not in st.session_state:
   st.session_state.status = "READY"
 if "shield" not in st.session_state:
