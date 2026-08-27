@@ -570,19 +570,23 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 100개 소모 -> 1~2단계 랜덤 상승")
+    st.caption("눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승")
     if st.button("눈물 기적 가동", use_container_width=True):
-      if st.session_state.tears >= 100 and st.session_state.level < 30:
-        st.session_state.tears -= 100
-        add_lvl = random.choice([1, 2])
-        st.session_state.level = min(30, st.session_state.level + add_lvl)
-        st.session_state.status = (
-            "CRITICAL" if add_lvl == 2 else "SUCCESS"
-        )
-        st.success(f"눈물 기적 발동! {add_lvl}단계 상승!")
+      if st.session_state.tears >= 40 and st.session_state.level < 30:
+        st.session_state.tears -= 40
+        if random.random() < 0.50:
+          add_lvl = random.choice([1, 2, 3])
+          st.session_state.level = min(30, st.session_state.level + add_lvl)
+          st.session_state.status = (
+              "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+          )
+          st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
+        else:
+          st.session_state.status = "FAILED"
+          st.warning("눈물의 기적이 실패했습니다...")
         st.rerun()
       else:
-        st.error("눈물 100개가 필요합니다.")
+        st.error("눈물 40개가 필요합니다.")
 
 with right_col:
   sc1, sc2, sc3, sc4 = st.columns(4)
@@ -681,7 +685,6 @@ with right_col:
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            /* 20단계 이상부터 적용될 텍스트 흔들림(바이브/글리치) 효과 */
             .shaking-text {{
                 animation: textVibe 0.18s infinite alternate ease-in-out;
             }}
@@ -713,7 +716,6 @@ with right_col:
         </div>
 
         <script>
-            // 20단계 이상부터 UI 텍스트 전체 흔들림(바이브) 부여
             const currentLevel = {current_level};
             if (currentLevel >= 20) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
@@ -732,7 +734,7 @@ with right_col:
             let glowIntensity = 12;
 
             if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
                 particleSize = 0.45;
                 particleSpeed = 2.0;
@@ -819,50 +821,47 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            // -----------------------------------------------------------------
-            // 16단계~30단계 및 전 구간별 '고유 다각형 도형' 정밀 매핑 (삼각형~팔각형, 별, 원기둥 등)
-            // -----------------------------------------------------------------
             let baseGeo;
             const lvl = {current_level};
 
             if (lvl <= 2) {{
-                baseGeo = new THREE.TetrahedronGeometry(2.4); // 정삼각형 기반 사면체
+                baseGeo = new THREE.TetrahedronGeometry(2.4);
             }} else if (lvl <= 5) {{
-                baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2); // 정육면체 (사각형)
+                baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
             }} else if (lvl <= 8) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5); // 정오각형 기둥
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5);
             }} else if (lvl <= 11) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6); // 정육각형 기둥
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6);
             }} else if (lvl <= 14) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7); // 칠각형 기둥
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7);
             }} else if (lvl <= 17) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8); // 팔각형 기둥 (우주관통~차원균열)
+                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8);
             }} else if (lvl == 18) {{
-                baseGeo = new THREE.OctahedronGeometry(2.6); // 팔면체 (Absolute)
+                baseGeo = new THREE.OctahedronGeometry(2.6);
             }} else if (lvl == 19) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.5); // 십면체 (초월적)
+                baseGeo = new THREE.DodecahedronGeometry(2.5);
             }} else if (lvl == 20) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.5); // 이십면체 (자이온맘 집밥)
+                baseGeo = new THREE.IcosahedronGeometry(2.5);
             }} else if (lvl == 21) {{
-                baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6); // 육각뿔 (스매싱)
+                baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6);
             }} else if (lvl == 22) {{
-                baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32); // 도넛 형태의 링 (된장국)
+                baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32);
             }} else if (lvl == 23) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3); // 꼬인 매듭 (숙성 원액)
+                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3);
             }} else if (lvl == 24) {{
-                baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12); // 스프레이 분사형 원뿔뿔체
+                baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12);
             }} else if (lvl == 25) {{
-                baseGeo = new THREE.SphereGeometry(2.3, 16, 16); // 거대한 은혜의 구체
+                baseGeo = new THREE.SphereGeometry(2.3, 16, 16);
             }} else if (lvl == 26) {{
-                baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8); // 팔각 뾰족 필살기 탑
+                baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8);
             }} else if (lvl == 27) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4); // 고차원 복잡 매듭 (창조와 구원)
+                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4);
             }} else if (lvl == 28) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.6, 1); // 고도화된 다면체 (권능)
+                baseGeo = new THREE.IcosahedronGeometry(2.6, 1);
             }} else if (lvl == 29) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.7, 1); // 만물의 어머니성 오라 덩어리
+                baseGeo = new THREE.DodecahedronGeometry(2.7, 1);
             }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5); // 태초의 절대신성 최종 오라 매듭
+                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5);
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
@@ -875,7 +874,7 @@ with right_col:
                 transparent: true,
                 opacity: status === "FAILED" ? 0.55 : 0.92,
                 wireframe: false
-            }});
+            }));
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
@@ -887,22 +886,81 @@ with right_col:
                 roughness: 0.1,
                 metalness: 0.9,
                 transmission: 0.7
-            }});
+            }));
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            if (status === "CRITICAL") {{
+            // 💥 파괴 시 오브젝트가 깨지며 사방으로 튀어나가는 파편 모션 구현
+            if (status === "DESTROYED") {{
+                // 기존 통짜 메쉬 숨기기
+                outerMesh.visible = false;
+                coreMesh.visible = false;
+
+                // 조각난 파편(디브리스) 생성
+                const shardCount = 45;
+                const shards = [];
+                const shardGroup = new THREE.Group();
+
+                for(let i=0; i<shardCount; i++) {{
+                    const sGeo = new THREE.BoxGeometry(0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3);
+                    const sMat = new THREE.MeshStandardMaterial({{
+                        color: tierColor,
+                        roughness: 0.3,
+                        metalness: 0.8,
+                        emissive: "#ef4444",
+                        emissiveIntensity: 0.8
+                    }});
+                    const shard = new THREE.Mesh(sGeo, sMat);
+                    
+                    // 중심에서 시작
+                    shard.position.set(0, 0, 0);
+                    
+                    // 무작위 폭발 방향 벡터 설정
+                    const u = Math.random();
+                    const v = Math.random();
+                    const theta = u * 2.0 * Math.PI;
+                    const phi = Math.acos(2.0 * v - 1.0);
+                    const speed = 3.5 + Math.random() * 4.0;
+                    
+                    shard.userData = {{
+                        vx: speed * Math.sin(phi) * Math.cos(theta),
+                        vy: speed * Math.sin(phi) * Math.sin(theta),
+                        vz: speed * Math.cos(phi),
+                        rx: (Math.random() - 0.5) * 15,
+                        ry: (Math.random() - 0.5) * 15
+                    }};
+
+                    shardGroup.add(shard);
+                    shards.push(shard);
+                }}
+                scene.add(shardGroup);
+
+                // GSAP를 통한 폭발 애니메이션 연동
+                gsap.to(shardGroup.position, {{
+                    duration: 1.2,
+                    ease: "power2.out",
+                    onUpdate: function() {{
+                        const progress = this.progress();
+                        shards.forEach(s => {{
+                            s.position.x += s.userData.vx * 0.02;
+                            s.position.y += s.userData.vy * 0.02 - 0.05; // 중력 낙하 느낌
+                            s.position.z += s.userData.vz * 0.02;
+                            s.rotation.x += s.userData.rx * 0.02;
+                            s.rotation.y += s.userData.ry * 0.02;
+                            s.material.opacity = 1.0 - progress;
+                            s.material.transparent = true;
+                        }});
+                    }}
+                }});
+            }} else if (status === "CRITICAL") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
             }} else if (status === "SUCCESS") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
             }} else if (status === "FAILED") {{
                 gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
-            }} else if (status === "DESTROYED") {{
-                gsap.fromTo(objectGroup.position, {{x: -0.25}}, {{x: 0.25, duration: 0.03, repeat: 8, yoyo: true}});
-                gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.25, yoyo: true, repeat: 1}});
             }} else if (status === "SHIELD_SAVED") {{
                 gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
             }}
@@ -913,11 +971,14 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
-                outerMesh.rotation.x = time * (0.5 * rotSpeed);
-                outerMesh.rotation.y = time * (0.7 * rotSpeed);
-                coreMesh.rotation.x = -time * (1.1 * rotSpeed);
-                coreMesh.rotation.y = -time * (1.4 * rotSpeed);
+                if (status !== "DESTROYED") {{
+                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
+                    outerMesh.rotation.x = time * (0.5 * rotSpeed);
+                    outerMesh.rotation.y = time * (0.7 * rotSpeed);
+                    coreMesh.rotation.x = -time * (1.1 * rotSpeed);
+                    coreMesh.rotation.y = -time * (1.4 * rotSpeed);
+                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
+                }}
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
@@ -932,8 +993,6 @@ with right_col:
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
-
-                objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
 
                 renderer.render(scene, camera);
             }}
