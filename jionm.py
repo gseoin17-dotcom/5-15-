@@ -133,7 +133,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (구름 하늘 배경 및 글래스모피즘 적용)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -256,9 +256,6 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
-    # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (고도화된 오프닝/강화 연출 효과 반영)
-    # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
@@ -280,7 +277,6 @@ with right_col:
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-            /* 오프닝 및 상태별 시각 플래시 이펙트 오버레이 */
             #redFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(185, 28, 28, 0.95) 100%);
@@ -329,14 +325,10 @@ with right_col:
 
             .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
             .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
-            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
-
-            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
-            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
-            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
 
             .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
             .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
@@ -409,7 +401,6 @@ with right_col:
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
-            // 배경 파티클 (하늘 속 유성 및 대기 먼지 효과)
             const particleGroup = new THREE.Group();
             const pCount = 1200;
             const pGeo = new THREE.BufferGeometry();
@@ -429,7 +420,6 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
-            // 카드 메인 그룹
             const cardGroup = new THREE.Group();
 
             const frameGeo = new THREE.BoxGeometry(4.0, 5.9, 0.22);
@@ -470,7 +460,6 @@ with right_col:
 
             scene.add(cardGroup);
 
-            // 보호막 돔
             const shieldGeo = new THREE.SphereGeometry(3.8, 32, 32);
             const shieldMat = new THREE.MeshStandardMaterial({{
                 color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 1.0, transparent: true, opacity: 0.0, wireframe: true
@@ -482,9 +471,6 @@ with right_col:
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // -----------------------------------------------------------------------------
-            // 강화 결과별 고도화된 연출 (오프닝 줌인, 카메라 셰이크, 광원 폭발)
-            // -----------------------------------------------------------------------------
             if (status === "SHIELD_SAVED") {{
                 gsap.fromTo(shieldOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
                 gsap.fromTo(shieldMat, {{ opacity: 1.0, wireframe: true }}, {{ opacity: 0, duration: 1.8, ease: "power2.inOut" }});
@@ -532,7 +518,6 @@ with right_col:
                 gsap.fromTo(camera.position, {{ z: 4.5 }, {{ z: 9.5, duration: 1.4, ease: "back.out(1.2)" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2.5 }, {{ y: 0, duration: 1.4, ease: "power2.out" }});
             }} else {{
-                // 최초 진입(READY) 오프닝 연출: 카드가 하늘에서 우아하게 밀려들어오는 줌인 애니메이션
                 gsap.fromTo(camera.position, {{ z: 15, y: 2 }, {{ z: 9.5, y: 0.4, duration: 1.2, ease: "power3.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ x: 0.5, y: Math.PI }, {{ x: 0, y: 0, duration: 1.2, ease: "power3.out" }});
             }}
