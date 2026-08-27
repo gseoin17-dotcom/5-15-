@@ -460,7 +460,7 @@ with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 "
-      "  지온 냄 강화</h3>",
+      "  지온 냄새 강화</h3>",
       unsafe_allow_html=True,
   )
 
