@@ -12,13 +12,13 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 게임 데이터베이스 및 강화 확률표 / 업적 데이터베이스
+# 2. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
     1: {"name": "1단계 : 스쳐가는 지온냄새", "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.", "price": 100, "color": "#718096", "tier": 1},
     2: {"name": "2단계 : 은은한 자이온냄새", "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.", "price": 300, "color": "#38a169", "tier": 1},
-    3: {"name": "3단계 : 습한 지온냄새", "desc": "비 온 뒤 짙은 상록수 숲속에서 감도는 냄새.", "price": 700, "color": "#276749", "tier": 1},
+    3: {"name": "3단계 : 습한 지온냄새", "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.", "price": 700, "color": "#276749", "tier": 1},
     4: {"name": "4단계 : 진득한 자이온냄새", "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.", "price": 1500, "color": "#319795", "tier": 1},
     5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 3500, "color": "#2c7a7b", "tier": 1},
     6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 8000, "color": "#3182ce", "tier": 2},
@@ -59,25 +59,6 @@ PROB_TABLE = {
 
 CRITICAL_RATE = 0.05
 
-ACHIEVEMENTS_DB = {
-    "first_try": {"title": "🌱 입문의 발걸음", "desc": "첫 강화를 시도하기", "reward_gold": 1000, "badge": "🌱"},
-    "reach_10": {"title": "✨ 향수 파괴자", "desc": "10단계 달성하기", "reward_gold": 50000, "badge": "✨"},
-    "reach_20": {"title": "🍳 자이온맘의 인정", "desc": "20단계 달성하기", "reward_gold": 500000, "badge": "🍳"},
-    "reach_30": {"title": "👑 만물의 구원자", "desc": "30단계 최고 등급 달성하기", "reward_gold": 10000000, "badge": "👑"},
-    "first_destroy": {"title": "💥 재가 되어버린 향기", "desc": "첫 번째 파괴 경험하기", "reward_gold": 20000, "badge": "💥"},
-    "crit_master": {"title": "⚡ 럭키 가이", "desc": "크리티컬 대성공 3회 달성하기", "reward_gold": 100000, "badge": "⚡"},
-    "shield_savior": {"title": "🛡️ 철통보안", "desc": "파괴 방지권으로 파괴 1회 막아내기", "reward_gold": 30000, "badge": "🛡️"}
-}
-
-TITLES_DB = {
-    "none": {"name": "초보 연금술사", "buff": "없음"},
-    "reach_10": {"name": "지온 수집가", "buff": "골드 보상 상승"},
-    "reach_20": {"name": "자이온의 후계자", "buff": "멋짐 폭발"},
-    "reach_30": {"name": "★태초의 지온마스터★", "buff": "절대 신성 오라"},
-    "first_destroy": {"name": "불운의 아이콘", "buff": "동정표 획득"},
-    "crit_master": {"name": "신의 손", "buff": "행운 기운 감돌음"}
-}
-
 # -----------------------------------------------------------------------------
 # 3. 세션 상태 초기화
 # -----------------------------------------------------------------------------
@@ -88,65 +69,16 @@ if "shield" not in st.session_state: st.session_state.shield = 0
 if "tears" not in st.session_state: st.session_state.tears = 0    
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
 
-# 통계 및 업적 데이터
-if "total_tries" not in st.session_state: st.session_state.total_tries = 0
-if "total_destroys" not in st.session_state: st.session_state.total_destroys = 0
-if "total_crits" not in st.session_state: st.session_state.total_crits = 0
-if "shield_saves" not in st.session_state: st.session_state.shield_saves = 0
-if "unlocked_achievements" not in st.session_state: st.session_state.unlocked_achievements = set()
-if "equipped_title" not in st.session_state: st.session_state.equipped_title = "none"
-
 # -----------------------------------------------------------------------------
-# 4. 업적 및 강화 로직
+# 4. 강화 로직
 # -----------------------------------------------------------------------------
-def check_achievements():
-    unlocked = st.session_state.unlocked_achievements
-    
-    if st.session_state.total_tries >= 1 and "first_try" not in unlocked:
-        unlocked.add("first_try")
-        st.session_state.money += ACHIEVEMENTS_DB["first_try"]["reward_gold"]
-        st.toast("🎉 업적 달성: 입문의 발걸음! (+1,000 G)")
-        
-    if st.session_state.level >= 10 and "reach_10" not in unlocked:
-        unlocked.add("reach_10")
-        st.session_state.money += ACHIEVEMENTS_DB["reach_10"]["reward_gold"]
-        st.toast("🎉 업적 달성: 향수 파괴자! (+50,000 G)")
-
-    if st.session_state.level >= 20 and "reach_20" not in unlocked:
-        unlocked.add("reach_20")
-        st.session_state.money += ACHIEVEMENTS_DB["reach_20"]["reward_gold"]
-        st.toast("🎉 업적 달성: 자이온맘의 인정! (+500,000 G)")
-
-    if st.session_state.level >= 30 and "reach_30" not in unlocked:
-        unlocked.add("reach_30")
-        st.session_state.money += ACHIEVEMENTS_DB["reach_30"]["reward_gold"]
-        st.toast("🎉 업적 달성: 만물의 구원자! (+10,000,000 G)")
-
-    if st.session_state.total_destroys >= 1 and "first_destroy" not in unlocked:
-        unlocked.add("first_destroy")
-        st.session_state.money += ACHIEVEMENTS_DB["first_destroy"]["reward_gold"]
-        st.toast("🎉 업적 달성: 재가 되어버린 향기! (+20,000 G)")
-
-    if st.session_state.total_crits >= 3 and "crit_master" not in unlocked:
-        unlocked.add("crit_master")
-        st.session_state.money += ACHIEVEMENTS_DB["crit_master"]["reward_gold"]
-        st.toast("🎉 업적 달성: 럭키 가이! (+100,000 G)")
-
-    if st.session_state.shield_saves >= 1 and "shield_savior" not in unlocked:
-        unlocked.add("shield_savior")
-        st.session_state.money += ACHIEVEMENTS_DB["shield_savior"]["reward_gold"]
-        st.toast("🎉 업적 달성: 철통보안! (+30,000 G)")
-
 def enhance():
     curr = st.session_state.level
     if curr >= 30: return
     
-    st.session_state.total_tries += 1
-    
     if st.session_state.dev_mode:
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
-        check_achievements()
         return
 
     sp, fp, dp = PROB_TABLE[curr]
@@ -156,7 +88,6 @@ def enhance():
         if random.random() < CRITICAL_RATE and curr + 2 <= 30:
             st.session_state.level += 2
             st.session_state.status = "CRITICAL"
-            st.session_state.total_crits += 1
         else:
             st.session_state.level += 1
             st.session_state.status = "SUCCESS"
@@ -165,18 +96,14 @@ def enhance():
             st.session_state.shield -= 1
             st.session_state.status = "SHIELD_SAVED"
             st.session_state.tears += 1
-            st.session_state.shield_saves += 1
         else:
             st.session_state.level = 0
             st.session_state.status = "DESTROYED"
             st.session_state.tears += 2
-            st.session_state.total_destroys += 1
     else:
         if curr > 0: st.session_state.level -= 1
         st.session_state.status = "FAILED"
         st.session_state.tears += 1
-
-    check_achievements()
 
 def sell():
     curr = st.session_state.level
@@ -211,7 +138,7 @@ st.markdown("""
         background: rgba(58, 28, 77, 0.5);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 12px 10px;
+        padding: 16px 12px;
         border-radius: 12px;
         text-align: center;
         transition: all 0.3s ease;
@@ -221,14 +148,14 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     }
     .stat-title {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: #fde68a;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
         letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 19px;
+        font-size: 22px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
@@ -247,74 +174,11 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(217, 119, 6, 0.4);
     }
-
-    .badge-unlocked {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 6px;
-        background: rgba(34, 197, 94, 0.2);
-        border: 1px solid #22c55e;
-        color: #86efac;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    .badge-locked {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 6px;
-        background: rgba(100, 116, 139, 0.2);
-        border: 1px solid #64748b;
-        color: #94a3b8;
-        font-size: 12px;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 6. 상단 스탯 대시보드
-# -----------------------------------------------------------------------------
-curr_title_name = TITLES_DB[st.session_state.equipped_title]["name"]
-
-col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
-with col1:
-    st.markdown(f'''
-        <div class="stat-card">
-            <div class="stat-title">💳 보유 골드</div>
-            <div class="stat-value">{st.session_state.money:,} G</div>
-        </div>
-    ''', unsafe_allow_html=True)
-
-with col2:
-    st.markdown(f'''
-        <div class="stat-card">
-            <div class="stat-title">💧 지온의 눈물</div>
-            <div class="stat-value">{st.session_state.tears} 개</div>
-        </div>
-    ''', unsafe_allow_html=True)
-
-with col3:
-    st.markdown(f'''
-        <div class="stat-card">
-            <div class="stat-title">👑 장착 칭호</div>
-            <div class="stat-value" style="font-size: 15px; color: #fde68a;">[{curr_title_name}]</div>
-        </div>
-    ''', unsafe_allow_html=True)
-
-with col4:
-    sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
-    crit_pct = int(CRITICAL_RATE * 100)
-    prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
-    st.markdown(f'''
-        <div class="stat-card">
-            <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
-            <div class="stat-value" style="font-size: 16px;">{prob_str}</div>
-        </div>
-    ''', unsafe_allow_html=True)
-
-st.write("")
-
-# -----------------------------------------------------------------------------
-# 7. 메인 2칼럼 레이아웃
+# 6. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([3, 7])
 
@@ -341,9 +205,9 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점 및 업적센터</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>", unsafe_allow_html=True)
     
-    tab_shop1, tab_shop2, tab_achieve, tab_title = st.tabs(["🛡️ 상점", "💧 눈물", "🏆 업적", "👑 칭호"])
+    tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
         if st.button("구매 (50,000 G)", use_container_width=True):
@@ -363,41 +227,15 @@ with left_col:
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
                 st.success("확정 강화 성공!")
-                check_achievements()
                 st.rerun()
             else:
                 st.error("조건이 부족합니다.")
-
-    with tab_achieve:
-        st.caption("업적을 달성하면 골드 보상을 받습니다.")
-        for key, info in ACHIEVEMENTS_DB.items():
-            is_unlocked = key in st.session_state.unlocked_achievements
-            badge_html = f'<span class="badge-unlocked">달성 완료</span>' if is_unlocked else f'<span class="badge-locked">미달성</span>'
-            st.markdown(f"""
-            <div style="font-size:13px; margin-bottom:8px; padding:6px; background:rgba(0,0,0,0.2); border-radius:8px;">
-                <b>{info['badge']} {info['title']}</b> {badge_html}<br/>
-                <span style="color:#cbd5e1; font-size:11px;">{info['desc']} (+{info['reward_gold']:,} G)</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-    with tab_title:
-        st.caption("해금된 칭호를 선택하여 착용하세요.")
-        available_titles = ["none"] + [k for k in st.session_state.unlocked_achievements if k in TITLES_DB]
-        selected_title = st.selectbox(
-            "칭호 선택", 
-            options=available_titles, 
-            format_func=lambda x: f"{TITLES_DB[x]['name']}",
-            index=available_titles.index(st.session_state.equipped_title) if st.session_state.equipped_title in available_titles else 0
-        )
-        if selected_title != st.session_state.equipped_title:
-            st.session_state.equipped_title = selected_title
-            st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 강화된 시각 연출 및 3D 연출 Three.js
+    # 7. 3D 메인 연출 영역 (Three.js)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -450,26 +288,13 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 60px; 
+                bottom: 30px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-            }}
-
-            .equipped-title-badge {{
-                display: inline-block;
-                padding: 4px 16px;
-                background: rgba(251, 191, 36, 0.2);
-                border: 1px solid #fbbf24;
-                border-radius: 20px;
-                color: #fde68a;
-                font-size: 14px;
-                font-weight: 800;
-                margin-bottom: 8px;
-                box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
             }}
 
             .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
@@ -498,7 +323,6 @@ with right_col:
         <div id="container"></div>
 
         <div class="cinematic-ui">
-            <div class="equipped-title-badge">🎖️ {curr_title_name}</div>
             <div id="statusText" class="status-header">READY</div>
             <div class="title-tier-{tier}">
                 {card_title}
@@ -554,7 +378,7 @@ with right_col:
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
-            // ✨ 황금빛 노을 입자
+            // ✨ 입자 효과
             const particleGroup = new THREE.Group();
             const pCount = 1500;
             const pGeo = new THREE.BufferGeometry();
@@ -606,14 +430,12 @@ with right_col:
             shieldDome.position.y = 0.8;
             scene.add(shieldDome);
 
-            // 💥 3D 파편 및 이펙트 그룹
+            // 💥 3D 파편 그룹
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
-            let explosionParticles = null;
-            let explosionVelocities = [];
 
             // -----------------------------------------------------------------
-            // 강화 및 연출 비주얼 효과
+            // 강화 연출
             // -----------------------------------------------------------------
             if (status === "SHIELD_SAVED") {{
                 gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
@@ -627,9 +449,8 @@ with right_col:
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
                 gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 1.2, 9); }} }});
-                cardGroup.visible = false; // 카드 비활성화 후 3D 조각 폭발
+                cardGroup.visible = false;
 
-                // 💥 3D 카드 파편 조각 생성 연출
                 const shardCount = 20;
                 for(let i = 0; i < shardCount; i++) {{
                     const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.4 + 0.2);
@@ -664,7 +485,6 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                // 입자 움직임
                 const pos = pGeo.attributes.position.array;
                 for(let i=1; i<pCount*3; i+=3) {{
                     pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.008;
@@ -695,4 +515,36 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=680, scrolling=False)
+    components.html(three_js_code, height=560, scrolling=False)
+
+    # -----------------------------------------------------------------------------
+    # 8. 하단 스탯 대시보드 (요청 사항 반영)
+    # -----------------------------------------------------------------------------
+    b_col1, b_col2, b_col3 = st.columns([1, 1, 1])
+
+    with b_col1:
+        st.markdown(f'''
+            <div class="stat-card">
+                <div class="stat-title">💳 보유 골드</div>
+                <div class="stat-value">{st.session_state.money:,} G</div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+    with b_col2:
+        st.markdown(f'''
+            <div class="stat-card">
+                <div class="stat-title">💧 지온의 눈물</div>
+                <div class="stat-value">{st.session_state.tears} 개</div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+    with b_col3:
+        sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
+        crit_pct = int(CRITICAL_RATE * 100)
+        prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
+        st.markdown(f'''
+            <div class="stat-card">
+                <div class="stat-title">📊 성공 / ⚡크리 / 파괴</div>
+                <div class="stat-value" style="font-size: 18px;">{prob_str}</div>
+            </div>
+        ''', unsafe_allow_html=True)
