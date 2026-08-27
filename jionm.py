@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기",
+    page_title="지온냄새 강화하기 - GOD MODE 3D",
     page_icon="👑",
     layout="wide"
 )
@@ -108,13 +108,12 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 대시보드 (크기 축소 반영)
+# 5. 상단 대시보드
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp { background-color: #020403; color: #fff; }
     
-    /* 상단 대시보드 스탯 카드 크기 컴팩트화 */
     .stat-card {
         background: rgba(15, 23, 42, 0.95);
         border: 1.5px solid #ffffff;
@@ -209,9 +208,9 @@ with tab2:
     with s_col2:
         st.subheader("💧 지온의 눈물 교환소")
         st.write("강화 실패 시 쌓이는 눈물로 확정 강화권을 교환하세요.")
-        if st.button("100% 확정 1단계 상승 (눈물 15개)"):  # 20개 -> 15개로 수정
-            if st.session_state.tears >= 15 and st.session_state.level < 30:  # 20개 -> 15개로 수정
-                st.session_state.tears -= 15  # 20개 -> 15개로 수정
+        if st.button("100% 확정 1단계 상승 (눈물 15개)"):
+            if st.session_state.tears >= 15 and st.session_state.level < 30:
+                st.session_state.tears -= 15
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
                 st.success("지온의 눈물로 1단계 확정 강화 성공!")
@@ -220,7 +219,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 7. 3D Render & 폭발 파티클 연출 추가
+# 7. 3D Render & 전면 붉은 플래시 연출
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -237,6 +236,20 @@ three_js_code = f"""
     <style>
         body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
         #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+
+        /* 화면 전체 붉은 섬광 오버레이 */
+        #redFlashOverlay {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 0, 0, 0.85);
+            box-shadow: inset 0 0 100px rgba(139, 0, 0, 0.9);
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+        }}
 
         .cinematic-ui {{
             position: absolute;
@@ -269,6 +282,7 @@ three_js_code = f"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
+    <div id="redFlashOverlay"></div>
     <div id="container"></div>
 
     <div class="cinematic-ui">
@@ -283,6 +297,7 @@ three_js_code = f"""
     <script>
         const status = "{status}";
         const statusText = document.getElementById('statusText');
+        const flashOverlay = document.getElementById('redFlashOverlay');
         
         if (status === "SUCCESS") {{
             statusText.innerText = "✨ ENHANCE SUCCESS ✨";
@@ -335,7 +350,6 @@ three_js_code = f"""
 
         scene.add(cardGroup);
 
-        // 기본 배경 은하 파티클
         const particleCount = {tier * 150};
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(particleCount * 3);
@@ -351,21 +365,25 @@ three_js_code = f"""
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
-        // 💥 파괴(DESTROYED) 시 3D 폭발 이펙트 추가
         let explosionParticles = null;
         let explosionVelocities = [];
 
+        // 💥 파괴(DESTROYED) 시 전체 화면 붉은 플래시 효과 실행
         if (status === "DESTROYED") {{
-            // 카메라 강렬한 충격파 셰이크
-            gsap.to(camera.position, {{ x: 0.3, y: 1.5, duration: 0.05, repeat: 8, yoyo: true, onComplete: () => {{
+            // 붉은 화면 섬광 애니메이션 (불투명도 0.85 -> 0)
+            gsap.fromTo(flashOverlay, 
+                {{ opacity: 0.85 }}, 
+                {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
+            );
+
+            // 화면 강렬한 셰이크
+            gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{
                 camera.position.set(0, 1.2, 9);
             }}}});
 
-            // 카드 크기 0으로 축소 연출
-            gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.3, ease: "power4.in" }});
+            gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.25, ease: "power4.in" }});
 
-            // 3D 폭발 파티클 생성 (붉은 화염 파편)
-            const expCount = 400;
+            const expCount = 500;
             const expGeo = new THREE.BufferGeometry();
             const expPos = new Float32Array(expCount * 3);
 
@@ -374,10 +392,9 @@ three_js_code = f"""
                 expPos[i * 3 + 1] = 0.3;
                 expPos[i * 3 + 2] = 0;
 
-                // 방사형 랜덤 속도 벡터
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.acos((Math.random() * 2) - 1);
-                const speed = Math.random() * 0.25 + 0.08;
+                const speed = Math.random() * 0.3 + 0.1;
 
                 explosionVelocities.push({{
                     x: speed * Math.sin(phi) * Math.cos(theta),
@@ -388,8 +405,8 @@ three_js_code = f"""
 
             expGeo.setAttribute('position', new THREE.BufferAttribute(expPos, 3));
             const expMat = new THREE.PointsMaterial({{
-                color: 0xff2200,
-                size: 0.22,
+                color: 0xff0000,
+                size: 0.25,
                 transparent: true,
                 opacity: 1.0
             }});
@@ -410,7 +427,6 @@ three_js_code = f"""
             cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
             cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.3;
 
-            // 배경 파티클 애니메이션
             const pos = pGeo.attributes.position.array;
             for(let i=1; i<particleCount*3; i+=3) {{
                 pos[i] -= 0.04;
@@ -418,7 +434,6 @@ three_js_code = f"""
             }}
             pGeo.attributes.position.needsUpdate = true;
 
-            // 💥 폭발 파티클 확산 및 감쇄 애니메이션
             if (explosionParticles) {{
                 const ePos = explosionParticles.geometry.attributes.position.array;
                 for (let i = 0; i < explosionVelocities.length; i++) {{
@@ -427,7 +442,7 @@ three_js_code = f"""
                     ePos[i * 3 + 2] += explosionVelocities[i].z;
                 }}
                 explosionParticles.geometry.attributes.position.needsUpdate = true;
-                explosionParticles.material.opacity *= 0.96; // 점진적 소멸
+                explosionParticles.material.opacity *= 0.95;
             }}
 
             renderer.render(scene, camera);
