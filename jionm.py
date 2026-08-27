@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (파괴 확률을 하락으로, 유지 확률 추가)
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -344,7 +344,9 @@ if "status" not in st.session_state:
 if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
-  st.session_state.tears = 0
+  st.session_state.tears = 0  # 초기 눈물은 0개로 설정
+if "bgm_vol" not in st.session_state:
+  st.session_state.bgm_vol = 30  # 기본 볼륨 30%
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -357,11 +359,17 @@ def enhance():
     return
 
   cost = get_enhance_cost(curr)
+
+  # 강화 시 지온의 눈물 100개 소모 조건 확인
   if st.session_state.money < cost:
     st.session_state.status = "NOT_ENOUGH_MONEY"
     return
+  if st.session_state.tears < 100:
+    st.session_state.status = "NOT_ENOUGH_TEARS"
+    return
 
   st.session_state.money -= cost
+  st.session_state.tears -= 100  # 강화 시 눈물 100개 차감
 
   sp, down_p, dp, hold_p = PROB_TABLE[curr]
   r = random.uniform(0, 100)
@@ -495,13 +503,15 @@ with left_col:
   )
 
   if st.button(
-      "🔥 강화 실행",
+      "🔥 강화 실행 (눈물 100개 소모)",
       use_container_width=True,
       disabled=(st.session_state.level >= 30),
   ):
     enhance()
     if st.session_state.status == "NOT_ENOUGH_MONEY":
-      st.error("강화 비용이 부족합니다!")
+      st.error("강화 비용(금액)이 부족합니다!")
+    elif st.session_state.status == "NOT_ENOUGH_TEARS":
+      st.error("지온의 눈물이 부족합니다! (필요: 100개)")
     else:
       st.rerun()
 
@@ -515,6 +525,21 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
+  # BGM 설정 패널
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🎵 BGM"
+      " 플레이어</h4>",
+      unsafe_allow_html=True,
+  )
+  bgm_vol = st.slider(
+      "브금 볼륨 조절", 0, 100, st.session_state.bgm_vol, key="slider_bgm_vol"
+  )
+  if bgm_vol != st.session_state.bgm_vol:
+    st.session_state.bgm_vol = bgm_vol
+    st.rerun()
+  st.markdown("</div>", unsafe_allow_html=True)
+
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
@@ -525,18 +550,18 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
-        f" {format_gold(current_shield_cost)}"
+        f"파괴 방지권 (보유 2개 제한)\n(18단계 이상부터 구매"
+        f" 가능)\n현재 가격: {format_gold(current_shield_cost)}"
     )
 
-    can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 2
     if st.button(
         "방지권 구매 (최대 2개)",
         use_container_width=True,
         disabled=not can_buy_shield,
     ):
-      if st.session_state.level < 20:
-        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
+      if st.session_state.level < 18:
+        st.warning("방지권은 18단계 이상부터 구매할 수 있습니다.")
       elif st.session_state.shield >= 2:
         st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
       elif st.session_state.money >= current_shield_cost:
@@ -570,8 +595,8 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
+  current_vol = st.session_state.bgm_vol / 100.0
 
-  # 초고품질 홀로그램 카드 디자인이 적용된 Three.js 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -673,10 +698,96 @@ with right_col:
             </div>
             <div class="desc-text">"{card_desc}"</div>
             <div class="price-text">예상 가치: {card_price}</div>
-            <div class="cost-text">필요 강화 비용: {current_cost}</div>
+            <div class="cost-text">필요 강화 비용: {current_cost} (눈물 100개)</div>
         </div>
 
         <script>
+            let audioCtx = null;
+            let masterGain = null;
+            let bgmInterval = null;
+            const targetVolume = {current_vol};
+
+            function initBGM() {{
+                if (audioCtx) {{
+                    if (masterGain) {{
+                        masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+                    }}
+                    return;
+                }}
+                
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(targetVolume * 0.15, audioCtx.currentTime);
+
+                const reverbNode = audioCtx.createBiquadFilter();
+                reverbNode.type = "lowpass";
+                reverbNode.frequency.setValueAtTime(1200, audioCtx.currentTime);
+
+                masterGain.connect(reverbNode);
+                reverbNode.connect(audioCtx.destination);
+
+                const chords = [
+                    [220.00, 261.63, 329.63, 392.00],
+                    [174.61, 220.00, 261.63, 329.63],
+                    [196.00, 246.94, 293.66, 369.99],
+                    [130.81, 164.81, 196.00, 246.94]
+                ];
+
+                let chordIdx = 0;
+                let noteIdx = 0;
+
+                function playNote() {{
+                    if (!audioCtx) return;
+                    if (audioCtx.state === 'suspended') {{
+                        audioCtx.resume();
+                    }}
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+
+                    const currentChord = chords[chordIdx];
+                    const freq = currentChord[noteIdx];
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    noteGain.gain.setValueAtTime(0, now);
+                    noteGain.gain.linearRampToValueAtTime(0.5, now + 0.1);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+                    osc.connect(noteGain);
+                    noteGain.connect(masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 1.9);
+
+                    noteIdx++;
+                    if (noteIdx >= currentChord.length) {{
+                        noteIdx = 0;
+                        chordIdx = (chordIdx + 1) % chords.length;
+                    }}
+                }}
+
+                bgmInterval = setInterval(playNote, 400);
+            }}
+
+            window.addEventListener('pointerdown', () => {{
+                if (!audioCtx) {{
+                    initBGM();
+                }} else if (audioCtx.state === 'suspended') {{
+                    audioCtx.resume();
+                }}
+            }}, {{ once: true }});
+
+            setTimeout(() => {{
+                try {{
+                    initBGM();
+                }} catch(e) {{}}
+            }}, 500);
+
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
@@ -765,10 +876,8 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
-            // --- 고품질 홀로그램 카드 그룹 구성 ---
             const cardGroup = new THREE.Group();
 
-            // 1. 화려한 이중 메탈릭 외곽 프레임
             const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
             const outerFrameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xffd700, 
@@ -780,7 +889,6 @@ with right_col:
             const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
             cardGroup.add(outerFrame);
 
-            // 2. 내부 유리 글래스 플레이트 (Glassmorphism)
             const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
             const glassMat = new THREE.MeshPhysicalMaterial({{ 
                 color: 0x0f172a, 
@@ -794,7 +902,6 @@ with right_col:
             const glassPlate = new THREE.Mesh(glassGeo, glassMat);
             cardGroup.add(glassPlate);
 
-            // 3. 상단 일러스트 배경 패널 (네온 홀로그램)
             const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
             const bodyMat = new THREE.MeshStandardMaterial({{ 
                 color: "{card_color}", 
@@ -807,7 +914,6 @@ with right_col:
             body.position.y = 0.85;
             cardGroup.add(body);
 
-            // 4. 회전하는 중앙 다면체 크리스털 코어 (에너지 코어 입체화)
             const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, 
@@ -820,7 +926,6 @@ with right_col:
             core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
 
-            // 5. 하단 네임플레이트
             const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
