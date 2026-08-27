@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 요청하신 단계별 고정 강화 비용 함수
+# 2. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
 
 
@@ -69,8 +69,14 @@ def get_enhance_cost(level):
   return cost_table.get(level, 150000000)
 
 
+def get_shield_cost(level):
+  # 현재 단계에 비례하여 방지권 구매 가격 상승 (기본 강화 비용의 일정 배율 또는 누진 구조)
+  base_cost = get_enhance_cost(level)
+  return max(50000, base_cost * 15)
+
+
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (성공, 실패, 파괴)[cite: 1]
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -529,12 +535,22 @@ with left_col:
 
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
   with tab_shop1:
-    st.caption("파괴 방지권 (보유 시 자동 발동)")
-    if st.button("구매 (25만 원)", use_container_width=True):
-      if st.session_state.money >= 250000:
-        st.session_state.money -= 250000
+    current_shield_cost = get_shield_cost(st.session_state.level)
+    st.caption(
+        f"파괴 방지권 (보유 2개 제한)\n현재 가격: {format_gold(current_shield_cost)}"
+    )
+
+    if st.button(
+        "방지권 구매 (최대 2개)",
+        use_container_width=True,
+        disabled=(st.session_state.shield >= 2),
+    ):
+      if st.session_state.shield >= 2:
+        st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
+      elif st.session_state.money >= current_shield_cost:
+        st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
-        st.success("보호권 보유 중!")
+        st.success("파괴 방지권 구매 완료!")
         st.rerun()
       else:
         st.error("금액이 부족합니다.")
@@ -905,7 +921,7 @@ with b_col2:
       f"""
         <div class="stat-card">
             <div class="stat-title">🛡️ 보유권 개수</div>
-            <div class="stat-value">{st.session_state.shield}개</div>
+            <div class="stat-value">{st.session_state.shield} / 2개</div>
         </div>
     """,
       unsafe_allow_html=True,
