@@ -297,7 +297,6 @@ SMELL_DB = {
     },
 }
 
-# (성공, 하락, 파괴, 유지 확률 순서: 기존 파괴 확률 수치를 하락으로 이전하고 파괴 및 유지 확률 신설)
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0, 0.0),
@@ -348,7 +347,7 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직 (유지 확률 분기 적용)
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
 
 
@@ -367,29 +366,33 @@ def enhance():
   sp, down_p, dp, hold_p = PROB_TABLE[curr]
   r = random.uniform(0, 100)
 
-  if r < sp:
+  success_limit = sp
+  down_limit = success_limit + down_p
+  destroy_limit = down_limit + dp
+
+  if r < success_limit:
     if random.random() < CRITICAL_RATE and curr + 2 <= 30:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
-  elif r < (sp + down_p):
+  elif r < down_limit:
     if curr > 0:
       st.session_state.level -= 1
-    st.session_state.status = "FAILED"  # 단계 하락
+    st.session_state.status = "FAILED"
     st.session_state.tears += 1
-  elif r < (sp + down_p + dp):
+  elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.status = "SHIELD_SAVED"
       st.session_state.tears += 1
     else:
       st.session_state.level = 0
-      st.session_state.status = "DESTROYED"  # 파괴
+      st.session_state.status = "DESTROYED"
       st.session_state.tears += 2
   else:
-    st.session_state.status = "HOLD"  # 단계 유지
+    st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
 
@@ -568,6 +571,7 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
+  # 초고품질 홀로그램 카드 디자인이 적용된 Three.js 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -714,18 +718,18 @@ with right_col:
             const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
             dirLight.position.set(5, 8, 5);
             scene.add(dirLight);
 
-            const cardPointLight = new THREE.PointLight("{card_color}", 7, 25);
+            const cardPointLight = new THREE.PointLight("{card_color}", 8, 25);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
             const bgGroup = new THREE.Group();
             
             const ringGeo1 = new THREE.TorusGeometry(6.0, 0.04, 16, 100);
-            const ringMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 1.0, roughness: 0.1 }});
+            const ringMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1 }});
             const spaceRing1 = new THREE.Mesh(ringGeo1, ringMat);
             spaceRing1.rotation.x = Math.PI / 3;
             bgGroup.add(spaceRing1);
@@ -761,40 +765,64 @@ with right_col:
             particleGroup.add(particles);
             scene.add(particleGroup);
 
+            // --- 고품질 홀로그램 카드 그룹 구성 ---
             const cardGroup = new THREE.Group();
 
-            const frameGeo = new THREE.BoxGeometry(4.0, 5.9, 0.22);
-            const frameMat = new THREE.MeshStandardMaterial({{ 
-                color: 0xfbbf24, 
-                metalness: 0.95, 
-                roughness: 0.15,
-                emissive: 0xd97706,
-                emissiveIntensity: 0.2
+            // 1. 화려한 이중 메탈릭 외곽 프레임
+            const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
+            const outerFrameMat = new THREE.MeshStandardMaterial({{ 
+                color: 0xffd700, 
+                metalness: 1.0, 
+                roughness: 0.1,
+                emissive: "{card_color}",
+                emissiveIntensity: 0.4
             }});
-            const frame = new THREE.Mesh(frameGeo, frameMat);
-            cardGroup.add(frame);
+            const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
+            cardGroup.add(outerFrame);
 
-            const inlayGeo = new THREE.BoxGeometry(3.7, 5.6, 0.24);
-            const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x111111, metalness: 0.5, roughness: 0.5 }});
-            const inlay = new THREE.Mesh(inlayGeo, inlayMat);
-            cardGroup.add(inlay);
+            // 2. 내부 유리 글래스 플레이트 (Glassmorphism)
+            const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
+            const glassMat = new THREE.MeshPhysicalMaterial({{ 
+                color: 0x0f172a, 
+                metalness: 0.2, 
+                roughness: 0.1, 
+                transmission: 0.6, 
+                thickness: 1.2,
+                transparent: true,
+                opacity: 0.85
+            }});
+            const glassPlate = new THREE.Mesh(glassGeo, glassMat);
+            cardGroup.add(glassPlate);
 
-            const bodyGeo = new THREE.BoxGeometry(3.3, 3.3, 0.26);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
+            // 3. 상단 일러스트 배경 패널 (네온 홀로그램)
+            const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
+            const bodyMat = new THREE.MeshStandardMaterial({{ 
+                color: "{card_color}", 
+                metalness: 0.85, 
+                roughness: 0.15, 
+                emissive: "{card_color}", 
+                emissiveIntensity: 0.6 
+            }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = 0.85;
             cardGroup.add(body);
 
-            const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
+            // 4. 회전하는 중앙 다면체 크리스털 코어 (에너지 코어 입체화)
+            const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
-                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
+                color: 0xffffff, 
+                emissive: "{card_color}", 
+                emissiveIntensity: 1.8, 
+                roughness: 0.0, 
+                metalness: 1.0
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.set(0, 0.85, 0.18);
+            core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
 
-            const nameplateGeo = new THREE.BoxGeometry(3.3, 1.4, 0.26);
-            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x222222, metalness: 0.8, roughness: 0.3 }});
+            // 5. 하단 네임플레이트
+            const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
+            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
             nameplate.position.y = -1.55;
             cardGroup.add(nameplate);
@@ -878,12 +906,12 @@ with right_col:
                 pGeo.attributes.position.needsUpdate = true;
 
                 if (cardGroup.visible) {{
-                    cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
+                    cardGroup.rotation.y = Math.sin(time * 0.8) * 0.22;
                     cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
                 }}
                 
-                core.rotation.x = time * 2;
-                core.rotation.y = time * 2;
+                core.rotation.x = time * 2.5;
+                core.rotation.y = time * 2.5;
 
                 renderer.render(scene, camera);
             }}
