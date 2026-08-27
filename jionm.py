@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="🏰", layout="wide"
+    page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="👃", layout="wide"
 )
 
 # -----------------------------------------------------------------------------
