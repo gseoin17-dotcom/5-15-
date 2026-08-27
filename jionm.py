@@ -61,7 +61,7 @@ def get_leaderboard():
 
 
 # -----------------------------------------------------------------------------
-# 1. 페이지 설정 (상단 짤림 방지를 위해 패딩 넉넉히 확보)
+# 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - TRASH MOUNTAIN EDITION",
@@ -480,7 +480,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (상단 짤림 방지를 위한 패딩 더 넉넉히 확보)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -747,7 +747,7 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  # --- 초록색 연기 파티클 효과가 포함된 3D Three.js 영역 ---
+  # --- 초록색 연기 파티클 및 텍스트 색상 통일 3D Three.js 영역 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -772,7 +772,7 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 12px; 
+                bottom: 24px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -813,17 +813,17 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             
+            // 이펙트 및 상태별 통일된 컬러 코드 적용
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                 statusText.style.color = "#ffe600";
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ ENHANCE SUCCESS ✨";
-                statusText.style.color = "#34d399";
+                statusText.style.color = "#22c55e";
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
                 statusText.style.color = "#60a5fa";
             }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                 statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                 statusText.style.color = "#ef4444";
             }} else if (status === "FAILED") {{
@@ -836,7 +836,7 @@ with right_col:
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0.6, 9.0);
+            camera.position.set(0, -0.2, 9.5); // 화면 전체 시선을 살짝 아래로 조정
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -855,7 +855,7 @@ with right_col:
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            // --- 지온냄새 특유의 '초록색 연기' 파티클 시스템 ---
+            // --- 초록색 연기 파티클 시스템 ---
             const smokeCount = 800;
             const smokeGeo = new THREE.BufferGeometry();
             const smokePositions = new Float32Array(smokeCount * 3);
@@ -863,18 +863,16 @@ with right_col:
 
             for(let i=0; i<smokeCount; i++) {{
                 smokePositions[i*3] = (Math.random() - 0.5) * 4.0;
-                smokePositions[i*3 + 1] = -2.5 + Math.random() * 1.5;
+                smokePositions[i*3 + 1] = -3.2 + Math.random() * 1.5;
                 smokePositions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
                 smokeVelocities.push({{
                     x: (Math.random() - 0.5) * 0.03,
                     y: 0.02 + Math.random() * 0.04,
                     z: (Math.random() - 0.5) * 0.03,
-                    rot: (Math.random() - 0.5) * 0.02
                 }});
             }}
             smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
             
-            // 몽환적이고 진한 초록색 오라 연기 재질
             const smokeMat = new THREE.PointsMaterial({{
                 color: 0x22c55e,
                 size: 0.35,
@@ -886,8 +884,9 @@ with right_col:
             const smokeSystem = new THREE.Points(smokeGeo, smokeMat);
             scene.add(smokeSystem);
 
-            // 중앙 오브젝트 그룹
+            // 중앙 오브젝트 그룹 (기본 Y 위치도 아래로 내림)
             const objectGroup = new THREE.Group();
+            objectGroup.position.y = -0.3;
 
             const outerGeo = new THREE.DodecahedronGeometry(2.5, 0);
             const outerMat = new THREE.MeshPhysicalMaterial({{
@@ -919,7 +918,7 @@ with right_col:
             // 강화 결과별 모션 애니메이션
             if (status === "SUCCESS" || status === "CRITICAL") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1, y: 1, z: 1, duration: 0.7, ease: "elastic.out(1.2, 0.3)"}});
-                gsap.fromTo(camera.position, {{z: 4.5}}, {{z: 9.0, duration: 0.8, ease: "power2.out"}});
+                gsap.fromTo(camera.position, {{z: 5.0}}, {{z: 9.5, duration: 0.8, ease: "power2.out"}});
                 smokeMat.opacity = 0.95;
             }} else if (status === "FAILED" || status === "DESTROYED") {{
                 gsap.fromTo(objectGroup.position, {{x: -0.25}}, {{x: 0.25, duration: 0.04, repeat: 7, yoyo: true}});
@@ -943,16 +942,15 @@ with right_col:
                 coreMesh.rotation.x = -time * 1.2;
                 coreMesh.rotation.y = -time * 1.5;
 
-                // 초록색 연기 상승 및 퍼짐 애니메이션 루프
+                // 초록색 연기 상승 루프
                 const positions = smokeGeo.attributes.position.array;
                 for(let i=0; i<smokeCount; i++) {{
                     positions[i*3] += smokeVelocities[i].x + Math.sin(time + i) * 0.005;
                     positions[i*3 + 1] += smokeVelocities[i].y;
                     positions[i*3 + 2] += smokeVelocities[i].z + Math.cos(time + i) * 0.005;
 
-                    // 화면 위로 올라가면 다시 아래로 리셋하여 순환
-                    if(positions[i*3 + 1] > 4.5) {{
-                        positions[i*3 + 1] = -2.5;
+                    if(positions[i*3 + 1] > 3.5) {{
+                        positions[i*3 + 1] = -3.2;
                         positions[i*3] = (Math.random() - 0.5) * 4.0;
                         positions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
                     }}
@@ -960,7 +958,6 @@ with right_col:
                 smokeGeo.attributes.position.needsUpdate = true;
 
                 objectGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-                objectGroup.position.y = Math.sin(time * 1.6) * 0.12 + 0.1;
 
                 renderer.render(scene, camera);
             }}
@@ -977,4 +974,4 @@ with right_col:
     </html>
     """
 
-  components.html(three_js_code, height=540, scrolling=False)
+  components.html(three_js_code, height=560, scrolling=False)
