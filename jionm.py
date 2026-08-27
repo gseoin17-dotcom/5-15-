@@ -747,7 +747,7 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  # --- 초록색 연기 파티클 및 텍스트 색상 통일 3D Three.js 영역 ---
+  # --- 텍스트 색상 및 파티클 컬러 완벽 동기화 + 강렬한 폭발/셰이크 3D 영역 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -813,30 +813,33 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             
-            // 이펙트 및 상태별 통일된 컬러 코드 적용
+            let statusColor = "#22c55e"; // 기본 성공 컬러
+
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
-                statusText.style.color = "#ffe600";
+                statusColor = "#ffe600";
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ ENHANCE SUCCESS ✨";
-                statusText.style.color = "#22c55e";
+                statusColor = "#22c55e";
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
-                statusText.style.color = "#60a5fa";
+                statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
-                statusText.style.color = "#ef4444";
+                statusColor = "#ef4444";
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
-                statusText.style.color = "#f59e0b";
+                statusColor = "#f59e0b";
             }} else if (status === "HOLD") {{
                 statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
-                statusText.style.color = "#38bdf8";
+                statusColor = "#38bdf8";
             }}
+            
+            statusText.style.color = statusColor;
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -0.2, 9.5); // 화면 전체 시선을 살짝 아래로 조정
+            camera.position.set(0, -0.2, 9.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -851,40 +854,43 @@ with right_col:
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight("{card_color}", 15, 30);
+            const pointLight = new THREE.PointLight(statusColor, 20, 35);
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            // --- 초록색 연기 파티클 시스템 ---
-            const smokeCount = 800;
-            const smokeGeo = new THREE.BufferGeometry();
-            const smokePositions = new Float32Array(smokeCount * 3);
-            const smokeVelocities = [];
+            // --- 파티클 색상과 텍스트 상태 색상을 완벽히 동기화 + 폭발력 강화 ---
+            const particleCount = 1200;
+            const particleGeo = new THREE.BufferGeometry();
+            const particlePositions = new Float32Array(particleCount * 3);
+            const particleVelocities = [];
 
-            for(let i=0; i<smokeCount; i++) {{
-                smokePositions[i*3] = (Math.random() - 0.5) * 4.0;
-                smokePositions[i*3 + 1] = -3.2 + Math.random() * 1.5;
-                smokePositions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
-                smokeVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.03,
-                    y: 0.02 + Math.random() * 0.04,
-                    z: (Math.random() - 0.5) * 0.03,
+            for(let i=0; i<particleCount; i++) {{
+                particlePositions[i*3] = (Math.random() - 0.5) * 4.5;
+                particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 4.5;
+                
+                // 폭발/실패 시 더 거칠고 빠르게 뻗어나가는 속도 부여
+                const speedMultiplier = (status === "DESTROYED" || status === "FAILED" || status === "CRITICAL") ? 2.5 : 1.0;
+                particleVelocities.push({{
+                    x: (Math.random() - 0.5) * 0.04 * speedMultiplier,
+                    y: (0.025 + Math.random() * 0.05) * speedMultiplier,
+                    z: (Math.random() - 0.5) * 0.04 * speedMultiplier,
                 }});
             }}
-            smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
             
-            const smokeMat = new THREE.PointsMaterial({{
-                color: 0x22c55e,
-                size: 0.35,
+            const particleMat = new THREE.PointsMaterial({{
+                color: new THREE.Color(statusColor),
+                size: (status === "DESTROYED" || status === "CRITICAL") ? 0.45 : 0.3,
                 transparent: true,
-                opacity: 0.75,
+                opacity: 0.85,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
-            const smokeSystem = new THREE.Points(smokeGeo, smokeMat);
-            scene.add(smokeSystem);
+            const particleSystem = new THREE.Points(particleGeo, particleMat);
+            scene.add(particleSystem);
 
-            // 중앙 오브젝트 그룹 (기본 Y 위치도 아래로 내림)
+            // 중앙 오브젝트 그룹
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
@@ -904,8 +910,8 @@ with right_col:
             const coreGeo = new THREE.OctahedronGeometry(1.2, 0);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
-                emissive: "{card_color}",
-                emissiveIntensity: 2.5,
+                emissive: statusColor,
+                emissiveIntensity: 3.0,
                 roughness: 0.05,
                 metalness: 0.9,
                 transmission: 0.7
@@ -915,20 +921,24 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // 강화 결과별 모션 애니메이션
-            if (status === "SUCCESS" || status === "CRITICAL") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1, y: 1, z: 1, duration: 0.7, ease: "elastic.out(1.2, 0.3)"}});
-                gsap.fromTo(camera.position, {{z: 5.0}}, {{z: 9.5, duration: 0.8, ease: "power2.out"}});
-                smokeMat.opacity = 0.95;
+            // --- 강화 결과별 더욱 강렬해진 모션 및 폭발 연출 ---
+            if (status === "CRITICAL") {{
+                gsap.fromTo(objectGroup.scale, {{x: 0.05, y: 0.05, z: 0.05}}, {{x: 1.2, y: 1.2, z: 1.2, duration: 0.5, ease: "elastic.out(1.5, 0.2)"}});
+                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
+                gsap.fromTo(camera.position, {{z: 4.0}}, {{z: 9.5, duration: 0.8, ease: "power2.out"}});
+            }} else if (status === "SUCCESS") {{
+                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1, y: 1, z: 1, duration: 0.6, ease: "elastic.out(1.2, 0.3)"}});
             }} else if (status === "FAILED" || status === "DESTROYED") {{
-                gsap.fromTo(objectGroup.position, {{x: -0.25}}, {{x: 0.25, duration: 0.04, repeat: 7, yoyo: true}});
+                // 훨씬 강력한 화면 흔들림(셰이크) 효과
+                const shakeIntensity = status === "DESTROYED" ? 0.6 : 0.35;
+                gsap.fromTo(objectGroup.position, {{x: -shakeIntensity}, {{x: shakeIntensity, duration: 0.03, repeat: 12, yoyo: true}});
+                
                 if (status === "DESTROYED") {{
-                    gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.35, yoyo: true, repeat: 1}});
+                    gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.3, yoyo: true, repeat: 1}});
+                    gsap.to(pointLight, {{intensity: 50, duration: 0.15, yoyo: true, repeat: 1}});
                 }}
             }} else if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.3, y: 1.3, z: 1.3}}, {{x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2)"}});
-            }} else if (status === "HOLD") {{
-                gsap.fromTo(objectGroup.rotation, {{z: -0.4}}, {{z: 0, duration: 0.4, ease: "power1.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 1.4, y: 1.4, z: 1.4}}, {{x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2.5)"}});
             }}
 
             const clock = new THREE.Clock();
@@ -937,25 +947,25 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                outerMesh.rotation.x = time * 0.5;
-                outerMesh.rotation.y = time * 0.7;
-                coreMesh.rotation.x = -time * 1.2;
-                coreMesh.rotation.y = -time * 1.5;
+                outerMesh.rotation.x = time * 0.6;
+                outerMesh.rotation.y = time * 0.8;
+                coreMesh.rotation.x = -time * 1.4;
+                coreMesh.rotation.y = -time * 1.7;
 
-                // 초록색 연기 상승 루프
-                const positions = smokeGeo.attributes.position.array;
-                for(let i=0; i<smokeCount; i++) {{
-                    positions[i*3] += smokeVelocities[i].x + Math.sin(time + i) * 0.005;
-                    positions[i*3 + 1] += smokeVelocities[i].y;
-                    positions[i*3 + 2] += smokeVelocities[i].z + Math.cos(time + i) * 0.005;
+                // 파티클 루프 및 폭발력 반영 가속
+                const positions = particleGeo.attributes.position.array;
+                for(let i=0; i<particleCount; i++) {{
+                    positions[i*3] += particleVelocities[i].x + Math.sin(time * 2 + i) * 0.008;
+                    positions[i*3 + 1] += particleVelocities[i].y;
+                    positions[i*3 + 2] += particleVelocities[i].z + Math.cos(time * 2 + i) * 0.008;
 
-                    if(positions[i*3 + 1] > 3.5) {{
+                    if(positions[i*3 + 1] > 4.0) {{
                         positions[i*3 + 1] = -3.2;
-                        positions[i*3] = (Math.random() - 0.5) * 4.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 4.0;
+                        positions[i*3] = (Math.random() - 0.5) * 4.5;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 4.5;
                     }}
                 }}
-                smokeGeo.attributes.position.needsUpdate = true;
+                particleGeo.attributes.position.needsUpdate = true;
 
                 objectGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
 
