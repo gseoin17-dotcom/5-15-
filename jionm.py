@@ -133,12 +133,12 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (배경을 완전한 검정색으로 변경)
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(135deg, #180d24 0%, #2b1338 40%, #3d1b32 70%, #1c0a21 100%);
+        background: #000000;
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
@@ -148,17 +148,17 @@ st.markdown("""
         max-width: 95% !important;
     }
     .glass-panel {
-        background: rgba(43, 23, 56, 0.65);
+        background: rgba(20, 20, 20, 0.85);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(236, 178, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 14px;
         margin-bottom: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     }
     .stat-card {
-        background: rgba(58, 28, 77, 0.5);
+        background: rgba(30, 30, 30, 0.8);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(245, 158, 11, 0.3);
         padding: 12px 10px;
@@ -200,7 +200,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (강화 화면을 넓게 2칼럼 비율 조정: [2.2, 7.8])
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -254,7 +254,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (높이를 넓혀 화면을 크게 확장)
+    # 8. 3D 메인 연출 영역
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -272,7 +272,7 @@ with right_col:
             body {{ 
                 margin: 0; 
                 overflow: hidden; 
-                background: transparent; 
+                background: #000000; 
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
@@ -281,6 +281,13 @@ with right_col:
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(239, 68, 68, 0.85);
                 box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
+            #failFlashOverlay {{
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(245, 158, 11, 0.4);
+                box-shadow: inset 0 0 100px rgba(217, 119, 6, 0.7);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
@@ -336,6 +343,7 @@ with right_col:
     </head>
     <body>
         <div id="redFlashOverlay"></div>
+        <div id="failFlashOverlay"></div>
         <div id="shieldFlashOverlay"></div>
         <div id="critFlashOverlay"></div>
         <div id="successFlashOverlay"></div>
@@ -354,6 +362,7 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
+            const failOverlay = document.getElementById('failFlashOverlay');
             const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
             const successOverlay = document.getElementById('successFlashOverlay');
@@ -371,12 +380,12 @@ with right_col:
                 statusText.innerText = "💥 DESTROYED 💥";
                 statusText.style.color = "#ef4444";
             }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 ENHANCE FAILED 🔻";
+                statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
                 statusText.style.color = "#f59e0b";
             }}
 
             const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x231133, 0.025);
+            scene.fog = new THREE.FogExp2(0x000000, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0.4, 9.5);
@@ -386,10 +395,10 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xd8b4fe, 0.9);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const sunsetLight = new THREE.DirectionalLight(0xf59e0b, 1.5);
+            const sunsetLight = new THREE.DirectionalLight(0xffffff, 1.2);
             sunsetLight.position.set(5, 5, 5);
             scene.add(sunsetLight);
 
@@ -410,7 +419,7 @@ with right_col:
 
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({{
-                color: 0xfde68a, size: 0.18, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
+                color: 0xffffff, size: 0.18, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending
             }});
             const particles = new THREE.Points(pGeo, pMat);
             particleGroup.add(particles);
@@ -430,7 +439,7 @@ with right_col:
             cardGroup.add(frame);
 
             const inlayGeo = new THREE.BoxGeometry(3.7, 5.6, 0.24);
-            const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x11081f, metalness: 0.5, roughness: 0.5 }});
+            const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x111111, metalness: 0.5, roughness: 0.5 }});
             const inlay = new THREE.Mesh(inlayGeo, inlayMat);
             cardGroup.add(inlay);
 
@@ -449,7 +458,7 @@ with right_col:
             cardGroup.add(core);
 
             const nameplateGeo = new THREE.BoxGeometry(3.3, 1.4, 0.26);
-            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e1b4b, metalness: 0.8, roughness: 0.3 }});
+            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x222222, metalness: 0.8, roughness: 0.3 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
             nameplate.position.y = -1.55;
             cardGroup.add(nameplate);
@@ -476,6 +485,10 @@ with right_col:
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
+            }} else if (status === "FAILED") {{
+                gsap.fromTo(failOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
+                gsap.fromTo(cardGroup.rotation, {{ z: -0.15 }, {{ z: 0.15, duration: 0.08, repeat: 3, yoyo: true, onComplete: () => {{ cardGroup.rotation.z = 0; }} }});
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
                 gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
@@ -548,7 +561,7 @@ with right_col:
     components.html(three_js_code, height=650, scrolling=False)
 
 # -----------------------------------------------------------------------------
-# 9. 하단 스탯 대시보드 (맨 아래로 이동 완료)
+# 9. 하단 스탯 대시보드
 # -----------------------------------------------------------------------------
 st.write("")
 b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
