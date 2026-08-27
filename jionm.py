@@ -548,3 +548,266 @@ with right_col:
                 <div class="stat-value" style="font-size: 18px;">{prob_str}</div>
             </div>
         ''', unsafe_allow_html=True)
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyberpunk Neon Card</title>
+  <style>
+    :root {
+      --bg-color: #0b0c10;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --primary: #00f3ff;
+      --secondary: #ff007f;
+      --accent: #7000ff;
+      --text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    /* 배경 네온 버블 효과 */
+    .bg-glow {
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, var(--accent) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(80px);
+      z-index: 0;
+    }
+
+    /* 카드 컨테이너 & 보더 애니메이션 */
+    .card-wrapper {
+      position: relative;
+      width: 320px;
+      height: 460px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      background-size: 300% 300%;
+      border-radius: 20px;
+      padding: 2px;
+      animation: borderGlow 6s ease infinite;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+
+    .card-wrapper:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 243, 255, 0.3), 0 0 40px rgba(255, 0, 127, 0.3);
+    }
+
+    /* 카드 내부 콘텐츠 영역 */
+    .card-content {
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 16, 22, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 18px;
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 배경 빛 반사 하이라이트 */
+    .card-content::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+      pointer-events: none;
+    }
+
+    /* 아이콘 박스 */
+    .icon-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(255, 0, 127, 0.2));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+      transition: transform 0.4s ease;
+    }
+
+    .card-wrapper:hover .icon-box {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    .icon-box svg {
+      width: 40px;
+      height: 40px;
+      fill: var(--primary);
+      filter: drop-shadow(0 0 5px var(--primary));
+    }
+
+    /* 텍스트 스타일링 */
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(to right, #fff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .card-description {
+      font-size: 0.9rem;
+      color: #a0a5b5;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    /* 인터랙션 버튼 */
+    .card-btn {
+      margin-top: auto;
+      width: 100%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .card-btn:hover {
+      opacity: 0.9;
+      box-shadow: 0 6px 20px rgba(0, 243, 255, 0.6);
+    }
+
+    .card-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* 보더 그라데이션 애니메이션 Keyframes */
+    @keyframes borderGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="card-wrapper" id="card">
+    <div class="card-content">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <h3 class="card-title">NEON PROTOCOL</h3>
+      <p class="card-description">
+        Web Audio API 기반의 효과음과 고화질 다이내믹 그라데이션 스타일이 적용된 스마트 카드 인터페이스입니다.
+      </p>
+      <button class="card-btn" id="cardBtn">ACTIVATE</button>
+    </div>
+  </div>
+
+  <script>
+    // Web Audio API 설정 (외부 소스 파일 필요 없음)
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+    }
+
+    // 마우스 호버 사운드 (짧고 가벼운 주파수 톤)
+    function playHoverSound() {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime); // A4
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08); // A5 로 빠른 상승
+
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    // 버튼 클릭 사운드 (신스 팝 스위프 음)
+    function playClickSound() {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.15);
+
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    }
+
+    // 이벤트 리스너 바인딩
+    const card = document.getElementById('card');
+    const cardBtn = document.getElementById('cardBtn');
+
+    card.addEventListener('mouseenter', playHoverSound);
+    cardBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // 카드 호버 이벤트 중복 방지
+      playClickSound();
+    });
+  </script>
+</body>
+</html>
