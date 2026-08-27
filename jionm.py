@@ -318,6 +318,21 @@ with right_col:
                 pointer-events: none;
             }}
 
+            .intro-msg {{
+                position: absolute;
+                top: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 20px;
+                font-weight: 800;
+                color: #fde68a;
+                text-shadow: 0 0 15px rgba(253, 230, 138, 0.7);
+                opacity: 0;
+                z-index: 105;
+                white-space: nowrap;
+                letter-spacing: 1px;
+            }}
+
             .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
             .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
@@ -325,7 +340,6 @@ with right_col:
             .title-tier-5 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
             .title-tier-6 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            /* 텍스트 내용물이 아예 보이지 않도록 완전 초기 차단 */
             .status-header {{ 
                 font-size: 28px; 
                 font-weight: 900; 
@@ -347,8 +361,10 @@ with right_col:
         <div id="successFlashOverlay"></div>
         <div id="container"></div>
 
+        <!-- 애니메이션 맨 처음에 나타나는 사용자의 구문 -->
+        <div id="introMsg" class="intro-msg">0단계 : 무취의 공간 30단계 : ★태초의 자이온맘★ 절대신성</div>
+
         <div class="cinematic-ui">
-            <!-- 텍스트 내용 내부 빈 칸 유지 (미리보기 방지) -->
             <div id="statusText" class="status-header"></div>
             <div class="title-tier-{tier}">
                 {card_title}
@@ -360,6 +376,7 @@ with right_col:
         <script>
             const status = "{status}";
             const statusText = document.getElementById('statusText');
+            const introMsg = document.getElementById('introMsg');
             const flashOverlay = document.getElementById('redFlashOverlay');
             const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
@@ -369,7 +386,7 @@ with right_col:
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 11.0); // 초기 멀리서 바라보는 피파 스타일 뷰
+            camera.position.set(0, 0, 11.0);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -449,19 +466,22 @@ with right_col:
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // [피파 스타일 롱 타임라인 애니메이션 설계]
-            // 총 길이 약 3.2초의 긴장감 넘치는 연출
+            // [애니메이션 타임라인]
             const tl = gsap.timeline();
             
-            // 1단계: 카메라가 카드로 극적으로 줌인하며 카드가 회전하기 시작
-            tl.to(camera.position, {{ z: 6.5, duration: 1.2, ease: "power2.inOut" }});
-            tl.to(cardGroup.rotation, {{ y: Math.PI * 4, duration: 1.5, ease: "power1.inOut" }}, 0);
+            // 맨 처음 구문 페이드인 후 일정 시간 노출 뒤 페이드아웃
+            tl.to(introMsg, {{ opacity: 1, duration: 0.4, ease: "power1.in" }});
+            tl.to(introMsg, {{ opacity: 0, duration: 0.4, ease: "power1.out" }, "+=0.8"});
 
-            // 2단계: 카드가 중앙에 멈춰 서서 강하게 바이브레이션(떨림)
+            // 카메라가 카드로 극적으로 줌인하며 카드가 회전하기 시작
+            tl.to(camera.position, {{ z: 6.5, duration: 1.2, ease: "power2.inOut" }}, "-=0.2");
+            tl.to(cardGroup.rotation, {{ y: Math.PI * 4, duration: 1.5, ease: "power1.inOut" }}, "-=1.2");
+
+            // 카드가 중앙에 멈춰 서서 바이브레이션
             tl.to(cardGroup.position, {{ x: 0.15, duration: 0.04, repeat: 18, yoyo: true, ease: "power1.inOut" }});
             tl.to(cardGroup.scale, {{ x: 1.15, y: 1.15, z: 1.15, duration: 0.8, ease: "power2.out" }}, "-=0.5");
 
-            // 3단계: 애니메이션의 클라이맥스(정점) 직후에만 결과 텍스트 인젝션 및 화면 노출
+            // 클라이맥스 직후 결과 표시
             tl.call(() => {{
                 statusText.style.visibility = 'visible';
                 statusText.style.opacity = 1;
@@ -485,7 +505,6 @@ with right_col:
                     gsap.to(flashOverlay, {{ opacity: 0.95, duration: 0.2, yoyo: true, repeat: 1 }});
                     cardGroup.visible = false;
 
-                    // 피파식 강력한 폭발 조각 분산 연출
                     const shardCount = 35;
                     for(let i = 0; i < shardCount; i++) {{
                         const sGeo = new THREE.BoxGeometry(Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15, 0.2);
@@ -515,7 +534,7 @@ with right_col:
                     statusText.innerText = "READY";
                     statusText.style.color = "#38bdf8";
                 }}
-            }}, [], 2.4);
+            }}, [], 3.0);
 
             const clock = new THREE.Clock();
 
