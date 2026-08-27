@@ -31,6 +31,7 @@ def save_score_to_db(username, level, money):
     return
   conn = sqlite3.connect(DB_NAME)
   c = conn.cursor()
+  # 기존 기록 확인 후 최고 단계/자산일 때 갱신 또는 삽입
   c.execute("SELECT level, money FROM rankings WHERE username = ?", (username,))
   row = c.fetchone()
   if row is None:
@@ -39,6 +40,7 @@ def save_score_to_db(username, level, money):
         (username, level, money),
     )
   else:
+    # 단계가 더 높거나, 단계는 같은데 돈이 더 많을 때 갱신
     if level > row[0] or (level == row[0] and money > row[1]):
       c.execute(
           "UPDATE rankings SET level = ?, money = ? WHERE username = ?",
@@ -61,7 +63,7 @@ def get_leaderboard():
 
 
 # -----------------------------------------------------------------------------
-# 1. 페이지 기본 설정 (와이드 모드)
+# 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - FANTASY CITY EDITION", page_icon="🏰", layout="wide"
@@ -455,6 +457,7 @@ def enhance():
     st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
+  # 강화 후 점수 자동 DB 갱신
   save_score_to_db(
       st.session_state.username, st.session_state.level, st.session_state.money
   )
@@ -478,67 +481,71 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (대규모 UI 개편)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: radial-gradient(circle at center, #090d16 0%, #020408 100%);
+        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-        max-width: 98% !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        max-width: 95% !important;
     }
-    .game-panel {
-        background: rgba(13, 20, 36, 0.75);
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.65);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 14px;
         margin-bottom: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     }
     .stat-card {
-        background: rgba(18, 27, 48, 0.85);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 10px;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        padding: 12px 10px;
         border-radius: 10px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .stat-card:hover {
+        border-color: rgba(245, 158, 11, 0.9);
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
     .stat-title {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: #fde68a;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
     }
     .stat-value {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 800;
         color: #ffffff;
-        text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
     }
     div.stButton > button {
-        border-radius: 10px !important;
+        border-radius: 8px !important;
         font-weight: 700 !important;
-        padding: 12px 20px !important;
+        padding: 10px 18px !important;
         transition: all 0.2s ease !important;
-        border: 1px solid rgba(217, 119, 6, 0.5) !important;
-        background: linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(217, 119, 6, 0.7)) !important;
+        border: 1px solid rgba(217, 119, 6, 0.4) !important;
+        background: linear-gradient(135deg, rgba(147, 51, 234, 0.6), rgba(217, 119, 6, 0.6)) !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        width: 100%;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     div.stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(217, 119, 6, 0.8);
-        border-color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 6px 25px rgba(217, 119, 6, 0.6);
     }
     </style>
 """,
@@ -546,19 +553,19 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 3단 레이아웃 구성 (좌측: 정보/랭킹, 중앙: 3D시각화 및 버튼, 우측: 상점 및 유틸)
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
-col_left, col_center, col_right = st.columns([2.2, 5.6, 2.2], gap="medium")
+left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
-with col_left:
-  st.markdown('<div class="game-panel">', unsafe_allow_html=True)
+with left_col:
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>👤 유저"
-      " 프로필</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 18px; color:#fde68a;'>🏆 유저"
+      " 랭킹 설정</h3>",
       unsafe_allow_html=True,
   )
   user_input = st.text_input(
-      "닉네임 설정", value=st.session_state.username, max_chars=10
+      "내 닉네임 입력", value=st.session_state.username, max_chars=10
   )
   if user_input != st.session_state.username:
     st.session_state.username = user_input
@@ -567,16 +574,101 @@ with col_left:
     )
   st.markdown("</div>", unsafe_allow_html=True)
 
-  st.markdown('<div class="game-panel">', unsafe_allow_html=True)
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>🏆 명예의"
-      " 전당 (Top 10)</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
+      " 판타지 지온 강화</h3>",
+      unsafe_allow_html=True,
+  )
+
+  if st.button(
+      "🔥 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= 30),
+  ):
+    enhance()
+    if st.session_state.status == "NOT_ENOUGH_MONEY":
+      st.error("강화 비용이 부족합니다!")
+    else:
+      st.rerun()
+
+  st.write("")
+  if st.button(
+      "💰 현재 냄새 판매",
+      use_container_width=True,
+      disabled=(st.session_state.level == 0),
+  ):
+    sell()
+    st.rerun()
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 상점</h4>",
+      unsafe_allow_html=True,
+  )
+
+  tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
+  with tab_shop1:
+    current_shield_cost = get_shield_cost(st.session_state.level)
+    st.caption(
+        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f" {format_gold(current_shield_cost)}"
+    )
+
+    can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
+    if st.button(
+        "방지권 구매 (최대 2개)",
+        use_container_width=True,
+        disabled=not can_buy_shield,
+    ):
+      if st.session_state.level < 20:
+        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
+      elif st.session_state.shield >= 2:
+        st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
+      elif st.session_state.money >= current_shield_cost:
+        st.session_state.money -= current_shield_cost
+        st.session_state.shield += 1
+        st.success("파괴 방지권 구매 완료!")
+        save_score_to_db(
+            st.session_state.username,
+            st.session_state.level,
+            st.session_state.money,
+        )
+        st.rerun()
+      else:
+        st.error("금액이 부족합니다.")
+
+  with tab_shop2:
+    st.caption("눈물 20개로 1단계 확정 상승")
+    if st.button("1단계 확정 상승 (20개)", use_container_width=True):
+      if st.session_state.tears >= 20 and st.session_state.level < 30:
+        st.session_state.tears -= 20
+        st.session_state.level += 1
+        st.session_state.status = "SUCCESS"
+        st.success("확정 강화 성공!")
+        save_score_to_db(
+            st.session_state.username,
+            st.session_state.level,
+            st.session_state.money,
+        )
+        st.rerun()
+      else:
+        st.error("조건이 부족합니다.")
+
+  st.markdown("</div>", unsafe_allow_html=True)
+
+  # --- 실시간 랭킹 보드 패널 추가 ---
+  st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🏆 명예의 전당"
+      " (Top 10)</h4>",
       unsafe_allow_html=True,
   )
   leaderboard_data = get_leaderboard()
   if leaderboard_data:
     rank_html = (
-        "<table style='width:100%; font-size:12px; color:#f8fafc; border-collapse:"
+        "<table style='width:100%; font-size:13px; color:#f8fafc; border-collapse:"
         " collapse;'>"
         "<tr style='border-bottom: 1px solid rgba(255,255,255,0.2); "
         "color:#fde68a;'><th>순위</th><th>닉네임</th><th>단계</th></tr>"
@@ -585,14 +677,14 @@ with col_left:
       crown = (
           "🥇" if idx == 1 else ("🥈" if idx == 2 else ("🥉" if idx == 3 else ""))
       )
-      rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:5px;'>{crown} {idx}위</td><td style='padding:5px;'>{uname}</td><td style='padding:5px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
+      rank_html += f"<tr style='border-bottom: 1px solid rgba(255,255,255,0.05); text-align:center;'><td style='padding:4px;'>{crown} {idx}위</td><td style='padding:4px;'>{uname}</td><td style='padding:4px; font-weight:bold; color:#34d399;'>{lvl}단계</td></tr>"
     rank_html += "</table>"
     st.markdown(rank_html, unsafe_allow_html=True)
   else:
-    st.caption("랭킹 데이터 없음")
+    st.caption("아직 등록된 랭킹 데이터가 없습니다.")
   st.markdown("</div>", unsafe_allow_html=True)
 
-with col_center:
+with right_col:
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -621,30 +713,35 @@ with col_center:
                 box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
+
             #failFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.4);
                 box-shadow: inset 0 0 100px rgba(217, 119, 6, 0.7);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
+
             #holdFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(56, 189, 248, 0.5);
                 box-shadow: inset 0 0 100px rgba(14, 165, 233, 0.8);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
+
             #shieldFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(59, 130, 246, 0.7);
                 box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
+
             #critFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.85);
                 box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
+
             #successFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(16, 185, 129, 0.5);
@@ -654,7 +751,7 @@ with col_center:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 15px; 
+                bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -663,17 +760,21 @@ with col_center:
                 pointer-events: none;
             }}
 
-            .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 36px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 40px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-            .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 48px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 52px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+            .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
-            .desc-text {{ font-size: 14px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 18px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.9); }}
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+
+            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }}
+            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 22px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(0,0,0,0.9); }}
+            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -689,7 +790,9 @@ with col_center:
 
         <div class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
-            <div class="title-tier-{tier}">{card_title}</div>
+            <div class="title-tier-{tier}">
+                {card_title}
+            </div>
             <div class="desc-text">"{card_desc}"</div>
             <div class="price-text">예상 가치: {card_price}</div>
             <div class="cost-text">필요 강화 비용: {current_cost}</div>
@@ -727,7 +830,7 @@ with col_center:
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0.3, 9.0);
+            camera.position.set(0, 0.4, 9.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -746,55 +849,189 @@ with col_center:
             scene.add(cardPointLight);
 
             const bgGroup = new THREE.Group();
-            const ringGeo1 = new THREE.TorusGeometry(5.5, 0.04, 16, 100);
+            
+            const ringGeo1 = new THREE.TorusGeometry(6.0, 0.04, 16, 100);
             const ringMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", emissive: "{card_color}", emissiveIntensity: 1.2, roughness: 0.1 }});
             const spaceRing1 = new THREE.Mesh(ringGeo1, ringMat);
             spaceRing1.rotation.x = Math.PI / 3;
             bgGroup.add(spaceRing1);
+
+            const ringGeo2 = new THREE.TorusGeometry(7.5, 0.03, 16, 100);
+            const spaceRing2 = new THREE.Mesh(ringGeo2, ringMat);
+            spaceRing2.rotation.y = Math.PI / 4;
+            bgGroup.add(spaceRing2);
+
+            const ringGeo3 = new THREE.TorusGeometry(9.0, 0.02, 16, 100);
+            const spaceRing3 = new THREE.Mesh(ringGeo3, ringMat);
+            spaceRing3.rotation.z = Math.PI / 6;
+            bgGroup.add(spaceRing3);
+
             scene.add(bgGroup);
 
+            const particleGroup = new THREE.Group();
+            const pCount = 2000;
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(pCount * 3);
+
+            for(let i=0; i<pCount; i++) {{
+                pPos[i*3] = (Math.random() - 0.5) * 40;
+                pPos[i*3 + 1] = (Math.random() - 0.5) * 40;
+                pPos[i*3 + 2] = (Math.random() - 0.5) * 40;
+            }}
+
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({{
+                color: "{card_color}", size: 0.15, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending
+            }});
+            const particles = new THREE.Points(pGeo, pMat);
+            particleGroup.add(particles);
+            scene.add(particleGroup);
+
             const cardGroup = new THREE.Group();
-            const outerFrameGeo = new THREE.BoxGeometry(3.6, 5.2, 0.2);
-            const outerFrameMat = new THREE.MeshStandardMaterial({{ color: 0xffd700, metalness: 1.0, roughness: 0.1, emissive: "{card_color}", emissiveIntensity: 0.4 }});
+
+            const outerFrameGeo = new THREE.BoxGeometry(4.15, 6.05, 0.2);
+            const outerFrameMat = new THREE.MeshStandardMaterial({{ 
+                color: 0xffd700, 
+                metalness: 1.0, 
+                roughness: 0.1,
+                emissive: "{card_color}",
+                emissiveIntensity: 0.4
+            }});
             const outerFrame = new THREE.Mesh(outerFrameGeo, outerFrameMat);
             cardGroup.add(outerFrame);
 
-            const bodyGeo = new THREE.BoxGeometry(3.0, 3.0, 0.23);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.85, roughness: 0.15, emissive: "{card_color}", emissiveIntensity: 0.6 }});
+            const glassGeo = new THREE.BoxGeometry(3.85, 5.75, 0.23);
+            const glassMat = new THREE.MeshPhysicalMaterial({{ 
+                color: 0x0f172a, 
+                metalness: 0.2, 
+                roughness: 0.1, 
+                transmission: 0.6, 
+                thickness: 1.2,
+                transparent: true,
+                opacity: 0.85
+            }});
+            const glassPlate = new THREE.Mesh(glassGeo, glassMat);
+            cardGroup.add(glassPlate);
+
+            const bodyGeo = new THREE.BoxGeometry(3.45, 3.45, 0.26);
+            const bodyMat = new THREE.MeshStandardMaterial({{ 
+                color: "{card_color}", 
+                metalness: 0.85, 
+                roughness: 0.15, 
+                emissive: "{card_color}", 
+                emissiveIntensity: 0.6 
+            }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.75;
+            body.position.y = 0.85;
             cardGroup.add(body);
 
-            const coreGeo = new THREE.IcosahedronGeometry(0.8, 0);
-            const coreMat = new THREE.MeshStandardMaterial({{ color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.8, roughness: 0.0, metalness: 1.0 }});
+            const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+            const coreMat = new THREE.MeshStandardMaterial({{
+                color: 0xffffff, 
+                emissive: "{card_color}", 
+                emissiveIntensity: 1.8, 
+                roughness: 0.0, 
+                metalness: 1.0
+            }});
             const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.set(0, 0.75, 0.2);
+            core.position.set(0, 0.85, 0.2);
             cardGroup.add(core);
+
+            const nameplateGeo = new THREE.BoxGeometry(3.45, 1.4, 0.26);
+            const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.2 }});
+            const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
+            nameplate.position.y = -1.55;
+            cardGroup.add(nameplate);
 
             scene.add(cardGroup);
 
-            if (status === "CRITICAL") {{
+            const shieldGeo = new THREE.SphereGeometry(3.8, 32, 32);
+            const shieldMat = new THREE.MeshStandardMaterial({{
+                color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
+            }});
+            const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
+            shieldDome.position.y = 0.2;
+            scene.add(shieldDome);
+
+            let shardsGroup = new THREE.Group();
+            scene.add(shardsGroup);
+
+            if (status === "SHIELD_SAVED") {{
+                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
+                gsap.fromTo(shieldDome.scale, {{ x: 0.2, y: 0.2, z: 0.2 }}, {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }});
+                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
+            }} else if (status === "CRITICAL") {{
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
-            }} else if (status === "SUCCESS") {{
-                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
+            }} else if (status === "HOLD") {{
+                gsap.fromTo(holdOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ z: -0.2 }}, {{ z: 0.2, duration: 0.15, repeat: 3, yoyo: true, ease: "power1.inOut" }});
+            }} else if (status === "FAILED") {{
+                gsap.fromTo(failOverlay, {{ opacity: 0.6 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => {{ cardGroup.position.x = 0; }} }});
             }} else if (status === "DESTROYED") {{
                 gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
+                gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
                 cardGroup.visible = false;
+
+                const shardCount = 20;
+                for(let i = 0; i < shardCount; i++) {{
+                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
+                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
+                    const shard = new THREE.Mesh(sGeo, sMat);
+                    shard.position.set(0, 0.2, 0);
+                    shardsGroup.add(shard);
+
+                    gsap.to(shard.position, {{
+                        x: (Math.random() - 0.5) * 7,
+                        y: (Math.random() - 0.5) * 7,
+                        z: (Math.random() - 0.5) * 7,
+                        duration: 1.2,
+                        ease: "power3.out"
+                    }});
+                    gsap.to(shard.rotation, {{
+                        x: Math.random() * Math.PI * 4,
+                        y: Math.random() * Math.PI * 4,
+                        duration: 1.2
+                    }});
+                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.2, ease: "power2.in" }});
+                }}
+            }} else if (status === "SUCCESS") {{
+                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 5 }}, {{ z: 9.5, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
             }}
 
             const clock = new THREE.Clock();
+
             function animate() {{
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
+
                 spaceRing1.rotation.z = time * 0.2;
-                if (cardGroup.visible) {{
-                    cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
-                    cardGroup.position.y = Math.sin(time * 1.5) * 0.1 + 0.1;
+                spaceRing2.rotation.z = -time * 0.25;
+                spaceRing3.rotation.x = time * 0.15;
+
+                const pos = pGeo.attributes.position.array;
+                for(let i=1; i<pCount*3; i+=3) {{
+                    pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.01;
+                    if(pos[i] > 20) pos[i] = -20;
                 }}
-                core.rotation.x = time * 2;
-                core.rotation.y = time * 2;
+                pGeo.attributes.position.needsUpdate = true;
+
+                if (cardGroup.visible) {{
+                    cardGroup.rotation.y = Math.sin(time * 0.8) * 0.22;
+                    cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
+                }}
+                
+                core.rotation.x = time * 2.5;
+                core.rotation.y = time * 2.5;
+
                 renderer.render(scene, camera);
             }}
+
             animate();
 
             window.addEventListener('resize', () => {{
@@ -807,89 +1044,13 @@ with col_center:
     </html>
     """
 
-  components.html(three_js_code, height=420, scrolling=False)
-
-  # 중앙 하단 독립 강화/판매 버튼 구역 (여백 최소화 및 직관적 배치)
-  btn_col1, btn_col2 = st.columns(2, gap="small")
-  with btn_col1:
-    if st.button(
-        "🔥 강화 실행하기",
-        use_container_width=True,
-        disabled=(st.session_state.level >= 30),
-    ):
-      enhance()
-      if st.session_state.status == "NOT_ENOUGH_MONEY":
-        st.error("강화 비용 부족!")
-      else:
-        st.rerun()
-  with btn_col2:
-    if st.button(
-        "💰 현재 냄새 판매",
-        use_container_width=True,
-        disabled=(st.session_state.level == 0),
-    ):
-      sell()
-      st.rerun()
-
-with col_right:
-  st.markdown('<div class="game-panel">', unsafe_allow_html=True)
-  st.markdown(
-      "<h3 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>🛒 상점 및"
-      " 유틸</h3>",
-      unsafe_allow_html=True,
-  )
-
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
-  with tab_shop1:
-    current_shield_cost = get_shield_cost(st.session_state.level)
-    st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상 구매 가능)\n가격:"
-        f" {format_gold(current_shield_cost)}"
-    )
-    can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
-    if st.button(
-        "방지권 구입", use_container_width=True, disabled=not can_buy_shield
-    ):
-      if st.session_state.level < 20:
-        st.warning("20단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 2:
-        st.warning("최대 2개까지만 보유 가능합니다.")
-      elif st.session_state.money >= current_shield_cost:
-        st.session_state.money -= current_shield_cost
-        st.session_state.shield += 1
-        st.success("구매 완료!")
-        save_score_to_db(
-            st.session_state.username,
-            st.session_state.level,
-            st.session_state.money,
-        )
-        st.rerun()
-      else:
-        st.error("금액 부족")
-
-  with tab_shop2:
-    st.caption("눈물 20개로 1단계 확정 상승")
-    if st.button("확정 상승 교환", use_container_width=True):
-      if st.session_state.tears >= 20 and st.session_state.level < 30:
-        st.session_state.tears -= 20
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
-        st.success("강화 성공!")
-        save_score_to_db(
-            st.session_state.username,
-            st.session_state.level,
-            st.session_state.money,
-        )
-        st.rerun()
-      else:
-        st.error("조건 미달")
-  st.markdown("</div>", unsafe_allow_html=True)
+  components.html(three_js_code, height=650, scrolling=False)
 
 # -----------------------------------------------------------------------------
-# 8. 하단 고정 대시보드 (컴팩트 스탯 바)
+# 9. 하단 스탯 대시보드
 # -----------------------------------------------------------------------------
 st.write("")
-b_col1, b_col2, b_col3, b_col4 = st.columns(4, gap="small")
+b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
 
 with b_col1:
   st.markdown(
@@ -906,7 +1067,7 @@ with b_col2:
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">🛡️ 파괴 방지권</div>
+            <div class="stat-title">🛡️ 보유권 개수</div>
             <div class="stat-value">{st.session_state.shield} / 2개</div>
         </div>
     """,
@@ -927,15 +1088,16 @@ with b_col3:
 with b_col4:
   if st.session_state.level < 30:
     sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-    prob_str = f"성공:{sp}% | 하락:{down_p}%<br>파괴:{dp}% | 유지:{hold_p}%"
+    crit_pct = int(CRITICAL_RATE * 100)
+    prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}% / 유지:{hold_p}%"
   else:
-    prob_str = "최고 단계 도달 완료"
+    prob_str = "최고 단계 도달"
 
   st.markdown(
       f"""
         <div class="stat-card">
-            <div class="stat-title">📊 현재 단계 확률</div>
-            <div class="stat-value" style="font-size: 11px; line-height: 1.2;">{prob_str}</div>
+            <div class="stat-title">📊 상세 확률표</div>
+            <div class="stat-value" style="font-size: 11px; line-height: 1.3;">{prob_str}</div>
         </div>
     """,
       unsafe_allow_html=True,
