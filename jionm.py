@@ -440,23 +440,26 @@ st.markdown(
     .element-container, .stMarkdown {
         background: transparent !important;
     }
-    .stat-text-container {
-        background: transparent !important;
+    .stat-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        padding: 8px 6px;
+        border-radius: 8px;
         text-align: center;
-        padding: 4px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        height: 100%;
     }
     .stat-title {
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 11px;
+        font-weight: 600;
         color: #fde68a;
-        margin-bottom: 4px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        margin-bottom: 2px;
     }
     .stat-value {
-        font-size: 19px;
-        font-weight: 900;
+        font-size: 14px;
+        font-weight: 800;
         color: #ffffff;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
     }
     div.stButton > button {
         border-radius: 8px !important;
@@ -483,6 +486,7 @@ st.markdown(
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
+  # 개발자 모드 설정 토글
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
       " 설정</h4>",
@@ -512,6 +516,7 @@ with left_col:
     else:
       st.rerun()
 
+  # 개발자 모드가 켜져 있을 때만 노출되는 무조건 성공 버튼
   if dev_mode:
     st.write("")
     if st.button(
@@ -587,7 +592,7 @@ with right_col:
   with sc1:
     st.markdown(
         f"""
-            <div class="stat-text-container">
+            <div class="stat-card">
                 <div class="stat-title">💳 보유 금액</div>
                 <div class="stat-value">{format_gold(st.session_state.money)}</div>
             </div>
@@ -598,7 +603,7 @@ with right_col:
   with sc2:
     st.markdown(
         f"""
-            <div class="stat-text-container">
+            <div class="stat-card">
                 <div class="stat-title">🛡️ 방지권</div>
                 <div class="stat-value">{st.session_state.shield} / 2개</div>
             </div>
@@ -609,7 +614,7 @@ with right_col:
   with sc3:
     st.markdown(
         f"""
-            <div class="stat-text-container">
+            <div class="stat-card">
                 <div class="stat-title">💧 눈물</div>
                 <div class="stat-value">{st.session_state.tears}개</div>
             </div>
@@ -627,9 +632,9 @@ with right_col:
 
     st.markdown(
         f"""
-            <div class="stat-text-container">
+            <div class="stat-card">
                 <div class="stat-title">📊 상세 확률</div>
-                <div class="stat-value" style="font-size: 13px; line-height: 1.3;">{prob_str}</div>
+                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
             </div>
         """,
         unsafe_allow_html=True,
@@ -641,7 +646,7 @@ with right_col:
   card_desc = curr_data["desc"]
   card_price = format_gold(curr_data["price"])
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
-  level_val = st.session_state.level
+  tier = curr_data["tier"]
   status = st.session_state.status
 
   three_js_code = f"""
@@ -690,7 +695,7 @@ with right_col:
 
         <div class="cinematic-ui">
             <div id="statusText" class="status-header">READY</div>
-            <div class="title-tier-{curr_data['tier']}">{card_title}</div>
+            <div class="title-tier-{tier}">{card_title}</div>
             <div class="desc-text">"{card_desc}"</div>
             <div class="price-text">예상 가치: {card_price}</div>
             <div class="cost-text">필요 강화 비용: {current_cost}</div>
@@ -794,22 +799,13 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            const lvl = {level_val};
-            let baseGeo;
-            if (lvl < 16) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.5, 0);
-            }} else {{
-                const shapes = [
-                    new THREE.IcosahedronGeometry(2.4, 0),
-                    new THREE.OctahedronGeometry(2.6, 0),
-                    new THREE.TorusKnotGeometry(1.4, 0.4, 64, 16),
-                    new THREE.CylinderGeometry(0.2, 2.5, 2.6, 5),
-                    new THREE.ConeGeometry(2.2, 3.2, 6),
-                    new THREE.TetrahedronGeometry(2.8, 0),
-                    new THREE.RingGeometry(1.2, 2.3, 16)
-                ];
-                baseGeo = shapes[(lvl - 16) % shapes.length];
-            }}
+            const geometries = [
+                new THREE.DodecahedronGeometry(2.5, 0),
+                new THREE.IcosahedronGeometry(2.3, 0),
+                new THREE.OctahedronGeometry(2.7, 0),
+                new THREE.TorusKnotGeometry(1.6, 0.5, 64, 16)
+            ];
+            const baseGeo = geometries[{tier} % geometries.length];
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
