@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 골드 단위 변환 함수
+# 2. 골드 단위 변환 및 강화 비용 계산 함수
 # -----------------------------------------------------------------------------
 def format_gold(amount):
     if amount == 0:
@@ -31,9 +31,13 @@ def format_gold(amount):
         
     return "".join(result) + "원"
 
+def get_enhance_cost(level):
+    if level == 0:
+        return 1000
+    return int(1000 * (1.35 ** level))
+
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 및 강화 확률표 (성공, 실패, 파괴)
-# 요청하신 확률표(+0 ~ +30)에 맞춰 PROB_TABLE을 수정했습니다.
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
@@ -69,8 +73,6 @@ SMELL_DB = {
     30: {"name": "30단계 : ★태초의 자이온맘★ 절대신성", "desc": "우주를 지온으로 통일한 자이온맘의 완성.", "price": 10000000000000, "color": "#00ffff", "tier": 6}
 }
 
-# (성공 확률 %, 실패 확률 %, 파괴 확률 %) 구조
-# 파괴 확률은 전체 100%에서 성공 확률을 뺀 나머지를 실패(단계 하락)와 파괴로 적절히 배분했습니다. (+30은 최고 단계이므로 제외)
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0),
@@ -117,12 +119,19 @@ if "tears" not in st.session_state: st.session_state.tears = 0
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 및 판매 로직 (비용 차감 및 예외 처리 포함)
 # -----------------------------------------------------------------------------
 def enhance():
     curr = st.session_state.level
     if curr >= 30: return
     
+    cost = get_enhance_cost(curr)
+    if st.session_state.money < cost:
+        st.session_state.status = "NOT_ENOUGH_MONEY"
+        return
+        
+    st.session_state.money -= cost  # 강화 비용 차감
+
     if st.session_state.dev_mode:
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
@@ -160,7 +169,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (배경 이미지를 적용하고 투명 패널 활용)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -238,9 +247,15 @@ with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
+    current_cost = get_enhance_cost(st.session_state.level)
+    st.caption(f"필요 강화 비용: {format_gold(current_cost)}")
+    
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
-        st.rerun()
+        if st.session_state.status == "NOT_ENOUGH_MONEY":
+            st.error("강화 비용이 부족합니다!")
+        else:
+            st.rerun()
         
     st.write("")
     if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
@@ -259,9 +274,9 @@ with left_col:
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 상점", "💧 눈물"])
     with tab_shop1:
         st.caption("파괴 방지권 (보유 시 자동 발동)")
-        if st.button("구매 (5만 원)", use_container_width=True):
-            if st.session_state.money >= 50000:
-                st.session_state.money -= 50000
+        if st.button("구매 (25만 원)", use_container_width=True):
+            if st.session_state.money >= 250000:
+                st.session_state.money -= 250000
                 st.session_state.shield += 1
                 st.success("보호권 보유 중!")
                 st.rerun()
@@ -284,7 +299,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (Three.js 캔버스를 투명하게 처리하여 새 배경과 조화)
+    # 8. 3D 메인 연출 영역
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -312,35 +327,35 @@ with right_col:
                 background: rgba(239, 68, 68, 0.85);
                 box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }}
+            }
 
             #failFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.4);
                 box-shadow: inset 0 0 100px rgba(217, 119, 6, 0.7);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }}
+            }
 
             #shieldFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(59, 130, 246, 0.7);
                 box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }}
+            }
 
             #critFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.85);
                 box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }}
+            }
 
             #successFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(16, 185, 129, 0.5);
                 box-shadow: inset 0 0 100px rgba(5, 150, 105, 0.8);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }}
+            }
 
             .cinematic-ui {{
                 position: absolute;
@@ -351,7 +366,7 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-            }}
+            }
 
             .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
