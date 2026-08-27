@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 # 1. 페이지 기본 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - ULTRA NEBULA 3D",
-    page_icon="🌌",
+    page_title="지온냄새 강화하기 - SMELL AURA 3D",
+    page_icon="♨️",
     layout="wide"
 )
 
@@ -72,13 +72,11 @@ if "shield" not in st.session_state:
     st.session_state.shield = 0  
 if "tears" not in st.session_state:
     st.session_state.tears = 0    
-if "use_shield" not in st.session_state:
-    st.session_state.use_shield = False
 if "dev_mode" not in st.session_state:
     st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
-# 4. 강화 / 판매 로직
+# 4. 강화 / 판매 로직 (자동 방지권 차감 기능 포함)
 # -----------------------------------------------------------------------------
 def enhance():
     curr = st.session_state.level
@@ -100,7 +98,8 @@ def enhance():
             st.session_state.level += 1
             st.session_state.status = "SUCCESS"
     elif r < (sp + dp):
-        if st.session_state.use_shield and st.session_state.shield > 0:
+        # 방지권이 있다면 조건 없이 자동 사용
+        if st.session_state.shield > 0:
             st.session_state.shield -= 1
             st.session_state.status = "SHIELD_SAVED"
             st.session_state.tears += 1
@@ -121,47 +120,44 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 테마 CSS 개편 (모던 사이버 글래스모피즘 & 깔끔한 레이아웃)
+# 5. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
-    /* 전체 배경 스타일 커스텀 */
     .stApp {
-        background: radial-gradient(circle at 50% 20%, #0b0f19 0%, #030712 60%, #000000 100%);
+        background: radial-gradient(circle at 50% 30%, #111a16 0%, #080c0a 60%, #020403 100%);
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* 패널 컨테이너 (글래스모피즘 적용) */
     .glass-panel {
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(18, 30, 24, 0.7);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(52, 211, 153, 0.15);
         border-radius: 16px;
         padding: 20px;
         margin-bottom: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
-    /* 대시보드 카드 */
     .stat-card {
-        background: rgba(30, 41, 59, 0.4);
+        background: rgba(20, 35, 28, 0.5);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(56, 189, 248, 0.2);
+        border: 1px solid rgba(52, 211, 153, 0.25);
         padding: 12px 10px;
         border-radius: 12px;
         text-align: center;
         transition: all 0.3s ease;
     }
     .stat-card:hover {
-        border-color: rgba(56, 189, 248, 0.5);
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        border-color: rgba(52, 211, 153, 0.6);
+        box-shadow: 0 0 15px rgba(52, 211, 153, 0.25);
     }
     .stat-title {
         font-size: 13px;
         font-weight: 600;
-        color: #94a3b8;
+        color: #a7f3d0;
         margin-bottom: 4px;
         letter-spacing: 0.5px;
     }
@@ -169,20 +165,19 @@ st.markdown("""
         font-size: 19px;
         font-weight: 800;
         color: #f8fafc;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
     }
 
-    /* 버튼 모던 스타일링 */
     div.stButton > button {
         border-radius: 10px !important;
         font-weight: 700 !important;
         padding: 12px 20px !important;
         transition: all 0.2s ease !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(52, 211, 153, 0.2) !important;
     }
     div.stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -210,7 +205,7 @@ with col2:
 with col3:
     st.markdown(f'''
         <div class="stat-card">
-            <div class="stat-title">🛡️ 파괴 방지권</div>
+            <div class="stat-title">🛡️ 파괴 방지권 (자동사용)</div>
             <div class="stat-value">{st.session_state.shield} 개</div>
         </div>
     ''', unsafe_allow_html=True)
@@ -229,14 +224,14 @@ with col4:
 st.write("")
 
 # -----------------------------------------------------------------------------
-# 7. 메인 2칼럼 레이아웃 (좌: 모던 컨트롤러 / 우: 우주 3D 뷰어)
+# 7. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([3, 7])
 
 with left_col:
     # 강화 & 액션 패널
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top:0; font-size: 20px; color:#38bdf8;'>⚡ 강화 컨트롤러</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top:0; font-size: 20px; color:#34d399;'>♨️ 지온 냄새 강화하기</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
@@ -250,10 +245,8 @@ with left_col:
 
     # 설정 패널
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#cbd5e1;'>⚙️ 모드 & 옵션 설정</h4>", unsafe_allow_html=True)
-    st.session_state.use_shield = st.checkbox("🛡️ 강화 실패 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
-    
-    st.write("---")
+    st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#cbd5e1;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
+    st.caption("🛡️ 파괴 방지권은 보유 시 파괴 실패 상황에서 자동으로 차감되어 방어됩니다.")
     st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
     if st.session_state.dev_mode:
         st.caption("⚠️ 치트 모드가 활성화되었습니다.")
@@ -265,12 +258,12 @@ with left_col:
     
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
     with tab_shop1:
-        st.caption("강화 실패 시 카드가 파괴되는 것을 막아줍니다.")
+        st.caption("강화 실패 시 카드가 파괴되는 것을 막아줍니다. (보유 시 자동 발동)")
         if st.button("구매 (50,000 G)", use_container_width=True):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
-                st.success("구매 완료!")
+                st.success("보호권 보유 중! 실패 시 자동 사용됩니다.")
                 st.rerun()
             else:
                 st.error("골드가 부족합니다.")
@@ -290,7 +283,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 개쩌는 우주/성운 배경 3D Three.js 캔버스
+    # 8. 냄새 나는 진득한 대기/기체 3D 배경 & 방어막 모션 Three.js
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -318,6 +311,14 @@ with right_col:
                 top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(239, 68, 68, 0.85);
                 box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
+
+            #shieldFlashOverlay {{
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(59, 130, 246, 0.7);
+                box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
             }}
 
@@ -360,6 +361,7 @@ with right_col:
     </head>
     <body>
         <div id="redFlashOverlay"></div>
+        <div id="shieldFlashOverlay"></div>
         <div id="critFlashOverlay"></div>
         <div id="container"></div>
 
@@ -376,6 +378,7 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             const flashOverlay = document.getElementById('redFlashOverlay');
+            const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
             
             if (status === "CRITICAL") {{
@@ -385,8 +388,8 @@ with right_col:
                 statusText.innerText = "✨ ENHANCE SUCCESS ✨";
                 statusText.style.color = "#10b981";
             }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! 🛡️";
-                statusText.style.color = "#3b82f6";
+                statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
+                statusText.style.color = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED 💥";
                 statusText.style.color = "#ef4444";
@@ -396,7 +399,8 @@ with right_col:
             }}
 
             const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x030712, 0.012);
+            // 진득한 흙과 이끼 냄새 안개 효과
+            scene.fog = new THREE.FogExp2(0x0a140f, 0.035);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1.2, 9);
@@ -406,99 +410,104 @@ with right_col:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 조명 세팅
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            // 조명 세팅 (습한 촉촉한 느낌 연출)
+            const ambientLight = new THREE.AmbientLight(0xdcfce7, 0.8);
             scene.add(ambientLight);
 
-            const mainSpot = new THREE.SpotLight("{card_color}", 10);
-            mainSpot.position.set(0, 12, 8);
-            scene.add(mainSpot);
+            const smellLight = new THREE.PointLight("{card_color}", 8, 25);
+            smellLight.position.set(0, 3, 5);
+            scene.add(smellLight);
 
-            const pointLight1 = new THREE.PointLight(0x00f0ff, 5, 25);
-            pointLight1.position.set(-6, -2, 4);
-            scene.add(pointLight1);
+            // ♨️ [냄새 배경] 공기 중을 감도는 냄새 연기/기체 입자
+            const odorGroup = new THREE.Group();
+            const odorCount = 1800;
+            const odorGeo = new THREE.BufferGeometry();
+            const odorPos = new Float32Array(odorCount * 3);
+            const odorScales = new Float32Array(odorCount);
 
-            const pointLight2 = new THREE.PointLight(0xff00ea, 5, 25);
-            pointLight2.position.set(6, 6, -2);
-            scene.add(pointLight2);
-
-            // 🌌 [배경 개편] 우주 성운 입자 & 링 프레임
-            const galaxyGroup = new THREE.Group();
-            
-            // 1. 성운 먼지 클러스터
-            const starCount = 1500;
-            const starGeo = new THREE.BufferGeometry();
-            const starPos = new Float32Array(starCount * 3);
-            const starColors = new Float32Array(starCount * 3);
-
-            for(let i=0; i<starCount*3; i+=3) {{
-                starPos[i] = (Math.random() - 0.5) * 40;
-                starPos[i+1] = (Math.random() - 0.5) * 40;
-                starPos[i+2] = (Math.random() - 0.5) * 40;
-
-                starColors[i] = Math.random() * 0.5 + 0.5;
-                starColors[i+1] = Math.random() * 0.5 + 0.5;
-                starColors[i+2] = 1.0;
+            for(let i=0; i<odorCount; i++) {{
+                odorPos[i*3] = (Math.random() - 0.5) * 30;
+                odorPos[i*3 + 1] = Math.random() * 15 - 5;
+                odorPos[i*3 + 2] = (Math.random() - 0.5) * 30;
+                odorScales[i] = Math.random() * 0.4 + 0.1;
             }}
-            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-            starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-            const starMat = new THREE.PointsMaterial({{ size: 0.12, vertexColors: true, transparent: true, opacity: 0.7 }});
-            const starField = new THREE.Points(starGeo, starMat);
-            galaxyGroup.add(starField);
 
-            // 2. 아우라 궤도 링
-            const orbitRingGeo = new THREE.TorusGeometry(5.5, 0.02, 16, 100);
-            const orbitRingMat = new THREE.MeshBasicMaterial({{ color: 0x38bdf8, transparent: true, opacity: 0.3 }});
-            const orbitRing = new THREE.Mesh(orbitRingGeo, orbitRingMat);
-            orbitRing.rotation.x = Math.PI / 3;
-            galaxyGroup.add(orbitRing);
+            odorGeo.setAttribute('position', new THREE.BufferAttribute(odorPos, 3));
+            const odorMat = new THREE.PointsMaterial({{
+                color: "{card_color}",
+                size: 0.25,
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending
+            }});
+            const odorCloud = new THREE.Points(odorGeo, odorMat);
+            odorGroup.add(odorCloud);
+            scene.add(odorGroup);
 
-            scene.add(galaxyGroup);
-
-            // 💳 아티팩트 코어 카드 모델링
+            // 💳 아티팩트 카드 모델링
             const cardGroup = new THREE.Group();
 
             const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
-            const frameMat = new THREE.MeshStandardMaterial({{ color: 0x0f172a, metalness: 0.95, roughness: 0.1 }});
+            const frameMat = new THREE.MeshStandardMaterial({{ color: 0x0a1f14, metalness: 0.9, roughness: 0.2 }});
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
             const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.85, roughness: 0.2 }});
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.7, roughness: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             cardGroup.add(body);
-
-            const edgeGeo = new THREE.BoxGeometry(2.7, 4.1, 0.24);
-            const edgeMat = new THREE.MeshBasicMaterial({{ color: "{card_color}", wireframe: true }});
-            const edge = new THREE.Mesh(edgeGeo, edgeMat);
-            cardGroup.add(edge);
 
             const coreGeo = new THREE.OctahedronGeometry(0.6, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff,
                 emissive: "{card_color}",
-                emissiveIntensity: 1.0,
-                roughness: 0.1,
-                metalness: 0.9
+                emissiveIntensity: 1.2,
+                roughness: 0.1
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
             core.position.z = 0.16;
             cardGroup.add(core);
 
-            const ringGeo = new THREE.TorusGeometry(1.25, 0.025, 16, 100);
-            const ringMat = new THREE.MeshBasicMaterial({{ color: 0x38bdf8, transparent: true, opacity: 0.7 }});
-            const ring1 = new THREE.Mesh(ringGeo, ringMat);
-            ring1.position.z = 0.15;
-            cardGroup.add(ring1);
-
             scene.add(cardGroup);
 
-            // 폭발 파티클 변수
+            // 🛡️ [방어 모션 구체 (Protective Shield Sphere)]
+            const shieldGeo = new THREE.SphereGeometry(2.8, 32, 32);
+            const shieldMat = new THREE.MeshStandardMaterial({{
+                color: 0x3b82f6,
+                emissive: 0x1d4ed8,
+                emissiveIntensity: 0.8,
+                transparent: true,
+                opacity: 0.0,
+                wireframe: true
+            }});
+            const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
+            shieldDome.position.y = 0.8;
+            scene.add(shieldDome);
+
+            // 파티클
             let explosionParticles = null;
             let explosionVelocities = [];
 
-            // 강화 연출 GSAP
-            if (status === "CRITICAL") {{
+            // -----------------------------------------------------------------
+            // 강화 결과별 특수 3D 연출 모션
+            // -----------------------------------------------------------------
+            if (status === "SHIELD_SAVED") {{
+                // 🛡️ 방지권 차감 시 보호막 연출
+                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                
+                // 보호막 돔이 나타나면서 카드를 감싸고 튕겨냄
+                gsap.fromTo(shieldMat, 
+                    {{ opacity: 0.9, wireframe: true }}, 
+                    {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }}
+                );
+                gsap.fromTo(shieldDome.scale, 
+                    {{ x: 0.2, y: 0.2, z: 0.2 }}, 
+                    {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }}
+                );
+                
+                // 카드 파동 진동 모션
+                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
+            }} else if (status === "CRITICAL") {{
                 gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
                 gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
                 gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
@@ -538,15 +547,19 @@ with right_col:
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                galaxyGroup.rotation.y = time * 0.05;
-                orbitRing.rotation.z = time * 0.1;
+                // 냄새 연기 입자가 위로 피어오르는 애니메이션
+                const pos = odorGeo.attributes.position.array;
+                for(let i=1; i<odorCount*3; i+=3) {{
+                    pos[i] += Math.sin(time + pos[i-1]) * 0.01 + 0.015;
+                    if(pos[i] > 10) pos[i] = -5;
+                }}
+                odorGeo.attributes.position.needsUpdate = true;
 
-                cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-                cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.8;
+                cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
+                cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.8;
                 
                 core.rotation.x = time * 2;
                 core.rotation.y = time * 2;
-                ring1.rotation.z = -time * 1.5;
 
                 if (explosionParticles) {{
                     const ePos = explosionParticles.geometry.attributes.position.array;
