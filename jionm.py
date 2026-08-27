@@ -747,7 +747,6 @@ with right_col:
         unsafe_allow_html=True,
     )
 
-  # --- 텍스트 색상 및 파티클 컬러 완벽 동기화 + 강렬한 폭발/셰이크 3D 영역 ---
   curr_data = SMELL_DB[st.session_state.level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
@@ -813,7 +812,7 @@ with right_col:
             const status = "{status}";
             const statusText = document.getElementById('statusText');
             
-            let statusColor = "#22c55e"; // 기본 성공 컬러
+            let statusColor = "#22c55e";
 
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
@@ -858,7 +857,6 @@ with right_col:
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            // --- 파티클 색상과 텍스트 상태 색상을 완벽히 동기화 + 폭발력 강화 ---
             const particleCount = 1200;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -869,7 +867,6 @@ with right_col:
                 particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 4.5;
                 
-                // 폭발/실패 시 더 거칠고 빠르게 뻗어나가는 속도 부여
                 const speedMultiplier = (status === "DESTROYED" || status === "FAILED" || status === "CRITICAL") ? 2.5 : 1.0;
                 particleVelocities.push({{
                     x: (Math.random() - 0.5) * 0.04 * speedMultiplier,
@@ -890,7 +887,6 @@ with right_col:
             const particleSystem = new THREE.Points(particleGeo, particleMat);
             scene.add(particleSystem);
 
-            // 중앙 오브젝트 그룹
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
@@ -921,7 +917,6 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // --- 강화 결과별 더욱 강렬해진 모션 및 폭발 연출 ---
             if (status === "CRITICAL") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.05, y: 0.05, z: 0.05}}, {{x: 1.2, y: 1.2, z: 1.2, duration: 0.5, ease: "elastic.out(1.5, 0.2)"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
@@ -929,9 +924,8 @@ with right_col:
             }} else if (status === "SUCCESS") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1, y: 1, z: 1, duration: 0.6, ease: "elastic.out(1.2, 0.3)"}});
             }} else if (status === "FAILED" || status === "DESTROYED") {{
-                // 훨씬 강력한 화면 흔들림(셰이크) 효과
                 const shakeIntensity = status === "DESTROYED" ? 0.6 : 0.35;
-                gsap.fromTo(objectGroup.position, {{x: -shakeIntensity}, {{x: shakeIntensity, duration: 0.03, repeat: 12, yoyo: true}});
+                gsap.fromTo(objectGroup.position, {{x: -shakeIntensity}}, {{x: shakeIntensity, duration: 0.03, repeat: 12, yoyo: true}});
                 
                 if (status === "DESTROYED") {{
                     gsap.to(objectGroup.scale, {{x: 0.01, y: 0.01, z: 0.01, duration: 0.3, yoyo: true, repeat: 1}});
@@ -952,7 +946,6 @@ with right_col:
                 coreMesh.rotation.x = -time * 1.4;
                 coreMesh.rotation.y = -time * 1.7;
 
-                // 파티클 루프 및 폭발력 반영 가속
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
                     positions[i*3] += particleVelocities[i].x + Math.sin(time * 2 + i) * 0.008;
