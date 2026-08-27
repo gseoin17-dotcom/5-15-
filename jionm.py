@@ -589,7 +589,6 @@ with right_col:
   status = st.session_state.status
   current_vol = st.session_state.bgm_vol / 100.0
 
-  # 원본 브금(2번째 파일의 오디오 태그/플레이어 소스)을 삽입한 Three.js 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -684,7 +683,6 @@ with right_col:
         <div id="successFlashOverlay"></div>
         <div id="container"></div>
 
-        <!-- 2번째 파일(원본 브금)을 재생하기 위한 오디오 태그 삽입 -->
         <audio id="bgmAudio" loop autoplay>
             <source src="https://od.lk/s/OTJfNDcwNDIzMzlf/mixkit-game-level-music-689.mp3" type="audio/mp3">
         </audio>
@@ -700,7 +698,6 @@ with right_col:
         </div>
 
         <script>
-            // --- 원본 브금(2번째 브금) 볼륨 및 자동재생 연동 ---
             const audio = document.getElementById('bgmAudio');
             audio.volume = {current_vol};
 
@@ -716,7 +713,7 @@ with right_col:
 
             setTimeout(() => {{
                 playAudio();
-            }, 300);
+            }}, 300);
 
             const status = "{status}";
             const statusText = document.getElementById('statusText');
