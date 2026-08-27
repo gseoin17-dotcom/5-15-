@@ -75,7 +75,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (성공, 파괴, 하락)
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -297,7 +297,6 @@ SMELL_DB = {
     },
 }
 
-# (성공 확률, 파괴 확률, 하락 확률) -> 남은 잔여 확률은 '유지' 확률이 됨
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0),
@@ -334,7 +333,7 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화 (초기 자본 100만 원)
+# 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state:
   st.session_state.level = 0
@@ -365,9 +364,6 @@ def enhance():
   st.session_state.money -= cost
 
   sp, dp, down_p = PROB_TABLE[curr]
-  # 남은 확률은 단계 유지 확률
-  hold_p = max(0.0, 100.0 - (sp + dp + down_p))
-
   r = random.uniform(0, 100)
 
   if r < sp:
@@ -392,7 +388,6 @@ def enhance():
     st.session_state.status = "FAILED"
     st.session_state.tears += 1
   else:
-    # 단계 유지
     st.session_state.status = "HOLD"
     st.session_state.tears += 1
 
@@ -526,15 +521,19 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n현재 가격: {format_gold(current_shield_cost)}"
+        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f" {format_gold(current_shield_cost)}"
     )
 
+    can_buy_shield = st.session_state.level >= 20 and st.session_state.shield < 2
     if st.button(
         "방지권 구매 (최대 2개)",
         use_container_width=True,
-        disabled=(st.session_state.shield >= 2),
+        disabled=not can_buy_shield,
     ):
-      if st.session_state.shield >= 2:
+      if st.session_state.level < 20:
+        st.warning("방지권은 20단계 이상부터 구매할 수 있습니다.")
+      elif st.session_state.shield >= 2:
         st.warning("방지권은 최대 2개까지만 보유할 수 있습니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
@@ -934,7 +933,6 @@ with b_col4:
     sp, dp, down_p = PROB_TABLE[st.session_state.level]
     hold_p = max(0.0, 100.0 - (sp + dp + down_p))
     crit_pct = int(CRITICAL_RATE * 100)
-    # 성공 / 크리 / 파괴 / 하락 / 유지 표시
     prob_str = f"성공:{sp}% (크리 {crit_pct}%)<br>파괴:{dp}% / 하락:{down_p}% / 유지:{hold_p:.1f}%"
   else:
     prob_str = "최고 단계 도달"
