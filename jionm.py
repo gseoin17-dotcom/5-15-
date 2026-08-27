@@ -119,7 +119,7 @@ if "tears" not in st.session_state: st.session_state.tears = 0
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
-# 5. 강화 및 판매 로직 (비용 차감 및 예외 처리 포함)
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
 def enhance():
     curr = st.session_state.level
@@ -130,7 +130,7 @@ def enhance():
         st.session_state.status = "NOT_ENOUGH_MONEY"
         return
         
-    st.session_state.money -= cost  # 강화 비용 차감
+    st.session_state.money -= cost
 
     if st.session_state.dev_mode:
         st.session_state.level += 1
@@ -327,35 +327,35 @@ with right_col:
                 background: rgba(239, 68, 68, 0.85);
                 box-shadow: inset 0 0 120px rgba(185, 28, 28, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }
+            }}
 
             #failFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.4);
                 box-shadow: inset 0 0 100px rgba(217, 119, 6, 0.7);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }
+            }}
 
             #shieldFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(59, 130, 246, 0.7);
                 box-shadow: inset 0 0 100px rgba(37, 99, 235, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }
+            }}
 
             #critFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(245, 158, 11, 0.85);
                 box-shadow: inset 0 0 120px rgba(217, 119, 6, 0.9);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }
+            }}
 
             #successFlashOverlay {{
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: rgba(16, 185, 129, 0.5);
                 box-shadow: inset 0 0 100px rgba(5, 150, 105, 0.8);
                 z-index: 999; pointer-events: none; opacity: 0;
-            }
+            }}
 
             .cinematic-ui {{
                 position: absolute;
@@ -366,7 +366,7 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-            }
+            }}
 
             .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
