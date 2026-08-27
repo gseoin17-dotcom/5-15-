@@ -74,6 +74,8 @@ if "tears" not in st.session_state:
     st.session_state.tears = 0    
 if "use_shield" not in st.session_state:
     st.session_state.use_shield = False
+if "dev_mode" not in st.session_state:
+    st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
 # 4. 강화 / 판매 로직
@@ -82,6 +84,12 @@ def enhance():
     curr = st.session_state.level
     if curr >= 30: return
     
+    # 개발자 모드 켜진 경우 무조건 성공
+    if st.session_state.dev_mode:
+        st.session_state.level += 1
+        st.session_state.status = "SUCCESS"
+        return
+
     sp, fp, dp = PROB_TABLE[curr]
     r = random.uniform(0, 100)
     
@@ -114,7 +122,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 상단 대시보드
+# 5. 상단 대시보드 Style 및 현황
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -139,6 +147,13 @@ st.markdown("""
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    }
+    .ctrl-box {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 20px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -171,391 +186,387 @@ with col3:
 with col4:
     sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
     crit_pct = int(CRITICAL_RATE * 100)
+    prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
     st.markdown(f'''
         <div class="stat-card">
             <div class="stat-title">📊 성공 / ⚡크리티컬 / 파괴</div>
-            <div class="stat-value">{sp}% / <span style="color:#ffe600;">{crit_pct}%</span> / {dp}%</div>
+            <div class="stat-value" style="font-size: 16px;">{prob_str}</div>
         </div>
     ''', unsafe_allow_html=True)
 
 st.write("")
 
 # -----------------------------------------------------------------------------
-# 6. 상점 & 강화 실행 컨트롤 탭 (강화/판매 왼쪽으로 이동)
+# 6. 메인 레이아웃 (왼쪽 조작 패널 / 오른쪽 3D 스테이지)
 # -----------------------------------------------------------------------------
-tab1, tab2 = st.tabs(["🔥 3D 강화 무대", "🛒 지온의 비밀 상점"])
+left_col, right_col = st.columns([3, 7])
 
-with tab1:
-    btn_col1, btn_col2, btn_col3, _ = st.columns([2.5, 2.5, 3, 4])
-    with btn_col1:
-        if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
-            enhance()
-            st.rerun()
-    with btn_col2:
-        if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
-            sell()
-            st.rerun()
-    with btn_col3:
-        st.session_state.use_shield = st.checkbox("🛡️ 강화 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
+with left_col:
+    st.markdown("### 🎮 조작 컨트롤러")
+    
+    # 조작 버튼 그룹
+    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
+        enhance()
+        st.rerun()
+        
+    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
+        sell()
+        st.rerun()
 
-with tab2:
-    s_col1, s_col2 = st.columns(2)
-    with s_col1:
-        st.subheader("🛡️ 파괴 방지권 구매")
-        st.write("강화 실패 시 카드가 파괴되어 0단계가 되는 것을 1회 막아줍니다.")
-        if st.button("구매하기 (50,000 G)"):
+    st.write("---")
+    st.session_state.use_shield = st.checkbox("🛡️ 강화 시 파괴 방지권 자동 사용", value=st.session_state.use_shield)
+    
+    # 개발자 모드 토글 스위치
+    st.session_state.dev_mode = st.toggle("🛠️ 개발자 모드: 무조건 성공", value=st.session_state.dev_mode)
+    if st.session_state.dev_mode:
+        st.caption("⚠️ 개발자 테스트 모드가 활성화되어 모든 강화가 100% 성공합니다.")
+
+    st.write("---")
+    st.markdown("#### 🛒 상점 & 아이템")
+    
+    tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
+    with tab_shop1:
+        st.write("강화 실패 시 카드가 파괴되어 0단계가 되는 것을 막아줍니다.")
+        if st.button("구매 (50,000 G)", use_container_width=True):
             if st.session_state.money >= 50000:
                 st.session_state.money -= 50000
                 st.session_state.shield += 1
-                st.success("파괴 방지권 1개를 구매했습니다!")
+                st.success("파괴 방지권 1개 구매 완료!")
                 st.rerun()
             else:
                 st.error("골드가 부족합니다.")
-    
-    with s_col2:
-        st.subheader("💧 지온의 눈물 교환소")
-        st.write("강화 실패 시 쌓이는 눈물로 확정 강화권을 교환하세요.")
-        if st.button("100% 확정 1단계 상승 (눈물 15개)"):
+                
+    with tab_shop2:
+        st.write("강화 실패 시 쌓이는 눈물로 확정 상승시킵니다.")
+        if st.button("1단계 확정 상승 (눈물 15개)", use_container_width=True):
             if st.session_state.tears >= 15 and st.session_state.level < 30:
                 st.session_state.tears -= 15
                 st.session_state.level += 1
                 st.session_state.status = "SUCCESS"
-                st.success("지온의 눈물로 1단계 확정 강화 성공!")
+                st.success("1단계 확정 강화 성공!")
                 st.rerun()
             else:
-                st.error("눈물이 부족하거나 이미 최고 단계입니다.")
+                st.error("눈물이 부족하거나 최고 단계입니다.")
 
-# -----------------------------------------------------------------------------
-# 7. 3D Render & 오버레이 연출 (입체 아티팩트 코어 카드 + 워프 터널 배경)
-# -----------------------------------------------------------------------------
-curr_data = SMELL_DB[st.session_state.level]
-card_color = curr_data['color']
-card_title = curr_data['name']
-card_desc = curr_data['desc']
-card_price = f"{curr_data['price']:,} G"
-tier = curr_data['tier']
-status = st.session_state.status
+with right_col:
+    # -----------------------------------------------------------------------------
+    # 7. 3D Render & 오버레이 연출 (입체 아티팩트 코어 카드 + 워프 터널 배경)
+    # -----------------------------------------------------------------------------
+    curr_data = SMELL_DB[st.session_state.level]
+    card_color = curr_data['color']
+    card_title = curr_data['name']
+    card_desc = curr_data['desc']
+    card_price = f"{curr_data['price']:,} G"
+    tier = curr_data['tier']
+    status = st.session_state.status
 
-three_js_code = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
-        #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+    three_js_code = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ margin: 0; overflow: hidden; background: #000; font-family: 'Black Han Sans', 'Impact', sans-serif; }}
+            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-        #redFlashOverlay {{
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255, 0, 0, 0.85);
-            box-shadow: inset 0 0 100px rgba(139, 0, 0, 0.9);
-            z-index: 999; pointer-events: none; opacity: 0;
-        }}
+            #redFlashOverlay {{
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(255, 0, 0, 0.85);
+                box-shadow: inset 0 0 100px rgba(139, 0, 0, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
 
-        #critFlashOverlay {{
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255, 215, 0, 0.85);
-            box-shadow: inset 0 0 100px rgba(255, 140, 0, 0.9);
-            z-index: 999; pointer-events: none; opacity: 0;
-        }}
+            #critFlashOverlay {{
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(255, 215, 0, 0.85);
+                box-shadow: inset 0 0 100px rgba(255, 140, 0, 0.9);
+                z-index: 999; pointer-events: none; opacity: 0;
+            }}
 
-        .cinematic-ui {{
-            position: absolute;
-            bottom: 100px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            text-align: center;
-            z-index: 100;
-            pointer-events: none;
-        }}
+            .cinematic-ui {{
+                position: absolute;
+                bottom: 80px; 
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                text-align: center;
+                z-index: 100;
+                pointer-events: none;
+            }}
 
-        .title-tier-1 {{ font-size: 48px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
-        .title-tier-2 {{ font-size: 54px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
-        .title-tier-3 {{ font-size: 60px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
-        .title-tier-4 {{ font-size: 66px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
-        .title-tier-5 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
-        .title-tier-6 {{ font-size: 80px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+            .title-tier-1 {{ font-size: 40px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
+            .title-tier-2 {{ font-size: 46px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 52px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 58px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 64px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
-        @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.05); }} }}
-        @keyframes shake {{ 0% {{ transform: translate(2px, 2px) rotate(0deg); }} 100% {{ transform: translate(-2px, -2px) rotate(-1deg); }} }}
-        @keyframes superShake {{ 0% {{ transform: translate(3px, 1px); }} 50% {{ transform: translate(-3px, -2px); }} 100% {{ transform: translate(2px, -1px); }} }}
-        @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.05); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px) rotate(0deg); }} 100% {{ transform: translate(-2px, -2px) rotate(-1deg); }} }}
+            @keyframes superShake {{ 0% {{ transform: translate(3px, 1px); }} 50% {{ transform: translate(-3px, -2px); }} 100% {{ transform: translate(2px, -1px); }} }}
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-        .status-header {{ font-size: 26px; font-weight: bold; margin-bottom: 6px; letter-spacing: 3px; }}
-        .desc-text {{ font-size: 17px; color: #e2e8f0; margin-top: 6px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
-        .price-text {{ font-size: 22px; font-weight: bold; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-</head>
-<body>
-    <div id="redFlashOverlay"></div>
-    <div id="critFlashOverlay"></div>
-    <div id="container"></div>
+            .status-header {{ font-size: 22px; font-weight: bold; margin-bottom: 6px; letter-spacing: 3px; }}
+            .desc-text {{ font-size: 16px; color: #e2e8f0; margin-top: 6px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
+            .price-text {{ font-size: 20px; font-weight: bold; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    </head>
+    <body>
+        <div id="redFlashOverlay"></div>
+        <div id="critFlashOverlay"></div>
+        <div id="container"></div>
 
-    <div class="cinematic-ui">
-        <div id="statusText" class="status-header">READY</div>
-        <div class="title-tier-{tier}">
-            {card_title}
+        <div class="cinematic-ui">
+            <div id="statusText" class="status-header">READY</div>
+            <div class="title-tier-{tier}">
+                {card_title}
+            </div>
+            <div class="desc-text">"{card_desc}"</div>
+            <div class="price-text">예상 가치: {card_price}</div>
         </div>
-        <div class="desc-text">"{card_desc}"</div>
-        <div class="price-text">예상 가치: {card_price}</div>
-    </div>
 
-    <script>
-        const status = "{status}";
-        const statusText = document.getElementById('statusText');
-        const flashOverlay = document.getElementById('redFlashOverlay');
-        const critOverlay = document.getElementById('critFlashOverlay');
-        
-        if (status === "CRITICAL") {{
-            statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
-            statusText.style.color = "#ffe600";
-        }} else if (status === "SUCCESS") {{
-            statusText.innerText = "✨ ENHANCE SUCCESS ✨";
-            statusText.style.color = "#10b981";
-        }} else if (status === "SHIELD_SAVED") {{
-            statusText.innerText = "🛡️ SHIELD PROTECTED! 🛡️";
-            statusText.style.color = "#3b82f6";
-        }} else if (status === "DESTROYED") {{
-            statusText.innerText = "💥 DESTROYED 💥";
-            statusText.style.color = "#ef4444";
-        }} else if (status === "FAILED") {{
-            statusText.innerText = "🔻 ENHANCE FAILED 🔻";
-            statusText.style.color = "#f59e0b";
-        }}
-
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x020208, 0.015);
-
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.2, 9);
-
-        const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.getElementById('container').appendChild(renderer.domElement);
-
-        // 조명 세팅
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
-        const spotLight = new THREE.SpotLight("{card_color}", 8);
-        spotLight.position.set(0, 12, 8);
-        scene.add(spotLight);
-
-        const blueLight = new THREE.PointLight(0x00f0ff, 4, 20);
-        blueLight.position.set(-5, -2, 3);
-        scene.add(blueLight);
-
-        const purpleLight = new THREE.PointLight(0xff00ea, 4, 20);
-        purpleLight.position.set(5, 5, -2);
-        scene.add(purpleLight);
-
-        // -----------------------------------------------------------------
-        // [배경 연출] 개쩌는 사이버 워프 터널 & 공간 그리드
-        // -----------------------------------------------------------------
-        const tunnelGroup = new THREE.Group();
-        const tunnelGeo = new THREE.CylinderGeometry(8, 8, 120, 16, 40, true);
-        const tunnelMat = new THREE.MeshBasicMaterial({{
-            color: 0x111827,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.15
-        }});
-        const tunnel = new THREE.Mesh(tunnelGeo, tunnelMat);
-        tunnel.rotation.x = Math.PI / 2;
-        tunnelGroup.add(tunnel);
-        scene.add(tunnelGroup);
-
-        // 바닥 사이버 그리드
-        const gridHelper = new THREE.GridHelper(60, 40, 0x00f0ff, 0x1e1b4b);
-        gridHelper.position.y = -4;
-        scene.add(gridHelper);
-
-        // -----------------------------------------------------------------
-        // [카드 모델링] 입체형 SF 아티팩트 구조
-        // -----------------------------------------------------------------
-        const cardGroup = new THREE.Group();
-
-        // 1. 외부 아머 프레임 (외곽)
-        const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
-        const frameMat = new THREE.MeshStandardMaterial({{ 
-            color: 0x1e293b, 
-            metalness: 0.9, 
-            roughness: 0.2 
-        }});
-        const frame = new THREE.Mesh(frameGeo, frameMat);
-        cardGroup.add(frame);
-
-        // 2. 메인 바디 (색상 본체)
-        const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
-        const bodyMat = new THREE.MeshStandardMaterial({{ 
-            color: "{card_color}", 
-            metalness: 0.8, 
-            roughness: 0.15 
-        }});
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        cardGroup.add(body);
-
-        // 3. 네온 발광 테두리
-        const edgeGeo = new THREE.BoxGeometry(2.7, 4.1, 0.24);
-        const edgeMat = new THREE.MeshBasicMaterial({{
-            color: "{card_color}",
-            wireframe: true
-        }});
-        const edge = new THREE.Mesh(edgeGeo, edgeMat);
-        cardGroup.add(edge);
-
-        // 4. 중앙 입체 코어 아티팩트 (발광 다이아몬드)
-        const coreGeo = new THREE.OctahedronGeometry(0.55, 0);
-        const coreMat = new THREE.MeshStandardMaterial({{
-            color: 0xffffff,
-            emissive: "{card_color}",
-            emissiveIntensity: 0.8,
-            roughness: 0.1,
-            metalness: 0.9
-        }});
-        const core = new THREE.Mesh(coreGeo, coreMat);
-        core.position.z = 0.16;
-        cardGroup.add(core);
-
-        // 5. 회전하는 마법진 링
-        const ringGeo = new THREE.TorusGeometry(1.2, 0.02, 16, 100);
-        const ringMat = new THREE.MeshBasicMaterial({{ color: 0x00f0ff, transparent: true, opacity: 0.6 }});
-        const ring1 = new THREE.Mesh(ringGeo, ringMat);
-        ring1.position.z = 0.15;
-        cardGroup.add(ring1);
-
-        scene.add(cardGroup);
-
-        // 파티클 시스템
-        const particleCount = {tier * 200 + 100};
-        const pGeo = new THREE.BufferGeometry();
-        const pPos = new Float32Array(particleCount * 3);
-
-        for(let i=0; i<particleCount*3; i+=3) {{
-            pPos[i] = (Math.random() - 0.5) * 20;
-            pPos[i+1] = Math.random() * 12 - 3;
-            pPos[i+2] = (Math.random() - 0.5) * 20;
-        }}
-
-        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-        const pMat = new THREE.PointsMaterial({{ color: "{card_color}", size: 0.1, transparent: true, opacity: 0.8 }});
-        const particles = new THREE.Points(pGeo, pMat);
-        scene.add(particles);
-
-        let explosionParticles = null;
-        let explosionVelocities = [];
-
-        // 애니메이션 연출
-        if (status === "CRITICAL") {{
-            gsap.fromTo(critOverlay, 
-                {{ opacity: 0.9 }}, 
-                {{ opacity: 0, duration: 1.0, ease: "power2.out" }}
-            );
-            gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
-            gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
-        }} else if (status === "DESTROYED") {{
-            gsap.fromTo(flashOverlay, 
-                {{ opacity: 0.85 }}, 
-                {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
-            );
-
-            gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{
-                camera.position.set(0, 1.2, 9);
-            }}}});
-
-            gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.25, ease: "power4.in" }});
-
-            const expCount = 600;
-            const expGeo = new THREE.BufferGeometry();
-            const expPos = new Float32Array(expCount * 3);
-
-            for (let i = 0; i < expCount; i++) {{
-                expPos[i * 3] = 0;
-                expPos[i * 3 + 1] = 0.8;
-                expPos[i * 3 + 2] = 0;
-
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos((Math.random() * 2) - 1);
-                const speed = Math.random() * 0.35 + 0.1;
-
-                explosionVelocities.push({{
-                    x: speed * Math.sin(phi) * Math.cos(theta),
-                    y: speed * Math.sin(phi) * Math.sin(theta),
-                    z: speed * Math.cos(phi)
-                }});
-            }}
-
-            expGeo.setAttribute('position', new THREE.BufferAttribute(expPos, 3));
-            const expMat = new THREE.PointsMaterial({{
-                color: 0xff0055,
-                size: 0.22,
-                transparent: true,
-                opacity: 1.0
-            }});
-
-            explosionParticles = new THREE.Points(expGeo, expMat);
-            scene.add(explosionParticles);
-        }} else if (status === "SUCCESS") {{
-            gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
-            gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
-        }}
-
-        const clock = new THREE.Clock();
-
-        function animate() {{
-            requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
-
-            // 워프 터널 속도감 연출
-            tunnel.rotation.z += 0.003;
-            gridHelper.position.z = (time * 2) % 1.5;
-
-            // 카드 회전 및 오버레이 애니메이션
-            cardGroup.rotation.y = Math.sin(time * 0.8) * 0.3;
-            cardGroup.position.y = Math.sin(time * 1.8) * 0.15 + 0.8;
+        <script>
+            const status = "{status}";
+            const statusText = document.getElementById('statusText');
+            const flashOverlay = document.getElementById('redFlashOverlay');
+            const critOverlay = document.getElementById('critFlashOverlay');
             
-            core.rotation.x = time * 2;
-            core.rotation.y = time * 2;
-            ring1.rotation.z = -time * 1.5;
-
-            // 배경 파티클 유동
-            const pos = pGeo.attributes.position.array;
-            for(let i=1; i<particleCount*3; i+=3) {{
-                pos[i] -= 0.05;
-                if(pos[i] < -3) pos[i] = 9;
-            }}
-            pGeo.attributes.position.needsUpdate = true;
-
-            // 파괴 파티클 확산
-            if (explosionParticles) {{
-                const ePos = explosionParticles.geometry.attributes.position.array;
-                for (let i = 0; i < explosionVelocities.length; i++) {{
-                    ePos[i * 3] += explosionVelocities[i].x;
-                    ePos[i * 3 + 1] += explosionVelocities[i].y;
-                    ePos[i * 3 + 2] += explosionVelocities[i].z;
-                }}
-                explosionParticles.geometry.attributes.position.needsUpdate = true;
-                explosionParticles.material.opacity *= 0.95;
+            if (status === "CRITICAL") {{
+                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusText.style.color = "#ffe600";
+            }} else if (status === "SUCCESS") {{
+                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
+                statusText.style.color = "#10b981";
+            }} else if (status === "SHIELD_SAVED") {{
+                statusText.innerText = "🛡️ SHIELD PROTECTED! 🛡️";
+                statusText.style.color = "#3b82f6";
+            }} else if (status === "DESTROYED") {{
+                statusText.innerText = "💥 DESTROYED 💥";
+                statusText.style.color = "#ef4444";
+            }} else if (status === "FAILED") {{
+                statusText.innerText = "🔻 ENHANCE FAILED 🔻";
+                statusText.style.color = "#f59e0b";
             }}
 
-            renderer.render(scene, camera);
-        }}
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x020208, 0.015);
 
-        animate();
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 1.2, 9);
 
-        window.addEventListener('resize', () => {{
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
+            const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
-        }});
-    </script>
-</body>
-</html>
-"""
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('container').appendChild(renderer.domElement);
 
-components.html(three_js_code, height=650, scrolling=False)
+            // 조명 세팅
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const spotLight = new THREE.SpotLight("{card_color}", 8);
+            spotLight.position.set(0, 12, 8);
+            scene.add(spotLight);
+
+            const blueLight = new THREE.PointLight(0x00f0ff, 4, 20);
+            blueLight.position.set(-5, -2, 3);
+            scene.add(blueLight);
+
+            const purpleLight = new THREE.PointLight(0xff00ea, 4, 20);
+            purpleLight.position.set(5, 5, -2);
+            scene.add(purpleLight);
+
+            // 사이버 워프 터널
+            const tunnelGroup = new THREE.Group();
+            const tunnelGeo = new THREE.CylinderGeometry(8, 8, 120, 16, 40, true);
+            const tunnelMat = new THREE.MeshBasicMaterial({{
+                color: 0x111827,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.15
+            }});
+            const tunnel = new THREE.Mesh(tunnelGeo, tunnelMat);
+            tunnel.rotation.x = Math.PI / 2;
+            tunnelGroup.add(tunnel);
+            scene.add(tunnelGroup);
+
+            // 바닥 사이버 그리드
+            const gridHelper = new THREE.GridHelper(60, 40, 0x00f0ff, 0x1e1b4b);
+            gridHelper.position.y = -4;
+            scene.add(gridHelper);
+
+            // 카드 모델링
+            const cardGroup = new THREE.Group();
+
+            const frameGeo = new THREE.BoxGeometry(2.9, 4.3, 0.2);
+            const frameMat = new THREE.MeshStandardMaterial({{ 
+                color: 0x1e293b, 
+                metalness: 0.9, 
+                roughness: 0.2 
+            }});
+            const frame = new THREE.Mesh(frameGeo, frameMat);
+            cardGroup.add(frame);
+
+            const bodyGeo = new THREE.BoxGeometry(2.6, 4.0, 0.22);
+            const bodyMat = new THREE.MeshStandardMaterial({{ 
+                color: "{card_color}", 
+                metalness: 0.8, 
+                roughness: 0.15 
+            }});
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            cardGroup.add(body);
+
+            const edgeGeo = new THREE.BoxGeometry(2.7, 4.1, 0.24);
+            const edgeMat = new THREE.MeshBasicMaterial({{
+                color: "{card_color}",
+                wireframe: true
+            }});
+            const edge = new THREE.Mesh(edgeGeo, edgeMat);
+            cardGroup.add(edge);
+
+            const coreGeo = new THREE.OctahedronGeometry(0.55, 0);
+            const coreMat = new THREE.MeshStandardMaterial({{
+                color: 0xffffff,
+                emissive: "{card_color}",
+                emissiveIntensity: 0.8,
+                roughness: 0.1,
+                metalness: 0.9
+            }});
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            core.position.z = 0.16;
+            cardGroup.add(core);
+
+            const ringGeo = new THREE.TorusGeometry(1.2, 0.02, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({{ color: 0x00f0ff, transparent: true, opacity: 0.6 }});
+            const ring1 = new THREE.Mesh(ringGeo, ringMat);
+            ring1.position.z = 0.15;
+            cardGroup.add(ring1);
+
+            scene.add(cardGroup);
+
+            // 파티클
+            const particleCount = {tier * 200 + 100};
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(particleCount * 3);
+
+            for(let i=0; i<particleCount*3; i+=3) {{
+                pPos[i] = (Math.random() - 0.5) * 20;
+                pPos[i+1] = Math.random() * 12 - 3;
+                pPos[i+2] = (Math.random() - 0.5) * 20;
+            }}
+
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({{ color: "{card_color}", size: 0.1, transparent: true, opacity: 0.8 }});
+            const particles = new THREE.Points(pGeo, pMat);
+            scene.add(particles);
+
+            let explosionParticles = null;
+            let explosionVelocities = [];
+
+            // 애니메이션 연출
+            if (status === "CRITICAL") {{
+                gsap.fromTo(critOverlay, 
+                    {{ opacity: 0.9 }}, 
+                    {{ opacity: 0, duration: 1.0, ease: "power2.out" }}
+                );
+                gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
+            }} else if (status === "DESTROYED") {{
+                gsap.fromTo(flashOverlay, 
+                    {{ opacity: 0.85 }}, 
+                    {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
+                );
+
+                gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{
+                    camera.position.set(0, 1.2, 9);
+                }}}});
+
+                gsap.to(cardGroup.scale, {{ x: 0, y: 0, z: 0, duration: 0.25, ease: "power4.in" }});
+
+                const expCount = 600;
+                const expGeo = new THREE.BufferGeometry();
+                const expPos = new Float32Array(expCount * 3);
+
+                for (let i = 0; i < expCount; i++) {{
+                    expPos[i * 3] = 0;
+                    expPos[i * 3 + 1] = 0.8;
+                    expPos[i * 3 + 2] = 0;
+
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    const speed = Math.random() * 0.35 + 0.1;
+
+                    explosionVelocities.push({{
+                        x: speed * Math.sin(phi) * Math.cos(theta),
+                        y: speed * Math.sin(phi) * Math.sin(theta),
+                        z: speed * Math.cos(phi)
+                    }});
+                }}
+
+                expGeo.setAttribute('position', new THREE.BufferAttribute(expPos, 3));
+                const expMat = new THREE.PointsMaterial({{
+                    color: 0xff0055,
+                    size: 0.22,
+                    transparent: true,
+                    opacity: 1.0
+                }});
+
+                explosionParticles = new THREE.Points(expGeo, expMat);
+                scene.add(explosionParticles);
+            }} else if (status === "SUCCESS") {{
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
+            }}
+
+            const clock = new THREE.Clock();
+
+            function animate() {{
+                requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+
+                tunnel.rotation.z += 0.003;
+                gridHelper.position.z = (time * 2) % 1.5;
+
+                cardGroup.rotation.y = Math.sin(time * 0.8) * 0.3;
+                cardGroup.position.y = Math.sin(time * 1.8) * 0.15 + 0.8;
+                
+                core.rotation.x = time * 2;
+                core.rotation.y = time * 2;
+                ring1.rotation.z = -time * 1.5;
+
+                const pos = pGeo.attributes.position.array;
+                for(let i=1; i<particleCount*3; i+=3) {{
+                    pos[i] -= 0.05;
+                    if(pos[i] < -3) pos[i] = 9;
+                }}
+                pGeo.attributes.position.needsUpdate = true;
+
+                if (explosionParticles) {{
+                    const ePos = explosionParticles.geometry.attributes.position.array;
+                    for (let i = 0; i < explosionVelocities.length; i++) {{
+                        ePos[i * 3] += explosionVelocities[i].x;
+                        ePos[i * 3 + 1] += explosionVelocities[i].y;
+                        ePos[i * 3 + 2] += explosionVelocities[i].z;
+                    }}
+                    explosionParticles.geometry.attributes.position.needsUpdate = true;
+                    explosionParticles.material.opacity *= 0.95;
+                }}
+
+                renderer.render(scene, camera);
+            }}
+
+            animate();
+
+            window.addEventListener('resize', () => {{
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }});
+        </script>
+    </body>
+    </html>
+    """
+
+    components.html(three_js_code, height=650, scrolling=False)
