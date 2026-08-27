@@ -12,7 +12,28 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 게임 데이터베이스 및 강화 확률표
+# 2. 골드 단위 변환 함수
+# -----------------------------------------------------------------------------
+def format_gold(amount):
+    if amount == 0:
+        return "0 G"
+    
+    units = ["", "만", "억", "조", "경", "해"]
+    result = []
+    
+    # 10000 단위로 자르기
+    unit_idx = 0
+    while amount > 0 and unit_idx < len(units):
+        remainder = amount % 10000
+        if remainder > 0:
+            result.insert(0, f"{remainder:,}{units[unit_idx]}")
+        amount //= 10000
+        unit_idx += 1
+        
+    return "".join(result) + " G"
+
+# -----------------------------------------------------------------------------
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
@@ -32,7 +53,7 @@ SMELL_DB = {
     14: {"name": "14단계 : 신성한 자이온냄새", "desc": "마음이 경건해지며 흙과 하나가 되는 기분.", "price": 5000000, "color": "#e53e3e", "tier": 3},
     15: {"name": "15단계 : 신화급 지온냄새", "desc": "신들이 세계를 창조할 때 맡았다는 향.", "price": 12000000, "color": "#9b2c2c", "tier": 3},
     16: {"name": "16단계 : 우주관통 자이온냄새", "desc": "성층권을 뚫고 우주선까지 퍼져나간다.", "price": 30000000, "color": "#00f0ff", "tier": 4},
-    17: {"name": "17단계 : 차원균열 지온냄새", "desc": "평행세계의 흙냄새까지 끌어당긴다.", "price": 75000000, "color": "#ff00ea", "tier": 4},
+    17: {"name": "17단계 : 차원균열 자이온냄새", "desc": "평행세계의 흙냄새까지 끌어당긴다.", "price": 75000000, "color": "#ff00ea", "tier": 4},
     18: {"name": "18단계 : Absolute 자이온냄새", "desc": "만물의 요소를 지온 입자로 바꿔버린다.", "price": 180000000, "color": "#ffe600", "tier": 4},
     19: {"name": "19단계 : 초월적 지온냄새", "desc": "인간의 감각으로는 수용 불가능한 향기.", "price": 450000000, "color": "#ff0055", "tier": 4},
     20: {"name": "20단계 : 자이온맘의 포근한 집밥 냄새", "desc": "자이온맘의 강림! 따스하고 구수한 냄새.", "price": 1000000000, "color": "#ffaa00", "tier": 4},
@@ -60,7 +81,7 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 
 # -----------------------------------------------------------------------------
-# 3. 세션 상태 초기화
+# 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state: st.session_state.level = 0
 if "money" not in st.session_state: st.session_state.money = 10000
@@ -70,7 +91,7 @@ if "tears" not in st.session_state: st.session_state.tears = 0
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
 
 # -----------------------------------------------------------------------------
-# 4. 강화 로직
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
 def enhance():
     curr = st.session_state.level
@@ -113,7 +134,7 @@ def sell():
     st.session_state.status = "READY"
 
 # -----------------------------------------------------------------------------
-# 5. 테마 CSS
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
@@ -178,7 +199,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 6. 메인 2칼럼 레이아웃
+# 7. 메인 2칼럼 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([3, 7])
 
@@ -198,10 +219,7 @@ with left_col:
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.markdown("<h4 style='margin-top:0; font-size: 16px; color:#e2e8f0;'>⚙️ 모드 설정</h4>", unsafe_allow_html=True)
-    st.caption("🛡️ 파괴 방지권은 보유 시 파괴 실패 상황에서 자동으로 차감되어 방어됩니다.")
     st.session_state.dev_mode = st.toggle("🛠️ 개발자 테스트 모드 (100% 성공)", value=st.session_state.dev_mode)
-    if st.session_state.dev_mode:
-        st.caption("⚠️ 치트 모드가 활성화되었습니다.")
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
@@ -235,13 +253,13 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 7. 3D 메인 연출 영역 (Three.js)
+    # 8. 3D 메인 연출 영역 (Three.js)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
     card_desc = curr_data['desc']
-    card_price = f"{curr_data['price']:,} G"
+    card_price = format_gold(curr_data['price'])
     tier = curr_data['tier']
     status = st.session_state.status
 
@@ -518,7 +536,7 @@ with right_col:
     components.html(three_js_code, height=560, scrolling=False)
 
     # -----------------------------------------------------------------------------
-    # 8. 하단 스탯 대시보드
+    # 9. 하단 스탯 대시보드
     # -----------------------------------------------------------------------------
     b_col1, b_col2, b_col3 = st.columns([1, 1, 1])
 
@@ -526,7 +544,7 @@ with right_col:
         st.markdown(f'''
             <div class="stat-card">
                 <div class="stat-title">💳 보유 골드</div>
-                <div class="stat-value">{st.session_state.money:,} G</div>
+                <div class="stat-value">{format_gold(st.session_state.money)}</div>
             </div>
         ''', unsafe_allow_html=True)
 
@@ -536,7 +554,7 @@ with right_col:
                 <div class="stat-title">💧 지온의 눈물</div>
                 <div class="stat-value">{st.session_state.tears} 개</div>
             </div>
-        ''', unsafe_allow_html=True)
+        ''', unsafe_allow_html=Thread if 'Thread' in globals() else True) # 안전장치 유지 위해 기본 마크다운 적용
 
     with b_col3:
         sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
