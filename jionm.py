@@ -84,8 +84,13 @@ def enhance():
     r = random.uniform(0, 100)
     
     if r < sp:
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
+        # 성공 시 15% 확률로 크리티컬(+2단계) 발동
+        if random.random() < 0.15 and curr + 2 <= 30:
+            st.session_state.level += 2
+            st.session_state.status = "CRITICAL"
+        else:
+            st.session_state.level += 1
+            st.session_state.status = "SUCCESS"
     elif r < (sp + dp):
         if st.session_state.use_shield and st.session_state.shield > 0:
             st.session_state.shield -= 1
@@ -219,7 +224,7 @@ with tab2:
                 st.error("눈물이 부족하거나 이미 최고 단계입니다.")
 
 # -----------------------------------------------------------------------------
-# 7. 3D Render & 전면 붉은 플래시 연출
+# 7. 3D Render & 오버레이 연출 (크리티컬 + 위치 상향 조정)
 # -----------------------------------------------------------------------------
 curr_data = SMELL_DB[st.session_state.level]
 card_color = curr_data['color']
@@ -251,9 +256,24 @@ three_js_code = f"""
             opacity: 0;
         }}
 
+        /* 화면 전체 크리티컬 황금 섬광 오버레이 */
+        #critFlashOverlay {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 215, 0, 0.85);
+            box-shadow: inset 0 0 100px rgba(255, 140, 0, 0.9);
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+        }}
+
+        /* 텍스트 위치를 위로 올리기 위해 bottom 값 수정 */
         .cinematic-ui {{
             position: absolute;
-            bottom: 30px;
+            bottom: 110px; 
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
@@ -262,27 +282,28 @@ three_js_code = f"""
             pointer-events: none;
         }}
 
-        .title-tier-1 {{ font-size: 52px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
-        .title-tier-2 {{ font-size: 58px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
-        .title-tier-3 {{ font-size: 64px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
-        .title-tier-4 {{ font-size: 70px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
-        .title-tier-5 {{ font-size: 76px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
-        .title-tier-6 {{ font-size: 85px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
+        .title-tier-1 {{ font-size: 48px; font-weight: 900; color: #10b981; text-shadow: 0 0 25px #10b981, 0 0 50px #047857; }}
+        .title-tier-2 {{ font-size: 54px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b, 0 0 60px #d97706; letter-spacing: 1px; }}
+        .title-tier-3 {{ font-size: 60px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444, 0 0 70px #b91c1c; animation: pulse 1s infinite alternate; }}
+        .title-tier-4 {{ font-size: 66px; font-weight: 900; color: #a855f7; text-shadow: 0 0 25px #a855f7, 0 0 50px #a855f7, 0 0 80px #7e22ce; letter-spacing: 2px; }}
+        .title-tier-5 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ff007f, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff007f); animation: shake 0.5s infinite alternate; }}
+        .title-tier-6 {{ font-size: 80px; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite, superShake 0.1s infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
         @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.05); }} }}
         @keyframes shake {{ 0% {{ transform: translate(2px, 2px) rotate(0deg); }} 100% {{ transform: translate(-2px, -2px) rotate(-1deg); }} }}
         @keyframes superShake {{ 0% {{ transform: translate(3px, 1px); }} 50% {{ transform: translate(-3px, -2px); }} 100% {{ transform: translate(2px, -1px); }} }}
         @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-        .status-header {{ font-size: 28px; font-weight: bold; margin-bottom: 8px; letter-spacing: 3px; }}
-        .desc-text {{ font-size: 18px; color: #e2e8f0; margin-top: 10px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
-        .price-text {{ font-size: 24px; font-weight: bold; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
+        .status-header {{ font-size: 26px; font-weight: bold; margin-bottom: 6px; letter-spacing: 3px; }}
+        .desc-text {{ font-size: 17px; color: #e2e8f0; margin-top: 6px; font-family: sans-serif; text-shadow: 0 0 10px #000; }}
+        .price-text {{ font-size: 22px; font-weight: bold; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 15px rgba(251,191,36,0.8); font-family: sans-serif; }}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <div id="redFlashOverlay"></div>
+    <div id="critFlashOverlay"></div>
     <div id="container"></div>
 
     <div class="cinematic-ui">
@@ -298,8 +319,12 @@ three_js_code = f"""
         const status = "{status}";
         const statusText = document.getElementById('statusText');
         const flashOverlay = document.getElementById('redFlashOverlay');
+        const critOverlay = document.getElementById('critFlashOverlay');
         
-        if (status === "SUCCESS") {{
+        if (status === "CRITICAL") {{
+            statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+            statusText.style.color = "#ffe600";
+        }} else if (status === "SUCCESS") {{
             statusText.innerText = "✨ ENHANCE SUCCESS ✨";
             statusText.style.color = "#10b981";
         }} else if (status === "SHIELD_SAVED") {{
@@ -368,15 +393,22 @@ three_js_code = f"""
         let explosionParticles = null;
         let explosionVelocities = [];
 
-        // 💥 파괴(DESTROYED) 시 전체 화면 붉은 플래시 효과 실행
-        if (status === "DESTROYED") {{
-            // 붉은 화면 섬광 애니메이션 (불투명도 0.85 -> 0)
+        // ⚡ 크리티컬(CRITICAL) 시 황금 섬광 연출
+        if (status === "CRITICAL") {{
+            gsap.fromTo(critOverlay, 
+                {{ opacity: 0.9 }}, 
+                {{ opacity: 0, duration: 1.0, ease: "power2.out" }}
+            );
+            gsap.fromTo(camera.position, {{ z: 3 }}, {{ z: 9, duration: 1.5, ease: "bounce.out" }});
+            gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 4 }}, {{ y: 0, duration: 1.5, ease: "power3.out" }});
+        }}
+        // 💥 파괴(DESTROYED) 시 전체 화면 붉은 플래시 효과
+        else if (status === "DESTROYED") {{
             gsap.fromTo(flashOverlay, 
                 {{ opacity: 0.85 }}, 
                 {{ opacity: 0, duration: 1.2, ease: "power2.out" }}
             );
 
-            // 화면 강렬한 셰이크
             gsap.to(camera.position, {{ x: 0.4, y: 1.6, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{
                 camera.position.set(0, 1.2, 9);
             }}}});
@@ -389,7 +421,7 @@ three_js_code = f"""
 
             for (let i = 0; i < expCount; i++) {{
                 expPos[i * 3] = 0;
-                expPos[i * 3 + 1] = 0.3;
+                expPos[i * 3 + 1] = 0.8;
                 expPos[i * 3 + 2] = 0;
 
                 const theta = Math.random() * Math.PI * 2;
@@ -425,7 +457,8 @@ three_js_code = f"""
             const time = clock.getElapsedTime();
 
             cardGroup.rotation.y = Math.sin(time * 0.8) * 0.25;
-            cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.3;
+            // 카드를 화면 위쪽에 더 가깝게 위치 조정
+            cardGroup.position.y = Math.sin(time * 1.8) * 0.12 + 0.8;
 
             const pos = pGeo.attributes.position.array;
             for(let i=1; i<particleCount*3; i+=3) {{
