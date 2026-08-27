@@ -525,7 +525,7 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 2개 제한)\n(20단계 이상부터 구매 가능)\n현재 가격:"
+        f"파괴 방지권 \n(20단계 이상부터 구매 가능)\n현재 가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
