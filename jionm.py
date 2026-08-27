@@ -345,8 +345,8 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "bgm_vol" not in st.session_state:
-  st.session_state.bgm_vol = 30  # 기본 볼륨 30%
+if "sfx_vol" not in st.session_state:
+  st.session_state.sfx_vol = 50  # 효과음 볼륨 기본 50%
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -517,18 +517,18 @@ with left_col:
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
-  # BGM 설정 패널
+  # 효과음 볼륨 조절 패널
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🎵 BGM"
-      " 플레이어</h4>",
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🔊 효과음"
+      " 설정</h4>",
       unsafe_allow_html=True,
   )
-  bgm_vol = st.slider(
-      "브금 볼륨 조절", 0, 100, st.session_state.bgm_vol, key="slider_bgm_vol"
+  sfx_vol = st.slider(
+      "효과음 볼륨", 0, 100, st.session_state.sfx_vol, key="slider_sfx_vol"
   )
-  if bgm_vol != st.session_state.bgm_vol:
-    st.session_state.bgm_vol = bgm_vol
+  if sfx_vol != st.session_state.sfx_vol:
+    st.session_state.sfx_vol = sfx_vol
     st.rerun()
   st.markdown("</div>", unsafe_allow_html=True)
 
@@ -587,9 +587,9 @@ with right_col:
   current_cost = format_gold(get_enhance_cost(st.session_state.level))
   tier = curr_data["tier"]
   status = st.session_state.status
-  current_vol = st.session_state.bgm_vol / 100.0
+  current_sfx_vol = st.session_state.sfx_vol / 100.0
 
-  # Three.js 렌더링 및 HTML5 Audio BGM 플레이어 탑재 컴포넌트
+  # Three.js 렌더링 및 Web Audio API 기반 상태별 SFX 효과음 생성 컴포넌트
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -676,12 +676,6 @@ with right_col:
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
-        <!-- 🎵 BGM 오디오 요소 (원하시는 mp3 링크로 교체하세요) -->
-        <audio id="bgmAudio" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-
         <div id="redFlashOverlay"></div>
         <div id="failFlashOverlay"></div>
         <div id="holdFlashOverlay"></div>
@@ -701,26 +695,124 @@ with right_col:
         </div>
 
         <script>
-            // --- BGM 볼륨 및 자동 재생 연동 ---
-            const bgmAudio = document.getElementById('bgmAudio');
-            bgmAudio.volume = {current_vol};
+            // --- Web Audio API를 활용한 SFX 효과음 시스템 ---
+            const sfxVol = {current_sfx_vol};
+            let audioCtx = null;
 
-            function playBGM() {{
-                bgmAudio.play().catch(error => {{
-                    console.log("Autoplay blocked or waiting for user interaction:", error);
-                }});
+            function initAudio() {{
+                if (!audioCtx) {{
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }}
+                if (audioCtx.state === 'suspended') {{
+                    audioCtx.resume();
+                }}
             }}
 
-            // 첫 화면 클릭 시 브금이 확실히 재생되도록 유도
-            window.addEventListener('pointerdown', () => {{
-                playBGM();
-            }}, {{ once: true }});
+            function playSound(type) {{
+                if (sfxVol <= 0) return;
+                initAudio();
+                if (!audioCtx) return;
 
-            // 페이지 로드 시 자동 재생 시도
-            window.addEventListener('DOMContentLoaded', () => {{
-                playBGM();
-            }});
-            setTimeout(playBGM, 300);
+                const now = audioCtx.currentTime;
+
+                if (type === "SUCCESS") {{
+                    // 성공: 맑고 영롱한 고음 아르페지오 (C5 -> E5 -> G5)
+                    [523.25, 659.25, 783.99].forEach((freq, index) => {{
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + index * 0.08);
+                        
+                        gain.gain.setValueAtTime(sfxVol * 0.4, now + index * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.3);
+
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + index * 0.08);
+                        osc.stop(now + index * 0.08 + 0.35);
+                    }});
+                }} else if (type === "CRITICAL") {{
+                    // 대성공(크리티컬): 화려하고 웅장한 상승 화음
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, index) => {{
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, now + index * 0.07);
+
+                        gain.gain.setValueAtTime(sfxVol * 0.5, now + index * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.07 + 0.5);
+
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + index * 0.07);
+                        osc.stop(now + index * 0.07 + 0.55);
+                    }});
+                }} else if (type === "FAILED") {{
+                    // 실패: 기가 꺾이는 하강 음
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(250, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+
+                    gain.gain.setValueAtTime(sfxVol * 0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                }} else if (type === "HOLD") {{
+                    // 유지: 둔탁한 중저음 탕 소리
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+
+                    gain.gain.setValueAtTime(sfxVol * 0.5, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }} else if (type === "SHIELD_SAVED") {{
+                    // 방어권 발동: 방패가 팅기는 금속성 맑은 공명음
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.4);
+
+                    gain.gain.setValueAtTime(sfxVol * 0.6, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                }} else if (type === "DESTROYED") {{
+                    // 파괴: 쿵 하는 저음 충격음 + 노이즈 폭발음 느낌
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.exponentialRampToValueAtTime(30, now + 0.6);
+
+                    gain.gain.setValueAtTime(sfxVol * 0.7, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.65);
+                }}
+            }}
+
+            window.addEventListener('pointerdown', () => {{
+                initAudio();
+            }}, {{ once: true }});
 
             const status = "{status}";
             const statusText = document.getElementById('statusText');
@@ -734,21 +826,27 @@ with right_col:
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
                 statusText.style.color = "#ffe600";
+                playSound("CRITICAL");
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ ENHANCE SUCCESS ✨";
                 statusText.style.color = "#34d399";
+                playSound("SUCCESS");
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
                 statusText.style.color = "#60a5fa";
+                playSound("SHIELD_SAVED");
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 DESTROYED 💥";
                 statusText.style.color = "#ef4444";
+                playSound("DESTROYED");
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 ENHANCE FAILED (단계 하락) 🔻";
                 statusText.style.color = "#f59e0b";
+                playSound("FAILED");
             }} else if (status === "HOLD") {{
                 statusText.innerText = "🔒 ENHANCE HOLD (단계 유지) 🔒";
                 statusText.style.color = "#38bdf8";
+                playSound("HOLD");
             }}
 
             const scene = new THREE.Scene();
