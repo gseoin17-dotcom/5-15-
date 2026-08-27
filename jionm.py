@@ -43,7 +43,7 @@ SMELL_DB = {
     5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 3500, "color": "#2c7a7b", "tier": 1},
     6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 8000, "color": "#3182ce", "tier": 2},
     7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.", "price": 18000, "color": "#2b6cb0", "tier": 2},
-    8: {"name": "8단계 : 폭발하는 지온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 40000, "color": "#805ad5", "tier": 2},
+    8: {"name": "8단계 : 폭발하는 자이온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 40000, "color": "#805ad5", "tier": 2},
     9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.", "price": 90000, "color": "#6b46c1", "tier": 2},
     10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.", "price": 200000, "color": "#d69e2e", "tier": 2},
     11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 지구 흙밭을 거니는 환각을 본다.", "price": 450000, "color": "#b7791f", "tier": 3},
@@ -88,12 +88,11 @@ if "status" not in st.session_state: st.session_state.status = "READY"
 if "shield" not in st.session_state: st.session_state.shield = 0  
 if "tears" not in st.session_state: st.session_state.tears = 0    
 if "dev_mode" not in st.session_state: st.session_state.dev_mode = False
-if "trigger_enhance" not in st.session_state: st.session_state.trigger_enhance = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
-def run_enhance_logic():
+def enhance():
     curr = st.session_state.level
     if curr >= 30: return
     
@@ -200,21 +199,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-if st.session_state.trigger_enhance:
-    run_enhance_logic()
-    st.session_state.trigger_enhance = False
-
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃
+# 7. 메인 레이아웃 (강화 화면을 넓게 2칼럼 비율 조정: [2.2, 7.8])
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([4, 6], gap="medium")
+left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
     if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
-        st.session_state.trigger_enhance = True
+        enhance()
         st.rerun()
         
     st.write("")
@@ -258,6 +253,9 @@ with left_col:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right_col:
+    # -----------------------------------------------------------------------------
+    # 8. 3D 메인 연출 영역 (높이를 넓혀 화면을 크게 확장)
+    # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
     card_title = curr_data['name']
@@ -318,38 +316,20 @@ with right_col:
                 pointer-events: none;
             }}
 
-            .intro-msg {{
-                position: absolute;
-                top: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 20px;
-                font-weight: 800;
-                color: #fde68a;
-                text-shadow: 0 0 15px rgba(253, 230, 138, 0.7);
-                opacity: 0;
-                z-index: 105;
-                white-space: nowrap;
-                letter-spacing: 1px;
-            }}
+            .title-tier-1 {{ font-size: 42px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 48px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
+            .title-tier-3 {{ font-size: 54px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; animation: pulse 1s infinite alternate; }}
+            .title-tier-4 {{ font-size: 60px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
+            .title-tier-5 {{ font-size: 66px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); animation: shake 0.5s infinite alternate; }}
+            .title-tier-6 {{ font-size: 72px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 50px #ffffff); }}
 
-            .title-tier-1 {{ font-size: 32px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
-            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; letter-spacing: 1px; }}
-            .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
-            .title-tier-4 {{ font-size: 50px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; letter-spacing: 2px; }}
-            .title-tier-5 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 40px #ff7e5f); }}
-            .title-tier-6 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 50px #ffffff); }}
+            @keyframes pulse {{ 0% {{ transform: scale(1); }} 100% {{ transform: scale(1.04); }} }}
+            @keyframes shake {{ 0% {{ transform: translate(2px, 2px); }} 100% {{ transform: translate(-2px, -2px); }} }}
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-            .status-header {{ 
-                font-size: 28px; 
-                font-weight: 900; 
-                margin-bottom: 6px; 
-                letter-spacing: 3px; 
-                opacity: 0; 
-                visibility: hidden; 
-            }}
-            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
-            .price-text {{ font-size: 20px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
+            .status-header {{ font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 4px; }}
+            .desc-text {{ font-size: 16px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }}
+            .price-text {{ font-size: 24px; font-weight: 800; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(251,191,36,0.6); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -361,32 +341,45 @@ with right_col:
         <div id="successFlashOverlay"></div>
         <div id="container"></div>
 
-        <!-- 애니메이션 맨 처음에 나타나는 사용자의 구문 -->
-        <div id="introMsg" class="intro-msg">0단계 : 무취의 공간 30단계 : ★태초의 자이온맘★ 절대신성</div>
-
         <div class="cinematic-ui">
-            <div id="statusText" class="status-header"></div>
-            <div class="title-tier-{{tier}}">
-                {{card_title}}
+            <div id="statusText" class="status-header">READY</div>
+            <div class="title-tier-{tier}">
+                {card_title}
             </div>
-            <div class="desc-text">"{{card_desc}}"</div>
-            <div class="price-text">예상 가치: {{card_price}}</div>
+            <div class="desc-text">"{card_desc}"</div>
+            <div class="price-text">예상 가치: {card_price}</div>
         </div>
 
         <script>
-            const status = "{{status}}";
+            const status = "{status}";
             const statusText = document.getElementById('statusText');
-            const introMsg = document.getElementById('introMsg');
             const flashOverlay = document.getElementById('redFlashOverlay');
             const shieldOverlay = document.getElementById('shieldFlashOverlay');
             const critOverlay = document.getElementById('critFlashOverlay');
             const successOverlay = document.getElementById('successFlashOverlay');
+            
+            if (status === "CRITICAL") {{
+                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
+                statusText.style.color = "#ffe600";
+            }} else if (status === "SUCCESS") {{
+                statusText.innerText = "✨ ENHANCE SUCCESS ✨";
+                statusText.style.color = "#34d399";
+            }} else if (status === "SHIELD_SAVED") {{
+                statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
+                statusText.style.color = "#60a5fa";
+            }} else if (status === "DESTROYED") {{
+                statusText.innerText = "💥 DESTROYED 💥";
+                statusText.style.color = "#ef4444";
+            }} else if (status === "FAILED") {{
+                statusText.innerText = "🔻 ENHANCE FAILED 🔻";
+                statusText.style.color = "#f59e0b";
+            }}
 
             const scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x231133, 0.025);
 
             const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 11.0);
+            camera.position.set(0, 0.4, 9.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -400,24 +393,24 @@ with right_col:
             sunsetLight.position.set(5, 5, 5);
             scene.add(sunsetLight);
 
-            const cardPointLight = new THREE.PointLight("{{card_color}}", 6, 20);
+            const cardPointLight = new THREE.PointLight("{card_color}", 6, 20);
             cardPointLight.position.set(0, 2, 4);
             scene.add(cardPointLight);
 
             const particleGroup = new THREE.Group();
-            const pCount = 1200;
+            const pCount = 1500;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
 
             for(let i=0; i<pCount; i++) {{
-                pPos[i*3] = (Math.random() - 0.5) * 20;
-                pPos[i*3 + 1] = Math.random() * 12 - 5;
-                pPos[i*3 + 2] = (Math.random() - 0.5) * 20;
+                pPos[i*3] = (Math.random() - 0.5) * 25;
+                pPos[i*3 + 1] = Math.random() * 15 - 5;
+                pPos[i*3 + 2] = (Math.random() - 0.5) * 25;
             }}
 
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({{
-                color: 0xfde68a, size: 0.16, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
+                color: 0xfde68a, size: 0.18, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
             }});
             const particles = new THREE.Points(pGeo, pMat);
             particleGroup.add(particles);
@@ -425,7 +418,7 @@ with right_col:
 
             const cardGroup = new THREE.Group();
 
-            const frameGeo = new THREE.BoxGeometry(3.6, 5.2, 0.2);
+            const frameGeo = new THREE.BoxGeometry(4.0, 5.9, 0.22);
             const frameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xfbbf24, 
                 metalness: 0.95, 
@@ -436,105 +429,85 @@ with right_col:
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
-            const inlayGeo = new THREE.BoxGeometry(3.3, 4.9, 0.22);
+            const inlayGeo = new THREE.BoxGeometry(3.7, 5.6, 0.24);
             const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x11081f, metalness: 0.5, roughness: 0.5 }});
             const inlay = new THREE.Mesh(inlayGeo, inlayMat);
             cardGroup.add(inlay);
 
-            const bodyGeo = new THREE.BoxGeometry(2.9, 2.9, 0.24);
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{{card_color}}", metalness: 0.75, roughness: 0.25, emissive: "{{card_color}}", emissiveIntensity: 0.3 }});
+            const bodyGeo = new THREE.BoxGeometry(3.3, 3.3, 0.26);
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.75;
+            body.position.y = 0.85;
             cardGroup.add(body);
 
-            const coreGeo = new THREE.OctahedronGeometry(0.75, 0);
+            const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
-                color: 0xffffff, emissive: "{{card_color}}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
+                color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
             }});
             const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.set(0, 0.75, 0.15);
+            core.position.set(0, 0.85, 0.18);
             cardGroup.add(core);
 
-            const nameplateGeo = new THREE.BoxGeometry(2.9, 1.2, 0.24);
+            const nameplateGeo = new THREE.BoxGeometry(3.3, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e1b4b, metalness: 0.8, roughness: 0.3 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
-            nameplate.position.y = -1.4;
+            nameplate.position.y = -1.55;
             cardGroup.add(nameplate);
 
             scene.add(cardGroup);
 
+            const shieldGeo = new THREE.SphereGeometry(3.8, 32, 32);
+            const shieldMat = new THREE.MeshStandardMaterial({{
+                color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 0.8, transparent: true, opacity: 0.0, wireframe: true
+            }});
+            const shieldDome = new THREE.Mesh(shieldGeo, shieldMat);
+            shieldDome.position.y = 0.2;
+            scene.add(shieldDome);
+
             let shardsGroup = new THREE.Group();
             scene.add(shardsGroup);
 
-            // [애니메이션 타임라인]
-            const tl = gsap.timeline();
-            
-            // 맨 처음 구문 페이드인 후 일정 시간 노출 뒤 페이드아웃 (지연 시간을 별도 객체로 분리하여 문법 오류 해결)
-            tl.to(introMsg, {{ opacity: 1, duration: 0.4, ease: "power1.in" }});
-            tl.to(introMsg, {{ opacity: 0, duration: 0.4, ease: "power1.out" }}, "+=0.8");
+            if (status === "SHIELD_SAVED") {{
+                gsap.fromTo(shieldOverlay, {{ opacity: 0.8 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(shieldMat, {{ opacity: 0.9, wireframe: true }}, {{ opacity: 0, duration: 1.5, ease: "power2.inOut" }});
+                gsap.fromTo(shieldDome.scale, {{ x: 0.2, y: 0.2, z: 0.2 }}, {{ x: 1.2, y: 1.2, z: 1.2, duration: 0.8, ease: "back.out(1.7)" }});
+                gsap.to(cardGroup.position, {{ z: -2, duration: 0.15, yoyo: true, repeat: 5 }});
+            }} else if (status === "CRITICAL") {{
+                gsap.fromTo(critOverlay, {{ opacity: 0.9 }}, {{ opacity: 0, duration: 1.0, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 4 }}, {{ z: 9.5, duration: 1.5, ease: "bounce.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 6, z: Math.PI * 2 }}, {{ y: 0, z: 0, duration: 1.5, ease: "power3.out" }});
+            }} else if (status === "DESTROYED") {{
+                gsap.fromTo(flashOverlay, {{ opacity: 0.85 }}, {{ opacity: 0, duration: 1.2, ease: "power2.out" }});
+                gsap.to(camera.position, {{ x: 0.4, y: 0.8, duration: 0.04, repeat: 10, yoyo: true, onComplete: () => {{ camera.position.set(0, 0.4, 9.5); }} }});
+                cardGroup.visible = false;
 
-            // 카메라가 카드로 극적으로 줌인하며 카드가 회전하기 시작
-            tl.to(camera.position, {{ z: 6.5, duration: 1.2, ease: "power2.inOut" }}, "-=0.2");
-            tl.to(cardGroup.rotation, {{ y: Math.PI * 4, duration: 1.5, ease: "power1.inOut" }}, "-=1.2");
+                const shardCount = 20;
+                for(let i = 0; i < shardCount; i++) {{
+                    const sGeo = new THREE.TetrahedronGeometry(Math.random() * 0.5 + 0.25);
+                    const sMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", roughness: 0.2 }});
+                    const shard = new THREE.Mesh(sGeo, sMat);
+                    shard.position.set(0, 0.2, 0);
+                    shardsGroup.add(shard);
 
-            // 카드가 중앙에 멈춰 서서 바이브레이션
-            tl.to(cardGroup.position, {{ x: 0.15, duration: 0.04, repeat: 18, yoyo: true, ease: "power1.inOut" }});
-            tl.to(cardGroup.scale, {{ x: 1.15, y: 1.15, z: 1.15, duration: 0.8, ease: "power2.out" }}, "-=0.5");
-
-            // 클라이맥스 직후 결과 표시
-            tl.call(() => {{
-                statusText.style.visibility = 'visible';
-                statusText.style.opacity = 1;
-                
-                if (status === "CRITICAL") {{
-                    statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 대성공) ⚡";
-                    statusText.style.color = "#ffe600";
-                    gsap.to(critOverlay, {{ opacity: 0.95, duration: 0.2, yoyo: true, repeat: 1 }});
-                    gsap.to(cardGroup.scale, {{ x: 1.4, y: 1.4, z: 1.4, duration: 0.2, yoyo: true, repeat: 1 }});
-                }} else if (status === "SUCCESS") {{
-                    statusText.innerText = "✨ ENHANCE SUCCESS (성공/붙음) ✨";
-                    statusText.style.color = "#34d399";
-                    gsap.to(successOverlay, {{ opacity: 0.8, duration: 0.2, yoyo: true, repeat: 1 }});
-                }} else if (status === "SHIELD_SAVED") {{
-                    statusText.innerText = "🛡️ SHIELD PROTECTED! (파괴 방지 발동) 🛡️";
-                    statusText.style.color = "#60a5fa";
-                    gsap.to(shieldOverlay, {{ opacity: 0.85, duration: 0.3, yoyo: true, repeat: 1 }});
-                }} else if (status === "DESTROYED") {{
-                    statusText.innerText = "💥 DESTROYED (폭발/터짐) 💥";
-                    statusText.style.color = "#ef4444";
-                    gsap.to(flashOverlay, {{ opacity: 0.95, duration: 0.2, yoyo: true, repeat: 1 }});
-                    cardGroup.visible = false;
-
-                    const shardCount = 35;
-                    for(let i = 0; i < shardCount; i++) {{
-                        const sGeo = new THREE.BoxGeometry(Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15, 0.2);
-                        const sMat = new THREE.MeshStandardMaterial({{ color: "{{card_color}}", roughness: 0.2 }});
-                        const shard = new THREE.Mesh(sGeo, sMat);
-                        shard.position.set(0, 0, 0);
-                        shardsGroup.add(shard);
-
-                        gsap.to(shard.position, {{
-                            x: (Math.random() - 0.5) * 12,
-                            y: (Math.random() - 0.5) * 12,
-                            z: (Math.random() - 0.5) * 12,
-                            duration: 1.5,
-                            ease: "power3.out"
-                        }});
-                        gsap.to(shard.rotation, {{
-                            x: Math.random() * 12,
-                            y: Math.random() * 12,
-                            duration: 1.5
-                        }});
-                    }}
-                }} else if (status === "FAILED") {{
-                    statusText.innerText = "🔻 ENHANCE FAILED (실패) 🔻";
-                    statusText.style.color = "#f59e0b";
-                    gsap.to(cardGroup.position, {{ x: 0.25, duration: 0.05, repeat: 6, yoyo: true }});
-                }} else {{
-                    statusText.innerText = "READY";
-                    statusText.style.color = "#38bdf8";
+                    gsap.to(shard.position, {{
+                        x: (Math.random() - 0.5) * 7,
+                        y: (Math.random() - 0.5) * 7,
+                        z: (Math.random() - 0.5) * 7,
+                        duration: 1.2,
+                        ease: "power3.out"
+                    }});
+                    gsap.to(shard.rotation, {{
+                        x: Math.random() * Math.PI * 4,
+                        y: Math.random() * Math.PI * 4,
+                        duration: 1.2
+                    }});
+                    gsap.to(shard.scale, {{ x: 0, y: 0, z: 0, duration: 1.2, ease: "power2.in" }});
                 }}
-            }}, [], 3.0);
+            }} else if (status === "SUCCESS") {{
+                gsap.fromTo(successOverlay, {{ opacity: 0.7 }}, {{ opacity: 0, duration: 0.8, ease: "power2.out" }});
+                gsap.fromTo(camera.position, {{ z: 5 }}, {{ z: 9.5, duration: 1.2, ease: "power2.out" }});
+                gsap.fromTo(cardGroup.rotation, {{ y: Math.PI * 2 }}, {{ y: 0, duration: 1.2, ease: "power2.out" }});
+            }}
 
             const clock = new THREE.Clock();
 
@@ -544,13 +517,14 @@ with right_col:
 
                 const pos = pGeo.attributes.position.array;
                 for(let i=1; i<pCount*3; i+=3) {{
-                    pos[i] += Math.sin(time + pos[i-1]) * 0.004 + 0.006;
-                    if(pos[i] > 8) pos[i] = -5;
+                    pos[i] += Math.sin(time + pos[i-1]) * 0.005 + 0.008;
+                    if(pos[i] > 10) pos[i] = -5;
                 }}
                 pGeo.attributes.position.needsUpdate = true;
 
                 if (cardGroup.visible) {{
-                    cardGroup.position.y = Math.sin(time * 2) * 0.06;
+                    cardGroup.rotation.y = Math.sin(time * 0.8) * 0.2;
+                    cardGroup.position.y = Math.sin(time * 1.5) * 0.12 + 0.2;
                 }}
                 
                 core.rotation.x = time * 2;
@@ -574,7 +548,7 @@ with right_col:
     components.html(three_js_code, height=650, scrolling=False)
 
 # -----------------------------------------------------------------------------
-# 8. 하단 스탯 대시보드
+# 9. 하단 스탯 대시보드 (맨 아래로 이동 완료)
 # -----------------------------------------------------------------------------
 st.write("")
 b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
