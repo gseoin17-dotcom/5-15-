@@ -548,10 +548,10 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption("눈물 20개로 1단계 확정 상승")
-    if st.button("1단계 확정 상승 (20개)", use_container_width=True):
-      if st.session_state.tears >= 20 and st.session_state.level < 30:
-        st.session_state.tears -= 20
+    st.caption("눈물 100개로 1단계 확정 상승")
+    if st.button("1단계 확정 상승 (100개)", use_container_width=True):
+      if st.session_state.tears >= 100 and st.session_state.level < 30:
+        st.session_state.tears -= 100
         st.session_state.level += 1
         st.session_state.status = "SUCCESS"
         st.success("확정 강화 성공!")
