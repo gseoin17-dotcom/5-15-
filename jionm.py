@@ -77,7 +77,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표 (원래 텍스트로 복원)
+# 3. 게임 데이터베이스 및 강화 확률표
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -419,7 +419,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (배경 박스 제거 및 텍스트 확대 유지)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -794,13 +794,11 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.3;
 
-            // 16~30단계 구간에서 레벨별로 다양한 다각형 형태(기하학적 도형)를 분배하여 개성 부여
             const lvl = {level_val};
             let baseGeo;
             if (lvl < 16) {{
                 baseGeo = new THREE.DodecahedronGeometry(2.5, 0);
             }} else {{
-                // 16~30단계 다채로운 도형 매핑
                 const shapes = [
                     new THREE.IcosahedronGeometry(2.4, 0),
                     new THREE.OctahedronGeometry(2.6, 0),
@@ -882,3 +880,20 @@ with right_col:
                 particleGeo.attributes.position.needsUpdate = true;
 
                 objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
+
+                renderer.render(scene, camera);
+            }}
+
+            animate();
+
+            window.addEventListener('resize', () => {{
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }});
+        </script>
+    </body>
+    </html>
+    """
+
+  components.html(three_js_code, height=560, scrolling=False)
