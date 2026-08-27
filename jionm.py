@@ -143,8 +143,9 @@ st.markdown("""
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 3.5rem !important;
+        padding-top: 2rem !important;
         padding-bottom: 2rem !important;
+        max-width: 95% !important;
     }
     .glass-panel {
         background: rgba(43, 23, 56, 0.65);
@@ -199,20 +200,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 7. 메인 2칼럼 레이아웃
+# 7. 메인 레이아웃 (강화 화면을 넓게 2칼럼 비율 조정: [2.2, 7.8])
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([3, 7], gap="medium")
+left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
 with left_col:
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'> 지온 냄새 강화</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도 판타지 지온 강화</h3>", unsafe_allow_html=True)
     
-    if st.button("🔥 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
+    if st.button("🔥 GOD MODE 강화 실행", use_container_width=True, disabled=(st.session_state.level >= 30)):
         enhance()
         st.rerun()
         
     st.write("")
-    if st.button("💰 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
+    if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)):
         sell()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -253,7 +254,7 @@ with left_col:
 
 with right_col:
     # -----------------------------------------------------------------------------
-    # 8. 3D 메인 연출 영역 (고급 TCG 카드 테두리 및 홀로그램 효과 적용)
+    # 8. 3D 메인 연출 영역 (높이를 넓혀 화면을 크게 확장)
     # -----------------------------------------------------------------------------
     curr_data = SMELL_DB[st.session_state.level]
     card_color = curr_data['color']
@@ -417,7 +418,6 @@ with right_col:
 
             const cardGroup = new THREE.Group();
 
-            // 고급 TCG 카드 외곽 프레임 (금속성 골드/실버 느낌 테두리)
             const frameGeo = new THREE.BoxGeometry(4.0, 5.9, 0.22);
             const frameMat = new THREE.MeshStandardMaterial({{ 
                 color: 0xfbbf24, 
@@ -429,20 +429,17 @@ with right_col:
             const frame = new THREE.Mesh(frameGeo, frameMat);
             cardGroup.add(frame);
 
-            // 카드 내부 배경 패널 (신비로운 블랙 인레이)
             const inlayGeo = new THREE.BoxGeometry(3.7, 5.6, 0.24);
             const inlayMat = new THREE.MeshStandardMaterial({{ color: 0x11081f, metalness: 0.5, roughness: 0.5 }});
             const inlay = new THREE.Mesh(inlayGeo, inlayMat);
             cardGroup.add(inlay);
 
-            // 보석처럼 빛나는 중앙 일러스트 플레이트
             const bodyGeo = new THREE.BoxGeometry(3.3, 3.3, 0.26);
             const bodyMat = new THREE.MeshStandardMaterial({{ color: "{card_color}", metalness: 0.75, roughness: 0.25, emissive: "{card_color}", emissiveIntensity: 0.3 }});
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = 0.85;
             cardGroup.add(body);
 
-            // 홀로그램 크리스탈 코어
             const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
             const coreMat = new THREE.MeshStandardMaterial({{
                 color: 0xffffff, emissive: "{card_color}", emissiveIntensity: 1.5, roughness: 0.05, metalness: 0.9
@@ -451,7 +448,6 @@ with right_col:
             core.position.set(0, 0.85, 0.18);
             cardGroup.add(core);
 
-            // 카드 하단 명판 (텍스처 영역)
             const nameplateGeo = new THREE.BoxGeometry(3.3, 1.4, 0.26);
             const nameplateMat = new THREE.MeshStandardMaterial({{ color: 0x1e1b4b, metalness: 0.8, roughness: 0.3 }});
             const nameplate = new THREE.Mesh(nameplateGeo, nameplateMat);
@@ -549,44 +545,45 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=560, scrolling=False)
+    components.html(three_js_code, height=650, scrolling=False)
 
-    # -----------------------------------------------------------------------------
-    # 9. 하단 스탯 대시보드 (보유권 개수 항목 추가)
-    # -----------------------------------------------------------------------------
-    b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
+# -----------------------------------------------------------------------------
+# 9. 하단 스탯 대시보드 (맨 아래로 이동 완료)
+# -----------------------------------------------------------------------------
+st.write("")
+b_col1, b_col2, b_col3, b_col4 = st.columns([1, 1, 1, 1], gap="small")
 
-    with b_col1:
-        st.markdown(f'''
-            <div class="stat-card">
-                <div class="stat-title">💳 보유 금액</div>
-                <div class="stat-value">{format_gold(st.session_state.money)}</div>
-            </div>
-        ''', unsafe_allow_html=True)
+with b_col1:
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">💳 보유 금액</div>
+            <div class="stat-value">{format_gold(st.session_state.money)}</div>
+        </div>
+    ''', unsafe_allow_html=True)
 
-    with b_col2:
-        st.markdown(f'''
-            <div class="stat-card">
-                <div class="stat-title">🛡️ 보유권 개수</div>
-                <div class="stat-value">{st.session_state.shield}개</div>
-            </div>
-        ''', unsafe_allow_html=True)
+with b_col2:
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">🛡️ 보유권 개수</div>
+            <div class="stat-value">{st.session_state.shield}개</div>
+        </div>
+    ''', unsafe_allow_html=True)
 
-    with b_col3:
-        st.markdown(f'''
-            <div class="stat-card">
-                <div class="stat-title">💧 지온의 눈물</div>
-                <div class="stat-value">{st.session_state.tears}개</div>
-            </div>
-        ''', unsafe_allow_html=True)
+with b_col3:
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">💧 지온의 눈물</div>
+            <div class="stat-value">{st.session_state.tears}개</div>
+        </div>
+    ''', unsafe_allow_html=True)
 
-    with b_col4:
-        sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
-        crit_pct = int(CRITICAL_RATE * 100)
-        prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
-        st.markdown(f'''
-            <div class="stat-card">
-                <div class="stat-title">📊 성공 / 크리 / 파괴</div>
-                <div class="stat-value" style="font-size: 14px;">{prob_str}</div>
-            </div>
-        ''', unsafe_allow_html=True)
+with b_col4:
+    sp, fp, dp = PROB_TABLE[st.session_state.level] if st.session_state.level < 30 else (0,0,0)
+    crit_pct = int(CRITICAL_RATE * 100)
+    prob_str = "100% (DEV)" if st.session_state.dev_mode else f"{sp}% / {crit_pct}% / {dp}%"
+    st.markdown(f'''
+        <div class="stat-card">
+            <div class="stat-title">📊 성공 / 크리 / 파괴</div>
+            <div class="stat-value" style="font-size: 14px;">{prob_str}</div>
+        </div>
+    ''', unsafe_allow_html=True)
