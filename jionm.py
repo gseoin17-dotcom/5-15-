@@ -489,8 +489,8 @@ left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 with left_col:
   st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
   st.markdown(
-      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 왕도"
-      " 판타지 지온 강화</h3>",
+      "<h3 style='margin:0 0 12px 0; font-size: 20px; color:#fde68a;'>🏰 "
+      "  지온온라인 강화</h3>",
       unsafe_allow_html=True,
   )
 
