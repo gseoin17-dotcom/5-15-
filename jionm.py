@@ -1118,17 +1118,94 @@ else:
       unsafe_allow_html=True,
   )
 
-  # 4. 강화 제어 및 시스템 설정 영역 (하단)
-  st.markdown(
-      "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>⚙️ 게임 제어"
-      " 및 상점</h4>",
-      unsafe_allow_html=True,
-  )
+  # 4. 강화 제어 및 상점 영역 (2열 레이아웃: 왼쪽=상점, 오른쪽=강화제어)
+  col_left, col_right = st.columns([1, 1])
 
-  dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
+  with col_left:
+    st.markdown(
+        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>🛒 상점 및"
+        " 기적</h4>",
+        unsafe_allow_html=True,
+    )
+    tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권 구매", "💧 눈물 기적 가동"])
 
-  btn_col1, btn_col2 = st.columns(2)
-  with btn_col1:
+    with tab_shop1:
+      current_shield_cost = get_shield_cost(st.session_state.level)
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+          f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
+          f" <span style='font-size:15px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
+          unsafe_allow_html=True,
+      )
+
+      can_buy_shield = (
+          st.session_state.level >= 18 and st.session_state.shield < 3
+      )
+      if st.button(
+          "방지권 구매하기",
+          use_container_width=True,
+          disabled=not can_buy_shield,
+      ):
+        if st.session_state.level < 18:
+          st.warning("18단계 이상부터 구매 가능합니다.")
+        elif st.session_state.shield >= 3:
+          st.warning("최대 3개까지만 보유 가능합니다.")
+        elif st.session_state.money >= current_shield_cost:
+          st.session_state.money -= current_shield_cost
+          st.session_state.shield += 1
+          st.success("파괴 방지권 구매 완료!")
+          st.rerun()
+        else:
+          st.error("금액이 부족합니다.")
+
+    with tab_shop2:
+      if st.session_state.level >= 28:
+        st.markdown(
+            "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+            " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
+            " 눈물을 사용할 수 없습니다!</div>",
+            unsafe_allow_html=True,
+        )
+      else:
+        st.markdown(
+            f"<div style='font-size:13px; color:#cbd5e1;"
+            f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
+            f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+            f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
+            unsafe_allow_html=True,
+        )
+
+      can_use_tears = st.session_state.level < 28
+      if st.button(
+          "눈물 기적 가동하기",
+          use_container_width=True,
+          disabled=not can_use_tears,
+      ):
+        if st.session_state.level >= 28:
+          st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
+        elif st.session_state.tears >= 40:
+          st.session_state.tears -= 40
+          if random.random() < 0.50:
+            add_lvl = random.choice([1, 2, 3])
+            st.session_state.level = min(30, st.session_state.level + add_lvl)
+            st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+            st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
+          else:
+            st.session_state.status = "FAILED"
+            st.warning("눈물의 기적이 실패했습니다...")
+          st.rerun()
+        else:
+          st.error("눈물 40개가 필요합니다.")
+
+  with col_right:
+    st.markdown(
+        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>⚙️ 게임 제어"
+        "</h4>",
+        unsafe_allow_html=True,
+    )
+    dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
+
     if st.button(
         "🔥 냄새 강화 실행",
         use_container_width=True,
@@ -1150,7 +1227,6 @@ else:
         dev_force_success()
         st.rerun()
 
-  with btn_col2:
     if st.button(
         "💰 현재 냄새 판매",
         use_container_width=True,
@@ -1158,69 +1234,3 @@ else:
     ):
       sell()
       st.rerun()
-
-  st.write("")
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권 구매", "💧 눈물 기적 가동"])
-
-  with tab_shop1:
-    current_shield_cost = get_shield_cost(st.session_state.level)
-    st.markdown(
-        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
-        f" <span style='font-size:15px; font-weight:bold; color:#fde68a;'>"
-        f"{format_gold(current_shield_cost)}</span></div>",
-        unsafe_allow_html=True,
-    )
-
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
-    if st.button(
-        "방지권 구매하기", use_container_width=True, disabled=not can_buy_shield
-    ):
-      if st.session_state.level < 18:
-        st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 3:
-        st.warning("최대 3개까지만 보유 가능합니다.")
-      elif st.session_state.money >= current_shield_cost:
-        st.session_state.money -= current_shield_cost
-        st.session_state.shield += 1
-        st.success("파괴 방지권 구매 완료!")
-        st.rerun()
-      else:
-        st.error("금액이 부족합니다.")
-
-  with tab_shop2:
-    if st.session_state.level >= 28:
-      st.markdown(
-          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
-          " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
-          " 눈물을 사용할 수 없습니다!</div>",
-          unsafe_allow_html=True,
-      )
-    else:
-      st.markdown(
-          f"<div style='font-size:13px; color:#cbd5e1;"
-          f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
-          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
-          f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
-          unsafe_allow_html=True,
-      )
-
-    can_use_tears = st.session_state.level < 28
-    if st.button(
-        "눈물 기적 가동하기", use_container_width=True, disabled=not can_use_tears
-    ):
-      if st.session_state.level >= 28:
-        st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= 40:
-        st.session_state.tears -= 40
-        if random.random() < 0.50:
-          add_lvl = random.choice([1, 2, 3])
-          st.session_state.level = min(30, st.session_state.level + add_lvl)
-          st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-          st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
-        else:
-          st.session_state.status = "FAILED"
-          st.warning("눈물의 기적이 실패했습니다...")
-        st.rerun()
-      else:
-        st.error("눈물 40개가 필요합니다.")
