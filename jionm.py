@@ -493,7 +493,6 @@ st.markdown(
 # 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
 if st.session_state.level == 30:
-  # 30단계 만렙 달성 시 출력되는 개쩌는 엔딩 크레딧 화면
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -590,7 +589,6 @@ if st.session_state.level == 30:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 화려한 폭발/우주 파티클 생성
             const particleCount = 2000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
@@ -620,7 +618,6 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            // 중앙 거대한 신성 도형
             const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
@@ -692,13 +689,13 @@ else:
     )
 
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
         " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
     if st.button(
-        "🔥 강화 실행",
+        "🔥 냄새 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
@@ -777,10 +774,12 @@ else:
 
     with tab_shop1:
       current_shield_cost = get_shield_cost(st.session_state.level)
+      # 폰트 사이즈 키움 (11px -> 14px) 및 가격 강조
       st.markdown(
-          f"<div style='font-size:11px; color:#cbd5e1; margin-bottom:6px;'>"
+          f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
-          f" {format_gold(current_shield_cost)}</div>",
+          f" <span style='font-size:16px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
           unsafe_allow_html=True,
       )
 
@@ -803,23 +802,23 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 28단계 이상일 경우 눈물 사용 차단 안내 메시지 출력
+      # 폰트 사이즈 키움 (11px~12px -> 14px) 및 수치 강조
       if st.session_state.level >= 28:
         st.markdown(
-            "<div style='font-size:12px; color:#ef4444; font-weight:700;"
-            " margin-bottom:6px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
+            "<div style='font-size:14px; color:#ef4444; font-weight:700;"
+            " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
             " 눈물을 사용할 수 없습니다!</div>",
             unsafe_allow_html=True,
         )
       else:
         st.markdown(
-            f"<div style='font-size:11px; color:#cbd5e1;"
-            f" margin-bottom:6px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
-            f" 상승)<br><b>현재보유:</b> {st.session_state.tears} / 120개</div>",
+            f"<div style='font-size:14px; color:#cbd5e1;"
+            f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
+            f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+            f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
             unsafe_allow_html=True,
         )
 
-      # 28단계 이상이면 버튼 비활성화
       can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
