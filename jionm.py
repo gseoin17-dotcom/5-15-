@@ -1,4 +1,5 @@
 import random
+import time
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -353,8 +354,18 @@ if "tears" not in st.session_state:
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
 
+# 배틀 모드 상태 변수
+if "battle_mode" not in st.session_state:
+  st.session_state.battle_mode = False
+if "battle_start_time" not in st.session_state:
+  st.session_state.battle_start_time = 0
+if "opponent_level" not in st.session_state:
+  st.session_state.opponent_level = 0
+if "opponent_name" not in st.session_state:
+  st.session_state.opponent_name = ""
+
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 로직 및 배틀 함수
 # -----------------------------------------------------------------------------
 
 
@@ -441,6 +452,31 @@ def sell():
   st.session_state.status = "READY"
 
 
+def start_battle():
+  st.session_state.battle_mode = True
+  st.session_state.battle_start_time = time.time()
+  st.session_state.level = 0  # 배틀 시작 시 0단계부터 공정하게 시작
+  st.session_state.money = 5000000  # 배틀 전용 초기 지원금
+  st.session_state.opponent_level = 0
+  st.session_state.opponent_name = random.choice([
+      "지온고수99",
+      "자이온맘의법규",
+      "흑장갑의향기",
+      "우주최강방구쟁이",
+      "흙냄새소믈리에",
+  ])
+  st.session_state.status = "BATTLE_READY"
+
+
+def end_battle(result, stolen_gold):
+  st.session_state.battle_mode = False
+  if result == "WIN":
+    st.session_state.money += stolen_gold
+    st.session_state.status = "BATTLE_WIN"
+  else:
+    st.session_state.status = "BATTLE_LOSE"
+
+
 # -----------------------------------------------------------------------------
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
@@ -492,8 +528,7 @@ st.markdown(
 # -----------------------------------------------------------------------------
 # 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
-if st.session_state.level == 30:
-  # 30단계 만렙 달성 시 출력되는 개쩌는 엔딩 크레딧 화면
+if st.session_state.level == 30 and not st.session_state.battle_mode:
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -590,7 +625,6 @@ if st.session_state.level == 30:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 화려한 폭발/우주 파티클 생성
             const particleCount = 2000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
@@ -620,7 +654,6 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            // 중앙 거대한 신성 도형
             const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
@@ -691,14 +724,80 @@ else:
         unsafe_allow_html=True,
     )
 
+    # -------------------------------------------------------------------------
+    # [추가] 3분 냄새 약탈 배틀 UI 섹션
+    # -------------------------------------------------------------------------
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>⚔️ 3분"
+        " 냄새 약탈 배틀</h4>",
+        unsafe_allow_html=True,
+    )
+
+    if not st.session_state.battle_mode:
+      if st.button("🚀 3분 실시간 배틀 매칭", use_container_width=True):
+        start_battle()
+        st.rerun()
+    else:
+      elapsed = time.time() - st.session_state.battle_start_time
+      left_time = max(0, 180 - int(elapsed))  # 3분 = 180초
+
+      # 상대방 AI 강화 시뮬레이션
+      if left_time > 0:
+        if random.random() < 0.25:
+          if (
+              st.session_state.opponent_level < 30
+              and random.random() < 0.6
+          ):
+            st.session_state.opponent_level += 1
+          elif st.session_state.opponent_level > 0 and random.random() < 0.3:
+            st.session_state.opponent_level -= 1
+
+      st.markdown(
+          f"<div style='background:rgba(239,68,68,0.2);"
+          f" border:1px solid #ef4444; padding:10px; border-radius:8px;"
+          f" text-align:center; margin-bottom: 8px;'><b"
+          f" style='color:#fca5a5;'>상대:</b>"
+          f" {st.session_state.opponent_name}<br><b"
+          f" style='color:#fca5a5;'>상대 단계:</b>"
+          f" Lv.{st.session_state.opponent_level}<br><b"
+          f" style='color:#fca5a5;'>남은 시간:</b> {left_time // 60}분"
+          f" {left_time % 60}초</div>",
+          unsafe_allow_html=True,
+      )
+
+      if left_time == 0:
+        my_final = st.session_state.level
+        opp_final = st.session_state.opponent_level
+        stg_gold = SMELL_DB[opp_final]["price"] if opp_final > 0 else 1000000
+
+        if my_final > opp_final:
+          end_battle("WIN", stg_gold)
+          st.success(
+              f"배틀 승리! 상대방을 제압하고 {format_gold(stg_gold)}을"
+              " 약탈했습니다!"
+          )
+        else:
+          end_battle("LOSE", 0)
+          st.error("배틀 패배... 상대방에게 제압당했습니다.")
+        st.rerun()
+      else:
+        if st.button("🚪 배틀 포기하기", use_container_width=True):
+          st.session_state.battle_mode = False
+          st.rerun()
+
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
         " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
     if st.button(
-        "🔥 강화 실행",
+        "🔥 냄새 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
@@ -803,7 +902,6 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 28단계 이상일 경우 눈물 사용 차단 안내 메시지 출력
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:12px; color:#ef4444; font-weight:700;"
@@ -819,7 +917,6 @@ else:
             unsafe_allow_html=True,
         )
 
-      # 28단계 이상이면 버튼 비활성화
       can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
@@ -976,6 +1073,15 @@ else:
                   statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                   statusColor = "#94a3b8";
                   particleSpeed = 0.7;
+              }} else if (status === "BATTLE_READY") {{
+                  statusText.innerText = "⚔️ 3분 약탈 배틀 진행 중! 최고의 단계를 달성하세요! ⚔️";
+                  statusColor = "#f87171";
+              }} else if (status === "BATTLE_WIN") {{
+                  statusText.innerText = "🏆 배틀 승리! 상대방을 약탈했습니다! 🏆";
+                  statusColor = "#34d399";
+              }} else if (status === "BATTLE_LOSE") {{
+                  statusText.innerText = "💀 배틀 패배... 재화를 빼앗겼습니다. 💀";
+                  statusColor = "#ef4444";
               }} else {{
                   statusText.innerText = "READY - 우주 에너지가 집중됩니다";
               }}
