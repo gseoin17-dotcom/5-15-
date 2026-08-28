@@ -354,7 +354,7 @@ PROB_TABLE = {
 }
 
 CRITICAL_RATE = 0.05
-PITY_MAX = 5  # 실패 5회 누적 시 자이온맘의 가호(천장) 발동
+PITY_MAX = 5
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -406,7 +406,6 @@ def run_enhance():
 
   st.session_state.money -= cost
 
-  # 자이온맘의 가호 (천장 시스템) 발동 체크
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
@@ -422,7 +421,7 @@ def run_enhance():
   destroy_limit = down_limit + dp
 
   if r < success_limit:
-    st.session_state.pity_count = 0  # 성공 시 스택 초기화
+    st.session_state.pity_count = 0
     if random.random() < CRITICAL_RATE and curr + 2 <= 30:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
@@ -476,7 +475,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (블랙/화이트 & 배경 톤 조화)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -609,7 +608,6 @@ with left_col:
     )
     st.write("")
 
-    # 자이온맘의 가호(천장) 진행도 표시
     pity_left = PITY_MAX - st.session_state.pity_count
     st.markdown(
         f"<div style='text-align: center;'><div style='font-size:12px;"
@@ -624,7 +622,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 상점 및 도감 탭
   tab_shop1, tab_shop2, tab_book = st.tabs(["🛡️ 방지권", "💧 눈물", "📖 도감"])
 
   with tab_shop1:
@@ -719,8 +716,8 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                /* UI를 확 내려서 중앙에 가깝도록 배치 (bottom 35% 지점) */
-                bottom: 35%; 
+                /* 텍스트 정보 UI는 기존처럼 하단에 유지 */
+                bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -735,12 +732,12 @@ with right_col:
                 opacity: 1;
             }}
 
-            .title-tier-1 {{ font-size: 30px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 34px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-            .title-tier-3 {{ font-size: 38px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-            .title-tier-4 {{ font-size: 42px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-            .title-tier-5 {{ font-size: 46px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-            .title-tier-6 {{ font-size: 52px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+            .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
+            .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
+            .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
+            .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -755,10 +752,10 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 14px; color: #cbd5e1; margin-top: 3px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-            .price-text {{ font-size: 16px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 13px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
+            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -837,7 +834,8 @@ with right_col:
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            camera.position.set(0, -0.4, 10.5);
+            /* 3D 다각형 오브젝트를 아래로 내리기 위해 카메라 위치 변경 (y를 양수값으로 올려서 아래를 내려다보게 하거나, 오브젝트 그룹의 y를 내림) */
+            camera.position.set(0, 1.2, 10.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -853,7 +851,7 @@ with right_col:
             scene.add(mainLight);
 
             const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
-            pointLight.position.set(0, 1.5, 3);
+            pointLight.position.set(0, -0.5, 3);
             scene.add(pointLight);
 
             const particleCount = 850;
@@ -863,7 +861,7 @@ with right_col:
 
             for(let i=0; i<particleCount; i++) {{
                 particlePositions[i*3] = (Math.random() - 0.5) * 7.0;
-                particlePositions[i*3 + 1] = -3.5 + Math.random() * 3.0;
+                particlePositions[i*3 + 1] = -5.0 + Math.random() * 3.0;
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
                 
                 let spd = particleSpeed;
@@ -889,7 +887,8 @@ with right_col:
             scene.add(particleSystem);
 
             const objectGroup = new THREE.Group();
-            objectGroup.position.y = -0.5;
+            /* 3D 다각형 오브젝트들의 전체 위치를 확 내려줌 (y = -1.8) */
+            objectGroup.position.y = -1.8;
 
             let baseGeo;
             const lvl = {current_level};
@@ -971,6 +970,7 @@ with right_col:
                 const shardCount = 55;
                 const shards = [];
                 const shardGroup = new THREE.Group();
+                shardGroup.position.y = -1.8;
 
                 for(let i=0; i<shardCount; i++) {{
                     const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
@@ -1052,8 +1052,8 @@ with right_col:
                     positions[i*3 + 1] += particleVelocities[i].y;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if(positions[i*3 + 1] > 4.5) {{
-                        positions[i*3 + 1] = -3.5;
+                    if(positions[i*3 + 1] > 3.0) {{
+                        positions[i*3 + 1] = -5.0;
                         positions[i*3] = (Math.random() - 0.5) * 7.0;
                         positions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
                     }}
