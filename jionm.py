@@ -440,27 +440,6 @@ st.markdown(
     .element-container, .stMarkdown {
         background: transparent !important;
     }
-    .stat-card {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        padding: 8px 6px;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        height: 100%;
-    }
-    .stat-title {
-        font-size: 11px;
-        font-weight: 600;
-        color: #fde68a;
-        margin-bottom: 2px;
-    }
-    .stat-value {
-        font-size: 14px;
-        font-weight: 800;
-        color: #ffffff;
-    }
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
@@ -535,6 +514,53 @@ with left_col:
     sell()
     st.rerun()
 
+  st.markdown("<br>", unsafe_allow_html=True)
+
+  # 사각형 배경 없이 텍스트만 표시되도록 인라인 스타일 적용
+  s_col1, s_col2 = st.columns(2)
+
+  with s_col1:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:15px;"
+        f" font-weight:800;"
+        f" color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
+        " 120개</div></div>",
+        unsafe_allow_html=True,
+    )
+
+  with s_col2:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
+        " 3개</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+
+    if st.session_state.level < 30:
+      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
+      crit_pct = int(CRITICAL_RATE * 100)
+      prob_str = f"성공:{sp}% (크리{crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
+    else:
+      prob_str = "MAX LEVEL"
+
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>📊 상세 확률</div><div style='font-size:11px;"
+        f" font-weight:800; color:#ffffff; line-height:"
+        f" 1.3;'>{prob_str}</div></div>",
+        unsafe_allow_html=True,
+    )
+
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
@@ -593,59 +619,6 @@ with left_col:
         st.error("눈물 40개가 필요합니다.")
 
 with right_col:
-  sc1, sc2, sc3, sc4 = st.columns(4)
-
-  with sc1:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💳 보유 금액</div>
-                <div class="stat-value">{format_gold(st.session_state.money)}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-  with sc2:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">🛡️ 방지권</div>
-                <div class="stat-value">{st.session_state.shield} / 3개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-  with sc3:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💧 눈물</div>
-                <div class="stat-value">{st.session_state.tears} / 120개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-  with sc4:
-    if st.session_state.level < 30:
-      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-      crit_pct = int(CRITICAL_RATE * 100)
-      prob_str = f"성공:{sp}%(크리{crit_pct}%)<br>하락:{down_p}%/파괴:{dp}%"
-    else:
-      prob_str = "MAX LEVEL"
-
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">📊 상세 확률</div>
-                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
   current_level = st.session_state.level
   curr_data = SMELL_DB[current_level]
   card_color = curr_data["color"]
