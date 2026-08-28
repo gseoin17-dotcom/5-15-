@@ -395,7 +395,7 @@ def run_enhance():
       st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
     st.session_state.status = "HOLD"
-    st.session_state.tears = min(120, st.session_state.tears + 1)
+    st.session_state.tears = min(120, st.session_stream.tears + 1)
 
 
 def dev_force_success():
@@ -419,13 +419,16 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (3D 우주 심해 감성 배경)
+# 6. 테마 CSS (웅장한 3D 우주 네뷸라 배경)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.5) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, #020617 100%);
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -574,9 +577,12 @@ with left_col:
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
-    st.caption(
-        f"파괴 방지권 (보유 3개 제한)\n(18단계 이상 구매 가능)\n가격:"
-        f" {format_gold(current_shield_cost)}"
+    # 애매하게 분산되던 설명을 한 줄 명시형으로 깔끔하게 개선
+    st.markdown(
+        f"<div style='font-size:11px; color:#cbd5e1; margin-bottom:6px;'>"
+        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
+        f" {format_gold(current_shield_cost)}</div>",
+        unsafe_allow_html=True,
     )
 
     can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
@@ -596,9 +602,12 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption(
-        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
-        f" {st.session_state.tears}/120개)"
+    # 눈물 설명 역시 한 줄에 압축하여 UI 깔끔화
+    st.markdown(
+        f"<div style='font-size:11px; color:#cbd5e1;"
+        f" margin-bottom:6px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
+        f" 상승)<br><b>현재보유:</b> {st.session_state.tears} / 120개</div>",
+        unsafe_allow_html=True,
     )
     if st.button("눈물 기적 가동", use_container_width=True):
       if st.session_state.tears >= 40 and st.session_state.level < 30:
@@ -628,7 +637,6 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
-  # 강화 UI 크기를 훨씬 더 키우고 가독성을 대폭 상향한 3D 시네마틱 렌더러
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -659,7 +667,6 @@ with right_col:
                 opacity: 1;
             }}
 
-            /* UI 글자 크기 대폭 확장 */
             .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
             .title-tier-2 {{ font-size: 42px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; }}
             .title-tier-3 {{ font-size: 48px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
@@ -774,24 +781,24 @@ with right_col:
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            // 3D 우주 입자(스타더스트) 생성
-            const particleCount = 700;
+            // 3D 심우주 다중 성운 입자 생성
+            const particleCount = 850;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
 
             for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
-                particlePositions[i*3 + 1] = -3.5 + Math.random() * 2.5;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+                particlePositions[i*3] = (Math.random() - 0.5) * 7.0;
+                particlePositions[i*3 + 1] = -3.5 + Math.random() * 3.0;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
                 
                 let spd = particleSpeed;
                 if (status === "FAILED") spd = 0.3;
 
                 particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.025 * spd,
-                    y: (0.02 + Math.random() * 0.035) * spd,
-                    z: (Math.random() - 0.5) * 0.025 * spd,
+                    x: (Math.random() - 0.5) * 0.02 * spd,
+                    y: (0.015 + Math.random() * 0.03) * spd,
+                    z: (Math.random() - 0.5) * 0.02 * spd,
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
@@ -800,7 +807,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.3 : 0.85,
+                opacity: status === "FAILED" ? 0.3 : 0.9,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -973,8 +980,8 @@ with right_col:
 
                     if(positions[i*3 + 1] > 4.5) {{
                         positions[i*3 + 1] = -3.5;
-                        positions[i*3] = (Math.random() - 0.5) * 6.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3] = (Math.random() - 0.5) * 7.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
