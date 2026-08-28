@@ -395,7 +395,7 @@ def run_enhance():
       st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
     st.session_state.status = "HOLD"
-    st.session_state.tears = min(120, st.session_stream.tears + 1)
+    st.session_state.tears = min(120, st.session_state.tears + 1)
 
 
 def dev_force_success():
@@ -419,7 +419,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (웅장한 3D 우주 네뷸라 배경)
+# 6. 테마 CSS (웅장한 3D 우주 네뷸라 배경 + 블랙/화이트 버튼 톤)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -443,19 +443,24 @@ st.markdown(
     .element-container, .stMarkdown {
         background: transparent !important;
     }
+    
+    /* 블랙 & 화이트 모던 깔끔 버튼 스타일 */
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
-        padding: 8px 14px !important;
+        padding: 9px 16px !important;
         transition: all 0.2s ease !important;
-        border: 1px solid rgba(168, 85, 247, 0.5) !important;
-        background: linear-gradient(135deg, rgba(126, 34, 206, 0.8), rgba(59, 130, 246, 0.8)) !important;
+        border: 1px solid #ffffff !important;
+        background: #000000 !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     div.stButton > button:hover {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.8);
+        box-shadow: 0 6px 20px rgba(255,255,255,0.3);
     }
     </style>
 """,
@@ -577,7 +582,6 @@ with left_col:
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
-    # 애매하게 분산되던 설명을 한 줄 명시형으로 깔끔하게 개선
     st.markdown(
         f"<div style='font-size:11px; color:#cbd5e1; margin-bottom:6px;'>"
         f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
@@ -602,7 +606,6 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    # 눈물 설명 역시 한 줄에 압축하여 UI 깔끔화
     st.markdown(
         f"<div style='font-size:11px; color:#cbd5e1;"
         f" margin-bottom:6px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
@@ -652,7 +655,8 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 20px; 
+                /* UI 위치를 아래쪽으로 내림 (기존 bottom 20px -> 60px) */
+                bottom: 60px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -667,12 +671,13 @@ with right_col:
                 opacity: 1;
             }}
 
-            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
-            .title-tier-2 {{ font-size: 42px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; }}
-            .title-tier-3 {{ font-size: 48px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
-            .title-tier-4 {{ font-size: 54px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; }}
-            .title-tier-5 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,126,95,0.6)); }}
-            .title-tier-6 {{ font-size: 70px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 20px rgba(255,255,255,0.8)); }}
+            /* 텍스트 크기를 전체적으로 더 키움 (기존 대비 약 20~25% 확대) */
+            .title-tier-1 {{ font-size: 46px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 52px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; }}
+            .title-tier-3 {{ font-size: 60px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
+            .title-tier-4 {{ font-size: 68px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; }}
+            .title-tier-5 {{ font-size: 76px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 86px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 20px rgba(255,255,255,0.8)); }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -687,10 +692,10 @@ with right_col:
                 100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 22px; font-weight: 900; margin-bottom: 6px; letter-spacing: 1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 17px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); font-weight: 600; }}
-            .price-text {{ font-size: 20px; font-weight: 900; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 16px; font-weight: 800; color: #f87171; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .status-header {{ font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: 1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 20px; color: #f3e8ff; margin-top: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 24px; font-weight: 900; color: #fbbf24; margin-top: 8px; text-shadow: 0 0 20px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 19px; font-weight: 800; color: #f87171; margin-top: 6px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -762,7 +767,9 @@ with right_col:
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -0.2, 9.5);
+            
+            /* 3D 오브젝트 크기 체감을 위해 카메라 위치 미세 조정 및 오브젝트 크기 키움 */
+            camera.position.set(0, -0.4, 10.5);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -815,49 +822,50 @@ with right_col:
             scene.add(particleSystem);
 
             const objectGroup = new THREE.Group();
-            objectGroup.position.y = -0.3;
+            objectGroup.position.y = -0.5;
 
             let baseGeo;
             const lvl = {current_level};
 
+            /* 3D 오브젝트 전체 기본 스케일(크기)을 약 25% 가량 키움 */
             if (lvl <= 2) {{
-                baseGeo = new THREE.TetrahedronGeometry(2.4);
+                baseGeo = new THREE.TetrahedronGeometry(3.0);
             }} else if (lvl <= 5) {{
-                baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
+                baseGeo = new THREE.BoxGeometry(2.8, 2.8, 2.8);
             }} else if (lvl <= 8) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5);
+                baseGeo = new THREE.CylinderGeometry(2.5, 2.5, 3.1, 5);
             }} else if (lvl <= 11) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6);
+                baseGeo = new THREE.CylinderGeometry(2.5, 2.5, 3.1, 6);
             }} else if (lvl <= 14) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7);
+                baseGeo = new THREE.CylinderGeometry(2.5, 2.5, 3.1, 7);
             }} else if (lvl <= 17) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8);
+                baseGeo = new THREE.CylinderGeometry(2.5, 2.5, 3.1, 8);
             }} else if (lvl == 18) {{
-                baseGeo = new THREE.OctahedronGeometry(2.6);
+                baseGeo = new THREE.OctahedronGeometry(3.2);
             }} else if (lvl == 19) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.5);
+                baseGeo = new THREE.DodecahedronGeometry(3.1);
             }} else if (lvl == 20) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.5);
+                baseGeo = new THREE.IcosahedronGeometry(3.1);
             }} else if (lvl == 21) {{
-                baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6);
+                baseGeo = new THREE.ConeGeometry(2.8, 4.0, 6);
             }} else if (lvl == 22) {{
-                baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32);
+                baseGeo = new THREE.TorusGeometry(2.2, 0.85, 16, 32);
             }} else if (lvl == 23) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3);
+                baseGeo = new THREE.TorusKnotGeometry(1.8, 0.6, 64, 16, 2, 3);
             }} else if (lvl == 24) {{
-                baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12);
+                baseGeo = new THREE.CylinderGeometry(0.6, 2.8, 3.8, 12);
             }} else if (lvl == 25) {{
-                baseGeo = new THREE.SphereGeometry(2.3, 16, 16);
+                baseGeo = new THREE.SphereGeometry(2.9, 16, 16);
             }} else if (lvl == 26) {{
-                baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8);
+                baseGeo = new THREE.ConeGeometry(3.1, 4.4, 8);
             }} else if (lvl == 27) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4);
+                baseGeo = new THREE.TorusKnotGeometry(1.9, 0.75, 96, 24, 3, 4);
             }} else if (lvl == 28) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.6, 1);
+                baseGeo = new THREE.IcosahedronGeometry(3.3, 1);
             }} else if (lvl == 29) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.7, 1);
+                baseGeo = new THREE.DodecahedronGeometry(3.4, 1);
             }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5);
+                baseGeo = new THREE.TorusKnotGeometry(2.0, 0.75, 128, 32, 2, 5);
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
@@ -874,7 +882,7 @@ with right_col:
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(1.25, 32, 32);
+            const coreGeo = new THREE.SphereGeometry(1.55, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
