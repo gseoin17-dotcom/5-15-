@@ -583,7 +583,6 @@ if st.session_state.level == 30:
         </div>
 
         <script>
-            // 엔딩 크레딧 사운드 연출 (Web Audio API)
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             function playEndingSound() {
                 if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -875,22 +874,22 @@ else:
     current_cost = format_gold(get_enhance_cost(current_level))
     tier = curr_data["tier"]
     status = st.session_state.status
-    is_muted = "true" if st.session_state.sound_muted else "false"
+    is_muted_str = "true" if st.session_state.sound_muted else "false"
 
-    three_js_code = f"""
+    three_js_template = """
       <!DOCTYPE html>
       <html>
       <head>
           <style>
-              body {{ 
+              body { 
                   margin: 0; 
                   overflow: hidden; 
                   background: transparent; 
                   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-              }}
-              #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+              }
+              #container { width: 100vw; height: 100vh; position: absolute; top:0; left:0; }
 
-              .cinematic-ui {{
+              .cinematic-ui {
                   position: absolute;
                   bottom: 25px; 
                   left: 50%;
@@ -901,36 +900,36 @@ else:
                   pointer-events: none;
                   opacity: 0;
                   transition: opacity 0.4s ease-in-out;
-              }}
+              }
 
-              .cinematic-ui.visible {{
+              .cinematic-ui.visible {
                   opacity: 1;
-              }}
+              }
 
-              .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-              .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-              .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-              .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-              .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-              .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+              .title-tier-1 { font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }
+              .title-tier-2 { font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }
+              .title-tier-3 { font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }
+              .title-tier-4 { font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }
+              .title-tier-5 { font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }
+              .title-tier-6 { font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }
 
-              @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+              @keyframes rainbow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-              .shaking-text {{
+              .shaking-text {
                   animation: textVibe 0.18s infinite alternate ease-in-out;
-              }}
-              @keyframes textVibe {{
-                  0% {{ transform: translate(0px, 0px) rotate(0deg); }}
-                  25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
-                  50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
-                  75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
-                  100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
-              }}
+              }
+              @keyframes textVibe {
+                  0% { transform: translate(0px, 0px) rotate(0deg); }
+                  25% { transform: translate(-1.5px, 1px) rotate(-0.5deg); }
+                  50% { transform: translate(1.5px, -1.5px) rotate(0.8deg); }
+                  75% { transform: translate(-1px, -1px) rotate(-0.3deg); }
+                  100% { transform: translate(1px, 1.5px) rotate(0.5deg); }
+              }
 
-              .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-              .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-              .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-              .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+              .status-header { font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }
+              .desc-text { font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }
+              .price-text { font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }
+              .cost-text { font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }
           </style>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -940,26 +939,24 @@ else:
 
           <div id="cinematicUi" class="cinematic-ui">
               <div id="statusText" class="status-header">READY</div>
-              <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-              <div id="descText" class="desc-text">"{card_desc}"</div>
-              <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-              <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
+              <div id="mainTitle" class="title-tier-REPLACE_TIER">REPLACE_TITLE</div>
+              <div id="descText" class="desc-text">"REPLACE_DESC"</div>
+              <div id="priceText" class="price-text">예상 가치: REPLACE_PRICE</div>
+              <div id="costText" class="cost-text">필요 강화 비용: REPLACE_COST</div>
           </div>
 
           <script>
-              // Web Audio API 효과음 신시사이저 구문 추가
-              const isMuted = {is_muted};
+              const isMuted = REPLACE_MUTED;
               const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-              function playSound(type) {{
+              function playSound(type) {
                   if (isMuted) return;
-                  if (audioCtx.state === 'suspended') {{ audioCtx.resume(); }}
+                  if (audioCtx.state === 'suspended') { audioCtx.resume(); }
                   const now = audioCtx.currentTime;
 
-                  if (type === "SUCCESS" || type === "PITY_SUCCESS") {{
-                      // 성공: 아르페지오 화음 신디사이저
+                  if (type === "SUCCESS" || type === "PITY_SUCCESS") {
                       const freqs = [440, 554.37, 659.25, 880];
-                      freqs.forEach((f, idx) => {{
+                      freqs.forEach((f, idx) => {
                           const osc = audioCtx.createOscillator();
                           const gain = audioCtx.createGain();
                           osc.type = 'sine';
@@ -970,9 +967,8 @@ else:
                           gain.connect(audioCtx.destination);
                           osc.start(now + idx * 0.08);
                           osc.stop(now + idx * 0.08 + 0.4);
-                      }});
-                  }} else if (type === "CRITICAL") {{
-                      // 대성공: 화려한 고주파 벨 사운드 + 타격음
+                      });
+                  } else if (type === "CRITICAL") {
                       const osc = audioCtx.createOscillator();
                       const gain = audioCtx.createGain();
                       osc.type = 'triangle';
@@ -984,8 +980,7 @@ else:
                       gain.connect(audioCtx.destination);
                       osc.start(now);
                       osc.stop(now + 0.6);
-                  }} else if (type === "FAILED" || type === "HOLD") {{
-                      // 실패: 묵직한 하향 로우 패스 노이즈
+                  } else if (type === "FAILED" || type === "HOLD") {
                       const osc = audioCtx.createOscillator();
                       const gain = audioCtx.createGain();
                       osc.type = 'sawtooth';
@@ -997,8 +992,7 @@ else:
                       gain.connect(audioCtx.destination);
                       osc.start(now);
                       osc.stop(now + 0.35);
-                  }} else if (type === "DESTROYED") {{
-                      // 파괴: 웅장한 블랙홀 폭발음
+                  } else if (type === "DESTROYED") {
                       const osc = audioCtx.createOscillator();
                       const gain = audioCtx.createGain();
                       osc.type = 'square';
@@ -1010,8 +1004,7 @@ else:
                       gain.connect(audioCtx.destination);
                       osc.start(now);
                       osc.stop(now + 0.8);
-                  }} else if (type === "SHIELD_SAVED") {{
-                      // 방지권 발동: 단단한 실드 결계음
+                  } else if (type === "SHIELD_SAVED") {
                       const osc = audioCtx.createOscillator();
                       const gain = audioCtx.createGain();
                       osc.type = 'sine';
@@ -1023,66 +1016,66 @@ else:
                       gain.connect(audioCtx.destination);
                       osc.start(now);
                       osc.stop(now + 0.5);
-                  }}
-              }}
+                  }
+              }
 
-              const status = "{status}";
+              const status = "REPLACE_STATUS";
               playSound(status);
 
               const uiElement = document.getElementById('cinematicUi');
 
-              const currentLevel = {current_level};
-              if (currentLevel >= 20) {{
+              const currentLevel = REPLACE_LEVEL;
+              if (currentLevel >= 20) {
                   document.getElementById('mainTitle').classList.add('shaking-text');
                   document.getElementById('descText').classList.add('shaking-text');
                   document.getElementById('priceText').classList.add('shaking-text');
                   document.getElementById('costText').classList.add('shaking-text');
-              }}
+              }
 
               const statusText = document.getElementById('statusText');
-              const tierColor = "{card_color}";
+              const tierColor = "REPLACE_COLOR";
               let statusColor = "#38bdf8";
               let particleSize = 0.3;
               let particleSpeed = 1.0;
               let glowIntensity = 15;
 
-              if (status === "CRITICAL") {{
+              if (status === "CRITICAL") {
                   statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                   statusColor = "#ffffff"; 
                   particleSize = 0.55;
                   particleSpeed = 2.5;
                   glowIntensity = 35;
-              }} else if (status === "PITY_SUCCESS") {{
+              } else if (status === "PITY_SUCCESS") {
                   statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
                   statusColor = "#fde68a";
                   particleSize = 0.45;
                   particleSpeed = 2.0;
                   glowIntensity = 30;
-              }} else if (status === "SUCCESS") {{
+              } else if (status === "SUCCESS") {
                   statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                   statusColor = tierColor;
                   particleSize = 0.35;
                   particleSpeed = 1.5;
                   glowIntensity = 22;
-              }} else if (status === "SHIELD_SAVED") {{
+              } else if (status === "SHIELD_SAVED") {
                   statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                   statusColor = "#60a5fa";
-              }} else if (status === "DESTROYED") {{
+              } else if (status === "DESTROYED") {
                   statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
                   statusColor = "#ef4444";
                   particleSpeed = 1.2;
-              }} else if (status === "FAILED") {{
+              } else if (status === "FAILED") {
                   statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                   statusColor = "#64748b";
                   particleSpeed = 0.5;
                   glowIntensity = 6;
-              }} else if (status === "HOLD") {{
+              } else if (status === "HOLD") {
                   statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                   statusColor = "#94a3b8";
                   particleSpeed = 0.7;
-              }} else {{
+              } else {
                   statusText.innerText = "READY - 우주 에너지가 집중됩니다";
-              }}
+              }
               
               statusText.style.color = statusColor;
 
@@ -1112,7 +1105,7 @@ else:
               const particlePositions = new Float32Array(particleCount * 3);
               const particleVelocities = [];
 
-              for(let i=0; i<particleCount; i++) {{
+              for(let i=0; i<particleCount; i++) {
                   particlePositions[i*3] = (Math.random() - 0.5) * 7.0;
                   particlePositions[i*3 + 1] = -5.0 + Math.random() * 3.0;
                   particlePositions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
@@ -1120,22 +1113,22 @@ else:
                   let spd = particleSpeed;
                   if (status === "FAILED") spd = 0.3;
 
-                  particleVelocities.push({{
+                  particleVelocities.push({
                       x: (Math.random() - 0.5) * 0.02 * spd,
                       y: (0.015 + Math.random() * 0.03) * spd,
                       z: (Math.random() - 0.5) * 0.02 * spd,
-                  }});
-              }}
+                  });
+              }
               particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
               
-              const particleMat = new THREE.PointsMaterial({{
+              const particleMat = new THREE.PointsMaterial({
                   color: new THREE.Color(statusColor),
                   size: particleSize,
                   transparent: true,
                   opacity: status === "FAILED" ? 0.3 : 0.9,
                   blending: THREE.AdditiveBlending,
                   depthWrite: false
-              }});
+              });
               const particleSystem = new THREE.Points(particleGeo, particleMat);
               scene.add(particleSystem);
 
@@ -1143,49 +1136,49 @@ else:
               objectGroup.position.y = -0.7;
 
               let baseGeo;
-              const lvl = {current_level};
+              const lvl = REPLACE_LEVEL;
 
-              if (lvl <= 2) {{
+              if (lvl <= 2) {
                   baseGeo = new THREE.TetrahedronGeometry(2.3);
-              }} else if (lvl <= 5) {{
+              } else if (lvl <= 5) {
                   baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-              }} else if (lvl <= 8) {{
+              } else if (lvl <= 8) {
                   baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-              }} else if (lvl <= 11) {{
+              } else if (lvl <= 11) {
                   baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-              }} else if (lvl <= 14) {{
+              } else if (lvl <= 14) {
                   baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-              }} else if (lvl <= 17) {{
+              } else if (lvl <= 17) {
                   baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-              }} else if (lvl == 18) {{
+              } else if (lvl == 18) {
                   baseGeo = new THREE.OctahedronGeometry(2.5);
-              }} else if (lvl == 19) {{
+              } else if (lvl == 19) {
                   baseGeo = new THREE.DodecahedronGeometry(2.4);
-              }} else if (lvl == 20) {{
+              } else if (lvl == 20) {
                   baseGeo = new THREE.IcosahedronGeometry(2.4);
-              }} else if (lvl == 21) {{
+              } else if (lvl == 21) {
                   baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-              }} else if (lvl == 22) {{
+              } else if (lvl == 22) {
                   baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-              }} else if (lvl == 23) {{
+              } else if (lvl == 23) {
                   baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-              }} else if (lvl == 24) {{
+              } else if (lvl == 24) {
                   baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-              }} else if (lvl == 25) {{
+              } else if (lvl == 25) {
                   baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-              }} else if (lvl == 26) {{
+              } else if (lvl == 26) {
                   baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-              }} else if (lvl == 27) {{
+              } else if (lvl == 27) {
                   baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-              }} else if (lvl == 28) {{
+              } else if (lvl == 28) {
                   baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-              }} else if (lvl == 29) {{
+              } else if (lvl == 29) {
                   baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-              }} else {{
+              } else {
                   baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-              }}
+              }
 
-              const outerMat = new THREE.MeshPhysicalMaterial({{
+              const outerMat = new THREE.MeshPhysicalMaterial({
                   color: tierColor,
                   emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
                   emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
@@ -1195,19 +1188,19 @@ else:
                   transparent: true,
                   opacity: status === "FAILED" ? 0.5 : 0.95,
                   wireframe: false
-              }});
+              });
               const outerMesh = new THREE.Mesh(baseGeo, outerMat);
               objectGroup.add(outerMesh);
 
               const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
-              const coreMat = new THREE.MeshPhysicalMaterial({{
+              const coreMat = new THREE.MeshPhysicalMaterial({
                   color: 0xffffff,
                   emissive: statusColor,
                   emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
                   roughness: 0.05,
                   metalness: 0.95,
                   transmission: 0.8
-              }});
+              });
               const coreMesh = new THREE.Mesh(coreGeo, coreMat);
               objectGroup.add(coreMesh);
 
@@ -1215,7 +1208,7 @@ else:
 
               uiElement.classList.add('visible');
 
-              if (status === "DESTROYED") {{
+              if (status === "DESTROYED") {
                   outerMesh.visible = false;
                   coreMesh.visible = false;
 
@@ -1224,15 +1217,15 @@ else:
                   const shardGroup = new THREE.Group();
                   shardGroup.position.y = -0.7;
 
-                  for(let i=0; i<shardCount; i++) {{
+                  for(let i=0; i<shardCount; i++) {
                       const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
-                      const sMat = new THREE.MeshStandardMaterial({{
+                      const sMat = new THREE.MeshStandardMaterial({
                           color: tierColor,
                           roughness: 0.2,
                           metalness: 0.9,
                           emissive: "#ef4444",
                           emissiveIntensity: 1.0
-                      }});
+                      });
                       const shard = new THREE.Mesh(sGeo, sMat);
                       shard.position.set(0, 0, 0);
                       
@@ -1242,25 +1235,25 @@ else:
                       const phi = Math.acos(2.0 * v - 1.0);
                       const speed = 4.0 + Math.random() * 5.0;
                       
-                      shard.userData = {{
+                      shard.userData = {
                           vx: speed * Math.sin(phi) * Math.cos(theta),
                           vy: speed * Math.sin(phi) * Math.sin(theta),
                           vz: speed * Math.cos(phi),
                           rx: (Math.random() - 0.5) * 20,
                           ry: (Math.random() - 0.5) * 20
-                      }};
+                      };
 
                       shardGroup.add(shard);
                       shards.push(shard);
-                  }}
+                  }
                   scene.add(shardGroup);
 
-                  gsap.to(shardGroup.position, {{
+                  gsap.to(shardGroup.position, {
                       duration: 1.2,
                       ease: "power2.out",
-                      onUpdate: function() {{
+                      onUpdate: function() {
                           const progress = this.progress();
-                          shards.forEach(s => {{
+                          shards.forEach(s => {
                               s.position.x += s.userData.vx * 0.02;
                               s.position.y += s.userData.vy * 0.02 - 0.05;
                               s.position.z += s.userData.vz * 0.02;
@@ -1268,62 +1261,73 @@ else:
                               s.rotation.y += s.userData.ry * 0.02;
                               s.material.opacity = 1.0 - progress;
                               s.material.transparent = true;
-                          }});
-                      }}
-                  }});
-              }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
-                  gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
-              }} else if (status === "SUCCESS") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
-              }} else if (status === "FAILED") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"}});
-              }} else if (status === "SHIELD_SAVED") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 1.25, y: 1.25, z: 1.25}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
-              }}
+                          });
+                      }
+                  });
+              } else if (status === "CRITICAL" || status === "PITY_SUCCESS") {
+                  gsap.fromTo(objectGroup.scale, {x: 0.2, y: 0.2, z: 0.2}, {x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"});
+                  gsap.to(objectGroup.scale, {x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5});
+              } else if (status === "SUCCESS") {
+                  gsap.fromTo(objectGroup.scale, {x: 0.8, y: 0.8, z: 0.8}, {x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"});
+              } else if (status === "FAILED") {
+                  gsap.fromTo(objectGroup.scale, {x: 1.05, y: 1.05, z: 1.05}, {x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"});
+              } else if (status === "SHIELD_SAVED") {
+                  gsap.fromTo(objectGroup.scale, {x: 1.25, y: 1.25, z: 1.25}, {x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"});
+              }
 
               const clock = new THREE.Clock();
 
-              function animate() {{
+              function animate() {
                   requestAnimationFrame(animate);
                   const time = clock.getElapsedTime();
 
-                  if (status !== "DESTROYED") {{
+                  if (status !== "DESTROYED") {
                       const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
                       outerMesh.rotation.x = time * (0.5 * rotSpeed);
                       outerMesh.rotation.y = time * (0.75 * rotSpeed);
                       coreMesh.rotation.x = -time * (1.2 * rotSpeed);
                       coreMesh.rotation.y = -time * (1.5 * rotSpeed);
                       objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
-                  }}
+                  }
 
                   const positions = particleGeo.attributes.position.array;
-                  for(let i=0; i<particleCount; i++) {{
+                  for(let i=0; i<particleCount; i++) {
                       positions[i*3] += particleVelocities[i].x;
                       positions[i*3 + 1] += particleVelocities[i].y;
                       positions[i*3 + 2] += particleVelocities[i].z;
 
-                      if(positions[i*3 + 1] > 3.0) {{
+                      if(positions[i*3 + 1] > 3.0) {
                           positions[i*3 + 1] = -5.0;
                           positions[i*3] = (Math.random() - 0.5) * 7.0;
                           positions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
-                      }}
-                  }}
+                      }
+                  }
                   particleGeo.attributes.position.needsUpdate = true;
 
                   renderer.render(scene, camera);
-              }}
+              }
 
               animate();
 
-              window.addEventListener('resize', () => {{
+              window.addEventListener('resize', () => {
                   camera.aspect = window.innerWidth / window.innerHeight;
                   camera.updateProjectionMatrix();
                   renderer.setSize(window.innerWidth, window.innerHeight);
-              }});
+              });
           </script>
       </body>
       </html>
       """
+
+    three_js_code = (
+        three_js_template.replace("REPLACE_TIER", str(tier))
+        .replace("REPLACE_TITLE", card_title)
+        .replace("REPLACE_DESC", card_desc)
+        .replace("REPLACE_PRICE", card_price)
+        .replace("REPLACE_COST", current_cost)
+        .replace("REPLACE_MUTED", is_muted_str)
+        .replace("REPLACE_STATUS", status)
+        .replace("REPLACE_LEVEL", str(current_level))
+    )
 
     components.html(three_js_code, height=580, scrolling=False)
