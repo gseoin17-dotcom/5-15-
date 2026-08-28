@@ -419,13 +419,13 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (쓰레기통 -> 하이테크 3D 우주 배경으로 변경)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url("https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=1920&auto=format&fit=crop");
+        background: radial-gradient(circle at center, #1e1b4b 0%, #09090b 100%);
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -516,7 +516,6 @@ with left_col:
 
   st.markdown("<br>", unsafe_allow_html=True)
 
-  # 사각형 배경 없이 텍스트만 표시되도록 인라인 스타일 적용
   s_col1, s_col2 = st.columns(2)
 
   with s_col1:
@@ -629,6 +628,7 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
+  # 강화 UI 글자 크기 전반적으로 확대 적용 (기존 대비 약 30~40% 상향)
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -659,12 +659,12 @@ with right_col:
                 opacity: 1;
             }}
 
-            .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-            .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+            .title-tier-1 {{ font-size: 34px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+            .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+            .title-tier-4 {{ font-size: 50px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+            .title-tier-5 {{ font-size: 58px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+            .title-tier-6 {{ font-size: 64px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -679,10 +679,10 @@ with right_col:
                 100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
-            .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+            .status-header {{ font-size: 19px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+            .price-text {{ font-size: 17px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
