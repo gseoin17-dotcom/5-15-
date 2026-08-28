@@ -36,11 +36,37 @@ def format_gold(amount):
 
 def get_enhance_cost(level):
   cost_table = {
-      0: 300, 1: 300, 2: 500, 3: 500, 4: 1000, 5: 1500, 6: 2000, 7: 2000,
-      8: 3000, 9: 5000, 10: 10900, 11: 20000, 12: 35000, 13: 55000, 14: 100000,
-      15: 180000, 16: 300000, 17: 300000, 18: 500000, 19: 800000, 20: 1500000,
-      21: 2500000, 22: 4000000, 23: 6500000, 24: 10000000, 25: 16000000,
-      26: 25000000, 27: 40000000, 28: 65000000, 29: 100000000, 30: 150000000,
+      0: 300,
+      1: 300,
+      2: 500,
+      3: 500,
+      4: 1000,
+      5: 1500,
+      6: 2000,
+      7: 2000,
+      8: 3000,
+      9: 5000,
+      10: 10900,
+      11: 20000,
+      12: 35000,
+      13: 55000,
+      14: 100000,
+      15: 180000,
+      16: 300000,
+      17: 300000,
+      18: 500000,
+      19: 800000,
+      20: 1500000,
+      21: 2500000,
+      22: 4000000,
+      23: 6500000,
+      24: 10000000,
+      25: 16000000,
+      26: 25000000,
+      27: 40000000,
+      28: 65000000,
+      29: 100000000,
+      30: 150000000,
   }
   return cost_table.get(level, 150000000)
 
@@ -54,50 +80,256 @@ def get_shield_cost(level):
 # 3. 게임 데이터베이스 정의
 # -----------------------------------------------------------------------------
 SMELL_DB = {
-    0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
-    1: {"name": "1단계 : 스쳐가는 지온냄새", "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.", "price": 150, "color": "#718096", "tier": 1},
-    2: {"name": "2단계 : 은은한 자이온냄새", "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.", "price": 400, "color": "#38a169", "tier": 1},
-    3: {"name": "3단계 : 습한 지온냄새", "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.", "price": 600, "color": "#276749", "tier": 1},
-    4: {"name": "4단계 : 진득한 자이온냄새", "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.", "price": 800, "color": "#319795", "tier": 1},
-    5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 3000, "color": "#2c7a7b", "tier": 1},
-    6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 3500, "color": "#3182ce", "tier": 2},
-    7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.", "price": 6100, "color": "#2b6cb0", "tier": 2},
-    8: {"name": "8단계 : 폭발하는 지온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 10000, "color": "#805ad5", "tier": 2},
-    9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.", "price": 20000, "color": "#6b46c1", "tier": 2},
-    10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.", "price": 35100, "color": "#d69e2e", "tier": 2},
-    11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 지구 흙밭을 거니는 환각을 본다.", "price": 160000, "color": "#b7791f", "tier": 3},
-    12: {"name": "12단계 : 공간지배 자이온냄새", "desc": "방 안의 모든 산소를 지온 분자로 채운다.", "price": 350000, "color": "#dd6b20", "tier": 3},
-    13: {"name": "13단계 : 전설의 지온냄새", "desc": "역사서에서 언급되던 전설 속의 지구 향기.", "price": 1000000, "color": "#c05621", "tier": 3},
-    14: {"name": "14단계 : 신성한 자이온냄새", "desc": "마음이 경건해지며 흙과 하나가 되는 기분.", "price": 3000000, "color": "#e53e3e", "tier": 3},
-    15: {"name": "15단계 : 신화급 지온냄새", "desc": "신들이 세계를 창조할 때 맡았다는 향.", "price": 7500000, "color": "#9b2c2c", "tier": 3},
-    16: {"name": "16단계 : 우주관통 자이온냄새", "desc": "성층권을 뚫고 우주선까지 퍼져나간다.", "price": 14200000, "color": "#00f0ff", "tier": 4},
-    17: {"name": "17단계 : 차원균열 자이온냄새", "desc": "평행세계의 흙냄새까지 끌어당긴다.", "price": 20000000, "color": "#ff00ea", "tier": 4},
-    18: {"name": "18단계 : Absolute 자이온냄새", "desc": "만물의 요소를 지온 입자로 바꿔버린다.", "price": 30000000, "color": "#ffe600", "tier": 4},
-    19: {"name": "19단계 : 초월적 지온냄새", "desc": "인간의 감각으로는 수용 불가능한 향기.", "price": 47500000, "color": "#ff0055", "tier": 4},
-    20: {"name": "20단계 : 자이온맘의 포근한 집밥 냄새", "desc": "자이온맘의 강림! 따스하고 구수한 냄새.", "price": 68300000, "color": "#ffaa00", "tier": 4},
-    21: {"name": "21단계 : 자이온맘의 엄격한 등짝 스매싱", "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.", "price": 101000000, "color": "#ff4500", "tier": 5},
-    22: {"name": "22단계 : 자이온맘의 전설의 흙된장국", "desc": "극상의 흙내음과 깊은 손맛.", "price": 160000000, "color": "#ff007f", "tier": 5},
-    23: {"name": "23단계 : 자이온맘의 100년 숙성 원액", "desc": "몰래 아껴둔 냄새의 결정체.", "price": 230000000, "color": "#7b00ff", "tier": 5},
-    24: {"name": "24단계 : 자이온맘의 지온스프레이", "desc": "집안 가득 뿌리는 치명적인 청량함.", "price": 300000000, "color": "#0088ff", "tier": 5},
-    25: {"name": "25단계 : 자이온맘의 무한한 은혜", "desc": "은하수 아이들에게 평화를 내리는 자애로움.", "price": 400000000, "color": "#00ffaa", "tier": 5},
-    26: {"name": "26단계 : 자이온맘의 궁극 필살기", "desc": "우주 전체가 지온 향으로 뒤덮인다.", "price": 1800000000, "color": "#ccff00", "tier": 6},
-    27: {"name": "27단계 : 자이온맘의 창조와 구원", "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.", "price": 2500000000, "color": "#fffb00", "tier": 6},
-    28: {"name": "28단계 : 자이온맘의 권능 지온냄새", "desc": "창조주도 고개를 숙이고 냄새를 맡는다.", "price": 5500000000, "color": "#ffffff", "tier": 6},
-    29: {"name": "29단계 : 만물의 어머니 ★자이온맘★", "desc": "우주 만물이 품으로 돌아가는 최종 오라.", "price": 10500000000, "color": "#ff00aa", "tier": 6},
-    30: {"name": "30단계 : ★태초의 자이온맘★ 절대신성", "desc": "우주를 지온으로 통일한 자이온맘의 완성.", "price": float("inf"), "color": "#00ffff", "tier": 6},
+    0: {
+        "name": "0단계 : 무취의 공간",
+        "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.",
+        "price": 0,
+        "color": "#4a5568",
+        "tier": 1,
+    },
+    1: {
+        "name": "1단계 : 스쳐가는 지온냄새",
+        "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.",
+        "price": 150,
+        "color": "#718096",
+        "tier": 1,
+    },
+    2: {
+        "name": "2단계 : 은은한 자이온냄새",
+        "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.",
+        "price": 400,
+        "color": "#38a169",
+        "tier": 1,
+    },
+    3: {
+        "name": "3단계 : 습한 지온냄새",
+        "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.",
+        "price": 600,
+        "color": "#276749",
+        "tier": 1,
+    },
+    4: {
+        "name": "4단계 : 진득한 자이온냄새",
+        "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.",
+        "price": 800,
+        "color": "#319795",
+        "tier": 1,
+    },
+    5: {
+        "name": "5단계 : 자극적인 지온냄새",
+        "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.",
+        "price": 3000,
+        "color": "#2c7a7b",
+        "tier": 1,
+    },
+    6: {
+        "name": "6단계 : 풍부한 자이온냄새",
+        "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.",
+        "price": 3500,
+        "color": "#3182ce",
+        "tier": 2,
+    },
+    7: {
+        "name": "7단계 : 압도적인 지온냄새",
+        "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.",
+        "price": 6100,
+        "color": "#2b6cb0",
+        "tier": 2,
+    },
+    8: {
+        "name": "8단계 : 폭발하는 지온냄새",
+        "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.",
+        "price": 10000,
+        "color": "#805ad5",
+        "tier": 2,
+    },
+    9: {
+        "name": "9단계 : 시공을 뒤흔드는 지온냄새",
+        "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.",
+        "price": 20000,
+        "color": "#6b46c1",
+        "tier": 2,
+    },
+    10: {
+        "name": "10단계 : 치명적인 자이온냄새",
+        "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.",
+        "price": 35100,
+        "color": "#d69e2e",
+        "tier": 2,
+    },
+    11: {
+        "name": "11단계 : 환각을 부르는 지온냄새",
+        "desc": "태초의 지구 흙밭을 거니는 환각을 본다.",
+        "price": 160000,
+        "color": "#b7791f",
+        "tier": 3,
+    },
+    12: {
+        "name": "12단계 : 공간지배 자이온냄새",
+        "desc": "방 안의 모든 산소를 지온 분자로 채운다.",
+        "price": 350000,
+        "color": "#dd6b20",
+        "tier": 3,
+    },
+    13: {
+        "name": "13단계 : 전설의 지온냄새",
+        "desc": "역사서에서 언급되던 전설 속의 지구 향기.",
+        "price": 1000000,
+        "color": "#c05621",
+        "tier": 3,
+    },
+    14: {
+        "name": "14단계 : 신성한 자이온냄새",
+        "desc": "마음이 경건해지며 흙과 하나가 되는 기분.",
+        "price": 3000000,
+        "color": "#e53e3e",
+        "tier": 3,
+    },
+    15: {
+        "name": "15단계 : 신화급 지온냄새",
+        "desc": "신들이 세계를 창조할 때 맡았다는 향.",
+        "price": 7500000,
+        "color": "#9b2c2c",
+        "tier": 3,
+    },
+    16: {
+        "name": "16단계 : 우주관통 자이온냄새",
+        "desc": "성층권을 뚫고 우주선까지 퍼져나간다.",
+        "price": 14200000,
+        "color": "#00f0ff",
+        "tier": 4,
+    },
+    17: {
+        "name": "17단계 : 차원균열 자이온냄새",
+        "desc": "평행세계의 흙냄새까지 끌어당긴다.",
+        "price": 20000000,
+        "color": "#ff00ea",
+        "tier": 4,
+    },
+    18: {
+        "name": "18단계 : Absolute 자이온냄새",
+        "desc": "만물의 요소를 지온 입자로 바꿔버린다.",
+        "price": 30000000,
+        "color": "#ffe600",
+        "tier": 4,
+    },
+    19: {
+        "name": "19단계 : 초월적 지온냄새",
+        "desc": "인간의 감각으로는 수용 불가능한 향기.",
+        "price": 47500000,
+        "color": "#ff0055",
+        "tier": 4,
+    },
+    20: {
+        "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
+        "desc": "자이온맘의 강림! 따스하고 구수한 냄새.",
+        "price": 68300000,
+        "color": "#ffaa00",
+        "tier": 4,
+    },
+    21: {
+        "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱",
+        "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.",
+        "price": 101000000,
+        "color": "#ff4500",
+        "tier": 5,
+    },
+    22: {
+        "name": "22단계 : 자이온맘의 전설의 흙된장국",
+        "desc": "극상의 흙내음과 깊은 손맛.",
+        "price": 160000000,
+        "color": "#ff007f",
+        "tier": 5,
+    },
+    23: {
+        "name": "23단계 : 자이온맘의 100년 숙성 원액",
+        "desc": "몰래 아껴둔 냄새의 결정체.",
+        "price": 230000000,
+        "color": "#7b00ff",
+        "tier": 5,
+    },
+    24: {
+        "name": "24단계 : 자이온맘의 지온스프레이",
+        "desc": "집안 가득 뿌리는 치명적인 청량함.",
+        "price": 300000000,
+        "color": "#0088ff",
+        "tier": 5,
+    },
+    25: {
+        "name": "25단계 : 자이온맘의 무한한 은혜",
+        "desc": "은하수 아이들에게 평화를 내리는 자애로움.",
+        "price": 400000000,
+        "color": "#00ffaa",
+        "tier": 5,
+    },
+    26: {
+        "name": "26단계 : 자이온맘의 궁극 필살기",
+        "desc": "우주 전체가 지온 향으로 뒤덮인다.",
+        "price": 1800000000,
+        "color": "#ccff00",
+        "tier": 6,
+    },
+    27: {
+        "name": "27단계 : 자이온맘의 창조와 구원",
+        "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.",
+        "price": 2500000000,
+        "color": "#fffb00",
+        "tier": 6,
+    },
+    28: {
+        "name": "28단계 : 자이온맘의 권능 지온냄새",
+        "desc": "창조주도 고개를 숙이고 냄새를 맡는다.",
+        "price": 5500000000,
+        "color": "#ffffff",
+        "tier": 6,
+    },
+    29: {
+        "name": "29단계 : 만물의 어머니 ★자이온맘★",
+        "desc": "우주 만물이 품으로 돌아가는 최종 오라.",
+        "price": 10500000000,
+        "color": "#ff00aa",
+        "tier": 6,
+    },
+    30: {
+        "name": "30단계 : ★태초의 자이온맘★ 절대신성",
+        "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
+        "price": float("inf"),
+        "color": "#00ffff",
+        "tier": 6,
+    },
 }
 
 PROB_TABLE = {
-    0: (100.0, 0.0, 0.0, 0.0), 1: (100.0, 0.0, 0.0, 0.0), 2: (100.0, 0.0, 0.0, 0.0),
-    3: (95.0, 5.0, 0.0, 0.0), 4: (95.0, 5.0, 0.0, 0.0), 5: (90.0, 10.0, 0.0, 0.0),
-    6: (90.0, 8.0, 2.0, 0.0), 7: (90.0, 5.0, 5.0, 0.0), 8: (85.0, 10.0, 5.0, 0.0),
-    9: (80.0, 15.0, 5.0, 0.0), 10: (80.0, 15.0, 5.0, 0.0), 11: (75.0, 15.0, 5.0, 5.0),
-    12: (70.0, 15.0, 5.0, 10.0), 13: (70.0, 15.0, 7.0, 8.0), 14: (65.0, 15.0, 10.0, 10.0),
-    15: (60.0, 20.0, 10.0, 10.0), 16: (60.0, 18.0, 12.0, 10.0), 17: (55.0, 20.0, 15.0, 10.0),
-    18: (50.0, 20.0, 17.0, 13.0), 19: (50.0, 20.0, 20.0, 10.0), 20: (45.0, 22.0, 23.0, 10.0),
-    21: (40.0, 25.0, 25.0, 10.0), 22: (40.0, 23.0, 27.0, 10.0), 23: (40.0, 20.0, 30.0, 10.0),
-    24: (40.0, 18.0, 32.0, 10.0), 25: (35.0, 25.0, 30.0, 10.0), 26: (50.0, 20.0, 25.0, 5.0),
-    27: (40.0, 25.0, 30.0, 5.0), 28: (30.0, 30.0, 35.0, 5.0), 29: (20.0, 35.0, 40.0, 5.0),
+    0: (100.0, 0.0, 0.0, 0.0),
+    1: (100.0, 0.0, 0.0, 0.0),
+    2: (100.0, 0.0, 0.0, 0.0),
+    3: (95.0, 5.0, 0.0, 0.0),
+    4: (95.0, 5.0, 0.0, 0.0),
+    5: (90.0, 10.0, 0.0, 0.0),
+    6: (90.0, 8.0, 2.0, 0.0),
+    7: (90.0, 5.0, 5.0, 0.0),
+    8: (85.0, 10.0, 5.0, 0.0),
+    9: (80.0, 15.0, 5.0, 0.0),
+    10: (80.0, 15.0, 5.0, 0.0),
+    11: (75.0, 15.0, 5.0, 5.0),
+    12: (70.0, 15.0, 5.0, 10.0),
+    13: (70.0, 15.0, 7.0, 8.0),
+    14: (65.0, 15.0, 10.0, 10.0),
+    15: (60.0, 20.0, 10.0, 10.0),
+    16: (60.0, 18.0, 12.0, 10.0),
+    17: (55.0, 20.0, 15.0, 10.0),
+    18: (50.0, 20.0, 17.0, 13.0),
+    19: (50.0, 20.0, 20.0, 10.0),
+    20: (45.0, 22.0, 23.0, 10.0),
+    21: (40.0, 25.0, 25.0, 10.0),
+    22: (40.0, 23.0, 27.0, 10.0),
+    23: (40.0, 20.0, 30.0, 10.0),
+    24: (40.0, 18.0, 32.0, 10.0),
+    25: (35.0, 25.0, 30.0, 10.0),
+    26: (50.0, 20.0, 25.0, 5.0),
+    27: (40.0, 25.0, 30.0, 5.0),
+    28: (30.0, 30.0, 35.0, 5.0),
+    29: (20.0, 35.0, 40.0, 5.0),
 }
 
 CRITICAL_RATE = 0.05
@@ -124,6 +356,7 @@ if "pity_count" not in st.session_state:
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
+
 
 def run_enhance():
   curr = st.session_state.level
@@ -260,7 +493,7 @@ st.markdown(
 # 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
 if st.session_state.level == 30:
-  # 30단계 만렙 달성 시 출력되는 3D 우주 은하계 엔딩 크레딧 화면
+  # 30단계 만렙 달성 시 출력되는 개쩌는 엔딩 크레딧 화면
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -269,7 +502,7 @@ if st.session_state.level == 30:
             body {
                 margin: 0;
                 overflow: hidden;
-                background: #000000;
+                background: #020617;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             }
             #container { width: 100vw; height: 100vh; position: absolute; top:0; left:0; }
@@ -350,69 +583,51 @@ if st.session_state.level == 30:
         <script>
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -5, 25);
-            camera.lookAt(0, 0, 0);
+            camera.position.set(0, 0, 15);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 무수한 별(Starfield) 생성
-            const starGeo = new THREE.BufferGeometry();
-            const starCount = 4000;
-            const starPos = new Float32Array(starCount * 3);
-            for(let i=0; i<starCount; i++) {
-                starPos[i*3] = (Math.random() - 0.5) * 150;
-                starPos[i*3+1] = (Math.random() - 0.5) * 150;
-                starPos[i*3+2] = (Math.random() - 0.5) * 150;
+            // 화려한 폭발/우주 파티클 생성
+            const particleCount = 2000;
+            const geo = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = [];
+
+            for(let i=0; i<particleCount; i++) {
+                positions[i*3] = (Math.random() - 0.5) * 20;
+                positions[i*3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i*3 + 2] = (Math.random() - 0.5) * 20;
+
+                velocities.push({
+                    x: (Math.random() - 0.5) * 0.05,
+                    y: (Math.random() - 0.5) * 0.05,
+                    z: (Math.random() - 0.5) * 0.05,
+                    rot: Math.random() * 0.02
+                });
             }
-            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-            const starMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.15, transparent: true, opacity: 0.8});
-            const stars = new THREE.Points(starGeo, starMat);
-            scene.add(stars);
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-            // 거대한 소용돌이 은하(Galaxy) 생성
-            const galaxyGeo = new THREE.BufferGeometry();
-            const galCount = 18000;
-            const galPos = new Float32Array(galCount * 3);
-            const galColors = new Float32Array(galCount * 3);
-            const colorInner = new THREE.Color(0xfffb00);
-            const colorOuter = new THREE.Color(0xff00aa);
-
-            for(let i=0; i<galCount; i++) {
-                const radius = Math.random() * 25;
-                const branchAngle = (i % 5) / 5 * Math.PI * 2;
-                const spinAngle = radius * 0.35;
-                
-                const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 4;
-                const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 2;
-                const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 4;
-
-                galPos[i*3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-                galPos[i*3+1] = randomY;
-                galPos[i*3+2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-
-                const mixedColor = colorInner.clone().lerp(colorOuter, radius / 25);
-                galColors[i*3] = mixedColor.r;
-                galColors[i*3+1] = mixedColor.g;
-                galColors[i*3+2] = mixedColor.b;
-            }
-            galaxyGeo.setAttribute('position', new THREE.BufferAttribute(galPos, 3));
-            galaxyGeo.setAttribute('color', new THREE.BufferAttribute(galColors, 3));
-            const galMat = new THREE.PointsMaterial({
-                size: 0.1, vertexColors: true, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
-            });
-            const galaxy = new THREE.Points(galaxyGeo, galMat);
-            galaxy.rotation.x = Math.PI / 3;
-            scene.add(galaxy);
-
-            // 중심부 코어
-            const coreGeo = new THREE.IcosahedronGeometry(1.5, 3);
-            const coreMat = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
+            const mat = new THREE.PointsMaterial({
+                color: 0x00ffff,
+                size: 0.2,
                 transparent: true,
                 opacity: 0.9,
+                blending: THREE.AdditiveBlending
+            });
+            const starSystem = new THREE.Points(geo, mat);
+            scene.add(starSystem);
+
+            // 중앙 거대한 신성 도형
+            const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
+            const coreMat = new THREE.MeshPhysicalMaterial({
+                color: 0xff00aa,
+                emissive: 0x00ffff,
+                emissiveIntensity: 1.5,
+                metalness: 0.9,
+                roughness: 0.1,
                 wireframe: true
             });
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
@@ -420,13 +635,18 @@ if st.session_state.level == 30:
 
             function animate() {
                 requestAnimationFrame(animate);
-                
-                galaxy.rotation.z -= 0.0015;
-                stars.rotation.y += 0.0005;
-                stars.rotation.z += 0.0002;
-                
-                coreMesh.rotation.x += 0.01;
-                coreMesh.rotation.y += 0.015;
+                const time = Date.now() * 0.001;
+
+                coreMesh.rotation.x = time * 0.5;
+                coreMesh.rotation.y = time * 0.7;
+
+                const posArr = geo.attributes.position.array;
+                for(let i=0; i<particleCount; i++) {
+                    posArr[i*3] += velocities[i].x;
+                    posArr[i*3 + 1] += velocities[i].y;
+                    posArr[i*3 + 2] += velocities[i].z;
+                }
+                geo.attributes.position.needsUpdate = true;
 
                 renderer.render(scene, camera);
             }
@@ -460,7 +680,8 @@ else:
 
   with left_col:
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템 설정</h4>",
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
+        " 설정</h4>",
         unsafe_allow_html=True,
     )
     dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
@@ -471,12 +692,13 @@ else:
     )
 
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온 강화 제어</h4>",
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
+        " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
     if st.button(
-        "🔥 냄새 강화 실행",
+        "🔥 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
@@ -581,6 +803,7 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
+      # 28단계 이상일 경우 눈물 사용 차단 안내 메시지 출력
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:12px; color:#ef4444; font-weight:700;"
@@ -596,6 +819,7 @@ else:
             unsafe_allow_html=True,
         )
 
+      # 28단계 이상이면 버튼 비활성화
       can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
@@ -666,22 +890,6 @@ else:
               .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
               .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
 
-              .rainbow-all {{
-                  background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000) !important;
-                  background-size: 200% auto !important;
-                  -webkit-background-clip: text !important;
-                  -webkit-text-fill-color: transparent !important;
-                  animation: superRainbow 2s linear infinite !important;
-                  filter: drop-shadow(0 0 10px rgba(255,255,255,0.6)) !important;
-                  color: transparent !important;
-                  text-shadow: none !important;
-              }}
-              
-              @keyframes superRainbow {{
-                  0% {{ background-position: 0% center; }}
-                  100% {{ background-position: 200% center; }}
-              }}
-
               @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
               .shaking-text {{
@@ -716,22 +924,13 @@ else:
 
           <script>
               const uiElement = document.getElementById('cinematicUi');
+
               const currentLevel = {current_level};
-              
               if (currentLevel >= 20) {{
                   document.getElementById('mainTitle').classList.add('shaking-text');
                   document.getElementById('descText').classList.add('shaking-text');
                   document.getElementById('priceText').classList.add('shaking-text');
                   document.getElementById('costText').classList.add('shaking-text');
-              }}
-
-              // 28단계 이상일 시 텍스트 전체 무지개 효과 적용
-              if (currentLevel >= 28) {{
-                  document.getElementById('statusText').classList.add('rainbow-all');
-                  document.getElementById('mainTitle').classList.add('rainbow-all');
-                  document.getElementById('descText').classList.add('rainbow-all');
-                  document.getElementById('priceText').classList.add('rainbow-all');
-                  document.getElementById('costText').classList.add('rainbow-all');
               }}
 
               const status = "{status}";
@@ -842,39 +1041,44 @@ else:
               let baseGeo;
               const lvl = {current_level};
 
-              // 0 ~ 30단계 모든 폴리곤을 다르게 적용
-              switch (lvl) {{
-                  case 0: baseGeo = new THREE.TetrahedronGeometry(1.8, 0); break;
-                  case 1: baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1); break;
-                  case 2: baseGeo = new THREE.OctahedronGeometry(2.3); break;
-                  case 3: baseGeo = new THREE.DodecahedronGeometry(2.2); break;
-                  case 4: baseGeo = new THREE.IcosahedronGeometry(2.2); break;
-                  case 5: baseGeo = new THREE.ConeGeometry(2.2, 3.2, 3); break; // 삼각뿔
-                  case 6: baseGeo = new THREE.ConeGeometry(2.2, 3.2, 4); break; // 사각뿔
-                  case 7: baseGeo = new THREE.CylinderGeometry(2.1, 2.1, 3.1, 3); break; // 삼각기둥
-                  case 8: baseGeo = new THREE.CylinderGeometry(2.1, 2.1, 3.1, 5); break; // 오각기둥
-                  case 9: baseGeo = new THREE.CylinderGeometry(1.4, 2.2, 3.2, 6); break; // 육각뿔대
-                  case 10: baseGeo = new THREE.TorusGeometry(1.6, 0.6, 4, 12); break; // 거친 도넛
-                  case 11: baseGeo = new THREE.TorusGeometry(1.7, 0.5, 8, 24); break; // 부드러운 도넛
-                  case 12: baseGeo = new THREE.TorusKnotGeometry(1.3, 0.4, 32, 4); break; // 거친 매듭
-                  case 13: baseGeo = new THREE.TorusKnotGeometry(1.4, 0.35, 64, 8); break; // 기본 매듭
-                  case 14: baseGeo = new THREE.SphereGeometry(2.3, 5, 5); break; // 로우폴리 구
-                  case 15: baseGeo = new THREE.SphereGeometry(2.3, 8, 8); break; // 미드폴리 구
-                  case 16: baseGeo = new THREE.OctahedronGeometry(2.4, 1); break; // 세분화된 팔면체
-                  case 17: baseGeo = new THREE.IcosahedronGeometry(2.4, 1); break; // 세분화된 이십면체
-                  case 18: baseGeo = new THREE.DodecahedronGeometry(2.4, 1); break; // 세분화된 십이면체
-                  case 19: baseGeo = new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16, 3, 4); break; // 꼬임 매듭 1
-                  case 20: baseGeo = new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16, 4, 5); break; // 꼬임 매듭 2
-                  case 21: baseGeo = new THREE.CylinderGeometry(0.1, 2.5, 4.0, 8); break; // 긴 팔각뿔
-                  case 22: baseGeo = new THREE.TorusKnotGeometry(1.6, 0.35, 120, 20, 2, 7); break; // 복잡한 매듭
-                  case 23: baseGeo = new THREE.IcosahedronGeometry(2.5, 2); break; // 매끈한 이십면체
-                  case 24: baseGeo = new THREE.SphereGeometry(2.5, 32, 32); break; // 완벽한 구
-                  case 25: baseGeo = new THREE.TorusGeometry(1.9, 0.8, 32, 64); break; // 거대 도넛
-                  case 26: baseGeo = new THREE.TorusKnotGeometry(1.7, 0.6, 150, 32, 3, 8); break; // 궁극 매듭 1
-                  case 27: baseGeo = new THREE.TorusKnotGeometry(1.8, 0.65, 200, 32, 5, 8); break; // 궁극 매듭 2
-                  case 28: baseGeo = new THREE.IcosahedronGeometry(2.7, 3); break; // 완벽한 신성 구
-                  case 29: baseGeo = new THREE.TorusKnotGeometry(1.9, 0.5, 300, 64, 7, 11); break; // 만물의 매듭
-                  default: baseGeo = new THREE.TorusKnotGeometry(2.0, 0.7, 400, 64, 9, 14); break; // 절대신성 매듭
+              if (lvl <= 2) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.3);
+              }} else if (lvl <= 5) {{
+                  baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+              }} else if (lvl <= 8) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+              }} else if (lvl <= 11) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+              }} else if (lvl <= 14) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+              }} else if (lvl <= 17) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+              }} else if (lvl == 18) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.5);
+              }} else if (lvl == 19) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.4);
+              }} else if (lvl == 20) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.4);
+              }} else if (lvl == 21) {{
+                  baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+              }} else if (lvl == 22) {{
+                  baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+              }} else if (lvl == 23) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+              }} else if (lvl == 24) {{
+                  baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+              }} else if (lvl == 25) {{
+                  baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+              }} else if (lvl == 26) {{
+                  baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+              }} else if (lvl == 27) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+              }} else if (lvl == 28) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+              }} else if (lvl == 29) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+              }} else {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
               }}
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
