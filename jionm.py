@@ -433,9 +433,9 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 3.5rem !important;
-        padding-bottom: 2rem !important;
-        max-width: 95% !important;
+        padding-top: 2rem !important;
+        padding-bottom: 1rem !important;
+        max-width: 98% !important;
     }
     .element-container, .stMarkdown {
         background: transparent !important;
@@ -443,7 +443,7 @@ st.markdown(
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
-        padding: 8px 14px !important;
+        padding: 6px 12px !important;
         transition: all 0.2s ease !important;
         border: 1px solid rgba(217, 119, 6, 0.4) !important;
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(217, 119, 6, 0.7)) !important;
@@ -462,23 +462,23 @@ st.markdown(
 # -----------------------------------------------------------------------------
 # 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([2.2, 7.8], gap="medium")
+left_col, right_col = st.columns([3.0, 7.0], gap="small")
 
 with left_col:
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
+      "<h4 style='margin:0 0 6px 0; font-size: 15px; color:#fde68a;'>🛠️ 시스템"
       " 설정</h4>",
       unsafe_allow_html=True,
   )
   dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
 
   st.markdown(
-      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      "<hr style='margin:8px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
+      "<h4 style='margin:0 0 6px 0; font-size: 15px; color:#fde68a;'>🗑️ 지온"
       " 강화 제어</h4>",
       unsafe_allow_html=True,
   )
@@ -496,7 +496,6 @@ with left_col:
       st.rerun()
 
   if dev_mode:
-    st.write("")
     if st.button(
         "✨ [DEV] 무조건 성공",
         use_container_width=True,
@@ -505,7 +504,6 @@ with left_col:
       dev_force_success()
       st.rerun()
 
-  st.write("")
   if st.button(
       "💰 현재 냄새 판매",
       use_container_width=True,
@@ -520,53 +518,51 @@ with left_col:
 
   with s_col1:
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:15px;"
+        f"<div style='text-align: center;'><div style='font-size:11px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
         f" font-weight:800;"
         f" color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
         unsafe_allow_html=True,
     )
-    st.write("")
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
-        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 120개</div></div>",
+        f"<div style='text-align: center; margin-top:8px;'><div"
+        f" style='font-size:11px; color:#fde68a;'>💧 눈물</div><div"
+        f" style='font-size:14px; font-weight:800; color:#ffffff;'>"
+        f"{st.session_state.tears} / 120개</div></div>",
         unsafe_allow_html=True,
     )
 
   with s_col2:
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+        f"<div style='text-align: center;'><div style='font-size:11px;"
+        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:14px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
         " 3개</div></div>",
         unsafe_allow_html=True,
     )
-    st.write("")
 
     if st.session_state.level < 30:
       sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
       crit_pct = int(CRITICAL_RATE * 100)
-      prob_str = f"성공:{sp}% (크리{crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
+      prob_str = f"성공:{sp}%(크리{crit_pct}%)<br>하락:{down_p}%/파괴:{dp}%"
     else:
       prob_str = "MAX LEVEL"
 
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>📊 상세 확률</div><div style='font-size:11px;"
-        f" font-weight:800; color:#ffffff; line-height:"
-        f" 1.3;'>{prob_str}</div></div>",
+        f"<div style='text-align: center; margin-top:8px;'><div"
+        f" style='font-size:11px; color:#fde68a;'>📊 상세 확률</div><div"
+        f" style='font-size:10px; font-weight:800; color:#ffffff; line-height:"
+        f" 1.2;'>{prob_str}</div></div>",
         unsafe_allow_html=True,
     )
 
   st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 암시장"
+      "<h4 style='margin:0 0 6px 0; font-size: 15px; color:#e2e8f0;'>🛒 암시장"
       " 상점</h4>",
       unsafe_allow_html=True,
   )
@@ -575,7 +571,7 @@ with left_col:
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.caption(
-        f"파괴 방지권 (보유 3개 제한)\n(18단계 이상 구매 가능)\n가격:"
+        f"파괴 방지권 (18단계 이상, 최대 3개)\n가격:"
         f" {format_gold(current_shield_cost)}"
     )
 
@@ -596,10 +592,7 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    st.caption(
-        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
-        f" {st.session_state.tears}/120개)"
-    )
+    st.caption(f"눈물 40개 소모 -> 50% 확률로 1~3단계 상승")
     if st.button("눈물 기적 가동", use_container_width=True):
       if st.session_state.tears >= 40 and st.session_state.level < 30:
         st.session_state.tears -= 40
@@ -850,12 +843,12 @@ with right_col:
                     opacity: 1;
                 }}
 
-                .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-                .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-                .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-                .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-                .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-                .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+                .title-tier-1 {{ font-size: 26px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+                .title-tier-2 {{ font-size: 30px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+                .title-tier-3 {{ font-size: 36px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+                .title-tier-4 {{ font-size: 42px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+                .title-tier-5 {{ font-size: 48px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+                .title-tier-6 {{ font-size: 52px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
                 @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -870,10 +863,10 @@ with right_col:
                     100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
                 }}
 
-                .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
-                .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-                .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-                .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+                .status-header {{ font-size: 14px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+                .desc-text {{ font-size: 11px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+                .price-text {{ font-size: 13px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+                .cost-text {{ font-size: 10px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
             </style>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -1183,4 +1176,4 @@ with right_col:
         </html>
     """
 
-components.html(three_js_code, height=560, scrolling=False)
+components.html(three_js_code, height=500, scrolling=False)
