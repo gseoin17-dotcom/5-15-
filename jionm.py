@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - COSMIC BLACKHOLE EDITION",
+    page_title="지온냄새 강화하기 - COSMIC EDITION",
     page_icon="🌌",
     layout="wide",
 )
@@ -449,7 +449,7 @@ st.markdown(
     <style>
     .stApp {
         background: 
-            radial-gradient(circle at 50% 40%, rgba(76, 29, 149, 0.35) 0%, rgba(15, 23, 42, 0.95) 50%, #000000 100%),
+            radial-gradient(circle at 50% 40%, rgba(76, 29, 149, 0.4) 0%, rgba(15, 23, 42, 0.95) 50%, #000000 100%),
             radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
             radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%);
         background-size: cover;
@@ -473,7 +473,7 @@ st.markdown(
         padding: 10px 18px !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) format, rgba(15, 23, 42, 0.95)) !important;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)) !important;
         color: #f8fafc !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
@@ -848,7 +848,7 @@ else:
     tier = curr_data["tier"]
     status = st.session_state.status
 
-    # 초개머리블랙홀 우주 그래픽 3D 코드 (Three.js 기반)
+    # 단계별 3D 오브젝트 및 블랙홀 우주 공간 통합 렌더러
     three_js_code = f"""
       <!DOCTYPE html>
       <html>
@@ -857,7 +857,7 @@ else:
               body {{ 
                   margin: 0; 
                   overflow: hidden; 
-                  background: radial-gradient(circle at center, #09021a 0%, #010409 70%, #000000 100%);
+                  background: transparent; 
                   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
               }}
               #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
@@ -873,7 +873,7 @@ else:
                   z-index: 100;
                   pointer-events: none;
                   opacity: 0;
-                  transition: opacity 0.5s ease-in-out;
+                  transition: opacity 0.4s ease-in-out;
                   background: rgba(10, 14, 26, 0.75);
                   border: 1px solid rgba(255, 255, 255, 0.12);
                   padding: 14px 20px;
@@ -937,124 +937,243 @@ else:
               const statusText = document.getElementById('statusText');
               const tierColor = "{card_color}";
               let statusColor = "#38bdf8";
-              let glowIntensity = 20;
+              let particleSize = 0.3;
+              let particleSpeed = 1.0;
+              let glowIntensity = 22;
 
               if (status === "CRITICAL") {{
                   statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                   statusColor = "#ffffff"; 
-                  glowIntensity = 40;
+                  particleSize = 0.55;
+                  particleSpeed = 2.5;
+                  glowIntensity = 38;
               }} else if (status === "PITY_SUCCESS") {{
                   statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
                   statusColor = "#fde68a";
-                  glowIntensity = 35;
+                  particleSize = 0.45;
+                  particleSpeed = 2.0;
+                  glowIntensity = 32;
               }} else if (status === "SUCCESS") {{
                   statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                   statusColor = tierColor;
+                  particleSize = 0.35;
+                  particleSpeed = 1.5;
                   glowIntensity = 25;
               }} else if (status === "SHIELD_SAVED") {{
                   statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                   statusColor = "#60a5fa";
               }} else if (status === "DESTROYED") {{
-                  statusText.innerText = "💥 BLACKHOLE COLLAPSE (코어 붕괴됨) 💥";
+                  statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
                   statusColor = "#ef4444";
+                  particleSpeed = 1.2;
               }} else if (status === "FAILED") {{
                   statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                   statusColor = "#64748b";
+                  particleSpeed = 0.5;
+                  glowIntensity = 8;
               }} else if (status === "HOLD") {{
                   statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                   statusColor = "#94a3b8";
+                  particleSpeed = 0.7;
               }} else {{
-                  statusText.innerText = "READY - 블랙홀 에너지가 공명을 시작합니다";
+                  statusText.innerText = "READY - 우주 블랙홀 에너지가 집중됩니다";
               }}
               
               statusText.style.color = statusColor;
 
               const scene = new THREE.Scene();
-              const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-              camera.position.set(0, 3.5, 9.5);
-              camera.lookAt(0, 0, 0);
+              const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+              camera.position.set(0, 0.5, 9.5);
 
               const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
               renderer.setSize(window.innerWidth, window.innerHeight);
               renderer.setPixelRatio(window.devicePixelRatio);
               document.getElementById('container').appendChild(renderer.domElement);
 
-              // 조명 설정
-              const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+              const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
               scene.add(ambientLight);
 
-              const pointLight = new THREE.PointLight(statusColor, glowIntensity, 50);
-              pointLight.position.set(0, 0, 0);
+              const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+              mainLight.position.set(5, 8, 5);
+              scene.add(mainLight);
+
+              const pointLight = new THREE.PointLight(statusColor, glowIntensity, 45);
+              pointLight.position.set(0, 0, 3);
               scene.add(pointLight);
 
-              // 1. 배경 별들 (Starfield)
-              const starCount = 1200;
-              const starGeo = new THREE.BufferGeometry();
-              const starPositions = new Float32Array(starCount * 3);
-              for(let i=0; i<starCount; i++) {{
-                  starPositions[i*3] = (Math.random() - 0.5) * 40;
-                  starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
-                  starPositions[i*3 + 2] = (Math.random() - 0.5) * 40;
+              // 주변 우주 입자 성운 효과
+              const particleCount = 700;
+              const particleGeo = new THREE.BufferGeometry();
+              const particlePositions = new Float32Array(particleCount * 3);
+              const particleVelocities = [];
+
+              for(let i=0; i<particleCount; i++) {{
+                  particlePositions[i*3] = (Math.random() - 0.5) * 8.0;
+                  particlePositions[i*3 + 1] = -4.5 + Math.random() * 3.0;
+                  particlePositions[i*3 + 2] = (Math.random() - 0.5) * 8.0;
+                  
+                  let spd = particleSpeed;
+                  if (status === "FAILED") spd = 0.3;
+
+                  particleVelocities.push({{
+                      x: (Math.random() - 0.5) * 0.02 * spd,
+                      y: (0.015 + Math.random() * 0.03) * spd,
+                      z: (Math.random() - 0.5) * 0.02 * spd,
+                  }});
               }}
-              starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-              const starMat = new THREE.PointsMaterial({{ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7 }});
-              const starSystem = new THREE.Points(starGeo, starMat);
-              scene.add(starSystem);
-
-              // 2. 블랙홀 및 회전 강착원반(Accretion Disk) 구조 생성
-              const blackHoleGroup = new THREE.Group();
-
-              // 사건의 지평선 (중앙 블랙홀 그림자 검은 구체)
-              const eventHorizonGeo = new THREE.SphereGeometry(1.2, 32, 32);
-              const eventHorizonMat = new THREE.MeshBasicMaterial({{ color: 0x000000 }});
-              const eventHorizon = new THREE.Mesh(eventHorizonGeo, eventHorizonMat);
-              blackHoleGroup.add(eventHorizon);
-
-              // 광자 구슬 링 (Glow Ring)
-              const photonRingGeo = new THREE.RingGeometry(1.22, 1.35, 64);
-              const photonRingMat = new THREE.MeshBasicMaterial({{ color: statusColor, side: THREE.DoubleSide, transparent: true, opacity: 0.85 }});
-              const photonRing = new THREE.Mesh(photonRingGeo, photonRingMat);
-              photonRing.rotation.x = Math.PI / 2;
-              blackHoleGroup.add(photonRing);
-
-              // 강착원반 (Torus 고리 형태의 강력한 에너지 띠)
-              const diskGeo = new THREE.TorusGeometry(2.3, 0.45, 16, 100);
-              const diskMat = new THREE.MeshPhysicalMaterial({{
-                  color: tierColor,
-                  emissive: statusColor,
-                  emissiveIntensity: 1.8,
-                  roughness: 0.1,
-                  metalness: 0.8,
+              particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+              
+              const particleMat = new THREE.PointsMaterial({{
+                  color: new THREE.Color(statusColor),
+                  size: particleSize,
                   transparent: true,
-                  opacity: 0.9,
-                  wireframe: false
+                  opacity: status === "FAILED" ? 0.3 : 0.85,
+                  blending: THREE.AdditiveBlending,
+                  depthWrite: false
               }});
-              const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
-              accretionDisk.rotation.x = Math.PI / 2.5; // 약간 기울어진 3D 입체 각도
-              blackHoleGroup.add(accretionDisk);
+              const particleSystem = new THREE.Points(particleGeo, particleMat);
+              scene.add(particleSystem);
 
-              // 코어 오브젝트 (중앙에 빛나는 향기 결정체)
-              const coreGeo = new THREE.IcosahedronGeometry(0.8, 1);
+              const objectGroup = new THREE.Group();
+              objectGroup.position.y = -0.5;
+
+              // 단계별 고유 3D 도형 매핑 복원
+              let baseGeo;
+              const lvl = {current_level};
+
+              if (lvl <= 2) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.2);
+              }} else if (lvl <= 5) {{
+                  baseGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
+              }} else if (lvl <= 8) {{
+                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.3, 5);
+              }} else if (lvl <= 11) {{
+                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.3, 6);
+              }} else if (lvl <= 14) {{
+                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.3, 7);
+              }} else if (lvl <= 17) {{
+                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.3, 8);
+              }} else if (lvl == 18) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.4);
+              }} else if (lvl == 19) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.3);
+              }} else if (lvl == 20) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.3);
+              }} else if (lvl == 21) {{
+                  baseGeo = new THREE.ConeGeometry(2.0, 3.0, 6);
+              }} else if (lvl == 22) {{
+                  baseGeo = new THREE.TorusGeometry(1.6, 0.6, 16, 32);
+              }} else if (lvl == 23) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.3, 0.4, 64, 16, 2, 3);
+              }} else if (lvl == 24) {{
+                  baseGeo = new THREE.CylinderGeometry(0.5, 2.0, 2.8, 12);
+              }} else if (lvl == 25) {{
+                  baseGeo = new THREE.SphereGeometry(2.1, 16, 16);
+              }} else if (lvl == 26) {{
+                  baseGeo = new THREE.ConeGeometry(2.2, 3.2, 8);
+              }} else if (lvl == 27) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 96, 24, 3, 4);
+              }} else if (lvl == 28) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.4, 1);
+              }} else if (lvl == 29) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.5, 1);
+              }} else {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 128, 32, 2, 5);
+              }}
+
+              const outerMat = new THREE.MeshPhysicalMaterial({{
+                  color: tierColor,
+                  emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
+                  emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
+                  metalness: 0.85,
+                  roughness: 0.15,
+                  transmission: 0.5,
+                  transparent: true,
+                  opacity: status === "FAILED" ? 0.5 : 0.95
+              }});
+              const outerMesh = new THREE.Mesh(baseGeo, outerMat);
+              objectGroup.add(outerMesh);
+
+              const coreGeo = new THREE.SphereGeometry(1.1, 32, 32);
               const coreMat = new THREE.MeshPhysicalMaterial({{
                   color: 0xffffff,
                   emissive: statusColor,
-                  emissiveIntensity: 3.5,
+                  emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
                   roughness: 0.05,
-                  metalness: 0.9,
-                  wireframe: (current_level >= 25)
+                  metalness: 0.95,
+                  transmission: 0.8
               }});
               const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-              blackHoleGroup.add(coreMesh);
+              objectGroup.add(coreMesh);
 
-              scene.add(blackHoleGroup);
+              scene.add(objectGroup);
               uiElement.classList.add('visible');
 
-              // 애니메이션 효과
-              if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
-                  gsap.fromTo(blackHoleGroup.scale, {{x: 0.3, y: 0.3, z: 0.3}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
-                  gsap.to(blackHoleGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
+              if (status === "DESTROYED") {{
+                  outerMesh.visible = false;
+                  coreMesh.visible = false;
+
+                  const shardCount = 50;
+                  const shards = [];
+                  const shardGroup = new THREE.Group();
+                  shardGroup.position.y = -0.5;
+
+                  for(let i=0; i<shardCount; i++) {{
+                      const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
+                      const sMat = new THREE.MeshStandardMaterial({{
+                          color: tierColor,
+                          roughness: 0.2,
+                          metalness: 0.9,
+                          emissive: "#ef4444",
+                          emissiveIntensity: 1.0
+                      }});
+                      const shard = new THREE.Mesh(sGeo, sMat);
+                      shard.position.set(0, 0, 0);
+                      
+                      const u = Math.random();
+                      const v = Math.random();
+                      const theta = u * 2.0 * Math.PI;
+                      const phi = Math.acos(2.0 * v - 1.0);
+                      const speed = 4.0 + Math.random() * 5.0;
+                      
+                      shard.userData = {{
+                          vx: speed * Math.sin(phi) * Math.cos(theta),
+                          vy: speed * Math.sin(phi) * Math.sin(theta),
+                          vz: speed * Math.cos(phi),
+                          rx: (Math.random() - 0.5) * 20,
+                          ry: (Math.random() - 0.5) * 20
+                      }};
+
+                      shardGroup.add(shard);
+                      shards.push(shard);
+                  }}
+                  scene.add(shardGroup);
+
+                  gsap.to(shardGroup.position, {{
+                      duration: 1.2,
+                      ease: "power2.out",
+                      onUpdate: function() {{
+                          const progress = this.progress();
+                          shards.forEach(s => {{
+                              s.position.x += s.userData.vx * 0.02;
+                              s.position.y += s.userData.vy * 0.02 - 0.05;
+                              s.position.z += s.userData.vz * 0.02;
+                              s.rotation.x += s.userData.rx * 0.02;
+                              s.rotation.y += s.userData.ry * 0.02;
+                              s.material.opacity = 1.0 - progress;
+                              s.material.transparent = true;
+                          }});
+                      }}
+                  }});
+              }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
+                  gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
               }} else if (status === "SUCCESS") {{
-                  gsap.fromTo(blackHoleGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1}});
+                  gsap.fromTo(objectGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
+              }} else if (status === "FAILED") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"}});
+              }} else if (status === "SHIELD_SAVED") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 1.25, y: 1.25, z: 1.25}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
               }}
 
               const clock = new THREE.Clock();
@@ -1063,14 +1182,28 @@ else:
                   requestAnimationFrame(animate);
                   const time = clock.getElapsedTime();
 
-                  // 블랙홀 및 강착원반이 역동적으로 회전하는 3D 효과
-                  accretionDisk.rotation.z = time * 1.5;
-                  photonRing.rotation.z = -time * 1.0;
-                  coreMesh.rotation.x = time * 1.2;
-                  coreMesh.rotation.y = time * 2.0;
+                  if (status !== "DESTROYED") {{
+                      const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
+                      outerMesh.rotation.x = time * (0.5 * rotSpeed);
+                      outerMesh.rotation.y = time * (0.75 * rotSpeed);
+                      coreMesh.rotation.x = -time * (1.2 * rotSpeed);
+                      coreMesh.rotation.y = -time * (1.5 * rotSpeed);
+                      objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
+                  }}
 
-                  // 우주 배경 별들도 미세하게 선회
-                  starSystem.rotation.y = time * 0.03;
+                  const positions = particleGeo.attributes.position.array;
+                  for(let i=0; i<particleCount; i++) {{
+                      positions[i*3] += particleVelocities[i].x;
+                      positions[i*3 + 1] += particleVelocities[i].y;
+                      positions[i*3 + 2] += particleVelocities[i].z;
+
+                      if(positions[i*3 + 1] > 3.0) {{
+                          positions[i*3 + 1] = -4.5;
+                          positions[i*3] = (Math.random() - 0.5) * 8.0;
+                          positions[i*3 + 2] = (Math.random() - 0.5) * 8.0;
+                      }}
+                  }}
+                  particleGeo.attributes.position.needsUpdate = true;
 
                   renderer.render(scene, camera);
               }}
