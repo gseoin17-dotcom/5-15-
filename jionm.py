@@ -442,16 +442,16 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (궁극의 블랙홀 & 성운 스타일)
+# 6. 테마 CSS (초우주 블랙홀 컨셉 배경)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
         background: 
-            radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.15) 0%, rgba(2, 6, 23, 0.95) 60%, #000000 100%),
-            radial-gradient(circle at 20% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.2) 0%, transparent 40%);
+            radial-gradient(circle at 50% 40%, rgba(76, 29, 149, 0.35) 0%, rgba(15, 23, 42, 0.95) 50%, #000000 100%),
+            radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%);
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -472,17 +472,17 @@ st.markdown(
         font-weight: 700 !important;
         padding: 10px 18px !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        border: 1px solid rgba(168, 85, 247, 0.4) !important;
-        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) format, rgba(15, 23, 42, 0.95)) !important;
         color: #f8fafc !important;
-        box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
     div.stButton > button:hover {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8)) !important;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(147, 51, 234, 0.3)) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        border: 1px solid rgba(56, 189, 248, 0.6) !important;
         transform: translateY(-2px);
-        box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
     }
     </style>
 """,
@@ -533,7 +533,7 @@ if st.session_state.level == 30:
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 animation: rainbowText 3s linear infinite;
-                text-shadow: 0 0 30px rgba(0,255,255,0.6);
+                text-shadow: 0 0 40px rgba(0,255,255,0.8);
                 margin-bottom: 10px;
             }
 
@@ -551,16 +551,16 @@ if st.session_state.level == 30:
             }
 
             .credit-box {
-                background: rgba(15, 23, 42, 0.75);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                background: rgba(15, 23, 42, 0.8);
+                border: 1px solid rgba(0, 255, 255, 0.4);
                 padding: 20px 40px;
                 border-radius: 15px;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+                backdrop-filter: blur(15px);
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
             }
 
             .credit-line {
-                font-size: 15px;
+                font-size: 16px;
                 color: #fde68a;
                 margin: 8px 0;
                 font-weight: 700;
@@ -574,21 +574,21 @@ if st.session_state.level == 30:
             <div class="ending-title">★ 우주 통일 완료 ★</div>
             <div class="ending-subtitle">태초의 자이온맘과 영원히 하나가 되었습니다</div>
             <div class="credit-box">
-                <div class="credit-line">🏆 CREATED BY :  자이온 팀</div>
+                <div class="credit-line">🏆 CREATED BY : 자이온 팀</div>
             </div>
         </div>
 
         <script>
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 15);
+            camera.position.set(0, 0, 16);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const particleCount = 2500;
+            const particleCount = 3000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             const velocities = [];
@@ -599,16 +599,16 @@ if st.session_state.level == 30:
                 positions[i*3 + 2] = (Math.random() - 0.5) * 25;
 
                 velocities.push({
-                    x: (Math.random() - 0.5) * 0.05,
-                    y: (Math.random() - 0.5) * 0.05,
-                    z: (Math.random() - 0.5) * 0.05,
+                    x: (Math.random() - 0.5) * 0.04,
+                    y: (Math.random() - 0.5) * 0.04,
+                    z: (Math.random() - 0.5) * 0.04,
                 });
             }
             geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
             const mat = new THREE.PointsMaterial({
                 color: 0x00ffff,
-                size: 0.25,
+                size: 0.18,
                 transparent: true,
                 opacity: 0.9,
                 blending: THREE.AdditiveBlending
@@ -616,13 +616,13 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
+            const coreGeo = new THREE.TorusKnotGeometry(3.2, 1.1, 128, 32, 2, 3);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
                 emissive: 0x00ffff,
                 emissiveIntensity: 2.0,
-                metalness: 0.9,
-                roughness: 0.1,
+                metalness: 0.95,
+                roughness: 0.05,
                 wireframe: true
             });
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
@@ -632,8 +632,8 @@ if st.session_state.level == 30:
                 requestAnimationFrame(animate);
                 const time = Date.now() * 0.001;
 
-                coreMesh.rotation.x = time * 0.5;
-                coreMesh.rotation.y = time * 0.7;
+                coreMesh.rotation.x = time * 0.4;
+                coreMesh.rotation.y = time * 0.6;
 
                 const posArr = geo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {
@@ -848,7 +848,7 @@ else:
     tier = curr_data["tier"]
     status = st.session_state.status
 
-    # 블랙홀 3D 랜더링 엔진 주입 코드
+    # 초개머리블랙홀 우주 그래픽 3D 코드 (Three.js 기반)
     three_js_code = f"""
       <!DOCTYPE html>
       <html>
@@ -857,52 +857,58 @@ else:
               body {{ 
                   margin: 0; 
                   overflow: hidden; 
-                  background: transparent; 
+                  background: radial-gradient(circle at center, #09021a 0%, #010409 70%, #000000 100%);
                   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
               }}
               #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
               .cinematic-ui {{
                   position: absolute;
-                  bottom: 25px; 
+                  bottom: 20px; 
                   left: 50%;
                   transform: translateX(-50%);
-                  width: 100%;
+                  width: 90%;
+                  max-width: 650px;
                   text-align: center;
                   z-index: 100;
                   pointer-events: none;
                   opacity: 0;
-                  transition: opacity 0.4s ease-in-out;
+                  transition: opacity 0.5s ease-in-out;
+                  background: rgba(10, 14, 26, 0.75);
+                  border: 1px solid rgba(255, 255, 255, 0.12);
+                  padding: 14px 20px;
+                  border-radius: 16px;
+                  backdrop-filter: blur(12px);
+                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(120, 50, 255, 0.2);
               }}
 
               .cinematic-ui.visible {{
                   opacity: 1;
               }}
 
-              .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-              .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-              .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-              .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-              .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-              .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+              .title-tier-1 {{ font-size: 24px; font-weight: 800; color: #fde68a; text-shadow: 0 0 15px #fde68a; }}
+              .title-tier-2 {{ font-size: 26px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 18px #f59e0b; }}
+              .title-tier-3 {{ font-size: 28px; font-weight: 800; color: #ef4444; text-shadow: 0 0 20px #ef4444; }}
+              .title-tier-4 {{ font-size: 30px; font-weight: 800; color: #c084fc; text-shadow: 0 0 22px #c084fc; }}
+              .title-tier-5 {{ font-size: 32px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+              .title-tier-6 {{ font-size: 35px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 18px rgba(255,255,255,0.9)); }}
 
               @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
               .shaking-text {{
-                  animation: textVibe 0.18s infinite alternate ease-in-out;
+                  animation: textVibe 0.15s infinite alternate ease-in-out;
               }}
               @keyframes textVibe {{
                   0% {{ transform: translate(0px, 0px) rotate(0deg); }}
                   25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
                   50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
-                  75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
                   100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
               }}
 
-              .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-              .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-              .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-              .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+              .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+              .desc-text {{ font-size: 12px; color: #cbd5e1; margin-top: 4px; font-weight: 500; }}
+              .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 4px; }}
+              .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 2px; }}
           </style>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -925,287 +931,130 @@ else:
               if (currentLevel >= 20) {{
                   document.getElementById('mainTitle').classList.add('shaking-text');
                   document.getElementById('descText').classList.add('shaking-text');
-                  document.getElementById('priceText').classList.add('shaking-text');
-                  document.getElementById('costText').classList.add('shaking-text');
               }}
 
               const status = "{status}";
               const statusText = document.getElementById('statusText');
-              
               const tierColor = "{card_color}";
               let statusColor = "#38bdf8";
-              let particleSize = 0.3;
-              let particleSpeed = 1.0;
-              let glowIntensity = 15;
+              let glowIntensity = 20;
 
               if (status === "CRITICAL") {{
                   statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                   statusColor = "#ffffff"; 
-                  particleSize = 0.55;
-                  particleSpeed = 2.5;
-                  glowIntensity = 35;
+                  glowIntensity = 40;
               }} else if (status === "PITY_SUCCESS") {{
                   statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
                   statusColor = "#fde68a";
-                  particleSize = 0.45;
-                  particleSpeed = 2.0;
-                  glowIntensity = 30;
+                  glowIntensity = 35;
               }} else if (status === "SUCCESS") {{
                   statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                   statusColor = tierColor;
-                  particleSize = 0.35;
-                  particleSpeed = 1.5;
-                  glowIntensity = 22;
+                  glowIntensity = 25;
               }} else if (status === "SHIELD_SAVED") {{
                   statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                   statusColor = "#60a5fa";
               }} else if (status === "DESTROYED") {{
-                  statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
+                  statusText.innerText = "💥 BLACKHOLE COLLAPSE (코어 붕괴됨) 💥";
                   statusColor = "#ef4444";
-                  particleSpeed = 1.2;
               }} else if (status === "FAILED") {{
                   statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                   statusColor = "#64748b";
-                  particleSpeed = 0.5;
-                  glowIntensity = 6;
               }} else if (status === "HOLD") {{
                   statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                   statusColor = "#94a3b8";
-                  particleSpeed = 0.7;
               }} else {{
-                  statusText.innerText = "READY - 블랙홀 에너지가 집중됩니다";
+                  statusText.innerText = "READY - 블랙홀 에너지가 공명을 시작합니다";
               }}
               
               statusText.style.color = statusColor;
 
               const scene = new THREE.Scene();
-              const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-              camera.position.set(0, 1.2, 11.0);
+              const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+              camera.position.set(0, 3.5, 9.5);
+              camera.lookAt(0, 0, 0);
 
               const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
               renderer.setSize(window.innerWidth, window.innerHeight);
               renderer.setPixelRatio(window.devicePixelRatio);
-              renderer.shadowMap.enabled = true;
               document.getElementById('container').appendChild(renderer.domElement);
 
-              const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+              // 조명 설정
+              const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
               scene.add(ambientLight);
 
-              const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
-              mainLight.position.set(5, 8, 5);
-              scene.add(mainLight);
-
-              const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
-              pointLight.position.set(0, 0, 3);
+              const pointLight = new THREE.PointLight(statusColor, glowIntensity, 50);
+              pointLight.position.set(0, 0, 0);
               scene.add(pointLight);
 
-              // 블랙홀 사건의 지평선(중심 싱귤래리티) 백그라운드 디스크 효과
-              const diskGeo = new THREE.RingGeometry(1.6, 3.8, 64);
-              const diskMat = new THREE.MeshBasicMaterial({{
-                  color: new THREE.Color(statusColor),
-                  side: THREE.DoubleSide,
-                  transparent: true,
-                  opacity: 0.35,
-                  blending: THREE.AdditiveBlending
-              }};
-              // 파싱 오류 방지를 위한 괄호 수정 반영 디스크
-              const accretionDisk = new THREE.Mesh(
-                  new THREE.RingGeometry(1.5, 4.2, 64),
-                  new THREE.MeshBasicMaterial({
-                      color: new THREE.Color(statusColor),
-                      side: THREE.DoubleSide,
-                      transparent: true,
-                      opacity: 0.4,
-                      blending: THREE.AdditiveBlending
-                  })
-              );
-              accretionDisk.rotation.x = Math.PI / 2.5;
-              accretionDisk.position.y = -0.7;
-              scene.add(accretionDisk);
-
-              // 블랙홀 주변 흡수 소용돌이 입자 (Accretion Particles)
-              const particleCount = 1200;
-              const particleGeo = new THREE.BufferGeometry();
-              const particlePositions = new Float32Array(particleCount * 3);
-              const particleAngles = [];
-              const particleRadii = [];
-              const particleSpeeds = [];
-
-              for(let i=0; i<particleCount; i++) {{
-                  const radius = 2.0 + Math.random() * 5.5;
-                  const angle = Math.random() * Math.PI * 2;
-                  particleRadii.push(radius);
-                  particleAngles.push(angle);
-                  particleSpeeds.push((0.01 + Math.random() * 0.03) * particleSpeed);
-
-                  particlePositions[i*3] = Math.cos(angle) * radius;
-                  particlePositions[i*3 + 1] = (Math.random() - 0.5) * 1.5 - 0.7;
-                  particlePositions[i*3 + 2] = Math.sin(angle) * radius;
+              // 1. 배경 별들 (Starfield)
+              const starCount = 1200;
+              const starGeo = new THREE.BufferGeometry();
+              const starPositions = new Float32Array(starCount * 3);
+              for(let i=0; i<starCount; i++) {{
+                  starPositions[i*3] = (Math.random() - 0.5) * 40;
+                  starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
+                  starPositions[i*3 + 2] = (Math.random() - 0.5) * 40;
               }}
-              particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-              
-              const particleMat = new THREE.PointsMaterial({{
-                  color: new THREE.Color(statusColor),
-                  size: particleSize,
-                  transparent: true,
-                  opacity: status === "FAILED" ? 0.3 : 0.85,
-                  blending: THREE.AdditiveBlending,
-                  depthWrite: false
-              }};
-              
-              const pMat = new THREE.PointsMaterial({{
-                  color: new THREE.Color(statusColor),
-                  size: particleSize,
-                  transparent: true,
-                  opacity: 0.85,
-                  blending: THREE.AdditiveBlending,
-                  depthWrite: false
-              }});
-              const particleSystem = new THREE.Points(particleGeo, pMat);
-              scene.add(particleSystem);
+              starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+              const starMat = new THREE.PointsMaterial({{ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7 }});
+              const starSystem = new THREE.Points(starGeo, starMat);
+              scene.add(starSystem);
 
-              const objectGroup = new THREE.Group();
-              objectGroup.position.y = -0.7;
+              // 2. 블랙홀 및 회전 강착원반(Accretion Disk) 구조 생성
+              const blackHoleGroup = new THREE.Group();
 
-              let baseGeo;
-              const lvl = {current_level};
+              // 사건의 지평선 (중앙 블랙홀 그림자 검은 구체)
+              const eventHorizonGeo = new THREE.SphereGeometry(1.2, 32, 32);
+              const eventHorizonMat = new THREE.MeshBasicMaterial({{ color: 0x000000 }});
+              const eventHorizon = new THREE.Mesh(eventHorizonGeo, eventHorizonMat);
+              blackHoleGroup.add(eventHorizon);
 
-              if (lvl <= 2) {{
-                  baseGeo = new THREE.TetrahedronGeometry(2.3);
-              }} else if (lvl <= 5) {{
-                  baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-              }} else if (lvl <= 8) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-              }} else if (lvl <= 11) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-              }} else if (lvl <= 14) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-              }} else if (lvl <= 17) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-              }} else if (lvl == 18) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.5);
-              }} else if (lvl == 19) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.4);
-              }} else if (lvl == 20) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.4);
-              }} else if (lvl == 21) {{
-                  baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-              }} else if (lvl == 22) {{
-                  baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-              }} else if (lvl == 23) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-              }} else if (lvl == 24) {{
-                  baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-              }} else if (lvl == 25) {{
-                  baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-              }} else if (lvl == 26) {{
-                  baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-              }} else if (lvl == 27) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-              }} else if (lvl == 28) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-              }} else if (lvl == 29) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-              }} else {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-              }}
+              // 광자 구슬 링 (Glow Ring)
+              const photonRingGeo = new THREE.RingGeometry(1.22, 1.35, 64);
+              const photonRingMat = new THREE.MeshBasicMaterial({{ color: statusColor, side: THREE.DoubleSide, transparent: true, opacity: 0.85 }});
+              const photonRing = new THREE.Mesh(photonRingGeo, photonRingMat);
+              photonRing.rotation.x = Math.PI / 2;
+              blackHoleGroup.add(photonRing);
 
-              const outerMat = new THREE.MeshPhysicalMaterial({{
+              // 강착원반 (Torus 고리 형태의 강력한 에너지 띠)
+              const diskGeo = new THREE.TorusGeometry(2.3, 0.45, 16, 100);
+              const diskMat = new THREE.MeshPhysicalMaterial({{
                   color: tierColor,
-                  emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
-                  emissiveIntensity: status === "SUCCESS" ? 0.6 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.0 : 0.2),
-                  metalness: 0.95,
+                  emissive: statusColor,
+                  emissiveIntensity: 1.8,
                   roughness: 0.1,
-                  transmission: 0.5,
+                  metalness: 0.8,
                   transparent: true,
-                  opacity: status === "FAILED" ? 0.5 : 0.95,
+                  opacity: 0.9,
                   wireframe: false
               }});
-              const outerMesh = new THREE.Mesh(baseGeo, outerMat);
-              objectGroup.add(outerMesh);
+              const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
+              accretionDisk.rotation.x = Math.PI / 2.5; // 약간 기울어진 3D 입체 각도
+              blackHoleGroup.add(accretionDisk);
 
-              // 블랙홀 중심의 절대 어둠 코어 (Event Horizon)
-              const coreGeo = new THREE.SphereGeometry(1.25, 32, 32);
+              // 코어 오브젝트 (중앙에 빛나는 향기 결정체)
+              const coreGeo = new THREE.IcosahedronGeometry(0.8, 1);
               const coreMat = new THREE.MeshPhysicalMaterial({{
-                  color: 0x000000,
+                  color: 0xffffff,
                   emissive: statusColor,
-                  emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.5 : 1.5,
-                  roughness: 0.0,
-                  metalness: 1.0,
+                  emissiveIntensity: 3.5,
+                  roughness: 0.05,
+                  metalness: 0.9,
+                  wireframe: (current_level >= 25)
               }});
               const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-              objectGroup.add(coreMesh);
+              blackHoleGroup.add(coreMesh);
 
-              scene.add(objectGroup);
-
+              scene.add(blackHoleGroup);
               uiElement.classList.add('visible');
 
-              if (status === "DESTROYED") {{
-                  outerMesh.visible = false;
-                  coreMesh.visible = false;
-                  accretionDisk.visible = false;
-
-                  const shardCount = 65;
-                  const shards = [];
-                  const shardGroup = new THREE.Group();
-                  shardGroup.position.y = -0.7;
-
-                  for(let i=0; i<shardCount; i++) {{
-                      const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
-                      const sMat = new THREE.MeshStandardMaterial({{
-                          color: tierColor,
-                          roughness: 0.1,
-                          metalness: 0.9,
-                          emissive: "#ef4444",
-                          emissiveIntensity: 1.5
-                      }});
-                      const shard = new THREE.Mesh(sGeo, sMat);
-                      shard.position.set(0, 0, 0);
-                      
-                      const u = Math.random();
-                      const v = Math.random();
-                      const theta = u * 2.0 * Math.PI;
-                      const phi = Math.acos(2.0 * v - 1.0);
-                      const speed = 5.0 + Math.random() * 6.0;
-                      
-                      shard.userData = {{
-                          vx: speed * Math.sin(phi) * Math.cos(theta),
-                          vy: speed * Math.sin(phi) * Math.sin(theta),
-                          vz: speed * Math.cos(phi),
-                          rx: (Math.random() - 0.5) * 25,
-                          ry: (Math.random() - 0.5) * 25
-                      }};
-
-                      shardGroup.add(shard);
-                      shards.push(shard);
-                  }}
-                  scene.add(shardGroup);
-
-                  gsap.to(shardGroup.position, {{
-                      duration: 1.2,
-                      ease: "power2.out",
-                      onUpdate: function() {{
-                          const progress = this.progress();
-                          shards.forEach(s => {{
-                              s.position.x += s.userData.vx * 0.02;
-                              s.position.y += s.userData.vy * 0.02 - 0.05;
-                              s.position.z += s.userData.vz * 0.02;
-                              s.rotation.x += s.userData.rx * 0.02;
-                              s.rotation.y += s.userData.ry * 0.02;
-                              s.material.opacity = 1.0 - progress;
-                              s.material.transparent = true;
-                          }};
-                      }}
-                  }});
-              }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.35, y: 1.35, z: 1.35, duration: 0.5, ease: "power2.out"}});
-                  gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
+              // 애니메이션 효과
+              if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
+                  gsap.fromTo(blackHoleGroup.scale, {{x: 0.3, y: 0.3, z: 0.3}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
+                  gsap.to(blackHoleGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
               }} else if (status === "SUCCESS") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
-              }} else if (status === "FAILED") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"}});
-              }} else if (status === "SHIELD_SAVED") {{
-                  gsap.fromTo(objectGroup.scale, {{x: 1.25, y: 1.25, z: 1.25}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
+                  gsap.fromTo(blackHoleGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1}});
               }}
 
               const clock = new THREE.Clock();
@@ -1214,32 +1063,14 @@ else:
                   requestAnimationFrame(animate);
                   const time = clock.getElapsedTime();
 
-                  if (status !== "DESTROYED") {{
-                      const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.3 : 0.7);
-                      outerMesh.rotation.x = time * (0.6 * rotSpeed);
-                      outerMesh.rotation.y = time * (0.9 * rotSpeed);
-                      coreMesh.rotation.y = -time * (1.5 * rotSpeed);
-                      accretionDisk.rotation.z = time * 0.5;
-                      objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
-                  }}
+                  // 블랙홀 및 강착원반이 역동적으로 회전하는 3D 효과
+                  accretionDisk.rotation.z = time * 1.5;
+                  photonRing.rotation.z = -time * 1.0;
+                  coreMesh.rotation.x = time * 1.2;
+                  coreMesh.rotation.y = time * 2.0;
 
-                  // 블랙홀 소용돌이 입자 공전 애니메이션 루프
-                  const positions = particleGeo.attributes.position.array;
-                  for(let i=0; i<particleCount; i++) {{
-                      particleAngles[i] += particleSpeeds[i];
-                      const r = particleRadii[i];
-                      
-                      positions[i*3] = Math.cos(particleAngles[i]) * r;
-                      positions[i*3 + 2] = Math.sin(particleAngles[i]) * r;
-                      
-                      // 블랙홀 중심부로 빨려 들어가는 시뮬레이션
-                      particleRadii[i] -= 0.005 * particleSpeed;
-                      if(particleRadii[i] < 1.0) {{
-                          particleRadii[i] = 5.5 + Math.random() * 2.0;
-                          particleAngles[i] = Math.random() * Math.PI * 2;
-                      }}
-                  }}
-                  particleGeo.attributes.position.needsUpdate = true;
+                  // 우주 배경 별들도 미세하게 선회
+                  starSystem.rotation.y = time * 0.03;
 
                   renderer.render(scene, camera);
               }}
