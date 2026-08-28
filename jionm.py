@@ -723,9 +723,6 @@ else:
       sell()
       st.rerun()
 
-    # -------------------------------------------------------------
-    # 7-1. 기존 3D 화면 안에 있던 정보 카드를 왼쪽 패널의 강화 버튼 아래로 이동
-    # -------------------------------------------------------------
     st.markdown("<br>", unsafe_allow_html=True)
     curr_lvl = st.session_state.level
     c_data = SMELL_DB[curr_lvl]
@@ -737,7 +734,6 @@ else:
     c_cost = format_gold(get_enhance_cost(curr_lvl))
     status = st.session_state.status
 
-    # 상태별 텍스트 및 컬러 결정
     status_msg = "READY"
     status_color = "#38bdf8"
     if status == "CRITICAL":
@@ -764,8 +760,6 @@ else:
     else:
       status_msg = "READY - 우주 블랙홀 에너지가 집중됩니다"
 
-    # 티어별 제목 스타일
-    tier_class = f"title-tier-{c_tier}"
     if c_tier == 5:
       tier_style = (
           "font-size: 20px; font-weight: 800; background: linear-gradient(90deg,"
@@ -822,7 +816,7 @@ else:
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(120, 50, 255, 0.2);
                 text-align: center;
                 margin-top: 10px;
-            }
+            }}
         </style>
         <div class="info-card-box" style="{shake_style}">
             <div style="font-size: 12px; font-weight: 800; color: {status_color}; margin-bottom: 6px; letter-spacing: 1px;">{status_msg}</div>
@@ -954,7 +948,6 @@ else:
     card_color = curr_data["color"]
     status = st.session_state.status
 
-    # 3D 오브젝트 및 블랙홀 우주 공간 렌더러 (UI 오버레이 제거 버전)
     three_js_code = f"""
       <!DOCTYPE html>
       <html>
@@ -1031,7 +1024,6 @@ else:
               pointLight.position.set(0, 0, 3);
               scene.add(pointLight);
 
-              // 주변 우주 입자 성운 효과
               const particleCount = 700;
               const particleGeo = new THREE.BufferGeometry();
               const particlePositions = new Float32Array(particleCount * 3);
@@ -1067,7 +1059,6 @@ else:
               const objectGroup = new THREE.Group();
               objectGroup.position.y = -0.5;
 
-              // 단계별 고유 3D 도형 매핑 복원
               let baseGeo;
               const lvl = {current_level};
 
