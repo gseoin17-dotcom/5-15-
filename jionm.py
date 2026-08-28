@@ -723,6 +723,117 @@ else:
       sell()
       st.rerun()
 
+    # -------------------------------------------------------------
+    # 7-1. 기존 3D 화면 안에 있던 정보 카드를 왼쪽 패널의 강화 버튼 아래로 이동
+    # -------------------------------------------------------------
+    st.markdown("<br>", unsafe_allow_html=True)
+    curr_lvl = st.session_state.level
+    c_data = SMELL_DB[curr_lvl]
+    c_tier = c_data["tier"]
+    c_color = c_data["color"]
+    c_name = c_data["name"]
+    c_desc = c_data["desc"]
+    c_price = format_gold(c_data["price"])
+    c_cost = format_gold(get_enhance_cost(curr_lvl))
+    status = st.session_state.status
+
+    # 상태별 텍스트 및 컬러 결정
+    status_msg = "READY"
+    status_color = "#38bdf8"
+    if status == "CRITICAL":
+      status_msg = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡"
+      status_color = "#ffffff"
+    elif status == "PITY_SUCCESS":
+      status_msg = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨"
+      status_color = "#fde68a"
+    elif status == "SUCCESS":
+      status_msg = "✨ COSMIC SUCCESS (강화 성공) ✨"
+      status_color = c_color
+    elif status == "SHIELD_SAVED":
+      status_msg = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️"
+      status_color = "#60a5fa"
+    elif status == "DESTROYED":
+      status_msg = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥"
+      status_color = "#ef4444"
+    elif status == "FAILED":
+      status_msg = "🔻 FAILED (에너지 하락) 🔻"
+      status_color = "#64748b"
+    elif status == "HOLD":
+      status_msg = "🔒 HOLD (에너지 동결) 🔒"
+      status_color = "#94a3b8"
+    else:
+      status_msg = "READY - 우주 블랙홀 에너지가 집중됩니다"
+
+    # 티어별 제목 스타일
+    tier_class = f"title-tier-{c_tier}"
+    if c_tier == 5:
+      tier_style = (
+          "font-size: 20px; font-weight: 800; background: linear-gradient(90deg,"
+          " #ff7e5f, #feb47b); -webkit-background-clip: text;"
+          " -webkit-text-fill-color: transparent;"
+      )
+    elif c_tier == 6:
+      tier_style = (
+          "font-size: 20px; font-weight: 800; background: linear-gradient(90deg,"
+          " #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto;"
+          " -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+      )
+    elif c_tier == 4:
+      tier_style = (
+          "font-size: 19px; font-weight: 800; color: #c084fc; text-shadow: 0 0"
+          " 15px #c084fc;"
+      )
+    elif c_tier == 3:
+      tier_style = (
+          "font-size: 18px; font-weight: 800; color: #ef4444; text-shadow: 0 0"
+          " 15px #ef4444;"
+      )
+    elif c_tier == 2:
+      tier_style = (
+          "font-size: 17px; font-weight: 800; color: #f59e0b; text-shadow: 0 0"
+          " 12px #f59e0b;"
+      )
+    else:
+      tier_style = (
+          "font-size: 16px; font-weight: 800; color: #fde68a; text-shadow: 0 0"
+          " 10px #fde68a;"
+      )
+
+    shake_style = (
+        "animation: textVibe 0.15s infinite alternate ease-in-out;"
+        if curr_lvl >= 20
+        else ""
+    )
+
+    info_card_html = f"""
+        <style>
+            @keyframes textVibe {{
+                0% {{ transform: translate(0px, 0px) rotate(0deg); }}
+                25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
+                50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
+                100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
+            }}
+            .info-card-box {{
+                background: rgba(10, 14, 26, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                padding: 16px;
+                border-radius: 14px;
+                backdrop-filter: blur(12px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(120, 50, 255, 0.2);
+                text-align: center;
+                margin-top: 10px;
+            }
+        </style>
+        <div class="info-card-box" style="{shake_style}">
+            <div style="font-size: 12px; font-weight: 800; color: {status_color}; margin-bottom: 6px; letter-spacing: 1px;">{status_msg}</div>
+            <div style="{tier_style} margin-bottom: 4px;">{c_name}</div>
+            <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px; font-style: italic;">"{c_desc}"</div>
+            <div style="font-size: 13px; font-weight: 800; color: #fbbf24; margin-bottom: 2px;">예상 가치: {c_price}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #f87171;">필요 강화 비용: {c_cost}</div>
+        </div>
+    """
+    st.markdown(info_card_html, unsafe_allow_html=True)
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     s_col1, s_col2 = st.columns(2)
@@ -841,14 +952,9 @@ else:
     current_level = st.session_state.level
     curr_data = SMELL_DB[current_level]
     card_color = curr_data["color"]
-    card_title = curr_data["name"]
-    card_desc = curr_data["desc"]
-    card_price = format_gold(curr_data["price"])
-    current_cost = format_gold(get_enhance_cost(current_level))
-    tier = curr_data["tier"]
     status = st.session_state.status
 
-    # 단계별 3D 오브젝트 및 블랙홀 우주 공간 통합 렌더러
+    # 3D 오브젝트 및 블랙홀 우주 공간 렌더러 (UI 오버레이 제거 버전)
     three_js_code = f"""
       <!DOCTYPE html>
       <html>
@@ -858,57 +964,8 @@ else:
                   margin: 0; 
                   overflow: hidden; 
                   background: transparent; 
-                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
               }}
               #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
-
-              .cinematic-ui {{
-                  position: absolute;
-                  bottom: 20px; 
-                  left: 50%;
-                  transform: translateX(-50%);
-                  width: 90%;
-                  max-width: 650px;
-                  text-align: center;
-                  z-index: 100;
-                  pointer-events: none;
-                  opacity: 0;
-                  transition: opacity 0.4s ease-in-out;
-                  background: rgba(10, 14, 26, 0.75);
-                  border: 1px solid rgba(255, 255, 255, 0.12);
-                  padding: 14px 20px;
-                  border-radius: 16px;
-                  backdrop-filter: blur(12px);
-                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(120, 50, 255, 0.2);
-              }}
-
-              .cinematic-ui.visible {{
-                  opacity: 1;
-              }}
-
-              .title-tier-1 {{ font-size: 24px; font-weight: 800; color: #fde68a; text-shadow: 0 0 15px #fde68a; }}
-              .title-tier-2 {{ font-size: 26px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 18px #f59e0b; }}
-              .title-tier-3 {{ font-size: 28px; font-weight: 800; color: #ef4444; text-shadow: 0 0 20px #ef4444; }}
-              .title-tier-4 {{ font-size: 30px; font-weight: 800; color: #c084fc; text-shadow: 0 0 22px #c084fc; }}
-              .title-tier-5 {{ font-size: 32px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-              .title-tier-6 {{ font-size: 35px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 18px rgba(255,255,255,0.9)); }}
-
-              @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
-
-              .shaking-text {{
-                  animation: textVibe 0.15s infinite alternate ease-in-out;
-              }}
-              @keyframes textVibe {{
-                  0% {{ transform: translate(0px, 0px) rotate(0deg); }}
-                  25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
-                  50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
-                  100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
-              }}
-
-              .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1.5px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-              .desc-text {{ font-size: 12px; color: #cbd5e1; margin-top: 4px; font-weight: 500; }}
-              .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 4px; }}
-              .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 2px; }}
           </style>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -916,25 +973,9 @@ else:
       <body>
           <div id="container"></div>
 
-          <div id="cinematicUi" class="cinematic-ui">
-              <div id="statusText" class="status-header">READY</div>
-              <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-              <div id="descText" class="desc-text">"{card_desc}"</div>
-              <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-              <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
-          </div>
-
           <script>
-              const uiElement = document.getElementById('cinematicUi');
-
               const currentLevel = {current_level};
-              if (currentLevel >= 20) {{
-                  document.getElementById('mainTitle').classList.add('shaking-text');
-                  document.getElementById('descText').classList.add('shaking-text');
-              }}
-
               const status = "{status}";
-              const statusText = document.getElementById('statusText');
               const tierColor = "{card_color}";
               let statusColor = "#38bdf8";
               let particleSize = 0.3;
@@ -942,44 +983,33 @@ else:
               let glowIntensity = 22;
 
               if (status === "CRITICAL") {{
-                  statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                   statusColor = "#ffffff"; 
                   particleSize = 0.55;
                   particleSpeed = 2.5;
                   glowIntensity = 38;
               }} else if (status === "PITY_SUCCESS") {{
-                  statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
                   statusColor = "#fde68a";
                   particleSize = 0.45;
                   particleSpeed = 2.0;
                   glowIntensity = 32;
               }} else if (status === "SUCCESS") {{
-                  statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                   statusColor = tierColor;
                   particleSize = 0.35;
                   particleSpeed = 1.5;
                   glowIntensity = 25;
               }} else if (status === "SHIELD_SAVED") {{
-                  statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                   statusColor = "#60a5fa";
               }} else if (status === "DESTROYED") {{
-                  statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
                   statusColor = "#ef4444";
                   particleSpeed = 1.2;
               }} else if (status === "FAILED") {{
-                  statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                   statusColor = "#64748b";
                   particleSpeed = 0.5;
                   glowIntensity = 8;
               }} else if (status === "HOLD") {{
-                  statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                   statusColor = "#94a3b8";
                   particleSpeed = 0.7;
-              }} else {{
-                  statusText.innerText = "READY - 우주 블랙홀 에너지가 집중됩니다";
               }}
-              
-              statusText.style.color = statusColor;
 
               const scene = new THREE.Scene();
               const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1107,7 +1137,6 @@ else:
               objectGroup.add(coreMesh);
 
               scene.add(objectGroup);
-              uiElement.classList.add('visible');
 
               if (status === "DESTROYED") {{
                   outerMesh.visible = false;
