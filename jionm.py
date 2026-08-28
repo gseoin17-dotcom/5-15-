@@ -77,7 +77,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 및 강화 확률표
+# 3. 게임 데이터베이스 및 업적 정의
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -299,6 +299,27 @@ SMELL_DB = {
     },
 }
 
+ACHIEVEMENTS = {
+    "ach_10": {
+        "title": "시골 흙밭 전문가",
+        "desc": "10단계 이상 달성",
+        "target": 10,
+        "reward": 50000,
+    },
+    "ach_20": {
+        "title": "집밥 냄새 소믈리에",
+        "desc": "20단계 이상 달성",
+        "target": 20,
+        "reward": 1000000,
+    },
+    "ach_30": {
+        "title": "우주 통일 자이온맘",
+        "desc": "30단계 만렙 달성",
+        "target": 30,
+        "reward": 50000000,
+    },
+}
+
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0, 0.0),
@@ -333,12 +354,15 @@ PROB_TABLE = {
 }
 
 CRITICAL_RATE = 0.05
+PITY_MAX = 5  # 실패 5회 누적 시 자이온맘의 가호(천장) 발동
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state:
   st.session_state.level = 0
+if "max_level" not in st.session_state:
+  st.session_state.max_level = 0
 if "money" not in st.session_state:
   st.session_state.money = 1000000
 if "status" not in st.session_state:
@@ -347,10 +371,27 @@ if "shield" not in st.session_state:
   st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
+if "pity_count" not in st.session_state:
+  st.session_state.pity_count = 0
+if "achievements" not in st.session_state:
+  st.session_state.achievements = []
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 로직 및 업적 체크
 # -----------------------------------------------------------------------------
+
+
+def check_achievements():
+  if st.session_state.level > st.session_state.max_level:
+    st.session_state.max_level = st.session_state.level
+
+  for key, ach in ACHIEVEMENTS.items():
+    if (
+        st.session_state.max_level >= ach["target"]
+        and key not in st.session_state.achievements
+    ):
+      st.session_state.achievements.append(key)
+      st.session_state.money += ach["reward"]
 
 
 def run_enhance():
@@ -365,6 +406,14 @@ def run_enhance():
 
   st.session_state.money -= cost
 
+  # 자이온맘의 가호 (천장 시스템) 발동 체크
+  if st.session_state.pity_count >= PITY_MAX - 1:
+    st.session_state.level += 1
+    st.session_state.status = "PITY_SUCCESS"
+    st.session_state.pity_count = 0
+    check_achievements()
+    return
+
   sp, down_p, dp, hold_p = PROB_TABLE[curr]
   r = random.uniform(0, 100)
 
@@ -373,6 +422,7 @@ def run_enhance():
   destroy_limit = down_limit + dp
 
   if r < success_limit:
+    st.session_state.pity_count = 0  # 성공 시 스택 초기화
     if random.random() < CRITICAL_RATE and curr + 2 <= 30:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
@@ -380,6 +430,7 @@ def run_enhance():
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
   elif r < down_limit:
+    st.session_state.pity_count += 1
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
@@ -387,15 +438,20 @@ def run_enhance():
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
+      st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
       st.session_state.tears = min(120, st.session_state.tears + 1)
     else:
+      st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
       st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
+    st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
     st.session_state.tears = min(120, st.session_state.tears + 1)
+
+  check_achievements()
 
 
 def dev_force_success():
@@ -403,6 +459,7 @@ def dev_force_success():
   if curr < 30:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
+    check_achievements()
 
 
 def sell():
@@ -419,7 +476,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (우주 배경 톤에 맞춘 매끄러운 블랙/화이트 버튼 및 UI 스타일)
+# 6. 테마 CSS (블랙/화이트 & 배경 톤 조화)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -436,7 +493,7 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 3.5rem !important;
+        padding-top: 2rem !important;
         padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
@@ -444,7 +501,6 @@ st.markdown(
         background: transparent !important;
     }
     
-    /* 배경 톤과 조화되는 다크 블랙 & 화이트 모던 버튼 스타일 */
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
@@ -553,18 +609,13 @@ with left_col:
     )
     st.write("")
 
-    if st.session_state.level < 30:
-      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-      crit_pct = int(CRITICAL_RATE * 100)
-      prob_str = f"성공:{sp}% (크리{crit_pct}%)<br>하락:{down_p}% / 파괴:{dp}%"
-    else:
-      prob_str = "MAX LEVEL"
-
+    # 자이온맘의 가호(천장) 진행도 표시
+    pity_left = PITY_MAX - st.session_state.pity_count
     st.markdown(
         f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>📊 상세 확률</div><div style='font-size:11px;"
-        f" font-weight:800; color:#ffffff; line-height:"
-        f" 1.3;'>{prob_str}</div></div>",
+        f" color:#fde68a;'>✨ 자이온맘의 가호</div><div style='font-size:13px;"
+        f" font-weight:800;"
+        f" color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
         unsafe_allow_html=True,
     )
 
@@ -573,13 +624,9 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 암시장"
-      " 상점</h4>",
-      unsafe_allow_html=True,
-  )
+  # 상점 및 도감 탭
+  tab_shop1, tab_shop2, tab_book = st.tabs(["🛡️ 방지권", "💧 눈물", "📖 도감"])
 
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
@@ -629,6 +676,23 @@ with left_col:
       else:
         st.error("눈물 40개가 필요합니다.")
 
+  with tab_book:
+    st.markdown(
+        "<div style='font-size:12px; color:#fde68a; margin-bottom:4px;'><b>업적"
+        " 및 칭호 현황</b></div>",
+        unsafe_allow_html=True,
+    )
+    for key, ach in ACHIEVEMENTS.items():
+      cleared = key in st.session_state.achievements
+      status_icon = "✅" if cleared else "🔒"
+      st.markdown(
+          f"<div style='font-size:11px; color:#cbd5e1; padding:3px 0;'>"
+          f"{status_icon} <b>{ach['title']}</b><br><span"
+          f" style='color:#94a3b8;'>{ach['desc']} (보상:"
+          f" {format_gold(ach['reward'])})</span></div>",
+          unsafe_allow_html=True,
+      )
+
 with right_col:
   current_level = st.session_state.level
   curr_data = SMELL_DB[current_level]
@@ -655,8 +719,8 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                /* UI 위치를 더 아래쪽으로 내림 (bottom 15px) */
-                bottom: 15px; 
+                /* UI를 확 내려서 중앙에 가깝도록 배치 (bottom 35% 지점) */
+                bottom: 35%; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -671,7 +735,6 @@ with right_col:
                 opacity: 1;
             }}
 
-            /* 텍스트 크기를 기존보다 더 작고 아담하게 축소 */
             .title-tier-1 {{ font-size: 30px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
             .title-tier-2 {{ font-size: 34px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
             .title-tier-3 {{ font-size: 38px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
@@ -737,6 +800,12 @@ with right_col:
                 particleSize = 0.55;
                 particleSpeed = 2.5;
                 glowIntensity = 35;
+            }} else if (status === "PITY_SUCCESS") {{
+                statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
+                statusColor = "#fde68a";
+                particleSize = 0.45;
+                particleSpeed = 2.0;
+                glowIntensity = 30;
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                 statusColor = tierColor;
@@ -825,7 +894,6 @@ with right_col:
             let baseGeo;
             const lvl = {current_level};
 
-            /* 3D 오브젝트 크기를 전체적으로 약 20% 축소하여 콤팩트하게 조정 */
             if (lvl <= 2) {{
                 baseGeo = new THREE.TetrahedronGeometry(2.3);
             }} else if (lvl <= 5) {{
@@ -868,8 +936,8 @@ with right_col:
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
-                emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" ? 0.9 : 0.15),
+                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
+                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
                 metalness: 0.9,
                 roughness: 0.15,
                 transmission: 0.6,
@@ -884,7 +952,7 @@ with right_col:
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 3.0 : 1.2,
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
                 roughness: 0.05,
                 metalness: 0.95,
                 transmission: 0.8
@@ -952,7 +1020,7 @@ with right_col:
                         }});
                     }}
                 }});
-            }} else if (status === "CRITICAL") {{
+            }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
                 gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
             }} else if (status === "SUCCESS") {{
@@ -970,7 +1038,7 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.2 : 0.65);
+                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
                     outerMesh.rotation.x = time * (0.5 * rotSpeed);
                     outerMesh.rotation.y = time * (0.75 * rotSpeed);
                     coreMesh.rotation.x = -time * (1.2 * rotSpeed);
