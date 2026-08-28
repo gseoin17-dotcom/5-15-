@@ -337,6 +337,19 @@ CRITICAL_RATE = 0.05
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
+if "game_started" not in st.session_state:
+  st.session_state.game_started = False
+if "player_name" not in st.session_state:
+  st.session_state.player_name = ""
+if "registered_players" not in st.session_state:
+  # 중복 방지를 위한 기존 등록 플레이어 목록 (예시 데이터 포함 가능)
+  st.session_state.registered_players = {"지온신", "트래쉬마운틴"}
+if "ranking_data" not in st.session_state:
+  st.session_state.ranking_data = [
+      {"name": "지온신", "level": 25, "money": 400000000},
+      {"name": "트래쉬마운틴", "level": 18, "money": 30000000},
+  ]
+
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "money" not in st.session_state:
@@ -397,12 +410,15 @@ def run_enhance():
     st.session_state.status = "HOLD"
     st.session_state.tears = min(120, st.session_state.tears + 1)
 
+  update_ranking()
+
 
 def dev_force_success():
   curr = st.session_state.level
   if curr < 30:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
+  update_ranking()
 
 
 def sell():
@@ -416,6 +432,35 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
+  update_ranking()
+
+
+def update_ranking():
+  # 랭킹 리스트 업데이트 로직
+  name = st.session_state.player_name
+  current_lvl = st.session_state.level
+  current_money = (
+      st.session_state.money
+      if st.session_state.money != float("inf")
+      else 999999999999
+  )
+
+  found = False
+  for r in st.session_state.ranking_data:
+    if r["name"] == name:
+      r["level"] = current_lvl
+      r["money"] = current_money
+      found = True
+      break
+  if not found:
+    st.session_state.ranking_data.append(
+        {"name": name, "level": current_lvl, "money": current_money}
+    )
+
+  # 레벨 내림차순, 보유금액 내림차순 정렬
+  st.session_state.ranking_data.sort(
+      key=lambda x: (x["level"], x["money"]), reverse=True
+  )
 
 
 # -----------------------------------------------------------------------------
@@ -481,542 +526,638 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃
+# 7. 시작 화면 (이름 입력 및 메뉴 선택)
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([2.2, 7.8], gap="medium")
-
-with left_col:
+if not st.session_state.game_started:
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
-      " 설정</h4>",
+      "<h1 style='text-align: center; color: #fde68a;'>🗑️ 지온냄새 강화하기</h1>",
       unsafe_allow_html=True,
   )
-  dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
-
   st.markdown(
-      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      "<h3 style='text-align: center; color: #cbd5e1; font-size: 18px;"
+      " margin-bottom: 30px;'>TRASH MOUNTAIN EDITION</h3>",
       unsafe_allow_html=True,
   )
 
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
-      " 강화 제어</h4>",
-      unsafe_allow_html=True,
-  )
+  col1, col2, col3 = st.columns([1, 2, 1])
+  with col2:
+    st.markdown(
+        "<div style='background: rgba(15, 23, 42, 0.85); padding: 30px;"
+        " border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.4);'>"
+        "<h4>👤 플레이어 닉네임 설정</h4></div>",
+        unsafe_allow_html=True,
+    )
+    input_name = st.text_input(
+        "사용할 이름을 입력하세요 (중복 불가)",
+        placeholder="예: 지온마스터",
+    )
 
-  if st.button(
-      "🔥 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 30),
-  ):
-    cost = get_enhance_cost(st.session_state.level)
-    if st.session_state.money < cost:
-      st.error("강화 비용 부족!")
-    else:
-      run_enhance()
+    st.write("")
+    menu_choice = st.radio("메뉴 선택", ["게임 시작하기", "오늘의 강화랭킹"])
+
+    st.write("")
+    if st.button("🚀 선택 실행", use_container_width=True):
+      trimmed_name = input_name.strip()
+      if not trimmed_name:
+        st.error("닉네임을 입력해주세요!")
+      elif menu_choice == "게임 시작하기":
+        if trimmed_name in st.session_state.registered_players:
+          st.error(
+              "이미 존재하는 닉네임입니다! 다른 닉네임을 입력해주세요 (중복"
+              " 불가)."
+          )
+        else:
+          st.session_state.registered_players.add(trimmed_name)
+          st.session_state.player_name = trimmed_name
+          st.session_state.game_started = True
+          update_ranking()
+          st.rerun()
+      elif menu_choice == "오늘의 강화랭킹":
+        st.markdown(
+            "---"
+        )  # 랭킹 보기를 선택한 경우 아래쪽에 바로 랭킹 출력용 플래그나 별도 영역 처리
+        st.session_state.show_ranking_only = True
+        st.rerun()
+
+  # 메인 화면 전 랭킹보기 탭을 눌렀을 때 보여주는 영역
+  if st.session_state.get("show_ranking_only", False):
+    st.markdown("---")
+    st.markdown(
+        "<h3 style='text-align: center; color: #fde68a;'>🏆 오늘의 강화 랭킹</h3>",
+        unsafe_allow_html=True,
+    )
+    col_r1, col_r2, col_r3 = st.columns([1, 2, 1])
+    with col_r2:
+      for idx, ranker in enumerate(st.session_state.ranking_data, 1):
+        money_str = (
+            format_gold(ranker["money"])
+            if ranker["money"] < 999999999999
+            else "무한대(INF)"
+        )
+        st.info(
+            f"**{idx위}** | 닉네임: **{ranker['name']}** | 최고 단계:"
+            f" **{ranker['level']}단계** | 자산: {money_str}"
+        )
+      if st.button("🔙 뒤로 가기", use_container_width=True):
+        st.session_state.show_ranking_only = False
+        st.rerun()
+
+# -----------------------------------------------------------------------------
+# 8. 메인 게임 레이아웃 (게임 시작 후)
+# -----------------------------------------------------------------------------
+else:
+  left_col, right_col = st.columns([2.2, 7.8], gap="medium")
+
+  with left_col:
+    st.markdown(
+        f"<h4 style='margin:0 0 4px 0; font-size: 15px; color:#fde68a;'>👤"
+        f" 플레이어: <b>{st.session_state.player_name}</b></h4>",
+        unsafe_allow_html=True,
+    )
+
+    if st.button("🏠 메인 메뉴로 돌아가기", use_container_width=True):
+      st.session_state.game_started = False
+      st.session_state.show_ranking_only = False
       st.rerun()
 
-  if dev_mode:
-    st.write("")
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
+        " 설정</h4>",
+        unsafe_allow_html=True,
+    )
+    dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
+
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
+        " 강화 제어</h4>",
+        unsafe_allow_html=True,
+    )
+
     if st.button(
-        "✨ [DEV] 무조건 성공",
+        "🔥 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
-      dev_force_success()
+      cost = get_enhance_cost(st.session_state.level)
+      if st.session_state.money < cost:
+        st.error("강화 비용 부족!")
+      else:
+        run_enhance()
+        st.rerun()
+
+    if dev_mode:
+      st.write("")
+      if st.button(
+          "✨ [DEV] 무조건 성공",
+          use_container_width=True,
+          disabled=(st.session_state.level >= 30),
+      ):
+        dev_force_success()
+        st.rerun()
+
+    st.write("")
+    if st.button(
+        "💰 현재 냄새 판매",
+        use_container_width=True,
+        disabled=(st.session_state.level == 0),
+    ):
+      sell()
       st.rerun()
 
-  st.write("")
-  if st.button(
-      "💰 현재 냄새 판매",
-      use_container_width=True,
-      disabled=(st.session_state.level == 0),
-  ):
-    sell()
-    st.rerun()
-
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 암시장"
-      " 상점</h4>",
-      unsafe_allow_html=True,
-  )
-
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
-  with tab_shop1:
-    current_shield_cost = get_shield_cost(st.session_state.level)
-    st.caption(
-        f"파괴 방지권 (보유 3개 제한)\n(18단계 이상 구매 가능)\n가격:"
-        f" {format_gold(current_shield_cost)}"
+    st.markdown(
+        "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
-    if st.button(
-        "방지권 구매", use_container_width=True, disabled=not can_buy_shield
-    ):
-      if st.session_state.level < 18:
-        st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 3:
-        st.warning("최대 3개까지만 보유 가능합니다.")
-      elif st.session_state.money >= current_shield_cost:
-        st.session_state.money -= current_shield_cost
-        st.session_state.shield += 1
-        st.success("파괴 방지권 구매 완료!")
-        st.rerun()
-      else:
-        st.error("금액이 부족합니다.")
-
-  with tab_shop2:
-    st.caption(
-        f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
-        f" {st.session_state.tears}/120개)"
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#e2e8f0;'>🛒 암시장"
+        " 상점</h4>",
+        unsafe_allow_html=True,
     )
-    if st.button("눈물 기적 가동", use_container_width=True):
-      if st.session_state.tears >= 40 and st.session_state.level < 30:
-        st.session_state.tears -= 40
-        if random.random() < 0.50:
-          add_lvl = random.choice([1, 2, 3])
-          st.session_state.level = min(30, st.session_state.level + add_lvl)
-          st.session_state.status = (
-              "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-          )
-          st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
+
+    tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
+    with tab_shop1:
+      current_shield_cost = get_shield_cost(st.session_state.level)
+      st.caption(
+          f"파괴 방지권 (보유 3개 제한)\n(18단계 이상 구매 가능)\n가격:"
+          f" {format_gold(current_shield_cost)}"
+      )
+
+      can_buy_shield = (
+          st.session_state.level >= 18 and st.session_state.shield < 3
+      )
+      if st.button(
+          "방지권 구매", use_container_width=True, disabled=not can_buy_shield
+      ):
+        if st.session_state.level < 18:
+          st.warning("18단계 이상부터 구매 가능합니다.")
+        elif st.session_state.shield >= 3:
+          st.warning("최대 3개까지만 보유 가능합니다.")
+        elif st.session_state.money >= current_shield_cost:
+          st.session_state.money -= current_shield_cost
+          st.session_state.shield += 1
+          st.success("파괴 방지권 구매 완료!")
+          st.rerun()
         else:
-          st.session_state.status = "FAILED"
-          st.warning("눈물의 기적이 실패했습니다...")
-        st.rerun()
+          st.error("금액이 부족합니다.")
+
+    with tab_shop2:
+      st.caption(
+          f"눈물 40개 소모 -> 50% 확률로 1~3단계 랜덤 상승 (보유:"
+          f" {st.session_state.tears}/120개)"
+      )
+      if st.button("눈물 기적 가동", use_container_width=True):
+        if st.session_state.tears >= 40 and st.session_state.level < 30:
+          st.session_state.tears -= 40
+          if random.random() < 0.50:
+            add_lvl = random.choice([1, 2, 3])
+            st.session_state.level = min(30, st.session_state.level + add_lvl)
+            st.session_state.status = (
+                "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+            )
+            st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
+          else:
+            st.session_state.status = "FAILED"
+            st.warning("눈물의 기적이 실패했습니다...")
+          update_ranking()
+          st.rerun()
+        else:
+          st.error("눈물 40개가 필요합니다.")
+
+  with right_col:
+    sc1, sc2, sc3, sc4 = st.columns(4)
+
+    with sc1:
+      st.markdown(
+          f"""
+              <div class="stat-card">
+                  <div class="stat-title">💳 보유 금액</div>
+                  <div class="stat-value">{format_gold(st.session_state.money)}</div>
+              </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
+    with sc2:
+      st.markdown(
+          f"""
+              <div class="stat-card">
+                  <div class="stat-title">🛡️ 방지권</div>
+                  <div class="stat-value">{st.session_state.shield} / 3개</div>
+              </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
+    with sc3:
+      st.markdown(
+          f"""
+              <div class="stat-card">
+                  <div class="stat-title">💧 눈물</div>
+                  <div class="stat-value">{st.session_state.tears} / 120개</div>
+              </div>
+          """,
+          unsafe_allow_html=True,
+      )
+
+    with sc4:
+      if st.session_state.level < 30:
+        sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
+        crit_pct = int(CRITICAL_RATE * 100)
+        prob_str = f"성공:{sp}%(크리{crit_pct}%)<br>하락:{down_p}%/파괴:{dp}%"
       else:
-        st.error("눈물 40개가 필요합니다.")
+        prob_str = "MAX LEVEL"
 
-with right_col:
-  sc1, sc2, sc3, sc4 = st.columns(4)
+      st.markdown(
+          f"""
+              <div class="stat-card">
+                  <div class="stat-title">📊 상세 확률</div>
+                  <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
+              </div>
+          """,
+          unsafe_allow_html=True,
+      )
 
-  with sc1:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💳 보유 금액</div>
-                <div class="stat-value">{format_gold(st.session_state.money)}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    current_level = st.session_state.level
+    curr_data = SMELL_DB[current_level]
+    card_color = curr_data["color"]
+    card_title = curr_data["name"]
+    card_desc = curr_data["desc"]
+    card_price = format_gold(curr_data["price"])
+    current_cost = format_gold(get_enhance_cost(current_level))
+    tier = curr_data["tier"]
+    status = st.session_state.status
 
-  with sc2:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">🛡️ 방지권</div>
-                <div class="stat-value">{st.session_state.shield} / 3개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    three_js_code = f"""
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <style>
+              body {{ 
+                  margin: 0; 
+                  overflow: hidden; 
+                  background: transparent; 
+                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+              }}
+              #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-  with sc3:
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">💧 눈물</div>
-                <div class="stat-value">{st.session_state.tears} / 120개</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
+              .cinematic-ui {{
+                  position: absolute;
+                  bottom: 24px; 
+                  left: 50%;
+                  transform: translateX(-50%);
+                  width: 100%;
+                  text-align: center;
+                  z-index: 100;
+                  pointer-events: none;
+                  opacity: 0;
+                  transition: opacity 0.5s ease-in-out;
+              }}
 
-  with sc4:
-    if st.session_state.level < 30:
-      sp, down_p, dp, hold_p = PROB_TABLE[st.session_state.level]
-      crit_pct = int(CRITICAL_RATE * 100)
-      prob_str = f"성공:{sp}%(크리{crit_pct}%)<br>하락:{down_p}%/파괴:{dp}%"
-    else:
-      prob_str = "MAX LEVEL"
+              .cinematic-ui.visible {{
+                  opacity: 1;
+              }}
 
-    st.markdown(
-        f"""
-            <div class="stat-card">
-                <div class="stat-title">📊 상세 확률</div>
-                <div class="stat-value" style="font-size: 10px; line-height: 1.2;">{prob_str}</div>
-            </div>
-        """,
-        unsafe_allow_html=True,
-    )
+              .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+              .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+              .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+              .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+              .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+              .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
-  current_level = st.session_state.level
-  curr_data = SMELL_DB[current_level]
-  card_color = curr_data["color"]
-  card_title = curr_data["name"]
-  card_desc = curr_data["desc"]
-  card_price = format_gold(curr_data["price"])
-  current_cost = format_gold(get_enhance_cost(current_level))
-  tier = curr_data["tier"]
-  status = st.session_state.status
+              @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-  three_js_code = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ 
-                margin: 0; 
-                overflow: hidden; 
-                background: transparent; 
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            }}
-            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+              .shaking-text {{
+                  animation: textVibe 0.18s infinite alternate ease-in-out;
+              }}
+              @keyframes textVibe {{
+                  0% {{ transform: translate(0px, 0px) rotate(0deg); }}
+                  25% {{ transform: translate(-2px, 1px) rotate(-0.5deg); }}
+                  50% {{ transform: translate(2px, -2px) rotate(0.8deg); }}
+                  75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
+                  100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
+              }}
 
-            .cinematic-ui {{
-                position: absolute;
-                bottom: 24px; 
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                text-align: center;
-                z-index: 100;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.5s ease-in-out;
-            }}
+              .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+              .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+              .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+              .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+          </style>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+      </head>
+      <body>
+          <div id="container"></div>
 
-            .cinematic-ui.visible {{
-                opacity: 1;
-            }}
+          <div id="cinematicUi" class="cinematic-ui">
+              <div id="statusText" class="status-header">READY</div>
+              <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
+              <div id="descText" class="desc-text">"{card_desc}"</div>
+              <div id="priceText" class="price-text">예상 가치: {card_price}</div>
+              <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
+          </div>
 
-            .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-            .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+          <script>
+              const uiElement = document.getElementById('cinematicUi');
 
-            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+              const currentLevel = {current_level};
+              if (currentLevel >= 20) {{
+                  document.getElementById('mainTitle').classList.add('shaking-text');
+                  document.getElementById('descText').classList.add('shaking-text');
+                  document.getElementById('priceText').classList.add('shaking-text');
+                  document.getElementById('costText').classList.add('shaking-text');
+              }}
 
-            .shaking-text {{
-                animation: textVibe 0.18s infinite alternate ease-in-out;
-            }}
-            @keyframes textVibe {{
-                0% {{ transform: translate(0px, 0px) rotate(0deg); }}
-                25% {{ transform: translate(-2px, 1px) rotate(-0.5deg); }}
-                50% {{ transform: translate(2px, -2px) rotate(0.8deg); }}
-                75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
-                100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
-            }}
+              const status = "{status}";
+              const statusText = document.getElementById('statusText');
+              
+              const tierColor = "{card_color}";
+              let statusColor = "#38bdf8";
+              let particleSize = 0.25;
+              let particleSpeed = 0.8;
+              let glowIntensity = 12;
 
-            .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
-            .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
-        </style>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    </head>
-    <body>
-        <div id="container"></div>
+              if (status === "CRITICAL") {{
+                  statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
+                  statusColor = "#ffffff"; 
+                  particleSize = 0.45;
+                  particleSpeed = 2.0;
+                  glowIntensity = 30;
+              }} else if (status === "SUCCESS") {{
+                  statusText.innerText = "✨ SUCCESS (성공) ✨";
+                  statusColor = tierColor;
+                  particleSize = 0.3;
+                  particleSpeed = 1.2;
+                  glowIntensity = 18;
+              }} else if (status === "SHIELD_SAVED") {{
+                  statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
+                  statusColor = "#60a5fa";
+              }} else if (status === "DESTROYED") {{
+                  statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
+                  statusColor = "#ef4444";
+                  particleSpeed = 1.0;
+              }} else if (status === "FAILED") {{
+                  statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
+                  statusColor = "#64748b";
+                  particleSpeed = 0.4;
+                  glowIntensity = 4;
+              }} else if (status === "HOLD") {{
+                  statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
+                  statusColor = "#94a3b8";
+                  particleSpeed = 0.6;
+              }} else {{
+                  statusText.innerText = "READY";
+              }}
+              
+              statusText.style.color = statusColor;
 
-        <div id="cinematicUi" class="cinematic-ui">
-            <div id="statusText" class="status-header">READY</div>
-            <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-            <div id="descText" class="desc-text">"{card_desc}"</div>
-            <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-            <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
-        </div>
+              const scene = new THREE.Scene();
+              const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+              camera.position.set(0, -0.2, 9.5);
 
-        <script>
-            const uiElement = document.getElementById('cinematicUi');
+              const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
+              renderer.setSize(window.innerWidth, window.innerHeight);
+              renderer.setPixelRatio(window.devicePixelRatio);
+              renderer.shadowMap.enabled = true;
+              document.getElementById('container').appendChild(renderer.domElement);
 
-            const currentLevel = {current_level};
-            if (currentLevel >= 20) {{
-                document.getElementById('mainTitle').classList.add('shaking-text');
-                document.getElementById('descText').classList.add('shaking-text');
-                document.getElementById('priceText').classList.add('shaking-text');
-                document.getElementById('costText').classList.add('shaking-text');
-            }}
+              const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+              scene.add(ambientLight);
 
-            const status = "{status}";
-            const statusText = document.getElementById('statusText');
-            
-            const tierColor = "{card_color}";
-            let statusColor = "#38bdf8";
-            let particleSize = 0.25;
-            let particleSpeed = 0.8;
-            let glowIntensity = 12;
+              const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+              mainLight.position.set(5, 8, 5);
+              scene.add(mainLight);
 
-            if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
-                statusColor = "#ffffff"; 
-                particleSize = 0.45;
-                particleSpeed = 2.0;
-                glowIntensity = 30;
-            }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ SUCCESS (성공) ✨";
-                statusColor = tierColor;
-                particleSize = 0.3;
-                particleSpeed = 1.2;
-                glowIntensity = 18;
-            }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
-                statusColor = "#60a5fa";
-            }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
-                statusColor = "#ef4444";
-                particleSpeed = 1.0;
-            }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
-                statusColor = "#64748b";
-                particleSpeed = 0.4;
-                glowIntensity = 4;
-            }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
-                statusColor = "#94a3b8";
-                particleSpeed = 0.6;
-            }} else {{
-                statusText.innerText = "READY";
-            }}
-            
-            statusText.style.color = statusColor;
+              const pointLight = new THREE.PointLight(statusColor, glowIntensity, 35);
+              pointLight.position.set(0, 1.5, 3);
+              scene.add(pointLight);
 
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -0.2, 9.5);
+              const particleCount = 500;
+              const particleGeo = new THREE.BufferGeometry();
+              const particlePositions = new Float32Array(particleCount * 3);
+              const particleVelocities = [];
 
-            const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.shadowMap.enabled = true;
-            document.getElementById('container').appendChild(renderer.domElement);
+              for(let i=0; i<particleCount; i++) {{
+                  particlePositions[i*3] = (Math.random() - 0.5) * 5.0;
+                  particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
+                  particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
+                  
+                  let spd = particleSpeed;
+                  if (status === "FAILED") spd = 0.3;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambientLight);
+                  particleVelocities.push({{
+                      x: (Math.random() - 0.5) * 0.02 * spd,
+                      y: (0.015 + Math.random() * 0.03) * spd,
+                      z: (Math.random() - 0.5) * 0.02 * spd,
+                  }});
+              }}
+              particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+              
+              const particleMat = new THREE.PointsMaterial({{
+                  color: new THREE.Color(statusColor),
+                  size: particleSize,
+                  transparent: true,
+                  opacity: status === "FAILED" ? 0.25 : 0.75,
+                  blending: THREE.AdditiveBlending,
+                  depthWrite: false
+              }});
+              const particleSystem = new THREE.Points(particleGeo, particleMat);
+              scene.add(particleSystem);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
-            mainLight.position.set(5, 8, 5);
-            scene.add(mainLight);
+              const objectGroup = new THREE.Group();
+              objectGroup.position.y = -0.3;
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 35);
-            pointLight.position.set(0, 1.5, 3);
-            scene.add(pointLight);
+              let baseGeo;
+              const lvl = {current_level};
 
-            const particleCount = 500;
-            const particleGeo = new THREE.BufferGeometry();
-            const particlePositions = new Float32Array(particleCount * 3);
-            const particleVelocities = [];
+              if (lvl <= 2) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.4);
+              }} else if (lvl <= 5) {{
+                  baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
+              }} else if (lvl <= 8) {{
+                  baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5);
+              }} else if (lvl <= 11) {{
+                  baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6);
+              }} else if (lvl <= 14) {{
+                  baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7);
+              }} else if (lvl <= 17) {{
+                  baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8);
+              }} else if (lvl == 18) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.6);
+              }} else if (lvl == 19) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.5);
+              }} else if (lvl == 20) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.5);
+              }} else if (lvl == 21) {{
+                  baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6);
+              }} else if (lvl == 22) {{
+                  baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32);
+              }} else if (lvl == 23) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3);
+              }} else if (lvl == 24) {{
+                  baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12);
+              }} else if (lvl == 25) {{
+                  baseGeo = new THREE.SphereGeometry(2.3, 16, 16);
+              }} else if (lvl == 26) {{
+                  baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8);
+              }} else if (lvl == 27) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4);
+              }} else if (lvl == 28) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.6, 1);
+              }} else if (lvl == 29) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.7, 1);
+              }} else {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5);
+              }}
 
-            for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 5.0;
-                particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
-                
-                let spd = particleSpeed;
-                if (status === "FAILED") spd = 0.3;
+              const outerMat = new THREE.MeshPhysicalMaterial({{
+                  color: tierColor,
+                  emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
+                  emissiveIntensity: status === "SUCCESS" ? 0.4 : (status === "CRITICAL" ? 0.7 : 0.1),
+                  metalness: 0.85,
+                  roughness: 0.2,
+                  transmission: 0.5,
+                  transparent: true,
+                  opacity: status === "FAILED" ? 0.55 : 0.92,
+                  wireframe: false
+              }});
+              const outerMesh = new THREE.Mesh(baseGeo, outerMat);
+              objectGroup.add(outerMesh);
 
-                particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.02 * spd,
-                    y: (0.015 + Math.random() * 0.03) * spd,
-                    z: (Math.random() - 0.5) * 0.02 * spd,
-                }});
-            }}
-            particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-            
-            const particleMat = new THREE.PointsMaterial({{
-                color: new THREE.Color(statusColor),
-                size: particleSize,
-                transparent: true,
-                opacity: status === "FAILED" ? 0.25 : 0.75,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            }});
-            const particleSystem = new THREE.Points(particleGeo, particleMat);
-            scene.add(particleSystem);
+              const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
+              const coreMat = new THREE.MeshPhysicalMaterial({{
+                  color: 0xffffff,
+                  emissive: statusColor,
+                  emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 2.5 : 1.0,
+                  roughness: 0.1,
+                  metalness: 0.9,
+                  transmission: 0.7
+              }});
+              const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+              objectGroup.add(coreMesh);
 
-            const objectGroup = new THREE.Group();
-            objectGroup.position.y = -0.3;
+              scene.add(objectGroup);
 
-            let baseGeo;
-            const lvl = {current_level};
+              uiElement.classList.add('visible');
 
-            if (lvl <= 2) {{
-                baseGeo = new THREE.TetrahedronGeometry(2.4);
-            }} else if (lvl <= 5) {{
-                baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
-            }} else if (lvl <= 8) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5);
-            }} else if (lvl <= 11) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6);
-            }} else if (lvl <= 14) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7);
-            }} else if (lvl <= 17) {{
-                baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8);
-            }} else if (lvl == 18) {{
-                baseGeo = new THREE.OctahedronGeometry(2.6);
-            }} else if (lvl == 19) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.5);
-            }} else if (lvl == 20) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.5);
-            }} else if (lvl == 21) {{
-                baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6);
-            }} else if (lvl == 22) {{
-                baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32);
-            }} else if (lvl == 23) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3);
-            }} else if (lvl == 24) {{
-                baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12);
-            }} else if (lvl == 25) {{
-                baseGeo = new THREE.SphereGeometry(2.3, 16, 16);
-            }} else if (lvl == 26) {{
-                baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8);
-            }} else if (lvl == 27) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4);
-            }} else if (lvl == 28) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.6, 1);
-            }} else if (lvl == 29) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.7, 1);
-            }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5);
-            }}
+              if (status === "DESTROYED") {{
+                  outerMesh.visible = false;
+                  coreMesh.visible = false;
 
-            const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: tierColor,
-                emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.4 : (status === "CRITICAL" ? 0.7 : 0.1),
-                metalness: 0.85,
-                roughness: 0.2,
-                transmission: 0.5,
-                transparent: true,
-                opacity: status === "FAILED" ? 0.55 : 0.92,
-                wireframe: false
-            }});
-            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
-            objectGroup.add(outerMesh);
+                  const shardCount = 45;
+                  const shards = [];
+                  const shardGroup = new THREE.Group();
 
-            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
-            const coreMat = new THREE.MeshPhysicalMaterial({{
-                color: 0xffffff,
-                emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 2.5 : 1.0,
-                roughness: 0.1,
-                metalness: 0.9,
-                transmission: 0.7
-            }});
-            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-            objectGroup.add(coreMesh);
+                  for(let i=0; i<shardCount; i++) {{
+                      const sGeo = new THREE.BoxGeometry(0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3);
+                      const sMat = new THREE.MeshStandardMaterial({{
+                          color: tierColor,
+                          roughness: 0.3,
+                          metalness: 0.8,
+                          emissive: "#ef4444",
+                          emissiveIntensity: 0.8
+                      }});
+                      const shard = new THREE.Mesh(sGeo, sMat);
+                      
+                      shard.position.set(0, 0, 0);
+                      
+                      const u = Math.random();
+                      const v = Math.random();
+                      const theta = u * 2.0 * Math.PI;
+                      const phi = Math.acos(2.0 * v - 1.0);
+                      const speed = 3.5 + Math.random() * 4.0;
+                      
+                      shard.userData = {{
+                          vx: speed * Math.sin(phi) * Math.cos(theta),
+                          vy: speed * Math.sin(phi) * Math.sin(theta),
+                          vz: speed * Math.cos(phi),
+                          rx: (Math.random() - 0.5) * 15,
+                          ry: (Math.random() - 0.5) * 15
+                      }};
 
-            scene.add(objectGroup);
+                      shardGroup.add(shard);
+                      shards.push(shard);
+                  }}
+                  scene.add(shardGroup);
 
-            uiElement.classList.add('visible');
+                  gsap.to(shardGroup.position, {{
+                      duration: 1.2,
+                      ease: "power2.out",
+                      onUpdate: function() {{
+                          const progress = this.progress();
+                          shards.forEach(s => {{
+                              s.position.x += s.userData.vx * 0.02;
+                              s.position.y += s.userData.vy * 0.02 - 0.05;
+                              s.position.z += s.userData.vz * 0.02;
+                              s.rotation.x += s.userData.rx * 0.02;
+                              s.rotation.y += s.userData.ry * 0.02;
+                              s.material.opacity = 1.0 - progress;
+                              s.material.transparent = true;
+                          }});
+                      }}
+                  }});
+              }} else if (status === "CRITICAL") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
+                  gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
+              }} else if (status === "SUCCESS") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
+              }} else if (status === "FAILED") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
+              }} else if (status === "SHIELD_SAVED") {{
+                  gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
+              }}
 
-            if (status === "DESTROYED") {{
-                outerMesh.visible = false;
-                coreMesh.visible = false;
+              const clock = new THREE.Clock();
 
-                const shardCount = 45;
-                const shards = [];
-                const shardGroup = new THREE.Group();
+              function animate() {{
+                  requestAnimationFrame(animate);
+                  const time = clock.getElapsedTime();
 
-                for(let i=0; i<shardCount; i++) {{
-                    const sGeo = new THREE.BoxGeometry(0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3);
-                    const sMat = new THREE.MeshStandardMaterial({{
-                        color: tierColor,
-                        roughness: 0.3,
-                        metalness: 0.8,
-                        emissive: "#ef4444",
-                        emissiveIntensity: 0.8
-                    }});
-                    const shard = new THREE.Mesh(sGeo, sMat);
-                    
-                    shard.position.set(0, 0, 0);
-                    
-                    const u = Math.random();
-                    const v = Math.random();
-                    const theta = u * 2.0 * Math.PI;
-                    const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 3.5 + Math.random() * 4.0;
-                    
-                    shard.userData = {{
-                        vx: speed * Math.sin(phi) * Math.cos(theta),
-                        vy: speed * Math.sin(phi) * Math.sin(theta),
-                        vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 15,
-                        ry: (Math.random() - 0.5) * 15
-                    }};
+                  if (status !== "DESTROYED") {{
+                      const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
+                      outerMesh.rotation.x = time * (0.5 * rotSpeed);
+                      outerMesh.rotation.y = time * (0.7 * rotSpeed);
+                      coreMesh.rotation.x = -time * (1.1 * rotSpeed);
+                      coreMesh.rotation.y = -time * (1.4 * rotSpeed);
+                      objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
+                  }}
 
-                    shardGroup.add(shard);
-                    shards.push(shard);
-                }}
-                scene.add(shardGroup);
+                  const positions = particleGeo.attributes.position.array;
+                  for(let i=0; i<particleCount; i++) {{
+                      positions[i*3] += particleVelocities[i].x;
+                      positions[i*3 + 1] += particleVelocities[i].y;
+                      positions[i*3 + 2] += particleVelocities[i].z;
 
-                gsap.to(shardGroup.position, {{
-                    duration: 1.2,
-                    ease: "power2.out",
-                    onUpdate: function() {{
-                        const progress = this.progress();
-                        shards.forEach(s => {{
-                            s.position.x += s.userData.vx * 0.02;
-                            s.position.y += s.userData.vy * 0.02 - 0.05;
-                            s.position.z += s.userData.vz * 0.02;
-                            s.rotation.x += s.userData.rx * 0.02;
-                            s.rotation.y += s.userData.ry * 0.02;
-                            s.material.opacity = 1.0 - progress;
-                            s.material.transparent = true;
-                        }});
-                    }}
-                }});
-            }} else if (status === "CRITICAL") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
-                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
-            }} else if (status === "SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
-            }} else if (status === "FAILED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
-            }} else if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
-            }}
+                      if(positions[i*3 + 1] > 4.0) {{
+                          positions[i*3 + 1] = -3.2;
+                          positions[i*3] = (Math.random() - 0.5) * 5.0;
+                          positions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
+                      }}
+                  }}
+                  particleGeo.attributes.position.needsUpdate = true;
 
-            const clock = new THREE.Clock();
+                  renderer.render(scene, camera);
+              }}
 
-            function animate() {{
-                requestAnimationFrame(animate);
-                const time = clock.getElapsedTime();
+              animate();
 
-                if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
-                    outerMesh.rotation.x = time * (0.5 * rotSpeed);
-                    outerMesh.rotation.y = time * (0.7 * rotSpeed);
-                    coreMesh.rotation.x = -time * (1.1 * rotSpeed);
-                    coreMesh.rotation.y = -time * (1.4 * rotSpeed);
-                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
-                }}
+              window.addEventListener('resize', () => {{
+                  camera.aspect = window.innerWidth / window.innerHeight;
+                  camera.updateProjectionMatrix();
+                  renderer.setSize(window.innerWidth, window.innerHeight);
+              }});
+          </script>
+      </body>
+      </html>
+      """
 
-                const positions = particleGeo.attributes.position.array;
-                for(let i=0; i<particleCount; i++) {{
-                    positions[i*3] += particleVelocities[i].x;
-                    positions[i*3 + 1] += particleVelocities[i].y;
-                    positions[i*3 + 2] += particleVelocities[i].z;
-
-                    if(positions[i*3 + 1] > 4.0) {{
-                        positions[i*3 + 1] = -3.2;
-                        positions[i*3] = (Math.random() - 0.5) * 5.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
-                    }}
-                }}
-                particleGeo.attributes.position.needsUpdate = true;
-
-                renderer.render(scene, camera);
-            }}
-
-            animate();
-
-            window.addEventListener('resize', () => {{
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }});
-        </script>
-    </body>
-    </html>
-    """
-
-  components.html(three_js_code, height=560, scrolling=False)
+    components.html(three_js_code, height=560, scrolling=False)
