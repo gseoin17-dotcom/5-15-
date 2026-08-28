@@ -1118,13 +1118,13 @@ else:
       unsafe_allow_html=True,
   )
 
-  # 4. 강화 제어 및 상점 영역 (2열 레이아웃: 왼쪽=상점, 오른쪽=강화제어)
+  # 4. 강화 제어 및 상점 영역 (왼쪽: 상점 및 기적, 오른쪽: 게임 제어)
   col_left, col_right = st.columns([1, 1])
 
   with col_left:
     st.markdown(
-        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>🛒 상점 및"
-        " 기적</h4>",
+        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>⚙️ 게임"
+        " 제어 및 상점</h4>",
         unsafe_allow_html=True,
     )
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권 구매", "💧 눈물 기적 가동"])
@@ -1135,7 +1135,7 @@ else:
           f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
           f" <span style='font-size:15px; font-weight:bold; color:#fde68a;'>"
-          f"{format_gold(current_shield_cost)}</span></div>",
+          f"5만원</span></div>",
           unsafe_allow_html=True,
       )
 
@@ -1151,8 +1151,8 @@ else:
           st.warning("18단계 이상부터 구매 가능합니다.")
         elif st.session_state.shield >= 3:
           st.warning("최대 3개까지만 보유 가능합니다.")
-        elif st.session_state.money >= current_shield_cost:
-          st.session_state.money -= current_shield_cost
+        elif st.session_state.money >= 50000:
+          st.session_state.money -= 50000
           st.session_state.shield += 1
           st.success("파괴 방지권 구매 완료!")
           st.rerun()
@@ -1200,8 +1200,8 @@ else:
 
   with col_right:
     st.markdown(
-        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>⚙️ 게임 제어"
-        "</h4>",
+        "<h4 style='margin:0 0 10px 0; font-size: 16px; color:#fde68a;'>💻 개발자"
+        " 모드 활성화</h4>",
         unsafe_allow_html=True,
     )
     dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
