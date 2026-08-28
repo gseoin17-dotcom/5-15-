@@ -1036,72 +1036,9 @@ else:
               let baseGeo;
               const lvl = {current_level};
 
-              // =========================================================================
-              // 0단계부터 30단계까지 완벽하게 개별 커스텀된 역대급 3D 다각형/도형 매핑
-              // =========================================================================
-              if (lvl === 0) {{
-                  baseGeo = new THREE.TetrahedronGeometry(2.0, 0);
-              }} else if (lvl === 1) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.1, 0);
-              }} else if (lvl === 2) {{
-                  baseGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
-              }} else if (lvl === 3) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.1, 0);
-              }} else if (lvl === 4) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.1, 0);
-              }} else if (lvl === 5) {{
-                  baseGeo = new THREE.CylinderGeometry(1.4, 1.9, 2.4, 5);
-              }} else if (lvl === 6) {{
-                  baseGeo = new THREE.ConeGeometry(2.0, 3.0, 6);
-              }} else if (lvl === 7) {{
-                  baseGeo = new THREE.TorusGeometry(1.7, 0.5, 16, 32);
-              }} else if (lvl === 8) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.38, 64, 16, 2, 3);
-              }} else if (lvl === 9) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.3, 1);
-              }} else if (lvl === 10) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.2, 1);
-              }} else if (lvl === 11) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.2, 1);
-              }} else if (lvl === 12) {{
-                  baseGeo = new THREE.CylinderGeometry(0.8, 2.1, 2.7, 7);
-              }} else if (lvl === 13) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.42, 80, 20, 2, 5);
-              }} else if (lvl === 14) {{
-                  baseGeo = new THREE.ConeGeometry(2.2, 3.3, 9);
-              }} else if (lvl === 15) {{
-                  baseGeo = new THREE.TorusGeometry(1.8, 0.55, 20, 40);
-              }} else if (lvl === 16) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.4, 2);
-              }} else if (lvl === 17) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.4, 2);
-              }} else if (lvl === 18) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.4, 2);
-              }} else if (lvl === 19) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.48, 100, 24, 3, 4);
-              }} else if (lvl === 20) {{
-                  baseGeo = new THREE.CylinderGeometry(1.2, 2.4, 3.0, 12, 2);
-              }} else if (lvl === 21) {{
-                  baseGeo = new THREE.ConeGeometry(2.3, 3.6, 12);
-              }} else if (lvl === 22) {{
-                  baseGeo = new THREE.TorusGeometry(1.9, 0.6, 24, 48);
-              }} else if (lvl === 23) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.52, 120, 30, 3, 5);
-              }} else if (lvl === 24) {{
-                  baseGeo = new THREE.SphereGeometry(2.3, 24, 24);
-              }} else if (lvl === 25) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.6, 2);
-              }} else if (lvl === 26) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
-              }} else if (lvl === 27) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.6, 0.58, 140, 36, 2, 7);
-              }} else if (lvl === 28) {{
-                  baseGeo = new THREE.CylinderGeometry(1.8, 2.2, 3.4, 16, 3);
-              }} else if (lvl === 29) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.65, 0.62, 160, 40, 5, 6);
-              }} else {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.75, 0.68, 180, 48, 3, 7);
-              }}
+              // TODO: 1부터 30단계까지의 3D 모델(지오메트리) 정의를 모두 제거했습니다. 
+              // 아래 기본 박스 자리에 새로운 3D 모델 로직을 작성하시면 됩니다.
+              baseGeo = new THREE.BoxGeometry(2, 2, 2);
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
                   color: tierColor,
