@@ -754,19 +754,15 @@ else:
           unsafe_allow_html=True,
       )
       st.write("")
-      st.markdown("<div style='height:22px;'></div>", unsafe_allow_html=True)
 
-    # ✨ 자이온맘의 가호 영역을 스탯 박스 아래쪽으로 이동
-    st.markdown("<br>", unsafe_allow_html=True)
-    pity_left = PITY_MAX - st.session_state.pity_count
-    st.markdown(
-        f"<div style='text-align: center; background: rgba(255, 255, 255,"
-        " 0.05); padding: 8px; border-radius: 8px; border: 1px solid"
-        " rgba(253, 230, 138, 0.2);'><div style='font-size:12px;"
-        " color:#fde68a;'>✨ 자이온맘의 가호</div><div style='font-size:13px;"
-        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
-        unsafe_allow_html=True,
-    )
+      pity_left = PITY_MAX - st.session_state.pity_count
+      st.markdown(
+          f"<div style='text-align: center;'><div style='font-size:12px;"
+          f" color:#fde68a;'>✨ 자이온맘의 가호</div><div style='font-size:13px;"
+          f" font-weight:800;"
+          f" color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+          unsafe_allow_html=True,
+      )
 
     st.markdown(
         "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -777,6 +773,7 @@ else:
 
     with tab_shop1:
       current_shield_cost = get_shield_cost(st.session_state.level)
+      # 폰트 사이즈 키움 (11px -> 14px) 및 가격 강조
       st.markdown(
           f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
@@ -804,6 +801,7 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
+      # 폰트 사이즈 키움 (11px~12px -> 14px) 및 수치 강조
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:14px; color:#ef4444; font-weight:700;"
