@@ -7,17 +7,17 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="자이온의 왕좌 탈환기 - 우주 정복 RPG",
-    page_icon="🌌",
+    page_title="메이플 자이온 스토리 - 3D 강화 & 모험",
+    page_icon="🍁",
     layout="wide",
 )
 
 # -----------------------------------------------------------------------------
-# 2. 유틸리티 함수 및 비용 설정[cite: 1]
+# 2. 유틸리티 함수 및 포맷 설정
 # -----------------------------------------------------------------------------
 def format_gold(amount):
     if amount == 0 or amount == float("inf"):
-        return "0원" if amount == 0 else "무한대(INF)"
+        return "0메소" if amount == 0 else "무한대(INF)"
     units = ["", "만", "억", "조", "경", "해"]
     result = []
     unit_idx = 0
@@ -27,7 +27,7 @@ def format_gold(amount):
             result.insert(0, f"{remainder:,}{units[unit_idx]}")
         amount //= 10000
         unit_idx += 1
-    return "".join(result) + "원"
+    return "".join(result) + "메소"
 
 def get_enhance_cost(level):
     cost_table = {
@@ -44,71 +44,40 @@ def get_shield_cost(level):
     return max(50000, base_cost * 15)
 
 # -----------------------------------------------------------------------------
-# 3. RPG 전투 밸런스 설정 (추가된 기능)
-# -----------------------------------------------------------------------------
-def get_player_atk(level):
-    # 레벨과 티어에 따라 기하급수적으로 강해지는 공격력 공식
-    if level == 0: return 15
-    tier = SMELL_DB[level]["tier"]
-    return int(15 * (1.35 ** level) * (tier ** 1.5))
-
-def get_enemy_stats(stage):
-    # 스테이지 30 은 최종 보스 '자이온왕'
-    if stage >= 30:
-        return "👑 무취의 폭군 [자이온왕]", 9999999999, 0
-    
-    # 일반 몬스터 및 중간 보스
-    is_boss = stage % 5 == 0
-    prefix = "정예 " if is_boss else ""
-    names = ["표백 드론", "살균 로봇", "진공 청소기", "탈취 전차", "향수 중독자"]
-    
-    name = f"{prefix}{names[stage % 5]} (Lv.{stage})"
-    if is_boss:
-        name = f"💀 {name}"
-    
-    hp = int(100 * (1.5 ** stage))
-    if is_boss: hp *= 5
-        
-    gold = int(250 * (1.4 ** stage))
-    if is_boss: gold *= 4
-        
-    return name, hp, gold
-
-# -----------------------------------------------------------------------------
-# 4. 게임 데이터베이스 정의 (원본 유지)[cite: 1]
+# 3. 게임 데이터베이스 (지온냄새 0~30단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
-    0: {"name": "0단계 : 무취의 공간", "desc": "아무 냄새도 없다. 공격력이 미미하다.", "price": 0, "color": "#4a5568", "tier": 1},
-    1: {"name": "1단계 : 스쳐가는 지온냄새", "desc": "코끝을 살짝 스치는 기운.", "price": 150, "color": "#718096", "tier": 1},
-    2: {"name": "2단계 : 은은한 자이온냄새", "desc": "마른 땅에 단비가 내려 피어나는 냄새.", "price": 400, "color": "#38a169", "tier": 1},
-    3: {"name": "3단계 : 습한 지온냄새", "desc": "짙은 상록수 숲속에서 감오는 냄새.", "price": 600, "color": "#276749", "tier": 1},
-    4: {"name": "4단계 : 진득한 자이온냄새", "desc": "흙냄새가 파고든다.", "price": 800, "color": "#319795", "tier": 1},
-    5: {"name": "5단계 : 자극적인 지온냄새", "desc": "코를 강렬하게 자극한다.", "price": 3000, "color": "#2c7a7b", "tier": 1},
-    6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "진하고 기분 좋은 대지의 향.", "price": 3500, "color": "#3182ce", "tier": 2},
-    7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위의 인공 향수를 압도한다.", "price": 6100, "color": "#2b6cb0", "tier": 2},
-    8: {"name": "8단계 : 폭발하는 지온냄새", "desc": "페트리코 입자의 대폭발.", "price": 10000, "color": "#805ad5", "tier": 2},
-    9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "고대 대륙이 일렁인다.", "price": 20000, "color": "#6b46c1", "tier": 2},
-    10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "다른 향은 밋밋하게 느껴진다.", "price": 35100, "color": "#d69e2e", "tier": 2},
-    11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 흙밭 환각을 본다.", "price": 160000, "color": "#b7791f", "tier": 3},
-    12: {"name": "12단계 : 공간지배 자이온냄새", "desc": "산소를 지온 분자로 채운다.", "price": 350000, "color": "#dd6b20", "tier": 3},
-    13: {"name": "13단계 : 전설의 지온냄새", "desc": "전설 속의 지구 향기.", "price": 1000000, "color": "#c05621", "tier": 3},
-    14: {"name": "14단계 : 신성한 자이온냄새", "desc": "흙과 하나가 되는 기분.", "price": 3000000, "color": "#e53e3e", "tier": 3},
-    15: {"name": "15단계 : 신화급 지온냄새", "desc": "신들의 향. 공격력이 폭증하기 시작한다.", "price": 7500000, "color": "#9b2c2c", "tier": 3},
-    16: {"name": "16단계 : 우주관통 자이온냄새", "desc": "성층권을 뚫고 퍼져나간다.", "price": 14200000, "color": "#00f0ff", "tier": 4},
-    17: {"name": "17단계 : 차원균열 자이온냄새", "desc": "평행세계의 냄새까지 끌어당긴다.", "price": 20000000, "color": "#ff00ea", "tier": 4},
-    18: {"name": "18단계 : Absolute 자이온냄새", "desc": "만물을 지온 입자로 바꾼다.", "price": 30000000, "color": "#ffe600", "tier": 4},
-    19: {"name": "19단계 : 초월적 지온냄새", "desc": "인간의 감각으로는 수용 불가능.", "price": 47500000, "color": "#ff0055", "tier": 4},
-    20: {"name": "20단계 : 자이온맘의 포근한 집밥 냄새", "desc": "자이온맘의 강림! 따스한 냄새.", "price": 68300000, "color": "#ffaa00", "tier": 4},
-    21: {"name": "21단계 : 자이온맘의 엄격한 등짝 스매싱", "desc": "매콤하면서 사랑이 깃든 향.", "price": 101000000, "color": "#ff4500", "tier": 5},
-    22: {"name": "22단계 : 자이온맘의 전설의 흙된장국", "desc": "극상의 흙내음.", "price": 160000000, "color": "#ff007f", "tier": 5},
-    23: {"name": "23단계 : 자이온맘의 100년 숙성 원액", "desc": "결정체.", "price": 230000000, "color": "#7b00ff", "tier": 5},
-    24: {"name": "24단계 : 자이온맘의 지온스프레이", "desc": "치명적인 청량함.", "price": 300000000, "color": "#0088ff", "tier": 5},
-    25: {"name": "25단계 : 자이온맘의 무한한 은혜", "desc": "평화를 내리는 자애로움.", "price": 400000000, "color": "#00ffaa", "tier": 5},
+    0: {"name": "0단계 : 무취의 공간", "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.", "price": 0, "color": "#4a5568", "tier": 1},
+    1: {"name": "1단계 : 스쳐가는 지온냄새", "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.", "price": 150, "color": "#718096", "tier": 1},
+    2: {"name": "2단계 : 은은한 자이온냄새", "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.", "price": 400, "color": "#38a169", "tier": 1},
+    3: {"name": "3단계 : 습한 지온냄새", "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.", "price": 600, "color": "#276749", "tier": 1},
+    4: {"name": "4단계 : 진득한 자이온냄새", "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.", "price": 800, "color": "#319795", "tier": 1},
+    5: {"name": "5단계 : 자극적인 지온냄새", "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.", "price": 3000, "color": "#2c7a7b", "tier": 1},
+    6: {"name": "6단계 : 풍부한 자이온냄새", "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.", "price": 3500, "color": "#3182ce", "tier": 2},
+    7: {"name": "7단계 : 압도적인 지온냄새", "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.", "price": 6100, "color": "#2b6cb0", "tier": 2},
+    8: {"name": "8단계 : 폭발하는 지온냄새", "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.", "price": 10000, "color": "#805ad5", "tier": 2},
+    9: {"name": "9단계 : 시공을 뒤흔드는 지온냄새", "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.", "price": 20000, "color": "#6b46c1", "tier": 2},
+    10: {"name": "10단계 : 치명적인 자이온냄새", "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.", "price": 35100, "color": "#d69e2e", "tier": 2},
+    11: {"name": "11단계 : 환각을 부르는 지온냄새", "desc": "태초의 지구 흙밭을 거니는 환각을 본다.", "price": 160000, "color": "#b7791f", "tier": 3},
+    12: {"name": "12단계 : 공간지배 자이온냄새", "desc": "방 안의 모든 산소를 지온 분자로 채운다.", "price": 350000, "color": "#dd6b20", "tier": 3},
+    13: {"name": "13단계 : 전설의 지온냄새", "desc": "역사서에서 언급되던 전설 속의 지구 향기.", "price": 1000000, "color": "#c05621", "tier": 3},
+    14: {"name": "14단계 : 신성한 자이온냄새", "desc": "마음이 경건해지며 흙과 하나가 되는 기분.", "price": 3000000, "color": "#e53e3e", "tier": 3},
+    15: {"name": "15단계 : 신화급 지온냄새", "desc": "신들이 세계를 창조할 때 맡았다는 향.", "price": 7500000, "color": "#9b2c2c", "tier": 3},
+    16: {"name": "16단계 : 우주관통 자이온냄새", "desc": "성층권을 뚫고 우주선까지 퍼져나간다.", "price": 14200000, "color": "#00f0ff", "tier": 4},
+    17: {"name": "17단계 : 차원균열 자이온냄새", "desc": "평행세계의 흙냄새까지 끌어당긴다.", "price": 20000000, "color": "#ff00ea", "tier": 4},
+    18: {"name": "18단계 : Absolute 자이온냄새", "desc": "만물의 요소를 지온 입자로 바꿔버린다.", "price": 30000000, "color": "#ffe600", "tier": 4},
+    19: {"name": "19단계 : 초월적 지온냄새", "desc": "인간의 감각으로는 수용 불가능한 향기.", "price": 47500000, "color": "#ff0055", "tier": 4},
+    20: {"name": "20단계 : 자이온맘의 포근한 집밥 냄새", "desc": "자이온맘의 강림! 따스하고 구수한 냄새.", "price": 68300000, "color": "#ffaa00", "tier": 4},
+    21: {"name": "21단계 : 자이온맘의 엄격한 등짝 스매싱", "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.", "price": 101000000, "color": "#ff4500", "tier": 5},
+    22: {"name": "22단계 : 자이온맘의 전설의 흙된장국", "desc": "극상의 흙내음과 깊은 손맛.", "price": 160000000, "color": "#ff007f", "tier": 5},
+    23: {"name": "23단계 : 자이온맘의 100년 숙성 원액", "desc": "몰래 아껴둔 냄새의 결정체.", "price": 230000000, "color": "#7b00ff", "tier": 5},
+    24: {"name": "24단계 : 자이온맘의 지온스프레이", "desc": "집안 가득 뿌리는 치명적인 청량함.", "price": 300000000, "color": "#0088ff", "tier": 5},
+    25: {"name": "25단계 : 자이온맘의 무한한 은혜", "desc": "은하수 아이들에게 평화를 내리는 자애로움.", "price": 400000000, "color": "#00ffaa", "tier": 5},
     26: {"name": "26단계 : 자이온맘의 궁극 필살기", "desc": "우주 전체가 지온 향으로 뒤덮인다.", "price": 1800000000, "color": "#ccff00", "tier": 6},
-    27: {"name": "27단계 : 자이온맘의 창조와 구원", "desc": "절대 구원의 향기.", "price": 2500000000, "color": "#fffb00", "tier": 6},
-    28: {"name": "28단계 : 자이온맘의 권능 지온냄새", "desc": "자이온왕에게 대적할 최소한의 무기.", "price": 5500000000, "color": "#ffffff", "tier": 6},
-    29: {"name": "29단계 : 만물의 어머니 ★자이온맘★", "desc": "최종 오라.", "price": 10500000000, "color": "#ff00aa", "tier": 6},
-    30: {"name": "30단계 : ★태초의 자이온맘★ 절대신성", "desc": "자이온왕을 심판할 우주의 진리.", "price": float("inf"), "color": "#00ffff", "tier": 6},
+    27: {"name": "27단계 : 자이온맘의 창조와 구원", "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.", "price": 2500000000, "color": "#fffb00", "tier": 6},
+    28: {"name": "28단계 : 자이온맘의 권능 지온냄새", "desc": "창조주도 고개를 숙이고 냄새를 맡는다.", "price": 5500000000, "color": "#ffffff", "tier": 6},
+    29: {"name": "29단계 : 만물의 어머니 ★자이온맘★", "desc": "우주 만물이 품으로 돌아가는 최종 오라.", "price": 10500000000, "color": "#ff00aa", "tier": 6},
+    30: {"name": "30단계 : ★태초의 자이온맘★ 절대신성", "desc": "우주를 지온으로 통일한 자이온맘의 완성.", "price": float("inf"), "color": "#00ffff", "tier": 6},
 }
 
 PROB_TABLE = {
@@ -126,59 +95,70 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 PITY_MAX = 5
 
+# 메이플 필드 몬스터 데이터 (사냥터별)
+MAPS = {
+    "초보자의 수련장 (Lv.1)": {"mob": "주황버섯 닮은 무취슬라임", "hp": 100, "meso": 50, "req_lvl": 0},
+    "자이온의 오솔길 (Lv.10)": {"mob": "표백된 스텀프", "hp": 3500, "meso": 1200, "req_lvl": 5},
+    "자이온맘의 연구소 (Lv.20)": {"mob": "무취 클리너 로봇", "hp": 85000, "meso": 25000, "req_lvl": 15},
+    "👑 [보스맵] 자이온왕의 궁전 (Lv.30)": {"mob": "최종보스 자이온왕", "hp": 9999999, "meso": 5000000, "req_lvl": 25},
+}
+
 # -----------------------------------------------------------------------------
-# 5. 세션 상태 초기화 (RPG 스탯 추가)
+# 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "level" not in st.session_state: st.session_state.level = 0
-if "money" not in st.session_state: st.session_state.money = 0  # 0원으로 시작하여 사냥으로 벌어야 함
+if "max_level" not in st.session_state: st.session_state.max_level = 0
+if "money" not in st.session_state: st.session_state.money = 5000  # 초기 정착금 5000 메소
 if "status" not in st.session_state: st.session_state.status = "READY"
 if "shield" not in st.session_state: st.session_state.shield = 0
 if "tears" not in st.session_state: st.session_state.tears = 0
 if "pity_count" not in st.session_state: st.session_state.pity_count = 0
 
-# RPG States
-if "stage" not in st.session_state: st.session_state.stage = 1
-if "enemy_hp" not in st.session_state: 
-    _, hp, _ = get_enemy_stats(1)
-    st.session_state.enemy_hp = hp
-if "enemy_max_hp" not in st.session_state:
-    _, hp, _ = get_enemy_stats(1)
-    st.session_state.enemy_max_hp = hp
-if "combat_logs" not in st.session_state: st.session_state.combat_logs = ["전투가 시작되었습니다! 우주의 무취 군단을 무찌르세요!"]
-if "boss_defeated" not in st.session_state: st.session_state.boss_defeated = False
+# 메이플 사냥 관련 상태
+if "current_map" not in st.session_state: st.session_state.current_map = "초보자의 수련장 (Lv.1)"
+current_mob_data = MAPS[st.session_state.current_map]
+if "mob_hp" not in st.session_state: st.session_state.mob_hp = current_mob_data["hp"]
+if "mob_max_hp" not in st.session_state: st.session_state.mob_max_hp = current_mob_data["hp"]
+if "battle_logs" not in st.session_state: st.session_state.battle_logs = ["🍁 메이플 월드에 접속하셨습니다. 사냥을 통해 메소(골드)를 모으세요!"]
+if "game_cleared" not in st.session_state: st.session_state.game_cleared = False
 
 # -----------------------------------------------------------------------------
-# 6. 전투 및 강화 로직[cite: 1]
+# 5. 게임 로직 (강화 및 사냥)
 # -----------------------------------------------------------------------------
-def log_combat(msg):
-    st.session_state.combat_logs.insert(0, msg)
-    if len(st.session_state.combat_logs) > 8:
-        st.session_state.combat_logs.pop()
+def log_msg(msg):
+    st.session_state.battle_logs.insert(0, msg)
+    if len(st.session_state.battle_logs) > 6:
+        st.session_state.battle_logs.pop()
 
-def do_attack(times=1):
+def get_player_dmg(level):
+    if level == 0: return 20
+    tier = SMELL_DB[level]["tier"]
+    return int(25 * (1.4 ** level) * (tier ** 1.3))
+
+def attack_mob(times=1):
+    if st.session_state.game_cleared: return
+    
     for _ in range(times):
-        if st.session_state.boss_defeated: return
+        dmg = get_player_dmg(st.session_state.level)
+        st.session_state.mob_hp -= dmg
+        m_data = MAPS[st.session_state.current_map]
         
-        atk = get_player_atk(st.session_state.level)
-        st.session_state.enemy_hp -= atk
-        name, _, gold = get_enemy_stats(st.session_state.stage)
-        
-        if st.session_state.enemy_hp <= 0:
-            if st.session_state.stage >= 30:
-                st.session_state.boss_defeated = True
-                log_combat("🎉 [폭군 자이온왕]을 마침내 쓰러뜨렸습니다! 우주에 향기가 돌아옵니다!")
+        if st.session_state.mob_hp <= 0:
+            reward = m_data["meso"]
+            st.session_state.money += reward
+            log_msg(f"🎉 [{m_data['mob']}] 격파! 획득: {format_gold(reward)}")
+            
+            # 보스 클리어 체크
+            if "자이온왕" in m_data["mob"]:
+                st.session_state.game_cleared = True
+                log_msg("👑 자이온왕을 토벌하고 메이플 월드에 평화가 찾아왔습니다!")
                 break
                 
-            st.session_state.money += gold
-            log_combat(f"⚔️ [{name}] 격파! {format_gold(gold)} 획득!")
-            
-            st.session_state.stage += 1
-            new_name, new_hp, _ = get_enemy_stats(st.session_state.stage)
-            st.session_state.enemy_max_hp = new_hp
-            st.session_state.enemy_hp = new_hp
-            log_combat(f"🚨 새로운 적 [{new_name}] 등장!")
+            # 체력 리필 및 새 몬스터 소환
+            st.session_state.mob_max_hp = m_data["hp"]
+            st.session_state.mob_hp = m_data["hp"]
         else:
-            log_combat(f"💥 적에게 {atk:,}의 타격을 입혔습니다!")
+            log_msg(f"⚔️ 자이온의 [지온냄새] 공격! 데미지: {dmg:,} (적 HP 남음)")
 
 def run_enhance():
     curr = st.session_state.level
@@ -190,15 +170,16 @@ def run_enhance():
 
     st.session_state.money -= cost
 
-    # 자이온맘 천장 시스템 (Pity)
     if st.session_state.pity_count >= PITY_MAX - 1:
         st.session_state.level += 1
         st.session_state.status = "PITY_SUCCESS"
         st.session_state.pity_count = 0
+        if st.session_state.level > st.session_state.max_level: st.session_state.max_level = st.session_state.level
         return
 
     sp, down_p, dp, hold_p = PROB_TABLE[curr]
     r = random.uniform(0, 100)
+
     success_limit = sp
     down_limit = success_limit + down_p
     destroy_limit = down_limit + dp
@@ -232,239 +213,238 @@ def run_enhance():
         st.session_state.status = "HOLD"
         st.session_state.tears = min(120, st.session_state.tears + 1)
 
+    if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
+
 # -----------------------------------------------------------------------------
-# 7. 테마 CSS
+# 6. 메이플풍 스타일 CSS UI
 # -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp {
-        background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 80%);
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
         color: #f8fafc;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: 'MapleStory', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    .rpg-panel {
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    .maple-box {
+        background: rgba(30, 41, 59, 0.85);
+        border: 2px solid #475569;
         border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        padding: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        margin-bottom: 12px;
     }
-    .hp-bar-bg {
-        width: 100%; height: 24px; background: #334155; border-radius: 12px; overflow: hidden; margin: 10px 0;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    .maple-title {
+        font-size: 18px; font-weight: 800; color: #fde68a; margin-bottom: 8px;
+        text-shadow: 2px 2px 0px #000;
     }
-    .hp-bar-fill {
-        height: 100%; background: linear-gradient(90deg, #ef4444, #f87171);
-        transition: width 0.3s ease;
+    .hp-bg {
+        width: 100%; height: 22px; background: #334155; border-radius: 11px; overflow: hidden; border: 1px solid #64748b;
     }
-    .log-box {
-        background: #0f172a; padding: 10px; border-radius: 8px; font-family: monospace;
-        font-size: 13px; color: #94a3b8; height: 180px; overflow-y: auto; border: 1px solid #1e293b;
+    .hp-fill {
+        height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); transition: width 0.2s;
     }
-    .combat-btn > button {
-        background: linear-gradient(180deg, #b91c1c, #7f1d1d) !important; border: none !important;
-        font-size: 18px !important; font-weight: bold !important; height: 60px;
+    .chat-box {
+        background: #020617; border: 1px solid #334155; border-radius: 8px; padding: 10px;
+        font-family: monospace; font-size: 13px; color: #cbd5e1; height: 130px; overflow-y: auto;
     }
-    .combat-btn > button:hover { background: linear-gradient(180deg, #ef4444, #b91c1c) !important; transform: scale(1.02); }
     </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 8. 메인 UI 레이아웃
+# 7. 엔딩 처리
 # -----------------------------------------------------------------------------
-st.title("🌌 자이온의 왕좌 탈환기")
-st.markdown("*무취의 우주를 정복한 폭군 '자이온왕'을 물리치고 우주에 향기를 되찾으세요!*")
-
-# 보스 클리어 엔딩 화면
-if st.session_state.boss_defeated:
+if st.session_state.game_cleared:
     st.balloons()
     st.markdown("""
-        <div style='text-align:center; padding: 50px;'>
-            <h1 style='color: #00ffff; font-size: 50px; text-shadow: 0 0 20px #00ffff;'>👑 우주 해방 완료!</h1>
-            <h3 style='color: #fde68a;'>무취의 폭군 자이온왕이 쓰러졌습니다.</h3>
-            <p style='color: #cbd5e1;'>자이온과 자이온맘의 지온냄새가 온 우주에 퍼집니다...</p>
+        <div style='text-align:center; padding: 40px;'>
+            <h1 style='color: #00ffff; font-size: 45px; text-shadow: 0 0 20px #00ffff;'>🍁 메이플 월드 구원 완료! 🍁</h1>
+            <h3 style='color: #fde68a;'>자이온과 자이온맘의 향기가 자이온왕을 정화했습니다.</h3>
+            <p style='color: #cbd5e1;'>모든 모험을 완수했습니다. 축하합니다!</p>
         </div>
     """, unsafe_allow_html=True)
-    if st.button("🔄 새로운 차원에서 다시 시작하기", use_container_width=True):
+    if st.button("🔄 캐릭터 초기화 후 다시 모험하기", use_container_width=True):
         st.session_state.clear()
         st.rerun()
     st.stop()
 
-col_battle, col_enhance = st.columns([1.2, 1], gap="large")
+# -----------------------------------------------------------------------------
+# 8. 메인 UI 구성 (메이플 스타일 좌우 배치)
+# -----------------------------------------------------------------------------
+st.title("🍁 메이플 자이온 : 지온냄새 대모험")
+st.markdown("사냥터에서 몬스터를 잡아 메소를 벌고, **자이온맘의 대장간**에서 지온냄새 무기를 강화하여 최강의 모험가가 되세요!")
 
-with col_battle:
-    st.markdown("<div class='rpg-panel'>", unsafe_allow_html=True)
-    st.subheader("⚔️ 전장 (Battlefield)")
+col_left, col_right = st.columns([1.1, 1.2], gap="medium")
+
+with col_left:
+    st.markdown("<div class='maple-box'>", unsafe_allow_html=True)
+    st.markdown("<div class='maple-title'>🗺️ 메이플 필드 & 사냥터</div>", unsafe_allow_html=True)
     
-    # 몬스터 정보 표시
-    e_name, _, e_gold = get_enemy_stats(st.session_state.stage)
-    hp_pct = max(0, min(100, (st.session_state.enemy_hp / st.session_state.enemy_max_hp) * 100))
+    # 맵 선택 드롭다운
+    map_list = list(MAPS.keys())
+    selected_map = st.selectbox("사냥터 이동", map_list, index=map_list.index(st.session_state.current_map))
     
-    st.markdown(f"**현재 스테이지 : {st.session_state.stage}** (보상: {format_gold(e_gold)})")
-    st.markdown(f"<h3 style='color:#fca5a5; margin:0;'>{e_name}</h3>", unsafe_allow_html=True)
+    if selected_map != st.session_state.current_map:
+        req = MAPS[selected_map]["req_lvl"]
+        if st.session_state.level < req:
+            st.warning(f"⚠️ 이 사냥터는 무기 강화 <b>{req}단계</b> 이상부터 입장 가능합니다!")
+        else:
+            st.session_state.current_map = selected_map
+            m_dat = MAPS[selected_map]
+            st.session_state.mob_max_hp = m_dat["hp"]
+            st.session_state.mob_hp = m_dat["hp"]
+            log_msg(f"🚀 [{selected_map}] (으)로 이동했습니다.")
+            st.rerun()
+
+    m_info = MAPS[st.session_state.current_map]
+    st.markdown(f"**현재 몬스터:** `{m_info['mob']}` (처치 보상: {format_gold(m_info['meso'])})")
     
-    # 체력바
+    # 몬스터 체력바
+    hp_pct = max(0, min(100, (st.session_state.mob_hp / st.session_state.mob_max_hp) * 100))
     st.markdown(f"""
-        <div class='hp-bar-bg'>
-            <div class='hp-bar-fill' style='width: {hp_pct}%;'></div>
+        <div class='hp-bg'>
+            <div class='hp-fill' style='width: {hp_pct}%;'></div>
         </div>
-        <div style='text-align:right; font-size:12px; color:#cbd5e1; margin-top:-5px;'>
-            HP: {st.session_state.enemy_hp:,} / {st.session_state.enemy_max_hp:,}
+        <div style='text-align:right; font-size:12px; color:#cbd5e1; margin-top:2px;'>
+            HP: {st.session_state.mob_hp:,} / {st.session_state.mob_max_hp:,}
         </div>
     """, unsafe_allow_html=True)
     
     st.write("")
-    
-    # 플레이어 정보
-    atk = get_player_atk(st.session_state.level)
-    st.markdown(f"🗡️ **자이온의 공격력:** `{atk:,}` (현재 무기: {SMELL_DB[st.session_state.level]['name']})")
-    
-    # 공격 버튼
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("<div class='combat-btn'>", unsafe_allow_html=True)
-        if st.button("⚔️ 공격 (1회)", use_container_width=True):
-            do_attack(1)
+    c_btn1, c_btn2 = st.columns(2)
+    with c_btn1:
+        if st.button("⚔️ 기본 공격 (1회)", use_container_width=True):
+            attack_mob(1)
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-    with c2:
-        if st.button("🔥 연속 공격 (10회)", use_container_width=True, type="primary"):
-            do_attack(10)
+    with c_btn2:
+        if st.button("⚡ 연속 사냥 (10회)", use_container_width=True, type="primary"):
+            attack_mob(10)
             st.rerun()
             
-    # 전투 로그
     st.write("")
-    st.markdown("**전투 기록**")
-    logs_html = "<div class='log-box'>" + "<br>".join(st.session_state.combat_logs) + "</div>"
+    st.markdown("**📜 전투 로그**")
+    logs_html = "<div class='chat-box'>" + "<br>".join(st.session_state.battle_logs) + "</div>"
     st.markdown(logs_html, unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
 
-
-with col_enhance:
-    st.markdown("<div class='rpg-panel'>", unsafe_allow_html=True)
-    st.subheader("🛠️ 자이온맘의 대장간")
+with col_right:
+    st.markdown("<div class='maple-box'>", unsafe_allow_html=True)
+    st.markdown("<div class='maple-title'>🔨 자이온맘의 대장간 (강화 시스템)</div>", unsafe_allow_html=True)
     
-    st.markdown(
-        f"<div style='font-size:20px; color:#fde68a; margin-bottom:10px;'>"
-        f"💰 보유 자금: <b>{format_gold(st.session_state.money)}</b></div>",
-        unsafe_allow_html=True,
-    )
+    curr_lvl = st.session_state.level
+    cur_data = SMELL_DB[curr_lvl]
+    enhance_cost = get_enhance_cost(curr_lvl)
     
-    curr = st.session_state.level
-    c_data = SMELL_DB[curr]
-    cost = get_enhance_cost(curr)
-    
-    st.markdown(f"**현재 장착 무기:** <span style='color:{c_data['color']}; font-weight:bold;'>{c_data['name']}</span>", unsafe_allow_html=True)
-    st.caption(f"\"{c_data['desc']}\"")
+    st.markdown(f"💳 **보유 메소:** <span style='color:#fde68a; font-weight:bold;'>{format_gold(st.session_state.money)}</span>", unsafe_allow_html=True)
+    st.markdown(f"🛡️ **장착 무기:** <span style='color:{cur_data['color']}; font-weight:bold;'>{cur_data['name']}</span>", unsafe_allow_html=True)
+    st.caption(f"\"{cur_data['desc']}\" (내 공격력: {get_player_dmg(curr_lvl):,})")
     
     # 강화 버튼
-    if st.button(f"🔨 무기 강화 (비용: {format_gold(cost)})", use_container_width=True, disabled=(curr >= 30)):
-        if st.session_state.money < cost:
-            st.error("골드가 부족합니다! 전장에서 적을 물리치고 골드를 모아오세요.")
+    if st.button(f"🔥 지온냄새 강화하기 (비용: {format_gold(enhance_cost)})", use_container_width=True, disabled=(curr_lvl >= 30)):
+        if st.session_state.money < enhance_cost:
+            st.error("메소가 부족합니다! 필드에서 사냥을 더 하고 오세요.")
         else:
             run_enhance()
             st.rerun()
             
-    # 상태 메시지
+    # 강화 상태 피드백
     status = st.session_state.status
-    if status == "SUCCESS": st.success("✨ 강화 성공! 공격력이 크게 상승했습니다!")
-    elif status == "CRITICAL": st.success("⚡ 대성공!! 무기가 폭발적으로 강해졌습니다!")
-    elif status == "PITY_SUCCESS": st.info("✨ 자이온맘의 가호로 100% 강화에 성공했습니다!")
-    elif status == "FAILED": st.warning("🔻 강화 실패... 무기 레벨이 하락했습니다.")
-    elif status == "DESTROYED": st.error("💥 무기 코어 파괴! 0단계로 초기화되었습니다...")
-    elif status == "SHIELD_SAVED": st.info("🛡️ 방지권이 무기 파괴를 막아냈습니다!")
-    elif status == "HOLD": st.caption("🔒 무기 에너지가 유지되었습니다. (변화 없음)")
-    
+    if status == "SUCCESS": st.success("✨ 메이플 강화 성공! 지온냄새가 더욱 진해졌습니다!")
+    elif status == "CRITICAL": st.success("⚡ 럭키 대성공!! 무려 2단계나 수직 상승했습니다!")
+    elif status == "PITY_SUCCESS": st.info("✨ 자이온맘의 따스한 가호 발동! (100% 성공)")
+    elif status == "FAILED": st.warning("🔻 강화 실패... 레벨이 1 떨어졌습니다.")
+    elif status == "DESTROYED": st.error("💥 장비 파괴! 눈물 흘리며 0단계로 초기화되었습니다...")
+    elif status == "SHIELD_SAVED": st.info("🛡️ 파괴 방지권이 발동하여 장비를 보호했습니다!")
+    elif status == "HOLD": st.caption("🔒 에너지가 유지되어 변화가 없습니다.")
+
     st.markdown("<hr style='border-color:rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
     
-    # 상점 탭
-    t1, t2 = st.tabs(["🛡️ 자이온맘의 방패", "💧 기적의 눈물"])
-    with t1:
-        s_cost = get_shield_cost(curr)
-        st.write(f"**파괴 방지권** (보유: {st.session_state.shield}/3)")
-        st.caption("18단계 이상부터 사용할 수 있는 파괴 1회 면제권입니다.")
-        if st.button(f"구매 ({format_gold(s_cost)})", use_container_width=True):
-            if curr < 18: st.warning("18단계 이상부터 구매 가능합니다.")
-            elif st.session_state.shield >= 3: st.warning("이미 최대치를 보유중입니다.")
+    # 편의 기능 탭 (방지권 및 눈물)
+    t_tab1, t_tab2 = st.tabs(["🛡️ 파괴 방지권 상점", "💧 자이온의 눈물"])
+    with t_tab1:
+        s_cost = get_shield_cost(curr_lvl)
+        st.write(f"보유 방지권: **{st.session_state.shield} / 3개** (18단계 이상 구매 가능)")
+        if st.button("방지권 구매", use_container_width=True):
+            if curr_lvl < 18: st.warning("18단계부터 구매할 수 있습니다.")
+            elif st.session_state.shield >= 3: st.warning("최대 3개까지만 소지 가능합니다.")
             elif st.session_state.money >= s_cost:
                 st.session_state.money -= s_cost
                 st.session_state.shield += 1
+                st.success("파괴 방지권 획득!")
                 st.rerun()
-            else: st.error("골드 부족!")
+            else: st.error("메소가 부족합니다.")
             
-    with t2:
-        st.write(f"**지온의 눈물** (보유: {st.session_state.tears}/120)")
-        st.caption("실패 시 쌓이는 눈물 40개를 모아 확률적으로 레벨을 점프합니다.")
-        if st.button("기적 가동 (눈물 40 소모)", use_container_width=True):
-            if curr >= 28: st.warning("28단계부터는 사용할 수 없습니다.")
+    with t_tab2:
+        st.write(f"누적 눈물: **{st.session_state.tears} / 120개** (실패 시 적립)")
+        if st.button("눈물 40개로 기적 가동 (50% 확률로 1~3업)", use_container_width=True):
+            if curr_lvl >= 28: st.warning("28단계 이상에서는 신성한 기운으로 사용할 수 없습니다.")
             elif st.session_state.tears >= 40:
                 st.session_state.tears -= 40
                 if random.random() < 0.5:
-                    add = random.choice([1,2,3])
-                    st.session_state.level = min(30, curr + add)
-                    st.session_state.status = "SUCCESS"
+                    add_l = random.choice([1, 2, 3])
+                    st.session_state.level = min(30, curr_lvl + add_l)
+                    st.success(f"기적 대성공! {add_l}단계 상승!")
                 else:
-                    st.session_state.status = "FAILED"
+                    st.warning("눈물의 기적이 실패했습니다...")
                 st.rerun()
-            else: st.error("눈물이 부족합니다.")
-            
+            else: st.error("눈물 40개가 필요합니다.")
+
     st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 9. 원본의 3D 뷰어 컴포넌트 삽입 (시각 효과)[cite: 1]
+# 9. 3D 메이플 스타일 무기 뷰어 (Three.js)
 # -----------------------------------------------------------------------------
 st.write("")
-st.subheader("🔮 지온냄새 무기 코어 투영기")
-tier = SMELL_DB[st.session_state.level]["tier"]
-card_color = SMELL_DB[st.session_state.level]["color"]
-# 기존 Three.js 스크립트를 하단 뷰어로 활용
+st.markdown("<div class='maple-title'>🔮 메이플 장비 슬롯 : 지온냄새 3D 프로젝터</div>", unsafe_allow_html=True)
+
+card_color = cur_data["color"]
 three_js_code = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body style="margin:0; overflow:hidden; background: #0f172a; border-radius:12px;">
-    <div id="container" style="width:100%; height:300px;"></div>
+<body style="margin:0; overflow:hidden; background: transparent;">
+    <div id="container" style="width:100%; height:260px;"></div>
     <script>
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / 300, 0.1, 1000);
-        camera.position.set(0, 0, 7.0);
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / 260, 0.1, 1000);
+        camera.position.set(0, 0, 6.5);
 
         const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
-        renderer.setSize(window.innerWidth, 300);
+        renderer.setSize(window.innerWidth, 260);
         document.getElementById('container').appendChild(renderer.domElement);
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
         scene.add(ambientLight);
         
-        const pointLight = new THREE.PointLight("{card_color}", 20, 40);
-        pointLight.position.set(0, 0, 3);
+        const pointLight = new THREE.PointLight("{card_color}", 25, 30);
+        pointLight.position.set(2, 3, 3);
         scene.add(pointLight);
 
-        // 도형 결정 로직 간소화
-        const lvl = {st.session_state.level};
-        let baseGeo;
-        if (lvl <= 5) baseGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-        else if (lvl <= 10) baseGeo = new THREE.CylinderGeometry(1.2, 1.2, 1.8, 6);
-        else if (lvl <= 15) baseGeo = new THREE.OctahedronGeometry(1.5);
-        else if (lvl <= 20) baseGeo = new THREE.IcosahedronGeometry(1.5);
-        else if (lvl <= 25) baseGeo = new THREE.TorusGeometry(1.2, 0.4, 16, 32);
-        else baseGeo = new THREE.TorusKnotGeometry(1.0, 0.3, 64, 16);
+        // 메이플 아이템 같은 느낌의 입체 도형
+        const lvl = {curr_lvl};
+        let geo;
+        if (lvl <= 5) geo = new THREE.BoxGeometry(1.6, 1.6, 1.6);
+        else if (lvl <= 10) geo = new THREE.CylinderGeometry(1.3, 1.3, 2.0, 6);
+        else if (lvl <= 15) geo = new THREE.OctahedronGeometry(1.6);
+        else if (lvl <= 20) geo = new THREE.IcosahedronGeometry(1.6);
+        else if (lvl <= 25) geo = new THREE.TorusGeometry(1.3, 0.45, 16, 32);
+        else geo = new THREE.TorusKnotGeometry(1.1, 0.35, 64, 16);
 
-        const outerMat = new THREE.MeshPhysicalMaterial({{
-            color: "{card_color}", metalness: 0.8, roughness: 0.2, 
-            transparent: true, opacity: 0.9, emissive: "{card_color}", emissiveIntensity: 0.5
+        const mat = new THREE.MeshPhysicalMaterial({{
+            color: "{card_color}", metalness: 0.85, roughness: 0.15, 
+            transparent: true, opacity: 0.92, emissive: "{card_color}", emissiveIntensity: 0.6
         }});
         
-        const mesh = new THREE.Mesh(baseGeo, outerMat);
-        scene.add(mesh);
+        const itemMesh = new THREE.Mesh(geo, mat);
+        scene.add(itemMesh);
 
         function animate() {{
             requestAnimationFrame(animate);
-            mesh.rotation.x += 0.01;
-            mesh.rotation.y += 0.015;
+            itemMesh.rotation.x += 0.012;
+            itemMesh.rotation.y += 0.018;
             renderer.render(scene, camera);
         }}
         animate();
@@ -472,4 +452,4 @@ three_js_code = f"""
 </body>
 </html>
 """
-components.html(three_js_code, height=300)
+components.html(three_js_code, height=260)
