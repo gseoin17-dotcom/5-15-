@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - TRASH MOUNTAIN EDITION",
-    page_icon="🗑️",
+    page_title="지온냄새 강화하기 - COSMIC EDITION",
+    page_icon="🌌",
     layout="wide",
 )
 
@@ -419,13 +419,13 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (쓰레기통 -> 하이테크 3D 우주 배경으로 변경)
+# 6. 테마 CSS (3D 우주 심해 감성 배경)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: radial-gradient(circle at center, #1e1b4b 0%, #09090b 100%);
+        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -445,14 +445,14 @@ st.markdown(
         font-weight: 700 !important;
         padding: 8px 14px !important;
         transition: all 0.2s ease !important;
-        border: 1px solid rgba(217, 119, 6, 0.4) !important;
-        background: linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(217, 119, 6, 0.7)) !important;
+        border: 1px solid rgba(168, 85, 247, 0.5) !important;
+        background: linear-gradient(135deg, rgba(126, 34, 206, 0.8), rgba(59, 130, 246, 0.8)) !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     div.stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(217, 119, 6, 0.8);
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.8);
     }
     </style>
 """,
@@ -478,7 +478,7 @@ with left_col:
   )
 
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🗑️ 지온"
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
       " 강화 제어</h4>",
       unsafe_allow_html=True,
   )
@@ -628,7 +628,7 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
-  # 강화 UI 글자 크기 전반적으로 확대 적용 (기존 대비 약 30~40% 상향)
+  # 강화 UI 크기를 훨씬 더 키우고 가독성을 대폭 상향한 3D 시네마틱 렌더러
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
@@ -644,7 +644,7 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                bottom: 24px; 
+                bottom: 20px; 
                 left: 50%;
                 transform: translateX(-50%);
                 width: 100%;
@@ -652,19 +652,20 @@ with right_col:
                 z-index: 100;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.5s ease-in-out;
+                transition: opacity 0.4s ease-in-out;
             }}
 
             .cinematic-ui.visible {{
                 opacity: 1;
             }}
 
-            .title-tier-1 {{ font-size: 34px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 38px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
-            .title-tier-3 {{ font-size: 44px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
-            .title-tier-4 {{ font-size: 50px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
-            .title-tier-5 {{ font-size: 58px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .title-tier-6 {{ font-size: 64px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
+            /* UI 글자 크기 대폭 확장 */
+            .title-tier-1 {{ font-size: 38px; font-weight: 900; color: #fde68a; text-shadow: 0 0 25px #fde68a; }}
+            .title-tier-2 {{ font-size: 42px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 30px #f59e0b; }}
+            .title-tier-3 {{ font-size: 48px; font-weight: 900; color: #ef4444; text-shadow: 0 0 35px #ef4444; }}
+            .title-tier-4 {{ font-size: 54px; font-weight: 900; color: #c084fc; text-shadow: 0 0 40px #c084fc; }}
+            .title-tier-5 {{ font-size: 62px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 70px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 20px rgba(255,255,255,0.8)); }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -679,10 +680,10 @@ with right_col:
                 100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 19px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
-            .desc-text {{ font-size: 15px; color: #f3e8ff; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
-            .price-text {{ font-size: 17px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
-            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
+            .status-header {{ font-size: 22px; font-weight: 900; margin-bottom: 6px; letter-spacing: 1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 17px; color: #f3e8ff; margin-top: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 20px; font-weight: 900; color: #fbbf24; margin-top: 6px; text-shadow: 0 0 20px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 16px; font-weight: 800; color: #f87171; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -714,40 +715,40 @@ with right_col:
             
             const tierColor = "{card_color}";
             let statusColor = "#38bdf8";
-            let particleSize = 0.25;
-            let particleSpeed = 0.8;
-            let glowIntensity = 12;
+            let particleSize = 0.3;
+            let particleSpeed = 1.0;
+            let glowIntensity = 15;
 
             if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
+                statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
-                particleSize = 0.45;
-                particleSpeed = 2.0;
-                glowIntensity = 30;
+                particleSize = 0.55;
+                particleSpeed = 2.5;
+                glowIntensity = 35;
             }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ SUCCESS (성공) ✨";
+                statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                 statusColor = tierColor;
-                particleSize = 0.3;
-                particleSpeed = 1.2;
-                glowIntensity = 18;
+                particleSize = 0.35;
+                particleSpeed = 1.5;
+                glowIntensity = 22;
             }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
+                statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                 statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
+                statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
                 statusColor = "#ef4444";
-                particleSpeed = 1.0;
+                particleSpeed = 1.2;
             }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
+                statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                 statusColor = "#64748b";
-                particleSpeed = 0.4;
-                glowIntensity = 4;
+                particleSpeed = 0.5;
+                glowIntensity = 6;
             }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
+                statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                 statusColor = "#94a3b8";
-                particleSpeed = 0.6;
+                particleSpeed = 0.7;
             }} else {{
-                statusText.innerText = "READY";
+                statusText.innerText = "READY - 우주 에너지가 집중됩니다";
             }}
             
             statusText.style.color = statusColor;
@@ -762,34 +763,35 @@ with right_col:
             renderer.shadowMap.enabled = true;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 35);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
             pointLight.position.set(0, 1.5, 3);
             scene.add(pointLight);
 
-            const particleCount = 500;
+            // 3D 우주 입자(스타더스트) 생성
+            const particleCount = 700;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
 
             for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 5.0;
-                particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
+                particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
+                particlePositions[i*3 + 1] = -3.5 + Math.random() * 2.5;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                 
                 let spd = particleSpeed;
                 if (status === "FAILED") spd = 0.3;
 
                 particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.02 * spd,
-                    y: (0.015 + Math.random() * 0.03) * spd,
-                    z: (Math.random() - 0.5) * 0.02 * spd,
+                    x: (Math.random() - 0.5) * 0.025 * spd,
+                    y: (0.02 + Math.random() * 0.035) * spd,
+                    z: (Math.random() - 0.5) * 0.025 * spd,
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
@@ -798,7 +800,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.25 : 0.75,
+                opacity: status === "FAILED" ? 0.3 : 0.85,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -854,25 +856,25 @@ with right_col:
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.4 : (status === "CRITICAL" ? 0.7 : 0.1),
-                metalness: 0.85,
-                roughness: 0.2,
-                transmission: 0.5,
+                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" ? 0.9 : 0.15),
+                metalness: 0.9,
+                roughness: 0.15,
+                transmission: 0.6,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.55 : 0.92,
+                opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            const coreGeo = new THREE.SphereGeometry(1.25, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 2.5 : 1.0,
-                roughness: 0.1,
-                metalness: 0.9,
-                transmission: 0.7
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 3.0 : 1.2,
+                roughness: 0.05,
+                metalness: 0.95,
+                transmission: 0.8
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
@@ -885,18 +887,18 @@ with right_col:
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                const shardCount = 45;
+                const shardCount = 55;
                 const shards = [];
                 const shardGroup = new THREE.Group();
 
                 for(let i=0; i<shardCount; i++) {{
-                    const sGeo = new THREE.BoxGeometry(0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3);
+                    const sGeo = new THREE.BoxGeometry(0.4 + Math.random()*0.3, 0.4 + Math.random()*0.3, 0.4 + Math.random()*0.3);
                     const sMat = new THREE.MeshStandardMaterial({{
                         color: tierColor,
-                        roughness: 0.3,
-                        metalness: 0.8,
+                        roughness: 0.2,
+                        metalness: 0.9,
                         emissive: "#ef4444",
-                        emissiveIntensity: 0.8
+                        emissiveIntensity: 1.0
                     }});
                     const shard = new THREE.Mesh(sGeo, sMat);
                     
@@ -906,14 +908,14 @@ with right_col:
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
                     const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 3.5 + Math.random() * 4.0;
+                    const speed = 4.0 + Math.random() * 5.0;
                     
                     shard.userData = {{
                         vx: speed * Math.sin(phi) * Math.cos(theta),
                         vy: speed * Math.sin(phi) * Math.sin(theta),
                         vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 15,
-                        ry: (Math.random() - 0.5) * 15
+                        rx: (Math.random() - 0.5) * 20,
+                        ry: (Math.random() - 0.5) * 20
                     }};
 
                     shardGroup.add(shard);
@@ -938,14 +940,14 @@ with right_col:
                     }}
                 }});
             }} else if (status === "CRITICAL") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
                 gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
             }} else if (status === "SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
             }} else if (status === "FAILED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
+                gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"}});
             }} else if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
+                gsap.fromTo(objectGroup.scale, {{x: 1.25, y: 1.25, z: 1.25}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
             }}
 
             const clock = new THREE.Clock();
@@ -955,12 +957,12 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
+                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.2 : 0.65);
                     outerMesh.rotation.x = time * (0.5 * rotSpeed);
-                    outerMesh.rotation.y = time * (0.7 * rotSpeed);
-                    coreMesh.rotation.x = -time * (1.1 * rotSpeed);
-                    coreMesh.rotation.y = -time * (1.4 * rotSpeed);
-                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
+                    outerMesh.rotation.y = time * (0.75 * rotSpeed);
+                    coreMesh.rotation.x = -time * (1.2 * rotSpeed);
+                    coreMesh.rotation.y = -time * (1.5 * rotSpeed);
+                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                 }}
 
                 const positions = particleGeo.attributes.position.array;
@@ -969,10 +971,10 @@ with right_col:
                     positions[i*3 + 1] += particleVelocities[i].y;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if(positions[i*3 + 1] > 4.0) {{
-                        positions[i*3 + 1] = -3.2;
-                        positions[i*3] = (Math.random() - 0.5) * 5.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
+                    if(positions[i*3 + 1] > 4.5) {{
+                        positions[i*3 + 1] = -3.5;
+                        positions[i*3] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
@@ -992,4 +994,4 @@ with right_col:
     </html>
     """
 
-  components.html(three_js_code, height=560, scrolling=False)
+  components.html(three_js_code, height=580, scrolling=False)
