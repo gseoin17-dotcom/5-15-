@@ -892,17 +892,6 @@ else:
 
               @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-              .rainbow-text {{
-                  background: linear-gradient(90deg, #ff3b3b, #ffae00, #f9ff3b, #3bff6a, #3bd4ff, #6a3bff, #ff3bcf, #ff3b3b);
-                  background-size: 400% auto;
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                  background-clip: text;
-                  animation: rainbowText 2.2s linear infinite;
-                  text-shadow: none !important;
-              }}
-              @keyframes rainbowText {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 400% center; }} }}
-
               .shaking-text {{
                   animation: textVibe 0.18s infinite alternate ease-in-out;
               }}
@@ -942,15 +931,6 @@ else:
                   document.getElementById('descText').classList.add('shaking-text');
                   document.getElementById('priceText').classList.add('shaking-text');
                   document.getElementById('costText').classList.add('shaking-text');
-              }}
-
-              const isRainbowTier = currentLevel >= 28;
-              if (isRainbowTier) {{
-                  document.getElementById('statusText').classList.add('rainbow-text');
-                  document.getElementById('mainTitle').classList.add('rainbow-text');
-                  document.getElementById('descText').classList.add('rainbow-text');
-                  document.getElementById('priceText').classList.add('rainbow-text');
-                  document.getElementById('costText').classList.add('rainbow-text');
               }}
 
               const status = "{status}";
@@ -1000,9 +980,7 @@ else:
                   statusText.innerText = "READY - 우주 에너지가 집중됩니다";
               }}
               
-              if (!isRainbowTier) {{
-                  statusText.style.color = statusColor;
-              }}
+              statusText.style.color = statusColor;
 
               const scene = new THREE.Scene();
               const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1061,88 +1039,46 @@ else:
               objectGroup.position.y = -0.7;
 
               let baseGeo;
-              let cageGeo = null;
               const lvl = {current_level};
 
-              // 0~30단계 전용 3D 디자인 — 단계마다 완전히 다른 폴리곤 형태
-              // 0~15단계: 단일 결정체가 점점 정교해짐 / 16단계부터는 코어 + 와이어프레임 에너지 케이지의 이중 구조로 격상
-              if (lvl == 0) {{
-                  baseGeo = new THREE.IcosahedronGeometry(1.5, 0); // 미가공 원석
-              }} else if (lvl == 1) {{
-                  baseGeo = new THREE.TetrahedronGeometry(2.0, 0);
-              }} else if (lvl == 2) {{
-                  baseGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
-              }} else if (lvl == 3) {{
-                  baseGeo = new THREE.CylinderGeometry(1.7, 1.7, 2.3, 3); // 삼각기둥
-              }} else if (lvl == 4) {{
-                  baseGeo = new THREE.CylinderGeometry(1.7, 1.7, 2.3, 4); // 사각기둥
-              }} else if (lvl == 5) {{
-                  baseGeo = new THREE.CylinderGeometry(1.7, 1.7, 2.3, 5); // 오각기둥
-              }} else if (lvl == 6) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.1, 0);
-              }} else if (lvl == 7) {{
-                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.4, 6); // 육각기둥
-              }} else if (lvl == 8) {{
-                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.4, 7); // 칠각기둥
-              }} else if (lvl == 9) {{
-                  baseGeo = new THREE.CylinderGeometry(1.8, 1.8, 2.4, 8); // 팔각기둥
-              }} else if (lvl == 10) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.1, 0);
-              }} else if (lvl == 11) {{
-                  baseGeo = new THREE.ConeGeometry(1.9, 3.0, 5); // 오각뿔
-              }} else if (lvl == 12) {{
-                  baseGeo = new THREE.ConeGeometry(1.9, 3.0, 6); // 육각뿔
-              }} else if (lvl == 13) {{
-                  baseGeo = new THREE.ConeGeometry(1.9, 3.0, 9); // 구각뿔
-              }} else if (lvl == 14) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.2, 0);
-              }} else if (lvl == 15) {{
-                  baseGeo = new THREE.TorusGeometry(1.6, 0.55, 16, 32);
-              }} else if (lvl == 16) {{
-                  baseGeo = new THREE.IcosahedronGeometry(1.9, 1);
-                  cageGeo = new THREE.OctahedronGeometry(2.9, 0);
-              }} else if (lvl == 17) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.0, 1);
-                  cageGeo = new THREE.TetrahedronGeometry(3.0, 0);
+              if (lvl <= 2) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.3);
+              }} else if (lvl <= 5) {{
+                  baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+              }} else if (lvl <= 8) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+              }} else if (lvl <= 11) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+              }} else if (lvl <= 14) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+              }} else if (lvl <= 17) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
               }} else if (lvl == 18) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.1, 1);
-                  cageGeo = new THREE.IcosahedronGeometry(2.9, 0);
+                  baseGeo = new THREE.OctahedronGeometry(2.5);
               }} else if (lvl == 19) {{
-                  baseGeo = new THREE.CylinderGeometry(0.3, 1.8, 3.0, 10); // 뾰족한 스파이크
-                  cageGeo = new THREE.DodecahedronGeometry(2.9, 0);
+                  baseGeo = new THREE.DodecahedronGeometry(2.4);
               }} else if (lvl == 20) {{
-                  baseGeo = new THREE.CylinderGeometry(1.8, 0.3, 3.0, 12); // 역스파이크
-                  cageGeo = new THREE.IcosahedronGeometry(3.0, 1);
+                  baseGeo = new THREE.IcosahedronGeometry(2.4);
               }} else if (lvl == 21) {{
-                  baseGeo = new THREE.SphereGeometry(1.9, 8, 6); // 각진 크리스탈 구
-                  cageGeo = new THREE.TorusGeometry(2.6, 0.12, 8, 32); // 궤도 링
+                  baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
               }} else if (lvl == 22) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.2, 0.4, 64, 16, 2, 3);
-                  cageGeo = new THREE.BoxGeometry(3.0, 3.0, 3.0);
+                  baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
               }} else if (lvl == 23) {{
-                  baseGeo = new THREE.DodecahedronGeometry(1.9, 2); // 초정밀 십이면체
-                  cageGeo = new THREE.OctahedronGeometry(3.0, 1);
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
               }} else if (lvl == 24) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.2, 0.4, 64, 16, 3, 2);
-                  cageGeo = new THREE.IcosahedronGeometry(3.0, 0);
+                  baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
               }} else if (lvl == 25) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.0, 2); // 초고밀도 구체
-                  cageGeo = new THREE.TorusGeometry(2.7, 0.1, 8, 32); // 궤도 링
+                  baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
               }} else if (lvl == 26) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.1, 2);
-                  cageGeo = new THREE.DodecahedronGeometry(3.0, 1);
+                  baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
               }} else if (lvl == 27) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.3, 0.45, 90, 20, 3, 4);
-                  cageGeo = new THREE.IcosahedronGeometry(3.1, 1);
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
               }} else if (lvl == 28) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.2, 2); // 신성한 결정 코어
-                  cageGeo = new THREE.IcosahedronGeometry(3.1, 2); // 초정밀 케이지
+                  baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
               }} else if (lvl == 29) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 110, 24, 4, 5);
-                  cageGeo = new THREE.DodecahedronGeometry(3.2, 2);
+                  baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
               }} else {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.5, 140, 30, 3, 7); // 30단계: 태초의 매듭
-                  cageGeo = new THREE.IcosahedronGeometry(3.3, 2); // 초정밀 케이지
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
               }}
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
@@ -1158,20 +1094,6 @@ else:
               }});
               const outerMesh = new THREE.Mesh(baseGeo, outerMat);
               objectGroup.add(outerMesh);
-
-              let cageMesh = null;
-              if (cageGeo) {{
-                  const cageMat = new THREE.MeshBasicMaterial({{
-                      color: statusColor,
-                      wireframe: true,
-                      transparent: true,
-                      opacity: status === "FAILED" ? 0.2 : 0.45,
-                      blending: THREE.AdditiveBlending,
-                      depthWrite: false
-                  }});
-                  cageMesh = new THREE.Mesh(cageGeo, cageMat);
-                  objectGroup.add(cageMesh);
-              }}
 
               const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
               const coreMat = new THREE.MeshPhysicalMaterial({{
@@ -1192,7 +1114,6 @@ else:
               if (status === "DESTROYED") {{
                   outerMesh.visible = false;
                   coreMesh.visible = false;
-                  if (cageMesh) cageMesh.visible = false;
 
                   const shardCount = 55;
                   const shards = [];
@@ -1269,11 +1190,6 @@ else:
                       outerMesh.rotation.y = time * (0.75 * rotSpeed);
                       coreMesh.rotation.x = -time * (1.2 * rotSpeed);
                       coreMesh.rotation.y = -time * (1.5 * rotSpeed);
-                      if (cageMesh) {{
-                          cageMesh.rotation.x = -time * (0.35 * rotSpeed);
-                          cageMesh.rotation.y = time * (0.55 * rotSpeed);
-                          cageMesh.rotation.z = time * (0.2 * rotSpeed);
-                      }}
                       objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                   }}
 
