@@ -692,13 +692,13 @@ else:
     )
 
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
         " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
     if st.button(
-        "🔥 강화 실행",
+        "🔥 냄새 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
