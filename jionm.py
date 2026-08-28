@@ -493,7 +493,6 @@ st.markdown(
 # 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
 if st.session_state.level == 30:
-  # 30단계 만렙 달성 시 출력되는 개쩌는 엔딩 크레딧 화면
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -590,7 +589,6 @@ if st.session_state.level == 30:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 화려한 폭발/우주 파티클 생성
             const particleCount = 2000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
@@ -620,7 +618,6 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            // 중앙 거대한 신성 도형
             const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
@@ -692,13 +689,13 @@ else:
     )
 
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코스믹"
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
         " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
     if st.button(
-        "🔥 강화 실행",
+        "🔥 냄새 강화 실행",
         use_container_width=True,
         disabled=(st.session_state.level >= 30),
     ):
@@ -803,7 +800,6 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 28단계 이상일 경우 눈물 사용 차단 안내 메시지 출력
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:12px; color:#ef4444; font-weight:700;"
@@ -819,7 +815,6 @@ else:
             unsafe_allow_html=True,
         )
 
-      # 28단계 이상이면 버튼 비활성화
       can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
@@ -1041,44 +1036,71 @@ else:
               let baseGeo;
               const lvl = {current_level};
 
-              if (lvl <= 2) {{
-                  baseGeo = new THREE.TetrahedronGeometry(2.3);
-              }} else if (lvl <= 5) {{
-                  baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-              }} else if (lvl <= 8) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-              }} else if (lvl <= 11) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-              }} else if (lvl <= 14) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-              }} else if (lvl <= 17) {{
-                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-              }} else if (lvl == 18) {{
-                  baseGeo = new THREE.OctahedronGeometry(2.5);
-              }} else if (lvl == 19) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.4);
-              }} else if (lvl == 20) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.4);
-              }} else if (lvl == 21) {{
-                  baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-              }} else if (lvl == 22) {{
-                  baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-              }} else if (lvl == 23) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-              }} else if (lvl == 24) {{
-                  baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-              }} else if (lvl == 25) {{
-                  baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-              }} else if (lvl == 26) {{
-                  baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-              }} else if (lvl == 27) {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-              }} else if (lvl == 28) {{
-                  baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-              }} else if (lvl == 29) {{
-                  baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+              // =========================================================================
+              // 0단계부터 30단계까지 완벽하게 개별 커스텀된 역대급 3D 다각형/도형 매핑
+              // =========================================================================
+              if (lvl === 0) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.0, 0);
+              }} else if (lvl === 1) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.1, 0);
+              }} else if (lvl === 2) {{
+                  baseGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
+              }} else if (lvl === 3) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.1, 0);
+              }} else if (lvl === 4) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.1, 0);
+              }} else if (lvl === 5) {{
+                  baseGeo = new THREE.CylinderGeometry(1.4, 1.9, 2.4, 5);
+              }} else if (lvl === 6) {{
+                  baseGeo = new THREE.ConeGeometry(2.0, 3.0, 6);
+              }} else if (lvl === 7) {{
+                  baseGeo = new THREE.TorusGeometry(1.7, 0.5, 16, 32);
+              }} else if (lvl === 8) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.38, 64, 16, 2, 3);
+              }} else if (lvl === 9) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.3, 1);
+              }} else if (lvl === 10) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.2, 1);
+              }} else if (lvl === 11) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.2, 1);
+              }} else if (lvl === 12) {{
+                  baseGeo = new THREE.CylinderGeometry(0.8, 2.1, 2.7, 7);
+              }} else if (lvl === 13) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.42, 80, 20, 2, 5);
+              }} else if (lvl === 14) {{
+                  baseGeo = new THREE.ConeGeometry(2.2, 3.3, 9);
+              }} else if (lvl === 15) {{
+                  baseGeo = new THREE.TorusGeometry(1.8, 0.55, 20, 40);
+              }} else if (lvl === 16) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.4, 2);
+              }} else if (lvl === 17) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.4, 2);
+              }} else if (lvl === 18) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.4, 2);
+              }} else if (lvl === 19) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.48, 100, 24, 3, 4);
+              }} else if (lvl === 20) {{
+                  baseGeo = new THREE.CylinderGeometry(1.2, 2.4, 3.0, 12, 2);
+              }} else if (lvl === 21) {{
+                  baseGeo = new THREE.ConeGeometry(2.3, 3.6, 12);
+              }} else if (lvl === 22) {{
+                  baseGeo = new THREE.TorusGeometry(1.9, 0.6, 24, 48);
+              }} else if (lvl === 23) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.52, 120, 30, 3, 5);
+              }} else if (lvl === 24) {{
+                  baseGeo = new THREE.SphereGeometry(2.3, 24, 24);
+              }} else if (lvl === 25) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.6, 2);
+              }} else if (lvl === 26) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
+              }} else if (lvl === 27) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.6, 0.58, 140, 36, 2, 7);
+              }} else if (lvl === 28) {{
+                  baseGeo = new THREE.CylinderGeometry(1.8, 2.2, 3.4, 16, 3);
+              }} else if (lvl === 29) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.65, 0.62, 160, 40, 5, 6);
               }} else {{
-                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+                  baseGeo = new THREE.TorusKnotGeometry(1.75, 0.68, 180, 48, 3, 7);
               }}
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
