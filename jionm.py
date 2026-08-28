@@ -630,20 +630,20 @@ with right_col:
 
   # 30단계 도달 시 나타날 화려하고 압도적인 엔딩 크레딧용 HTML/Three.js 코드
   if current_level >= 30:
-    three_js_code = """
+    three_js_code = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <style>
-                body { 
+                body {{ 
                     margin: 0; 
                     overflow: hidden; 
                     background: #000; 
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-                }
-                #container { width: 100vw; height: 100vh; position: absolute; top:0; left:0; }
+                }}
+                #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-                .credits-container {
+                .credits-container {{
                     position: absolute;
                     top: 100%;
                     width: 100%;
@@ -652,21 +652,21 @@ with right_col:
                     z-index: 100;
                     pointer-events: none;
                     animation: scrollCredits 25s linear infinite;
-                }
+                }}
 
-                @keyframes scrollCredits {
-                    0% { top: 100%; opacity: 0; }
-                    10% { opacity: 1; }
-                    90% { opacity: 1; }
-                    100% { top: -150%; opacity: 0; }
-                }
+                @keyframes scrollCredits {{
+                    0% {{ top: 100%; opacity: 0; }}
+                    10% {{ opacity: 1; }}
+                    90% {{ opacity: 1; }}
+                    100% {{ top: -150%; opacity: 0; }}
+                }}
 
-                .credit-title { font-size: 38px; font-weight: 900; color: #00ffff; text-shadow: 0 0 30px #00ffff; margin-bottom: 20px; }
-                .credit-subtitle { font-size: 20px; color: #ff00aa; margin-bottom: 40px; font-weight: 700; text-shadow: 0 0 15px #ff00aa; }
-                .credit-section { font-size: 24px; font-weight: 800; color: #fde68a; margin-top: 40px; margin-bottom: 15px; text-shadow: 0 0 10px #fde68a; }
-                .credit-name { font-size: 16px; color: #e2e8f0; margin-bottom: 8px; line-height: 1.6; }
+                .credit-title {{ font-size: 38px; font-weight: 900; color: #00ffff; text-shadow: 0 0 30px #00ffff; margin-bottom: 20px; }}
+                .credit-subtitle {{ font-size: 20px; color: #ff00aa; margin-bottom: 40px; font-weight: 700; text-shadow: 0 0 15px #ff00aa; }}
+                .credit-section {{ font-size: 24px; font-weight: 800; color: #fde68a; margin-top: 40px; margin-bottom: 15px; text-shadow: 0 0 10px #fde68a; }}
+                .credit-name {{ font-size: 16px; color: #e2e8f0; margin-bottom: 8px; line-height: 1.6; }}
 
-                .center-ui {
+                .center-ui {{
                     position: absolute;
                     top: 50%;
                     left: 50%;
@@ -674,9 +674,9 @@ with right_col:
                     text-align: center;
                     z-index: 101;
                     pointer-events: none;
-                }
+                }}
 
-                .absolute-god-title {
+                .absolute-god-title {{
                     font-size: 52px;
                     font-weight: 900;
                     background: linear-gradient(90deg, #00ffff, #ff00aa, #fffb00, #00ffff);
@@ -686,19 +686,19 @@ with right_col:
                     animation: rainbowGod 3s linear infinite;
                     text-shadow: 0 0 40px rgba(0,255,255,0.6);
                     margin-bottom: 10px;
-                }
+                }}
 
-                @keyframes rainbowGod {
-                    0% { background-position: 0% center; }
-                    100% { background-position: 300% center; }
-                }
+                @keyframes rainbowGod {{
+                    0% {{ background-position: 0% center; }}
+                    100% {{ background-position: 300% center; }}
+                }}
 
-                .god-desc {
+                .god-desc {{
                     font-size: 16px;
                     color: #ffffff;
                     text-shadow: 0 2px 10px rgba(0,0,0,0.9);
                     font-weight: 600;
-                }
+                }}
             </style>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         </head>
@@ -737,7 +737,7 @@ with right_col:
                 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
                 camera.position.set(0, 0, 12);
 
-                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
                 document.getElementById('container').appendChild(renderer.domElement);
@@ -754,7 +754,7 @@ with right_col:
                     new THREE.Color(0xffffff)
                 ];
 
-                for(let i = 0; i < particleCount; i++) {
+                for(let i = 0; i < particleCount; i++) {{
                     positions[i * 3] = (Math.random() - 0.5) * 20;
                     positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
                     positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
@@ -763,24 +763,24 @@ with right_col:
                     colors[i * 3] = col.r;
                     colors[i * 3 + 1] = col.g;
                     colors[i * 3 + 2] = col.b;
-                }
+                }}
 
                 geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
                 geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-                const material = new THREE.PointsMaterial({
+                const material = new THREE.PointsMaterial({{
                     size: 0.15,
                     vertexColors: true,
                     transparent: true,
                     opacity: 0.8,
                     blending: THREE.AdditiveBlending
-                });
+                }});
 
                 const particleSystem = new THREE.Points(geometry, material);
                 scene.add(particleSystem);
 
                 const coreGeo = new THREE.TorusKnotGeometry(2.0, 0.6, 128, 32, 2, 5);
-                const coreMat = new THREE.MeshPhysicalMaterial({
+                const coreMat = new THREE.MeshPhysicalMaterial({{
                     color: 0x00ffff,
                     emissive: 0xff00aa,
                     emissiveIntensity: 0.8,
@@ -789,13 +789,13 @@ with right_col:
                     wireframe: true,
                     transparent: true,
                     opacity: 0.6
-                });
+                }});
                 const coreMesh = new THREE.Mesh(coreGeo, coreMat);
                 scene.add(coreMesh);
 
                 const clock = new THREE.Clock();
 
-                function animate() {
+                function animate() {{
                     requestAnimationFrame(animate);
                     const time = clock.getElapsedTime();
 
@@ -806,35 +806,34 @@ with right_col:
                     coreMesh.rotation.y = time * 0.4;
 
                     renderer.render(scene, camera);
-                }
+                }}
 
                 animate();
 
-                window.addEventListener('resize', () => {
+                window.addEventListener('resize', () => {{
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
                     renderer.setSize(window.innerWidth, window.innerHeight);
-                });
+                }});
             </script>
         </body>
         </html>
     """
   else:
-    three_js_code = (
-        """
+    three_js_code = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <style>
-                body { 
+                body {{ 
                     margin: 0; 
                     overflow: hidden; 
                     background: transparent; 
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-                }
-                #container { width: 100vw; height: 100vh; position: absolute; top:0; left:0; }
+                }}
+                #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-                .cinematic-ui {
+                .cinematic-ui {{
                     position: absolute;
                     bottom: 24px; 
                     left: 50%;
@@ -845,36 +844,36 @@ with right_col:
                     pointer-events: none;
                     opacity: 0;
                     transition: opacity 0.5s ease-in-out;
-                }
+                }}
 
-                .cinematic-ui.visible {
+                .cinematic-ui.visible {{
                     opacity: 1;
-                }
+                }}
 
-                .title-tier-1 { font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }
-                .title-tier-2 { font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }
-                .title-tier-3 { font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }
-                .title-tier-4 { font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }
-                .title-tier-5 { font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-                .title-tier-6 { font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }
+                .title-tier-1 {{ font-size: 28px; font-weight: 900; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+                .title-tier-2 {{ font-size: 32px; font-weight: 900; color: #f59e0b; text-shadow: 0 0 25px #f59e0b; }}
+                .title-tier-3 {{ font-size: 38px; font-weight: 900; color: #ef4444; text-shadow: 0 0 30px #ef4444; }}
+                .title-tier-4 {{ font-size: 44px; font-weight: 900; color: #c084fc; text-shadow: 0 0 35px #c084fc; }}
+                .title-tier-5 {{ font-size: 50px; font-weight: 900; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+                .title-tier-6 {{ font-size: 56px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; }}
 
-                @keyframes rainbow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+                @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
-                .shaking-text {
+                .shaking-text {{
                     animation: textVibe 0.18s infinite alternate ease-in-out;
-                }
-                @keyframes textVibe {
-                    0% { transform: translate(0px, 0px) rotate(0deg); }
-                    25% { transform: translate(-2px, 1px) rotate(-0.5deg); }
-                    50% { transform: translate(2px, -2px) rotate(0.8deg); }
-                    75% { transform: translate(-1px, -1px) rotate(-0.3deg); }
-                    100% { transform: translate(1px, 2px) rotate(0.5deg); }
-                }
+                }}
+                @keyframes textVibe {{
+                    0% {{ transform: translate(0px, 0px) rotate(0deg); }}
+                    25% {{ transform: translate(-2px, 1px) rotate(-0.5deg); }}
+                    50% {{ transform: translate(2px, -2px) rotate(0.8deg); }}
+                    75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
+                    100% {{ transform: translate(1px, 2px) rotate(0.5deg); }}
+                }}
 
-                .status-header { font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
-                .desc-text { font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
-                .price-text { font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }
-                .cost-text { font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }
+                .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }}
+                .desc-text {{ font-size: 12px; color: #f3e8ff; margin-top: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+                .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.9); }}
+                .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.9); }}
             </style>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -884,79 +883,63 @@ with right_col:
 
             <div id="cinematicUi" class="cinematic-ui">
                 <div id="statusText" class="status-header">READY</div>
-                <div id="mainTitle" class="title-tier-"""
-        + str(tier)
-        + '">'
-        + str(card_title)
-        + """</div>
-                <div id="descText" class="desc-text">""""
-        + str(card_desc)
-        + """"</div>
-                <div id="priceText" class="price-text">예상 가치: """
-        + str(card_price)
-        + """</div>
-                <div id="costText" class="cost-text">필요 강화 비용: """
-        + str(current_cost)
-        + """</div>
+                <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
+                <div id="descText" class="desc-text">{card_desc}</div>
+                <div id="priceText" class="price-text">예상 가치: {card_price}</div>
+                <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
             </div>
 
             <script>
                 const uiElement = document.getElementById('cinematicUi');
 
-                const currentLevel = """
-        + str(current_level)
-        + """;
-                if (currentLevel >= 20) {
+                const currentLevel = {current_level};
+                if (currentLevel >= 20) {{
                     document.getElementById('mainTitle').classList.add('shaking-text');
                     document.getElementById('descText').classList.add('shaking-text');
                     document.getElementById('priceText').classList.add('shaking-text');
                     document.getElementById('costText').classList.add('shaking-text');
-                }
+                }}
 
-                const status = '"""
-        + str(status)
-        + """';
+                const status = '{status}';
                 const statusText = document.getElementById('statusText');
                 
-                const tierColor = '"""
-        + str(card_color)
-        + """';
+                const tierColor = '{card_color}';
                 let statusColor = "#38bdf8";
                 let particleSize = 0.25;
                 let particleSpeed = 0.8;
                 let glowIntensity = 12;
 
-                if (status === "CRITICAL") {
+                if (status === "CRITICAL") {{
                     statusText.innerText = "⚡ CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                     statusColor = "#ffffff"; 
                     particleSize = 0.45;
                     particleSpeed = 2.0;
                     glowIntensity = 30;
-                } else if (status === "SUCCESS") {
+                }} else if (status === "SUCCESS") {{
                     statusText.innerText = "✨ SUCCESS (성공) ✨";
                     statusColor = tierColor;
                     particleSize = 0.3;
                     particleSpeed = 1.2;
                     glowIntensity = 18;
-                } else if (status === "SHIELD_SAVED") {
+                }} else if (status === "SHIELD_SAVED") {{
                     statusText.innerText = "🛡️ SHIELD PROTECTED! (방어 성공) 🛡️";
                     statusColor = "#60a5fa";
-                } else if (status === "DESTROYED") {
+                }} else if (status === "DESTROYED") {{
                     statusText.innerText = "💥 DESTROYED (파괴됨) 💥";
                     statusColor = "#ef4444";
                     particleSpeed = 1.0;
-                } else if (status === "FAILED") {
+                }} else if (status === "FAILED") {{
                     statusText.innerText = "🔻 FAILED (단계 하락) 🔻";
                     statusColor = "#64748b";
                     particleSpeed = 0.4;
                     glowIntensity = 4;
-                } else if (status === "HOLD") {
+                }} else if (status === "HOLD") {{
                     statusText.innerText = "🔒 HOLD (단계 유지) 🔒";
                     statusColor = "#94a3b8";
                     particleSpeed = 0.6;
-                } else {
+                }} else {{
                     statusText.innerText = "READY";
-                }
+                }}
                 
                 statusText.style.color = statusColor;
 
@@ -964,7 +947,7 @@ with right_col:
                 const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
                 camera.position.set(0, -0.2, 9.5);
 
-                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.shadowMap.enabled = true;
@@ -986,7 +969,7 @@ with right_col:
                 const particlePositions = new Float32Array(particleCount * 3);
                 const particleVelocities = [];
 
-                for(let i=0; i<particleCount; i++) {
+                for(let i=0; i<particleCount; i++) {{
                     particlePositions[i*3] = (Math.random() - 0.5) * 5.0;
                     particlePositions[i*3 + 1] = -3.2 + Math.random() * 2.0;
                     particlePositions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
@@ -994,22 +977,22 @@ with right_col:
                     let spd = particleSpeed;
                     if (status === "FAILED") spd = 0.3;
 
-                    particleVelocities.push({
+                    particleVelocities.push({{
                         x: (Math.random() - 0.5) * 0.02 * spd,
                         y: (0.015 + Math.random() * 0.03) * spd,
                         z: (Math.random() - 0.5) * 0.02 * spd,
-                    });
-                }
+                    }});
+                }}
                 particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
                 
-                const particleMat = new THREE.PointsMaterial({
+                const particleMat = new THREE.PointsMaterial({{
                     color: new THREE.Color(statusColor),
                     size: particleSize,
                     transparent: true,
                     opacity: status === "FAILED" ? 0.25 : 0.75,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false
-                });
+                }});
                 const particleSystem = new THREE.Points(particleGeo, particleMat);
                 scene.add(particleSystem);
 
@@ -1017,51 +1000,49 @@ with right_col:
                 objectGroup.position.y = -0.3;
 
                 let baseGeo;
-                const lvl = """
-        + str(current_level)
-        + """;
+                const lvl = {current_level};
 
-                if (lvl <= 2) {
+                if (lvl <= 2) {{
                     baseGeo = new THREE.TetrahedronGeometry(2.4);
-                } else if (lvl <= 5) {
+                }} else if (lvl <= 5) {{
                     baseGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
-                } else if (lvl <= 8) {
+                }} else if (lvl <= 8) {{
                     baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 5);
-                } else if (lvl <= 11) {
+                }} else if (lvl <= 11) {{
                     baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 6);
-                } else if (lvl <= 14) {
+                }} else if (lvl <= 14) {{
                     baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 7);
-                } else if (lvl <= 17) {
+                }} else if (lvl <= 17) {{
                     baseGeo = new THREE.CylinderGeometry(2.0, 2.0, 2.5, 8);
-                } else if (lvl == 18) {
+                }} else if (lvl == 18) {{
                     baseGeo = new THREE.OctahedronGeometry(2.6);
-                } else if (lvl == 19) {
+                }} else if (lvl == 19) {{
                     baseGeo = new THREE.DodecahedronGeometry(2.5);
-                } else if (lvl == 20) {
+                }} else if (lvl == 20) {{
                     baseGeo = new THREE.IcosahedronGeometry(2.5);
-                } else if (lvl == 21) {
+                }} else if (lvl == 21) {{
                     baseGeo = new THREE.ConeGeometry(2.2, 3.2, 6);
-                } else if (lvl == 22) {
+                }} else if (lvl == 22) {{
                     baseGeo = new THREE.TorusGeometry(1.8, 0.7, 16, 32);
-                } else if (lvl == 23) {
+                }} else if (lvl == 23) {{
                     baseGeo = new THREE.TorusKnotGeometry(1.4, 0.5, 64, 16, 2, 3);
-                } else if (lvl == 24) {
+                }} else if (lvl == 24) {{
                     baseGeo = new THREE.CylinderGeometry(0.5, 2.2, 3.0, 12);
-                } else if (lvl == 25) {
+                }} else if (lvl == 25) {{
                     baseGeo = new THREE.SphereGeometry(2.3, 16, 16);
-                } else if (lvl == 26) {
+                }} else if (lvl == 26) {{
                     baseGeo = new THREE.ConeGeometry(2.5, 3.5, 8);
-                } else if (lvl == 27) {
+                }} else if (lvl == 27) {{
                     baseGeo = new THREE.TorusKnotGeometry(1.5, 0.6, 96, 24, 3, 4);
-                } else if (lvl == 28) {
+                }} else if (lvl == 28) {{
                     baseGeo = new THREE.IcosahedronGeometry(2.6, 1);
-                } else if (lvl == 29) {
+                }} else if (lvl == 29) {{
                     baseGeo = new THREE.DodecahedronGeometry(2.7, 1);
-                } else {
+                }} else {{
                     baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 2, 5);
-                }
+                }}
 
-                const outerMat = new THREE.MeshPhysicalMaterial({
+                const outerMat = new THREE.MeshPhysicalMaterial({{
                     color: tierColor,
                     emissive: status === "SUCCESS" || status === "CRITICAL" ? statusColor : "#111111",
                     emissiveIntensity: status === "SUCCESS" ? 0.4 : (status === "CRITICAL" ? 0.7 : 0.1),
@@ -1071,19 +1052,19 @@ with right_col:
                     transparent: true,
                     opacity: status === "FAILED" ? 0.55 : 0.92,
                     wireframe: false
-                });
+                }});
                 const outerMesh = new THREE.Mesh(baseGeo, outerMat);
                 objectGroup.add(outerMesh);
 
                 const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
-                const coreMat = new THREE.MeshPhysicalMaterial({
+                const coreMat = new THREE.MeshPhysicalMaterial({{
                     color: 0xffffff,
                     emissive: statusColor,
                     emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" ? 2.5 : 1.0,
                     roughness: 0.1,
                     metalness: 0.9,
                     transmission: 0.7
-                });
+                }});
                 const coreMesh = new THREE.Mesh(coreGeo, coreMat);
                 objectGroup.add(coreMesh);
 
@@ -1091,7 +1072,7 @@ with right_col:
 
                 uiElement.classList.add('visible');
 
-                if (status === "DESTROYED") {
+                if (status === "DESTROYED") {{
                     outerMesh.visible = false;
                     coreMesh.visible = false;
 
@@ -1099,15 +1080,15 @@ with right_col:
                     const shards = [];
                     const shardGroup = new THREE.Group();
 
-                    for(let i=0; i<shardCount; i++) {
+                    for(let i=0; i<shardCount; i++) {{
                         const sGeo = new THREE.BoxGeometry(0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3, 0.35 + Math.random()*0.3);
-                        const sMat = new THREE.MeshStandardMaterial({
+                        const sMat = new THREE.MeshStandardMaterial({{
                             color: tierColor,
                             roughness: 0.3,
                             metalness: 0.8,
                             emissive: "#ef4444",
                             emissiveIntensity: 0.8
-                        });
+                        }});
                         const shard = new THREE.Mesh(sGeo, sMat);
                         
                         shard.position.set(0, 0, 0);
@@ -1118,25 +1099,25 @@ with right_col:
                         const phi = Math.acos(2.0 * v - 1.0);
                         const speed = 3.5 + Math.random() * 4.0;
                         
-                        shard.userData = {
+                        shard.userData = {{
                             vx: speed * Math.sin(phi) * Math.cos(theta),
                             vy: speed * Math.sin(phi) * Math.sin(theta),
                             vz: speed * Math.cos(phi),
                             rx: (Math.random() - 0.5) * 15,
                             ry: (Math.random() - 0.5) * 15
-                        };
+                        }};
 
                         shardGroup.add(shard);
                         shards.push(shard);
-                    }
+                    }}
                     scene.add(shardGroup);
 
-                    gsap.to(shardGroup.position, {
+                    gsap.to(shardGroup.position, {{
                         duration: 1.2,
                         ease: "power2.out",
-                        onUpdate: function() {
+                        onUpdate: function() {{
                             const progress = this.progress();
-                            shards.forEach(s => {
+                            shards.forEach(s => {{
                                 s.position.x += s.userData.vx * 0.02;
                                 s.position.y += s.userData.vy * 0.02 - 0.05;
                                 s.position.z += s.userData.vz * 0.02;
@@ -1144,63 +1125,62 @@ with right_col:
                                 s.rotation.y += s.userData.ry * 0.02;
                                 s.material.opacity = 1.0 - progress;
                                 s.material.transparent = true;
-                            });
-                        }
-                    });
-                } else if (status === "CRITICAL") {
-                    gsap.fromTo(objectGroup.scale, {x: 0.2, y: 0.2, z: 0.2}, {x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"});
-                    gsap.to(objectGroup.scale, {x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5});
-                } else if (status === "SUCCESS") {
-                    gsap.fromTo(objectGroup.scale, {x: 0.85, y: 0.85, z: 0.85}, {x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"});
-                } else if (status === "FAILED") {
-                    gsap.fromTo(objectGroup.scale, {x: 1.02, y: 1.02, z: 1.02}, {x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"});
-                } else if (status === "SHIELD_SAVED") {
-                    gsap.fromTo(objectGroup.scale, {x: 1.2, y: 1.2, z: 1.2}, {x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"});
-                }
+                            }});
+                        }}
+                    }});
+                }} else if (status === "CRITICAL") {{
+                    gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.25, y: 1.25, z: 1.25, duration: 0.5, ease: "power2.out"}});
+                    gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
+                }} else if (status === "SUCCESS") {{
+                    gsap.fromTo(objectGroup.scale, {{x: 0.85, y: 0.85, z: 0.85}}, {{x: 1.1, y: 1.1, z: 1.1, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
+                }} else if (status === "FAILED") {{
+                    gsap.fromTo(objectGroup.scale, {{x: 1.02, y: 1.02, z: 1.02}}, {{x: 0.95, y: 0.95, z: 0.95, duration: 0.3, ease: "power1.out"}});
+                }} else if (status === "SHIELD_SAVED") {{
+                    gsap.fromTo(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
+                }}
 
                 const clock = new THREE.Clock();
 
-                function animate() {
+                function animate() {{
                     requestAnimationFrame(animate);
                     const time = clock.getElapsedTime();
 
-                    if (status !== "DESTROYED") {
+                    if (status !== "DESTROYED") {{
                         const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" ? 1.1 : 0.6);
                         outerMesh.rotation.x = time * (0.5 * rotSpeed);
                         outerMesh.rotation.y = time * (0.7 * rotSpeed);
                         coreMesh.rotation.x = -time * (1.1 * rotSpeed);
                         coreMesh.rotation.y = -time * (1.4 * rotSpeed);
                         objectGroup.rotation.y = Math.sin(time * 0.7) * 0.2;
-                    }
+                    }}
 
                     const positions = particleGeo.attributes.position.array;
-                    for(let i=0; i<particleCount; i++) {
+                    for(let i=0; i<particleCount; i++) {{
                         positions[i*3] += particleVelocities[i].x;
                         positions[i*3 + 1] += particleVelocities[i].y;
                         positions[i*3 + 2] += particleVelocities[i].z;
 
-                        if(positions[i*3 + 1] > 4.0) {
+                        if(positions[i*3 + 1] > 4.0) {{
                             positions[i*3 + 1] = -3.2;
                             positions[i*3] = (Math.random() - 0.5) * 5.0;
                             positions[i*3 + 2] = (Math.random() - 0.5) * 5.0;
-                        }
-                    }
+                        }}
+                    }}
                     particleGeo.attributes.position.needsUpdate = true;
 
                     renderer.render(scene, camera);
-                }
+                }}
 
                 animate();
 
-                window.addEventListener('resize', () => {
+                window.addEventListener('resize', () => {{
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
                     renderer.setSize(window.innerWidth, window.innerHeight);
-                });
+                }});
             </script>
         </body>
         </html>
     """
-    )
 
-  components.html(three_js_code, height=560, scrolling=False)
+components.html(three_js_code, height=560, scrolling=False)
