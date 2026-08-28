@@ -352,6 +352,8 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "sound_muted" not in st.session_state:
+  st.session_state.sound_muted = False
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -493,7 +495,6 @@ st.markdown(
 # 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
 if st.session_state.level == 30:
-  # 30단계 만렙 달성 시 출력되는 개쩌는 엔딩 크레딧 화면
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -575,12 +576,35 @@ if st.session_state.level == 30:
             <div class="ending-title">★ 우주 통일 완료 ★</div>
             <div class="ending-subtitle">태초의 자이온맘과 영원히 하나가 되었습니다</div>
             <div class="credit-box">
-                <div class="credit-line">🏆 CREATED BY : 코스믹 자이온 팀</div>
+                <div class="credit-line">🏆 CREATED BY : COSMIC ZION TEAM</div>
+                <div class="credit-line">🌌 UNIVERSE STATUS : ABSOLUTE HARMONY</div>
                 <div class="credit-line">✨ THANK YOU FOR PLAYING!</div>
             </div>
         </div>
 
         <script>
+            // 엔딩 크레딧 사운드 연출 (Web Audio API)
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            function playEndingSound() {
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                notes.forEach((freq, idx) => {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.5);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 1.5);
+                    }, idx * 250);
+                });
+            }
+            playEndingSound();
+
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0, 15);
@@ -590,7 +614,6 @@ if st.session_state.level == 30:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            // 화려한 폭발/우주 파티클 생성
             const particleCount = 2000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
@@ -605,7 +628,6 @@ if st.session_state.level == 30:
                     x: (Math.random() - 0.5) * 0.05,
                     y: (Math.random() - 0.5) * 0.05,
                     z: (Math.random() - 0.5) * 0.05,
-                    rot: Math.random() * 0.02
                 });
             }
             geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -620,7 +642,6 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            // 중앙 거대한 신성 도형
             const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
@@ -685,6 +706,10 @@ else:
         unsafe_allow_html=True,
     )
     dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
+    sound_toggle = st.toggle(
+        "🔊 효과음 재생 (Mute)", value=st.session_state.sound_muted
+    )
+    st.session_state.sound_muted = sound_toggle
 
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -803,7 +828,6 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 28단계 이상일 경우 눈물 사용 차단 안내 메시지 출력
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:12px; color:#ef4444; font-weight:700;"
@@ -819,7 +843,6 @@ else:
             unsafe_allow_html=True,
         )
 
-      # 28단계 이상이면 버튼 비활성화
       can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
@@ -852,6 +875,7 @@ else:
     current_cost = format_gold(get_enhance_cost(current_level))
     tier = curr_data["tier"]
     status = st.session_state.status
+    is_muted = "true" if st.session_state.sound_muted else "false"
 
     three_js_code = f"""
       <!DOCTYPE html>
@@ -923,6 +947,88 @@ else:
           </div>
 
           <script>
+              // Web Audio API 효과음 신시사이저 구문 추가
+              const isMuted = {is_muted};
+              const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+              function playSound(type) {{
+                  if (isMuted) return;
+                  if (audioCtx.state === 'suspended') {{ audioCtx.resume(); }}
+                  const now = audioCtx.currentTime;
+
+                  if (type === "SUCCESS" || type === "PITY_SUCCESS") {{
+                      // 성공: 아르페지오 화음 신디사이저
+                      const freqs = [440, 554.37, 659.25, 880];
+                      freqs.forEach((f, idx) => {{
+                          const osc = audioCtx.createOscillator();
+                          const gain = audioCtx.createGain();
+                          osc.type = 'sine';
+                          osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                          gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.4);
+                          osc.connect(gain);
+                          gain.connect(audioCtx.destination);
+                          osc.start(now + idx * 0.08);
+                          osc.stop(now + idx * 0.08 + 0.4);
+                      }});
+                  }} else if (type === "CRITICAL") {{
+                      // 대성공: 화려한 고주파 벨 사운드 + 타격음
+                      const osc = audioCtx.createOscillator();
+                      const gain = audioCtx.createGain();
+                      osc.type = 'triangle';
+                      osc.frequency.setValueAtTime(523.25, now);
+                      osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.4);
+                      gain.gain.setValueAtTime(0.25, now);
+                      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+                      osc.connect(gain);
+                      gain.connect(audioCtx.destination);
+                      osc.start(now);
+                      osc.stop(now + 0.6);
+                  }} else if (type === "FAILED" || type === "HOLD") {{
+                      // 실패: 묵직한 하향 로우 패스 노이즈
+                      const osc = audioCtx.createOscillator();
+                      const gain = audioCtx.createGain();
+                      osc.type = 'sawtooth';
+                      osc.frequency.setValueAtTime(180, now);
+                      osc.frequency.exponentialRampToValueAtTime(50, now + 0.35);
+                      gain.gain.setValueAtTime(0.2, now);
+                      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+                      osc.connect(gain);
+                      gain.connect(audioCtx.destination);
+                      osc.start(now);
+                      osc.stop(now + 0.35);
+                  }} else if (type === "DESTROYED") {{
+                      // 파괴: 웅장한 블랙홀 폭발음
+                      const osc = audioCtx.createOscillator();
+                      const gain = audioCtx.createGain();
+                      osc.type = 'square';
+                      osc.frequency.setValueAtTime(110, now);
+                      osc.frequency.exponentialRampToValueAtTime(25, now + 0.8);
+                      gain.gain.setValueAtTime(0.3, now);
+                      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+                      osc.connect(gain);
+                      gain.connect(audioCtx.destination);
+                      osc.start(now);
+                      osc.stop(now + 0.8);
+                  }} else if (type === "SHIELD_SAVED") {{
+                      // 방지권 발동: 단단한 실드 결계음
+                      const osc = audioCtx.createOscillator();
+                      const gain = audioCtx.createGain();
+                      osc.type = 'sine';
+                      osc.frequency.setValueAtTime(880, now);
+                      osc.frequency.setValueAtTime(1200, now + 0.1);
+                      gain.gain.setValueAtTime(0.2, now);
+                      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+                      osc.connect(gain);
+                      gain.connect(audioCtx.destination);
+                      osc.start(now);
+                      osc.stop(now + 0.5);
+                  }}
+              }}
+
+              const status = "{status}";
+              playSound(status);
+
               const uiElement = document.getElementById('cinematicUi');
 
               const currentLevel = {current_level};
@@ -933,9 +1039,7 @@ else:
                   document.getElementById('costText').classList.add('shaking-text');
               }}
 
-              const status = "{status}";
               const statusText = document.getElementById('statusText');
-              
               const tierColor = "{card_color}";
               let statusColor = "#38bdf8";
               let particleSize = 0.3;
@@ -986,7 +1090,7 @@ else:
               const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
               camera.position.set(0, 0.6, 10.0);
 
-              const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
+              const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
               renderer.setSize(window.innerWidth, window.innerHeight);
               renderer.setPixelRatio(window.devicePixelRatio);
               renderer.shadowMap.enabled = true;
