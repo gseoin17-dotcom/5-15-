@@ -773,7 +773,6 @@ else:
 
     with tab_shop1:
       current_shield_cost = get_shield_cost(st.session_state.level)
-      # 폰트 사이즈 키움 (11px -> 14px) 및 가격 강조
       st.markdown(
           f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
@@ -801,7 +800,6 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 폰트 사이즈 키움 (11px~12px -> 14px) 및 수치 강조
       if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:14px; color:#ef4444; font-weight:700;"
@@ -901,7 +899,7 @@ else:
                   100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
               }}
 
-              .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+              .status-header {{ font-size: 16px; font-weight: 800; margin-top: 6px; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
               .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
               .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
               .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
@@ -913,8 +911,8 @@ else:
           <div id="container"></div>
 
           <div id="cinematicUi" class="cinematic-ui">
-              <div id="statusText" class="status-header">READY</div>
               <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
+              <div id="statusText" class="status-header">READY</div>
               <div id="descText" class="desc-text">"{card_desc}"</div>
               <div id="priceText" class="price-text">예상 가치: {card_price}</div>
               <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
@@ -926,6 +924,7 @@ else:
               const currentLevel = {current_level};
               if (currentLevel >= 20) {{
                   document.getElementById('mainTitle').classList.add('shaking-text');
+                  document.getElementById('statusText').classList.add('shaking-text');
                   document.getElementById('descText').classList.add('shaking-text');
                   document.getElementById('priceText').classList.add('shaking-text');
                   document.getElementById('costText').classList.add('shaking-text');
@@ -1162,7 +1161,7 @@ else:
                               s.rotation.y += s.userData.ry * 0.02;
                               s.material.opacity = 1.0 - progress;
                               s.material.transparent = true;
-                          }});
+                          }};
                       }}
                   }});
               }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
