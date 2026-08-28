@@ -35,6 +35,7 @@ def format_gold(amount):
 
 
 def get_enhance_cost(level):
+  # 40단계 확장에 맞춘 강화 비용 테이블 (레벨이 높을수록 급격히 상승)
   cost_table = {
       0: 300,
       1: 300,
@@ -67,8 +68,18 @@ def get_enhance_cost(level):
       28: 65000000,
       29: 100000000,
       30: 150000000,
+      31: 250000000,
+      32: 400000000,
+      33: 700000000,
+      34: 1200000000,
+      35: 2000000000,
+      36: 3500000000,
+      37: 6000000000,
+      38: 10000000000,
+      39: 18000000000,
+      40: 30000000000,
   }
-  return cost_table.get(level, 150000000)
+  return cost_table.get(level, 30000000000)
 
 
 def get_shield_cost(level):
@@ -77,7 +88,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의
+# 3. 게임 데이터베이스 정의 (40단계 확장)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -293,12 +304,83 @@ SMELL_DB = {
     30: {
         "name": "30단계 : ★태초의 자이온맘★ 절대신성",
         "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
-        "price": float("inf"),
+        "price": 20000000000,
         "color": "#00ffff",
+        "tier": 6,
+    },
+    31: {
+        "name": "31단계 : 하이퍼 자이온 플라즈마",
+        "desc": "빛보다 빠른 속도로 지온 입자가 확산된다.",
+        "price": 35000000000,
+        "color": "#7928ca",
+        "tier": 6,
+    },
+    32: {
+        "name": "32단계 : 멀티버스 페트리코",
+        "desc": "수백 개의 평행우주 속 흙냄새가 공존한다.",
+        "price": 60000000000,
+        "color": "#ff007f",
+        "tier": 6,
+    },
+    33: {
+        "name": "33단계 : 싱귤래리티 자이온",
+        "desc": "냄새가 너무 무거워 블랙홀마저 굴복한다.",
+        "price": 100000000000,
+        "color": "#00dfd8",
+        "tier": 6,
+    },
+    34: {
+        "name": "34단계 : 코스믹 가이아 오라",
+        "desc": "거대 은하단의 중심에서 피어오르는 생명의 향.",
+        "price": 180000000000,
+        "color": "#4facfe",
+        "tier": 6,
+    },
+    35: {
+        "name": "35단계 : 트랜스센덴탈 에센스",
+        "desc": "물리법칙을 완전히 초월한 순수한 향의 결정.",
+        "price": 320000000000,
+        "color": "#00f2fe",
+        "tier": 6,
+    },
+    36: {
+        "name": "36단계 : 인피니트 자이온 필드",
+        "desc": "우주의 끝과 시작을 잇는 거대한 향의 장막.",
+        "price": 600000000000,
+        "color": "#fee140",
+        "tier": 6,
+    },
+    37: {
+        "name": "37단계 : 옴니프레전트 브레스",
+        "desc": "우주 모든 공간에 동시에 존재하는 지온의 숨결.",
+        "price": 1100000000000,
+        "color": "#fa709a",
+        "tier": 6,
+    },
+    38: {
+        "name": "38단계 : 이터널 마더스 하트",
+        "desc": "자이온맘의 심장박동과 함께 요동치는 구원의 향.",
+        "price": 2000000000000,
+        "color": "#30cfd0",
+        "tier": 6,
+    },
+    39: {
+        "name": "39단계 : 앱솔루트 코스믹 오버로드",
+        "desc": "모든 차원의 시공간을 지온 향으로 물들였다.",
+        "price": 4000000000000,
+        "color": "#a8ff78",
+        "tier": 6,
+    },
+    40: {
+        "name": "40단계 : ★궁극의 영원불멸 자이온맘★",
+        "desc": "모든 존재가 자이온맘 안에서 영원히 안식한다.",
+        "price": float("inf"),
+        "color": "#ff0844",
         "tier": 6,
     },
 }
 
+# 40단계까지 확장된 확률 테이블 (단계별 (성공, 하락, 파괴, 유지) 확률)
 PROB_TABLE = {
     0: (100.0, 0.0, 0.0, 0.0),
     1: (100.0, 0.0, 0.0, 0.0),
@@ -330,6 +412,16 @@ PROB_TABLE = {
     27: (40.0, 25.0, 30.0, 5.0),
     28: (30.0, 30.0, 35.0, 5.0),
     29: (20.0, 35.0, 40.0, 5.0),
+    30: (25.0, 30.0, 40.0, 5.0),
+    31: (22.0, 33.0, 40.0, 5.0),
+    32: (20.0, 35.0, 40.0, 5.0),
+    33: (18.0, 35.0, 42.0, 5.0),
+    34: (15.0, 38.0, 42.0, 5.0),
+    35: (12.0, 40.0, 43.0, 5.0),
+    36: (10.0, 42.0, 43.0, 5.0),
+    37: (8.0, 44.0, 44.0, 4.0),
+    38: (6.0, 45.0, 45.0, 4.0),
+    39: (5.0, 45.0, 47.0, 3.0),
 }
 
 CRITICAL_RATE = 0.05
@@ -360,7 +452,7 @@ if "pity_count" not in st.session_state:
 
 def run_enhance():
   curr = st.session_state.level
-  if curr >= 30:
+  if curr >= 40:
     return
 
   cost = get_enhance_cost(curr)
@@ -387,7 +479,7 @@ def run_enhance():
 
   if r < success_limit:
     st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= 30:
+    if random.random() < CRITICAL_RATE and curr + 2 <= 40:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
@@ -421,7 +513,7 @@ def run_enhance():
 
 def dev_force_success():
   curr = st.session_state.level
-  if curr < 30:
+  if curr < 40:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
@@ -490,9 +582,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 및 30단계 엔딩 처리
+# 7. 메인 레이아웃 및 40단계 엔딩 처리
 # -----------------------------------------------------------------------------
-if st.session_state.level == 30:
+if st.session_state.level == 40:
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -571,8 +663,8 @@ if st.session_state.level == 30:
     <body>
         <div id="container"></div>
         <div class="credits-container">
-            <div class="ending-title">★ 우주 통일 완료 ★</div>
-            <div class="ending-subtitle">태초의 자이온맘과 영원히 하나가 되었습니다</div>
+            <div class="ending-title">★ 멀티버스 궁극 통일 완료 ★</div>
+            <div class="ending-subtitle">40단계 궁극의 영원불멸 자이온맘에 도달했습니다</div>
             <div class="credit-box">
                 <div class="credit-line">🏆 CREATED BY : 코스믹 자이온 팀</div>
                 <div class="credit-line">✨ THANK YOU FOR PLAYING!</div>
@@ -589,28 +681,27 @@ if st.session_state.level == 30:
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const particleCount = 2000;
+            const particleCount = 3000;
             const geo = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             const velocities = [];
 
             for(let i=0; i<particleCount; i++) {
-                positions[i*3] = (Math.random() - 0.5) * 20;
-                positions[i*3 + 1] = (Math.random() - 0.5) * 20;
-                positions[i*3 + 2] = (Math.random() - 0.5) * 20;
+                positions[i*3] = (Math.random() - 0.5) * 25;
+                positions[i*3 + 1] = (Math.random() - 0.5) * 25;
+                positions[i*3 + 2] = (Math.random() - 0.5) * 25;
 
                 velocities.push({
-                    x: (Math.random() - 0.5) * 0.05,
-                    y: (Math.random() - 0.5) * 0.05,
-                    z: (Math.random() - 0.5) * 0.05,
-                    rot: Math.random() * 0.02
+                    x: (Math.random() - 0.5) * 0.08,
+                    y: (Math.random() - 0.5) * 0.08,
+                    z: (Math.random() - 0.5) * 0.08,
                 });
             }
             geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
             const mat = new THREE.PointsMaterial({
-                color: 0x00ffff,
-                size: 0.2,
+                color: 0xff0844,
+                size: 0.25,
                 transparent: true,
                 opacity: 0.9,
                 blending: THREE.AdditiveBlending
@@ -618,11 +709,11 @@ if st.session_state.level == 30:
             const starSystem = new THREE.Points(geo, mat);
             scene.add(starSystem);
 
-            const coreGeo = new THREE.TorusKnotGeometry(3, 1, 128, 32, 2, 3);
+            const coreGeo = new THREE.TorusKnotGeometry(3.5, 1.2, 128, 32, 3, 5);
             const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xff00aa,
-                emissive: 0x00ffff,
-                emissiveIntensity: 1.5,
+                emissive: 0xff0844,
+                emissiveIntensity: 2.0,
                 metalness: 0.9,
                 roughness: 0.1,
                 wireframe: true
@@ -634,8 +725,8 @@ if st.session_state.level == 30:
                 requestAnimationFrame(animate);
                 const time = Date.now() * 0.001;
 
-                coreMesh.rotation.x = time * 0.5;
-                coreMesh.rotation.y = time * 0.7;
+                coreMesh.rotation.x = time * 0.6;
+                coreMesh.rotation.y = time * 0.8;
 
                 const posArr = geo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {
@@ -697,7 +788,7 @@ else:
     if st.button(
         "🔥 냄새 강화 실행",
         use_container_width=True,
-        disabled=(st.session_state.level >= 30),
+        disabled=(st.session_state.level >= 40),
     ):
       cost = get_enhance_cost(st.session_state.level)
       if st.session_state.money < cost:
@@ -711,7 +802,7 @@ else:
       if st.button(
           "✨ [DEV] 무조건 성공",
           use_container_width=True,
-          disabled=(st.session_state.level >= 30),
+          disabled=(st.session_state.level >= 40),
       ):
         dev_force_success()
         st.rerun()
@@ -774,7 +865,6 @@ else:
 
     with tab_shop1:
       current_shield_cost = get_shield_cost(st.session_state.level)
-      # 폰트 사이즈 키움 (11px -> 14px) 및 가격 강조
       st.markdown(
           f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
@@ -802,11 +892,11 @@ else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      # 폰트 사이즈 키움 (11px~12px -> 14px) 및 수치 강조
-      if st.session_state.level >= 28:
+      # 38단계 이상부터 눈물 사용 불가로 조정 (최대 40단계 기준)
+      if st.session_state.level >= 38:
         st.markdown(
             "<div style='font-size:14px; color:#ef4444; font-weight:700;"
-            " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
+            " margin-bottom:8px;'>⚠️ 38단계 이상부터는 신성한 기운으로 인해 지온의"
             " 눈물을 사용할 수 없습니다!</div>",
             unsafe_allow_html=True,
         )
@@ -819,17 +909,17 @@ else:
             unsafe_allow_html=True,
         )
 
-      can_use_tears = st.session_state.level < 28
+      can_use_tears = st.session_state.level < 38
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
       ):
-        if st.session_state.level >= 28:
-          st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
+        if st.session_state.level >= 38:
+          st.warning("38단계부터는 눈물을 사용할 수 없습니다.")
         elif st.session_state.tears >= 40:
           st.session_state.tears -= 40
           if random.random() < 0.50:
             add_lvl = random.choice([1, 2, 3])
-            st.session_state.level = min(30, st.session_state.level + add_lvl)
+            st.session_state.level = min(40, st.session_state.level + add_lvl)
             st.session_state.status = (
                 "CRITICAL" if add_lvl >= 2 else "SUCCESS"
             )
@@ -1076,8 +1166,10 @@ else:
                   baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
               }} else if (lvl == 29) {{
                   baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-              }} else {{
+              }} else if (lvl <= 35) {{
                   baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+              }} else {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.8, 2);
               }}
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
