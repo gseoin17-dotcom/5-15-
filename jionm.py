@@ -716,7 +716,6 @@ with right_col:
 
             .cinematic-ui {{
                 position: absolute;
-                /* 텍스트 정보 UI는 기존처럼 하단에 유지 */
                 bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
@@ -834,8 +833,8 @@ with right_col:
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            /* 3D 다각형 오브젝트를 아래로 내리기 위해 카메라 위치 변경 (y를 양수값으로 올려서 아래를 내려다보게 하거나, 오브젝트 그룹의 y를 내림) */
-            camera.position.set(0, 1.2, 10.5);
+            /* 카메라 높이와 거리를 살짝 조정하여 오브젝트가 잘리지 않도록 함 */
+            camera.position.set(0, 0.6, 10.0);
 
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -851,7 +850,7 @@ with right_col:
             scene.add(mainLight);
 
             const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
-            pointLight.position.set(0, -0.5, 3);
+            pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
             const particleCount = 850;
@@ -887,8 +886,8 @@ with right_col:
             scene.add(particleSystem);
 
             const objectGroup = new THREE.Group();
-            /* 3D 다각형 오브젝트들의 전체 위치를 확 내려줌 (y = -1.8) */
-            objectGroup.position.y = -1.8;
+            /* 3D 다각형 오브젝트 위치를 기존보다 위로 올려줌 (y = -0.7) */
+            objectGroup.position.y = -0.7;
 
             let baseGeo;
             const lvl = {current_level};
@@ -970,7 +969,7 @@ with right_col:
                 const shardCount = 55;
                 const shards = [];
                 const shardGroup = new THREE.Group();
-                shardGroup.position.y = -1.8;
+                shardGroup.position.y = -0.7;
 
                 for(let i=0; i<shardCount; i++) {{
                     const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
