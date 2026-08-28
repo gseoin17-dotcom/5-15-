@@ -574,8 +574,7 @@ if st.session_state.level == 30:
             <div class="ending-title">★ 우주 통일 완료 ★</div>
             <div class="ending-subtitle">태초의 자이온맘과 영원히 하나가 되었습니다</div>
             <div class="credit-box">
-                <div class="credit-line">🏆 CREATED BY : 코스믹 자이온 팀</div>
-                <div class="credit-line">✨ THANK YOU FOR PLAYING!</div>
+                <div class="credit-line">🏆 CREATED BY :  자이온 팀</div>
             </div>
         </div>
 
