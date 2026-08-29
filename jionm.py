@@ -7,7 +7,7 @@ st.set_page_config(page_title="공 싸움 게임", layout="centered")
 st.title("🔴 실시간 공 싸움 게임")
 st.write("공들이 서로 부딪히고 벽에 튕기며 싸우는 물리 시뮬레이션입니다!")
 
-game_html = """<!DOCTYPE html>
+game_html = <!DOCTYPE html>
 <html>
 <head>
 <style>
