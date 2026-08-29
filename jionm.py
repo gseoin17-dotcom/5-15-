@@ -845,73 +845,54 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            // 1단계일 때 유저가 첨부한 손글씨 이미지를 Base64 인코딩 형태로 바로 출력
-            if (currentLevel === 1) {{
-                const textureLoader = new THREE.TextureLoader();
-                const base64Img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='; // 플레이스홀더 예시, 실제 유저 이미지 반영
-                
-                // 실제 유저 이미지를 담은 Base64 문자열 적용
-                const realImageBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='; 
-                
-                // 아래에 올바른 Base64 데이터 URI를 직접 로드합니다.
-                textureLoader.load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', (texture) => {{
-                    const planeGeo = new THREE.PlaneGeometry(3.5, 2.1);
-                    const planeMat = new THREE.MeshBasicMaterial({{
-                        map: texture,
-                        transparent: true,
-                        side: THREE.DoubleSide
-                    }});
-                    const imageMesh = new THREE.Mesh(planeGeo, planeMat);
-                    objectGroup.add(imageMesh);
-                }});
-            }} else {{
-                const shape = new THREE.Shape();
-                const pointsCount = 5 + Math.min(currentLevel, 10);
-                const radius = 1.6;
-                for (let i = 0; i < pointsCount; i++) {{
-                    const angle = (i / pointsCount) * Math.PI * 2;
-                    const r = radius + (i % 2 === 0 ? 0.25 : -0.25) * (1 + currentLevel * 0.04);
-                    const x = Math.cos(angle) * r;
-                    const y = Math.sin(angle) * r;
-                    if (i === 0) shape.moveTo(x, y);
-                    else shape.lineTo(x, y);
-                }}
-                shape.closePath();
-
-                const extrudeSettings = {{
-                    steps: 1,
-                    depth: 0.5 + currentLevel * 0.03,
-                    bevelEnabled: true,
-                    bevelThickness: 0.15,
-                    bevelSize: 0.1,
-                    bevelSegments: 3
-                }};
-
-                const baseGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                baseGeo.center();
-                const baseMat = new THREE.MeshStandardMaterial({{
-                    color: new THREE.Color(tierColor),
-                    roughness: 0.18,
-                    metalness: 0.85,
-                    emissive: new THREE.Color(tierColor),
-                    emissiveIntensity: 0.25 + (currentLevel * 0.02)
-                }});
-                const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-                objectGroup.add(baseMesh);
-
-                const outerGeo = new THREE.IcosahedronGeometry(1.9 + (currentLevel * 0.02), 0);
-                const outerMat = new THREE.MeshPhysicalMaterial({{
-                    color: new THREE.Color(tierColor),
-                    transmission: 0.6,
-                    opacity: 1,
-                    transparent: true,
-                    roughness: 0.1,
-                    ior: 1.5,
-                    wireframe: currentLevel % 2 === 1
-                }});
-                const outerMesh = new THREE.Mesh(outerGeo, outerMat);
-                objectGroup.add(outerMesh);
+            // 1부터 30단계까지 레벨이 올라갈수록 꼭짓점이 늘어나는 3D 다각형 생성
+            const shape = new THREE.Shape();
+            const pointsCount = 3 + currentLevel; // 1단계는 삼각형, 단계가 오를수록 다각형화
+            const radius = 1.6;
+            
+            for (let i = 0; i < pointsCount; i++) {{
+                const angle = (i / pointsCount) * Math.PI * 2;
+                const r = radius + (i % 2 === 0 ? 0.15 : -0.15) * (currentLevel > 15 ? 1.5 : 1.0);
+                const x = Math.cos(angle) * r;
+                const y = Math.sin(angle) * r;
+                if (i === 0) shape.moveTo(x, y);
+                else shape.lineTo(x, y);
             }}
+            shape.closePath();
+
+            const extrudeSettings = {{
+                steps: 1,
+                depth: 0.5 + currentLevel * 0.03,
+                bevelEnabled: true,
+                bevelThickness: 0.15,
+                bevelSize: 0.1,
+                bevelSegments: 3
+            }};
+
+            const baseGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            baseGeo.center();
+            const baseMat = new THREE.MeshStandardMaterial({{
+                color: new THREE.Color(tierColor),
+                roughness: 0.18,
+                metalness: 0.85,
+                emissive: new THREE.Color(tierColor),
+                emissiveIntensity: 0.25 + (currentLevel * 0.02)
+            }});
+            const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+            objectGroup.add(baseMesh);
+
+            const outerGeo = new THREE.IcosahedronGeometry(1.9 + (currentLevel * 0.02), 0);
+            const outerMat = new THREE.MeshPhysicalMaterial({{
+                color: new THREE.Color(tierColor),
+                transmission: 0.6,
+                opacity: 1,
+                transparent: true,
+                roughness: 0.1,
+                ior: 1.5,
+                wireframe: currentLevel % 2 === 1
+            }});
+            const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+            objectGroup.add(outerMesh);
 
             scene.add(objectGroup);
 
