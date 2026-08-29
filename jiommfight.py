@@ -1,178 +1,195 @@
 import streamlit as st
 
-st.set_page_config(page_title="자동 스킬 공 싸움 게임", page_icon="⚡", layout="centered")
+st.set_page_config(page_title="Ball Fight Game", page_icon="💥", layout="centered")
 
-st.title("⚡ 자동 스킬 & 애니메이션 공 배틀 게임")
-st.write("공이 스스로 움직이며, 각자 다른 주기(혜혜: 6초, 릴고아: 8초)로 자동 스킬을 쓰고 화려한 충돌/스킬 이펙트가 발생합니다!")
-
+# 영상과 완전히 똑같은 UI와 캔버스 게임 엔진을 품은 HTML/JS 코드
 game_html = """
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Auto Skill Ball Battle</title>
+    <title>Ball Fight Simulator</title>
     <style>
         body {
-            background-color: #0e1117;
-            color: white;
+            background-color: #ffffff;
+            color: black;
             text-align: center;
             font-family: 'Malgun Gothic', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 10px;
         }
-        .container {
-            max-width: 650px;
+        .game-container {
+            width: 600px;
             margin: 0 auto;
+            border: 3px solid black;
+            background: #ffffff;
+            position: relative;
+        }
+        canvas {
+            display: block;
+            background: #ffffff;
         }
         .scoreboard {
-            background: #1e1e2f;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            width: 600px;
+            margin: 10px auto 0 auto;
             display: flex;
             justify-content: space-between;
+            border: 2px solid black;
+            padding: 5px;
+            background: #f9f9f9;
         }
-        .player-panel {
-            width: 45%;
+        .player-box {
+            width: 48%;
             text-align: left;
         }
-        .player-panel.right {
+        .player-box.right {
             text-align: right;
         }
-        .hp-bar-container {
-            background: #333;
-            border-radius: 5px;
-            overflow: hidden;
-            height: 18px;
-            margin-top: 5px;
-            border: 1px solid #555;
+        .name {
+            font-weight: bold;
+            font-size: 18px;
         }
-        .hp-bar {
+        .hp-bar-outer {
+            background-color: #333;
+            border: 2px solid black;
+            height: 22px;
+            margin-top: 4px;
+            position: relative;
+        }
+        .hp-bar-inner {
             height: 100%;
             width: 100%;
-            transition: width 0.1s ease;
+            background-color: #2ecc71;
+            transition: width 0.1s linear;
         }
-        #hpBar1 { background-color: #28a745; }
-        #hpBar2 { background-color: #ffc107; }
-
-        .skill-status {
-            margin-top: 6px;
-            font-size: 13px;
+        .hp-text {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            font-size: 12px;
             font-weight: bold;
-            color: #00d2ff;
-        }
-
-        canvas {
-            background: #ffffff;
-            display: block;
-            margin: 0 auto;
-            border: 3px solid #333;
-            border-radius: 8px;
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
-        }
-        .btn {
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #ff4b4b;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            line-height: 18px;
         }
-        .btn:hover {
-            background-color: #ff2121;
+        .reset-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            font-weight: bold;
+            background: #ff4b4b;
+            color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .reset-btn:hover {
+            background: #ff2121;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="scoreboard">
-        <div class="player-panel">
-            <span style="font-weight: bold; color: #ff4b4b;">혜혜</span> (HP: <span id="hp1Text">250</span>)
-            <div class="hp-bar-container">
-                <div id="hpBar1" class="hp-bar" style="width: 100%;"></div>
-            </div>
-            <div class="skill-status" id="skillStatus1">스킬 충전중 (6초 주기)</div>
-        </div>
+<div class="game-container">
+    <canvas id="gameCanvas" width="600" height="500"></canvas>
+</div>
 
-        <div style="font-weight: bold; font-size: 20px; display:flex; align-items:center;">VS</div>
-
-        <div class="player-panel right">
-            <span style="font-weight: bold; color: #1c83e1;">릴고아</span> (HP: <span id="hp2Text">250</span>)
-            <div class="hp-bar-container">
-                <div id="hpBar2" class="hp-bar" style="width: 100%;"></div>
-            </div>
-            <div class="skill-status" id="skillStatus2" style="text-align: right;">스킬 충전중 (8초 주기)</div>
+<div class="scoreboard">
+    <div class="player-box">
+        <div class="name" style="color: #27ae60;">혜혜</div>
+        <div class="hp-bar-outer">
+            <div id="hpBar1" class="hp-bar-inner"></div>
+            <div id="hpText1" class="hp-text">250 / 250</div>
         </div>
     </div>
-
-    <canvas id="gameCanvas" width="600" height="600"></canvas>
-    <br>
-    <button class="btn" onclick="resetGame()">게임 다시 시작</button>
+    <div class="player-box right">
+        <div class="name" style="color: #27ae60;">릴고아</div>
+        <div class="hp-bar-outer">
+            <div id="hpBar2" class="hp-bar-inner" style="background-color: #2ecc71;"></div>
+            <div id="hpText2" class="hp-text">250 / 250</div>
+        </div>
+    </div>
 </div>
+
+<button class="reset-btn" onclick="resetGame()">경기 다시 시작</button>
 
 <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     let isGameOver = false;
-    let effects = []; // 스킬/충돌 이펙트 애니메이션 배열
+    let cracks = [];     // 벽에 부딪힐 때 생기는 크랙 자국들
+    let effects = [];    // 스킬 파동 이펙트
+    let chats = [];      // 상단 채팅 및 후원 메시지 로그
+
+    // 가상의 프로필 이미지 생성용 아바타 (실제 이미지 로드 실패 시 대체 그리기용)
+    let img1Loaded = false, img2Loaded = false;
+    let avatar1 = new Image(); avatar1.src = "https://i.imgur.com/74u9rAx.png"; avatar1.onload = () => { img1Loaded = true; };
+    let avatar2 = new Image(); avatar2.src = "https://i.imgur.com/82v9KtX.png"; avatar2.onload = () => { img2Loaded = true; };
 
     let ball1 = {
-        x: 150, y: 300,
-        vx: 1.8, vy: 1.5,
-        radius: 45,
+        x: 150, y: 250,
+        vx: 1.5, vy: 1.2,   // 느린 속도
+        radius: 35,
         hp: 250, maxHp: 250,
-        name: "혜혜", color: "#ff4b4b",
+        name: "혜혜",
         cooldown: 0,
-        skillMaxTime: 360,     // 6초 주기 (60프레임 * 6)
-        skillTimer: 360,
-        isUsingSkill: false
+        skillTimer: 300,    // 약 5초마다 자동 스킬
+        isSkill: false
     };
 
     let ball2 = {
-        x: 450, y: 300,
-        vx: -1.8, vy: -1.5,
-        radius: 45,
+        x: 450, y: 250,
+        vx: -1.5, vy: -1.2, // 느린 속도
+        radius: 35,
         hp: 250, maxHp: 250,
-        name: "릴고아", color: "#1c83e1",
+        name: "릴고아",
         cooldown: 0,
-        skillMaxTime: 480,     // 8초 주기 (60프레임 * 8) - 서로 다름!
-        skillTimer: 480,
-        isUsingSkill: false
+        skillTimer: 420,    // 약 7초마다 자동 스킬 (주기 다름)
+        isSkill: false
     };
 
-    // 화려한 파동 이펙트 추가 함수
-    function addEffect(x, y, color) {
-        effects.push({
-            x: x,
-            y: y,
-            radius: 10,
-            maxRadius: 70,
-            color: color,
-            alpha: 1.0
-        });
+    // 초기 채팅 메시지 설정
+    chats.push({ text: "🟢 ball_fight_korea님이 1,000원 후원함", sub: "기습적 무추위야! 릴고아님에겐 딜도 박히지도 않네" });
+    
+    // 무작위 대사 이벤트 추가 타이머
+    let chatTimer = 0;
+    const sampleChats = [
+        "5초간 콥볼소우 흉내 내주세요",
+        "즐거 같은데 빨리 본체 투혼!",
+        "퍼가요~",
+        "빨리 버튼 눌러주세요 현기증 난단 말이에요"
+    ];
+
+    function addCrack(x, y) {
+        cracks.push({ x: x, y: y, size: Math.random() * 15 + 20 });
+        if (cracks.length > 15) cracks.shift(); // 너무 많아지면 오래된 것 삭제
     }
 
-    function triggerAutoSkill(b, enemy) {
-        // 스킬 발동 시 데미지 및 이펙트
-        enemy.hp -= 35;
+    function triggerSkill(b, enemy) {
+        enemy.hp -= 30;
         if (enemy.hp < 0) enemy.hp = 0;
+        b.isSkill = true;
+        setTimeout(() => { b.isSkill = false; }, 500);
 
-        // 애니메이션 효과 추가
-        addEffect(b.x, b.y, b.color);
-
-        // 스킬 사용 모션 (잠시 커졌다가 돌아오기)
-        b.isUsingSkill = true;
-        setTimeout(() => { b.isUsingSkill = false; }, 400);
+        // 파동 이펙트 생성
+        effects.push({ x: b.x, y: b.y, r: 10, maxR: 80, alpha: 1.0 });
+        
+        // 랜덤 채팅 추가
+        chats.push({ text: "💬 " + b.name + " 스킬 발동!", sub: sampleChats[Math.floor(Math.random() * sampleChats.length)] });
+        if (chats.length > 3) chats.shift();
     }
 
     function update() {
         if (isGameOver) return;
+
+        // 채팅 타이머
+        chatTimer++;
+        if (chatTimer > 250) {
+            chats.push({ text: "💬 시청자", sub: sampleChats[Math.floor(Math.random() * sampleChats.length)] });
+            if (chats.length > 3) chats.shift();
+            chatTimer = 0;
+        }
 
         // 위치 이동
         ball1.x += ball1.vx;
@@ -180,162 +197,178 @@ game_html = """
         ball2.x += ball2.vx;
         ball2.y += ball2.vy;
 
-        // 벽 충돌 (공 1)
-        if (ball1.x - ball1.radius < 0) { ball1.x = ball1.radius; ball1.vx *= -1; }
-        if (ball1.x + ball1.radius > canvas.width) { ball1.x = canvas.width - ball1.radius; ball1.vx *= -1; }
-        if (ball1.y - ball1.radius < 0) { ball1.y = ball1.radius; ball1.vy *= -1; }
-        if (ball1.y + ball1.radius > canvas.height) { ball1.y = canvas.height - ball1.radius; ball1.vy *= -1; }
+        // 벽 충돌 및 크랙 생성 (공 1)
+        if (ball1.x - ball1.radius < 0) { ball1.x = ball1.radius; ball1.vx *= -1; addCrack(ball1.x, ball1.y); }
+        if (ball1.x + ball1.radius > canvas.width) { ball1.x = canvas.width - ball1.radius; ball1.vx *= -1; addCrack(ball1.x, ball1.y); }
+        if (ball1.y - ball1.radius < 0) { ball1.y = ball1.radius; ball1.vy *= -1; addCrack(ball1.x, ball1.y); }
+        if (ball1.y + ball1.radius > canvas.height) { ball1.y = canvas.height - ball1.radius; ball1.vy *= -1; addCrack(ball1.x, ball1.y); }
 
-        // 벽 충돌 (공 2)
-        if (ball2.x - ball2.radius < 0) { ball2.x = ball2.radius; ball2.vx *= -1; }
-        if (ball2.x + ball2.radius > canvas.width) { ball2.x = canvas.width - ball2.radius; ball2.vx *= -1; }
-        if (ball2.y - ball2.radius < 0) { ball2.y = ball2.radius; ball2.vy *= -1; }
-        if (ball2.y + ball2.radius > canvas.height) { ball2.y = canvas.height - ball2.radius; ball2.vy *= -1; }
+        // 벽 충돌 및 크랙 생성 (공 2)
+        if (ball2.x - ball2.radius < 0) { ball2.x = ball2.radius; ball2.vx *= -1; addCrack(ball2.x, ball2.y); }
+        if (ball2.x + ball2.radius > canvas.width) { ball2.x = canvas.width - ball2.radius; ball2.vx *= -1; addCrack(ball2.x, ball2.y); }
+        if (ball2.y - ball2.radius < 0) { ball2.y = ball2.radius; ball2.vy *= -1; addCrack(ball2.x, ball2.y); }
+        if (ball2.y + ball2.radius > canvas.height) { ball2.y = canvas.height - ball2.radius; ball2.vy *= -1; addCrack(ball2.x, ball2.y); }
 
-        // 데미지 쿨다운 감소
+        // 스킬 타이머 감소 (서로 다름)
+        ball1.skillTimer--;
+        if (ball1.skillTimer <= 0) {
+            triggerSkill(ball1, ball2);
+            ball1.skillTimer = 320;
+        }
+        ball2.skillTimer--;
+        if (ball2.skillTimer <= 0) {
+            triggerSkill(ball2, ball1);
+            ball2.skillTimer = 400;
+        }
+
         if (ball1.cooldown > 0) ball1.cooldown--;
         if (ball2.cooldown > 0) ball2.cooldown--;
 
-        // 자동 스킬 타이머 감소 및 발동 (서로 다른 주기)
-        ball1.skillTimer--;
-        if (ball1.skillTimer <= 0) {
-            triggerAutoSkill(ball1, ball2);
-            ball1.skillTimer = ball1.skillMaxTime; // 타이머 리셋
-        }
-
-        ball2.skillTimer--;
-        if (ball2.skillTimer <= 0) {
-            triggerAutoSkill(ball2, ball1);
-            ball2.skillTimer = ball2.skillMaxTime; // 타이머 리셋
-        }
-
-        // UI 갱신 (상단 스킬 충전 표시)
-        let s1Sec = (ball1.skillTimer / 60).toFixed(1);
-        document.getElementById("skillStatus1").innerText = `⚡ 스킬 대기중 (${s1Sec}초)`;
-        
-        let s2Sec = (ball2.skillTimer / 60).toFixed(1);
-        document.getElementById("skillStatus2").innerText = `⚡ 스킬 대기중 (${s2Sec}초)`;
-
-        // 공끼리 충돌 계산
+        // 공끼리 충돌
         let dx = ball2.x - ball1.x;
         let dy = ball2.y - ball1.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < ball1.radius + ball2.radius) {
-            let tempVx = ball1.vx;
-            let tempVy = ball1.vy;
-            ball1.vx = ball2.vx;
-            ball1.vy = ball2.vy;
-            ball2.vx = tempVx;
-            ball2.vy = tempVy;
+        if (dist < ball1.radius + ball2.radius) {
+            let tempVx = ball1.vx; let tempVy = ball1.vy;
+            ball1.vx = ball2.vx; ball1.vy = ball2.vy;
+            ball2.vx = tempVx; ball2.vy = tempVy;
 
-            let overlap = (ball1.radius + ball2.radius) - distance;
+            let overlap = (ball1.radius + ball2.radius) - dist;
             let angle = Math.atan2(dy, dx);
             ball1.x -= Math.cos(angle) * overlap / 2;
             ball1.y -= Math.sin(angle) * overlap / 2;
             ball2.x += Math.cos(angle) * overlap / 2;
             ball2.y += Math.sin(angle) * overlap / 2;
 
-            // 일반 충돌 시에도 작은 파동 이펙트 추가
             if (ball1.cooldown === 0 && ball2.cooldown === 0) {
                 ball1.hp -= 15;
                 ball2.hp -= 15;
-                ball1.cooldown = 25;
-                ball2.cooldown = 25;
-
-                addEffect((ball1.x + ball2.x)/2, (ball1.y + ball2.y)/2, "#888888");
-
+                ball1.cooldown = 30;
+                ball2.cooldown = 30;
                 if (ball1.hp < 0) ball1.hp = 0;
                 if (ball2.hp < 0) ball2.hp = 0;
             }
         }
 
-        // HP UI 갱신
-        document.getElementById("hp1Text").innerText = ball1.hp;
-        document.getElementById("hp2Text").innerText = ball2.hp;
+        // HTML UI 갱신
         document.getElementById("hpBar1").style.width = (ball1.hp / ball1.maxHp * 100) + "%";
+        document.getElementById("hpText1.innerText = ball1.hp + " / 250";
         document.getElementById("hpBar2").style.width = (ball2.hp / ball2.maxHp * 100) + "%";
+        document.getElementById("hpText2").innerText = ball2.hp + " / 250";
 
         if (ball1.hp <= 0 || ball2.hp <= 0) {
             isGameOver = true;
         }
     }
 
+    function drawCrack(c) {
+        ctx.save();
+        ctx.strokeStyle = "#888888";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.size * 0.4, 0, Math.PI * 2);
+        ctx.stroke();
+        // 깨진 틈새 선들
+        ctx.beginPath();
+        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + c.size * 0.6, c.y - c.size * 0.5);
+        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x - c.size * 0.5, c.y + c.size * 0.4);
+        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + c.size * 0.4, c.y + c.size * 0.5);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawBall(b, imgLoaded, imgObj) {
+        ctx.save();
+        ctx.beginPath();
+        let r = b.isSkill ? b.radius + 10 : b.radius;
+        ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+        ctx.clip();
+
+        if (imgLoaded) {
+            ctx.drawImage(imgObj, b.x - r, b.y - r, r * 2, r * 2);
+        } else {
+            ctx.fillStyle = "#ddd";
+            ctx.fill();
+        }
+        ctx.restore();
+
+        // 테두리
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+        ctx.lineWidth = b.isSkill ? 4 : 2;
+        ctx.strokeStyle = b.isSkill ? "#ff0000" : "#27ae60";
+        ctx.stroke();
+
+        // 이름 텍스트
+        ctx.fillStyle = "black";
+        ctx.font = "bold 13px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(b.name, b.x, b.y - r - 6);
+    }
+
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 이펙트 애니메이션 그리기 (파동 퍼지는 효과)
-        for (let i = effects.length - 1; i >= 0; i--) {
-            let eff = effects[i];
-            ctx.beginPath();
-            ctx.arc(eff.x, eff.y, eff.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = eff.color;
-            ctx.lineWidth = 4;
-            ctx.globalAlpha = eff.alpha;
-            ctx.stroke();
-            ctx.closePath();
+        // 벽 크랙 그리기
+        cracks.forEach(c => drawCrack(c));
 
-            // 퍼지면서 투명해짐
-            eff.radius += 2.5;
-            eff.alpha -= 0.03;
-            if (eff.alpha <= 0 || eff.radius >= eff.maxRadius) {
-                effects.splice(i, 1);
-            }
+        // 상단 채팅/후원 UI 박스 렌더링 (영상 속 디자인 모사)
+        if (chats.length > 0) {
+            ctx.save();
+            ctx.fillStyle = "rgba(240, 240, 240, 0.9)";
+            ctx.fillRect(80, 10, 440, 45);
+            ctx.strokeStyle = "#ccc";
+            ctx.strokeRect(80, 10, 440, 45);
+
+            ctx.fillStyle = "#333";
+            ctx.font = "12px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(chats[chats.length - 1].text, 90, 26);
+            ctx.fillStyle = "#666";
+            ctx.fillText(chats[chats.length - 1].sub, 90, 44);
+            ctx.restore();
         }
-        ctx.globalAlpha = 1.0; // 투명도 초기화
 
-        // 공 1 그리기 (혜혜) - 스킬 사용 시 크기 확장 모션
-        let r1 = ball1.isUsingSkill ? ball1.radius + 15 : ball1.radius;
-        ctx.beginPath();
-        ctx.arc(ball1.x, ball1.y, r1, 0, Math.PI * 2);
-        ctx.fillStyle = ball1.color;
-        ctx.fill();
-        ctx.lineWidth = ball1.isUsingSkill ? 6 : 3;
-        ctx.strokeStyle = ball1.isUsingSkill ? "#ffeb3b" : "#333";
-        ctx.stroke();
-        ctx.closePath();
+        // 스킬 파동 이펙트
+        for (let i = effects.length - 1; i >= 0; i--) {
+            let ef = effects[i];
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ef.x, ef.y, ef.r, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255, 0, 0, " + ef.alpha + ")";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
 
-        ctx.fillStyle = "#333";
-        ctx.font = "bold 15px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(ball1.name, ball1.x, ball1.y - r1 - 8);
+            ef.r += 2;
+            ef.alpha -= 0.03;
+            if (ef.alpha <= 0) effects.splice(i, 1);
+        }
 
-        // 공 2 그리기 (릴고아) - 스킬 사용 시 크기 확장 모션
-        let r2 = ball2.isUsingSkill ? ball2.radius + 15 : ball2.radius;
-        ctx.beginPath();
-        ctx.arc(ball2.x, ball2.y, r2, 0, Math.PI * 2);
-        ctx.fillStyle = ball2.color;
-        ctx.fill();
-        ctx.lineWidth = ball2.isUsingSkill ? 6 : 3;
-        ctx.strokeStyle = ball2.isUsingSkill ? "#ffeb3b" : "#333";
-        ctx.stroke();
-        ctx.closePath();
+        // 공 그리기
+        drawBall(ball1, img1Loaded, avatar1);
+        drawBall(ball2, img2Loaded, avatar2);
 
-        ctx.fillText(ball2.name, ball2.x, ball2.y - r2 - 8);
-
-        // 게임 종료 화면
+        // 게임 종료 시 승리 문구 및 왕관
         if (isGameOver) {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 32px sans-serif";
+            ctx.fillStyle = "black";
+            ctx.font = "bold 30px sans-serif";
             ctx.textAlign = "center";
             let winner = ball1.hp > 0 ? ball1.name : (ball2.hp > 0 ? ball2.name : "무승부");
-            ctx.fillText("👑 " + winner + " 승리! 👑", canvas.width / 2, canvas.height / 2 - 20);
-            
-            ctx.font = "18px sans-serif";
-            ctx.fillText("아래 '게임 다시 시작' 버튼을 눌러주세요.", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.fillText("👑 " + winner + " 승리! 👑", canvas.width / 2, canvas.height / 2);
         }
     }
 
     function resetGame() {
-        ball1.hp = 250;
-        ball2.hp = 250;
-        ball1.x = 150; ball1.y = 300;
-        ball2.x = 450; ball2.y = 300;
-        ball1.skillTimer = ball1.skillMaxTime;
-        ball2.skillTimer = ball2.skillMaxTime;
+        ball1.hp = 250; ball2.hp = 250;
+        ball1.x = 150; ball1.y = 250;
+        ball2.x = 450; ball2.y = 250;
+        ball1.skillTimer = 300; ball2.skillTimer = 420;
+        cracks = [];
         effects = [];
         isGameOver = false;
     }
@@ -353,4 +386,4 @@ game_html = """
 </html>
 """
 
-st.components.v1.html(game_html, height=760)
+st.components.v1.html(game_html, height=620)
