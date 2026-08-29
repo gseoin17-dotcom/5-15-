@@ -490,7 +490,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃
+# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -507,6 +507,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # 보유 지표 영역
   s_col1, s_col2 = st.columns(2)
 
   with s_col1:
@@ -548,6 +549,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # 상점 탭 영역
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
@@ -614,6 +616,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # [이동됨] 자이온 강화 제어를 최하단에 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
@@ -845,61 +848,82 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            // 1부터 30단계까지 레벨이 올라갈수록 꼭짓점이 늘어나는 3D 다각형 생성
-            const shape = new THREE.Shape();
-            const pointsCount = 3 + currentLevel; // 1단계는 삼각형, 단계가 오를수록 다각형화
-            const radius = 1.6;
-            
-            for (let i = 0; i < pointsCount; i++) {{
-                const angle = (i / pointsCount) * Math.PI * 2;
-                const r = radius + (i % 2 === 0 ? 0.15 : -0.15) * (currentLevel > 15 ? 1.5 : 1.0);
-                const x = Math.cos(angle) * r;
-                const y = Math.sin(angle) * r;
-                if (i === 0) shape.moveTo(x, y);
-                else shape.lineTo(x, y);
+            let baseGeo;
+            const lvl = {current_level};
+
+            if (lvl <= 2) {{
+                baseGeo = new THREE.TetrahedronGeometry(2.3);
+            }} else if (lvl <= 5) {{
+                baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+            }} else if (lvl <= 8) {{
+                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+            }} else if (lvl <= 11) {{
+                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+            }} else if (lvl <= 14) {{
+                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+            }} else if (lvl <= 17) {{
+                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+            }} else if (lvl == 18) {{
+                baseGeo = new THREE.OctahedronGeometry(2.5);
+            }} else if (lvl == 19) {{
+                baseGeo = new THREE.DodecahedronGeometry(2.4);
+            }} else if (lvl == 20) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.4);
+            }} else if (lvl == 21) {{
+                baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+            }} else if (lvl == 22) {{
+                baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+            }} else if (lvl == 23) {{
+                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+            }} else if (lvl == 24) {{
+                baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+            }} else if (lvl == 25) {{
+                baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+            }} else if (lvl == 26) {{
+                baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+            }} else if (lvl == 27) {{
+                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+            }} else if (lvl == 28) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+            }} else if (lvl == 29) {{
+                baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+            }} else {{
+                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
             }}
-            shape.closePath();
 
-            const extrudeSettings = {{
-                steps: 1,
-                depth: 0.5 + currentLevel * 0.03,
-                bevelEnabled: true,
-                bevelThickness: 0.15,
-                bevelSize: 0.1,
-                bevelSegments: 3
-            }};
-
-            const baseGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-            baseGeo.center();
-            const baseMat = new THREE.MeshStandardMaterial({{
-                color: new THREE.Color(tierColor),
-                roughness: 0.18,
-                metalness: 0.85,
-                emissive: new THREE.Color(tierColor),
-                emissiveIntensity: 0.25 + (currentLevel * 0.02)
-            }});
-            const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-            objectGroup.add(baseMesh);
-
-            const outerGeo = new THREE.IcosahedronGeometry(1.9 + (currentLevel * 0.02), 0);
             const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: new THREE.Color(tierColor),
+                color: tierColor,
+                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
+                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
+                metalness: 0.9,
+                roughness: 0.15,
                 transmission: 0.6,
-                opacity: 1,
                 transparent: true,
-                roughness: 0.1,
-                ior: 1.5,
-                wireframe: currentLevel % 2 === 1
+                opacity: status === "FAILED" ? 0.5 : 0.95,
+                wireframe: false
             }});
-            const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
+
+            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            const coreMat = new THREE.MeshPhysicalMaterial({{
+                color: 0xffffff,
+                emissive: statusColor,
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
+                roughness: 0.05,
+                metalness: 0.95,
+                transmission: 0.8
+            }});
+            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
             uiElement.classList.add('visible');
 
             if (status === "DESTROYED") {{
-                objectGroup.visible = false;
+                outerMesh.visible = false;
+                coreMesh.visible = false;
 
                 const shardCount = 55;
                 const shards = [];
@@ -972,7 +996,11 @@ with right_col:
 
                 if (status !== "DESTROYED") {{
                     const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
-                    objectGroup.rotation.y = time * (0.75 * rotSpeed) * 0.5;
+                    outerMesh.rotation.x = time * (0.5 * rotSpeed);
+                    outerMesh.rotation.y = time * (0.75 * rotSpeed);
+                    coreMesh.rotation.x = -time * (1.2 * rotSpeed);
+                    coreMesh.rotation.y = -time * (1.5 * rotSpeed);
+                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                 }}
 
                 const positions = particleGeo.attributes.position.array;
