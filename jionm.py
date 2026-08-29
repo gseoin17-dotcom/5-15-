@@ -616,7 +616,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # [이동됨] 자이온 강화 제어를 최하단에 배치
+  # 자이온 강화 제어를 최하단에 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
@@ -848,82 +848,25 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            let baseGeo;
-            const lvl = {current_level};
-
-            if (lvl <= 2) {{
-                baseGeo = new THREE.TetrahedronGeometry(2.3);
-            }} else if (lvl <= 5) {{
-                baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-            }} else if (lvl <= 8) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-            }} else if (lvl <= 11) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-            }} else if (lvl <= 14) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-            }} else if (lvl <= 17) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-            }} else if (lvl == 18) {{
-                baseGeo = new THREE.OctahedronGeometry(2.5);
-            }} else if (lvl == 19) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.4);
-            }} else if (lvl == 20) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.4);
-            }} else if (lvl == 21) {{
-                baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-            }} else if (lvl == 22) {{
-                baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-            }} else if (lvl == 23) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-            }} else if (lvl == 24) {{
-                baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-            }} else if (lvl == 25) {{
-                baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-            }} else if (lvl == 26) {{
-                baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-            }} else if (lvl == 27) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-            }} else if (lvl == 28) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-            }} else if (lvl == 29) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-            }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-            }}
-
-            const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: tierColor,
-                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
-                metalness: 0.9,
-                roughness: 0.15,
-                transmission: 0.6,
-                transparent: true,
-                opacity: status === "FAILED" ? 0.5 : 0.95,
-                wireframe: false
+            // 3D 다각형 대신 제공해주신 이미지를 텍스처로 입힌 Plane(평면) 객체 사용
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load('image_e10a5f.png', (texture) => {{
+                const planeGeo = new THREE.PlaneGeometry(3.5, 2.1);
+                const planeMat = new THREE.MeshBasicMaterial({{
+                    map: texture,
+                    transparent: true,
+                    side: THREE.DoubleSide
+                }});
+                const imageMesh = new THREE.Mesh(planeGeo, planeMat);
+                objectGroup.add(imageMesh);
             }});
-            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
-            objectGroup.add(outerMesh);
-
-            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
-            const coreMat = new THREE.MeshPhysicalMaterial({{
-                color: 0xffffff,
-                emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
-                roughness: 0.05,
-                metalness: 0.95,
-                transmission: 0.8
-            }});
-            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-            objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
             uiElement.classList.add('visible');
 
             if (status === "DESTROYED") {{
-                outerMesh.visible = false;
-                coreMesh.visible = false;
+                objectGroup.visible = false;
 
                 const shardCount = 55;
                 const shards = [];
@@ -996,11 +939,7 @@ with right_col:
 
                 if (status !== "DESTROYED") {{
                     const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
-                    outerMesh.rotation.x = time * (0.5 * rotSpeed);
-                    outerMesh.rotation.y = time * (0.75 * rotSpeed);
-                    coreMesh.rotation.x = -time * (1.2 * rotSpeed);
-                    coreMesh.rotation.y = -time * (1.5 * rotSpeed);
-                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
+                    objectGroup.rotation.y = time * (0.75 * rotSpeed) * 0.5;
                 }}
 
                 const positions = particleGeo.attributes.position.array;
