@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온 코어 전투력 측정기 - COSMIC EDITION",
+    page_title="지온냄새 강화하기 - COSMIC EDITION",
     page_icon="🌌",
     layout="wide",
 )
@@ -77,177 +77,226 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (얼굴, 몸통, 다리 각 30단계 + 0단계)
+# 3. 게임 데이터베이스 정의
 # -----------------------------------------------------------------------------
-def generate_core_db(part_name, base_colors):
-  db = {}
-  for i in range(31):
-    if i == 0:
-      db[i] = {
-          "name": f"0단계 : 무취의 {part_name} 코어",
-          "desc": f"아직 아무런 지온의 기운이 없는 {part_name}.",
-          "price": 0,
-          "color": "#4a5568",
-          "tier": 1,
-          "power": 0,
-      }
-    else:
-      tier = (
-          1
-          if i <= 5
-          else (2 if i <= 10 else (3 if i <= 15 else (4 if i <= 20 else 5)))
-      )
-      if i >= 26:
-        tier = 6
-
-      names = [
-          f"{i}단계 : 스쳐가는 지온 {part_name}코어",
-          f"{i}단계 : 은은한 자이온 {part_name}코어",
-          f"{i}단계 : 습한 지온 {part_name}코어",
-          f"{i}단계 : 진득한 자이온 {part_name}코어",
-          f"{i}단계 : 자극적인 지온 {part_name}코어",
-          f"{i}단계 : 풍부한 자이온 {part_name}코어",
-          f"{i}단계 : 압도적인 지온 {part_name}코어",
-          f"{i}단계 : 폭발하는 지온 {part_name}코어",
-          f"{i}단계 : 시공을 뒤흔드는 지온 {part_name}코어",
-          f"{i}단계 : 치명적인 자이온 {part_name}코어",
-          f"{i}단계 : 환각을 부르는 지온 {part_name}코어",
-          f"{i}단계 : 공간지배 자이온 {part_name}코어",
-          f"{i}단계 : 전설의 지온 {part_name}코어",
-          f"{i}단계 : 신성한 자이온 {part_name}코어",
-          f"{i}단계 : 신화급 지온 {part_name}코어",
-          f"{i}단계 : 우주관통 자이온 {part_name}코어",
-          f"{i}단계 : 차원균열 자이온 {part_name}코어",
-          f"{i}단계 : Absolute 자이온 {part_name}코어",
-          f"{i}단계 : 초월적 지온 {part_name}코어",
-          f"{i}단계 : 자이온맘의 포근한 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 엄격한 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 전설의 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 100년 숙성 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 지온스프레이 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 무한한 은혜 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 궁극 필살기 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 창조와 구원 {part_name} 코어",
-          f"{i}단계 : 자이온맘의 권능 {part_name} 코어",
-          f"{i}단계 : 만물의 어머니 ★자이온맘★ {part_name} 코어",
-          f"{i}단계 : ★태초의 자이온맘★ 절대신성 {part_name} 코어",
-      ]
-      name = names[i - 1]
-      price = int(150 * (1.65**i)) if i < 30 else float("inf")
-      power = int(10 * (1.8**i))
-
-      db[i] = {
-          "name": name,
-          "desc": f"강력한 지온 에너지가 응축된 {part_name} 부위 코어.",
-          "price": price,
-          "color": base_colors[(i - 1) % len(base_colors)],
-          "tier": tier,
-          "power": power,
-      }
-  return db
-
-
-COLORS_FACE = [
-    "#718096",
-    "#38a169",
-    "#276749",
-    "#319795",
-    "#2c7a7b",
-    "#3182ce",
-    "#2b6cb0",
-    "#805ad5",
-    "#6b46c1",
-    "#d69e2e",
-    "#b7791f",
-    "#dd6b20",
-    "#c05621",
-    "#e53e3e",
-    "#9b2c2c",
-    "#00f0ff",
-    "#ff00ea",
-    "#ffe600",
-    "#ff0055",
-    "#ffaa00",
-    "#ff4500",
-    "#ff007f",
-    "#7b00ff",
-    "#0088ff",
-    "#00ffaa",
-    "#ccff00",
-    "#fffb00",
-    "#ffffff",
-    "#ff00aa",
-    "#00ffff",
-]
-COLORS_BODY = [
-    "#38a169",
-    "#276749",
-    "#319795",
-    "#2c7a7b",
-    "#3182ce",
-    "#2b6cb0",
-    "#805ad5",
-    "#6b46c1",
-    "#d69e2e",
-    "#b7791f",
-    "#dd6b20",
-    "#c05621",
-    "#e53e3e",
-    "#9b2c2c",
-    "#00f0ff",
-    "#ff00ea",
-    "#ffe600",
-    "#ff0055",
-    "#ffaa00",
-    "#ff4500",
-    "#ff007f",
-    "#7b00ff",
-    "#0088ff",
-    "#00ffaa",
-    "#ccff00",
-    "#fffb00",
-    "#ffffff",
-    "#ff00aa",
-    "#00ffff",
-    "#718096",
-]
-COLORS_LEGS = [
-    "#276749",
-    "#319795",
-    "#2c7a7b",
-    "#3182ce",
-    "#2b6cb0",
-    "#805ad5",
-    "#6b46c1",
-    "#d69e2e",
-    "#b7791f",
-    "#dd6b20",
-    "#c05621",
-    "#e53e3e",
-    "#9b2c2c",
-    "#00f0ff",
-    "#ff00ea",
-    "#ffe600",
-    "#ff0055",
-    "#ffaa00",
-    "#ff4500",
-    "#ff007f",
-    "#7b00ff",
-    "#0088ff",
-    "#00ffaa",
-    "#ccff00",
-    "#fffb00",
-    "#ffffff",
-    "#ff00aa",
-    "#00ffff",
-    "#718096",
-    "#38a169",
-]
-
-CORE_DB = {
-    "얼굴": generate_core_db("얼굴", COLORS_FACE),
-    "몸통": generate_core_db("몸통", COLORS_BODY),
-    "다리": generate_core_db("다리", COLORS_LEGS),
+SMELL_DB = {
+    0: {
+        "name": "0단계 : 무취의 공간",
+        "desc": "아직 아무런 지온의 기운도 느껴지지 않는다.",
+        "price": 0,
+        "color": "#4a5568",
+        "tier": 1,
+    },
+    1: {
+        "name": "1단계 : 스쳐가는 지온냄새",
+        "desc": "코끝을 살짝 스치는 은은한 흙과 이끼의 기운.",
+        "price": 150,
+        "color": "#718096",
+        "tier": 1,
+    },
+    2: {
+        "name": "2단계 : 은은한 자이온냄새",
+        "desc": "마른 땅에 단비가 내려 피어나는 쾌적한 냄새.",
+        "price": 400,
+        "color": "#38a169",
+        "tier": 1,
+    },
+    3: {
+        "name": "3단계 : 습한 지온냄새",
+        "desc": "비 온 뒤 짙은 상록수 숲속에서 감오는 냄새.",
+        "price": 600,
+        "color": "#276749",
+        "tier": 1,
+    },
+    4: {
+        "name": "4단계 : 진득한 자이온냄새",
+        "desc": "공기가 묵직해지며 호흡할 때마다 흙냄새가 파고든다.",
+        "price": 800,
+        "color": "#319795",
+        "tier": 1,
+    },
+    5: {
+        "name": "5단계 : 자극적인 지온냄새",
+        "desc": "방선균의 대사물질이 코를 강렬하게 자극한다.",
+        "price": 3000,
+        "color": "#2c7a7b",
+        "tier": 1,
+    },
+    6: {
+        "name": "6단계 : 풍부한 자이온냄새",
+        "desc": "주변 공기를 감싸는 진하고 기분 좋은 대지의 향.",
+        "price": 3500,
+        "color": "#3182ce",
+        "tier": 2,
+    },
+    7: {
+        "name": "7단계 : 압도적인 지온냄새",
+        "desc": "주위 10m 안의 인공 향수를 완벽히 압도한다.",
+        "price": 6100,
+        "color": "#2b6cb0",
+        "tier": 2,
+    },
+    8: {
+        "name": "8단계 : 폭발하는 지온냄새",
+        "desc": "페트리코 입자의 대폭발로 눈이 번쩍 뜨인다.",
+        "price": 10000,
+        "color": "#805ad5",
+        "tier": 2,
+    },
+    9: {
+        "name": "9단계 : 시공을 뒤흔드는 지온냄새",
+        "desc": "냄새만으로 눈앞에 고대 대륙이 일렁인다.",
+        "price": 20000,
+        "color": "#6b46c1",
+        "tier": 2,
+    },
+    10: {
+        "name": "10단계 : 치명적인 자이온냄새",
+        "desc": "한 번 맡으면 다른 향은 밋밋하게 느껴진다.",
+        "price": 35100,
+        "color": "#d69e2e",
+        "tier": 2,
+    },
+    11: {
+        "name": "11단계 : 환각을 부르는 지온냄새",
+        "desc": "태초의 지구 흙밭을 거니는 환각을 본다.",
+        "price": 160000,
+        "color": "#b7791f",
+        "tier": 3,
+    },
+    12: {
+        "name": "12단계 : 공간지배 자이온냄새",
+        "desc": "방 안의 모든 산소를 지온 분자로 채운다.",
+        "price": 350000,
+        "color": "#dd6b20",
+        "tier": 3,
+    },
+    13: {
+        "name": "13단계 : 전설의 지온냄새",
+        "desc": "역사서에서 언급되던 전설 속의 지구 향기.",
+        "price": 1000000,
+        "color": "#c05621",
+        "tier": 3,
+    },
+    14: {
+        "name": "14단계 : 신성한 자이온냄새",
+        "desc": "마음이 경건해지며 흙과 하나가 되는 기분.",
+        "price": 3000000,
+        "color": "#e53e3e",
+        "tier": 3,
+    },
+    15: {
+        "name": "15단계 : 신화급 지온냄새",
+        "desc": "신들이 세계를 창조할 때 맡았다는 향.",
+        "price": 7500000,
+        "color": "#9b2c2c",
+        "tier": 3,
+    },
+    16: {
+        "name": "16단계 : 우주관통 자이온냄새",
+        "desc": "성층권을 뚫고 우주선까지 퍼져나간다.",
+        "price": 14200000,
+        "color": "#00f0ff",
+        "tier": 4,
+    },
+    17: {
+        "name": "17단계 : 차원균열 자이온냄새",
+        "desc": "평행세계의 흙냄새까지 끌어당긴다.",
+        "price": 20000000,
+        "color": "#ff00ea",
+        "tier": 4,
+    },
+    18: {
+        "name": "18단계 : Absolute 자이온냄새",
+        "desc": "만물의 요소를 지온 입자로 바꿔버린다.",
+        "price": 30000000,
+        "color": "#ffe600",
+        "tier": 4,
+    },
+    19: {
+        "name": "19단계 : 초월적 지온냄새",
+        "desc": "인간의 감각으로는 수용 불가능한 향기.",
+        "price": 47500000,
+        "color": "#ff0055",
+        "tier": 4,
+    },
+    20: {
+        "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
+        "desc": "자이온맘의 강림! 따스하고 구수한 냄새.",
+        "price": 68300000,
+        "color": "#ffaa00",
+        "tier": 4,
+    },
+    21: {
+        "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱",
+        "desc": "매콤하면서 사랑이 깃든 자이온맘의 향.",
+        "price": 101000000,
+        "color": "#ff4500",
+        "tier": 5,
+    },
+    22: {
+        "name": "22단계 : 자이온맘의 전설의 흙된장국",
+        "desc": "극상의 흙내음과 깊은 손맛.",
+        "price": 160000000,
+        "color": "#ff007f",
+        "tier": 5,
+    },
+    23: {
+        "name": "23단계 : 자이온맘의 100년 숙성 원액",
+        "desc": "몰래 아껴둔 냄새의 결정체.",
+        "price": 230000000,
+        "color": "#7b00ff",
+        "tier": 5,
+    },
+    24: {
+        "name": "24단계 : 자이온맘의 지온스프레이",
+        "desc": "집안 가득 뿌리는 치명적인 청량함.",
+        "price": 300000000,
+        "color": "#0088ff",
+        "tier": 5,
+    },
+    25: {
+        "name": "25단계 : 자이온맘의 무한한 은혜",
+        "desc": "은하수 아이들에게 평화를 내리는 자애로움.",
+        "price": 400000000,
+        "color": "#00ffaa",
+        "tier": 5,
+    },
+    26: {
+        "name": "26단계 : 자이온맘의 궁극 필살기",
+        "desc": "우주 전체가 지온 향으로 뒤덮인다.",
+        "price": 1800000000,
+        "color": "#ccff00",
+        "tier": 6,
+    },
+    27: {
+        "name": "27단계 : 자이온맘의 창조와 구원",
+        "desc": "빅뱅 당시 터뜨린 절대 구원의 향기.",
+        "price": 2500000000,
+        "color": "#fffb00",
+        "tier": 6,
+    },
+    28: {
+        "name": "28단계 : 자이온맘의 권능 지온냄새",
+        "desc": "창조주도 고개를 숙이고 냄새를 맡는다.",
+        "price": 5500000000,
+        "color": "#ffffff",
+        "tier": 6,
+    },
+    29: {
+        "name": "29단계 : 만물의 어머니 ★자이온맘★",
+        "desc": "우주 만물이 품으로 돌아가는 최종 오라.",
+        "price": 10500000000,
+        "color": "#ff00aa",
+        "tier": 6,
+    },
+    30: {
+        "name": "30단계 : ★태초의 자이온맘★ 절대신성",
+        "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
+        "price": float("inf"),
+        "color": "#00ffff",
+        "tier": 6,
+    },
 }
 
 PROB_TABLE = {
@@ -289,39 +338,28 @@ PITY_MAX = 5
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
-if "selected_part" not in st.session_state:
-  st.session_state.selected_part = "얼굴"
-
-if "levels" not in st.session_state:
-  st.session_state.levels = {"얼굴": 0, "몸통": 0, "다리": 0}
-if "max_levels" not in st.session_state:
-  st.session_state.max_levels = {"얼굴": 0, "몸통": 0, "다리": 0}
+if "level" not in st.session_state:
+  st.session_state.level = 0
+if "max_level" not in st.session_state:
+  st.session_state.max_level = 0
 if "money" not in st.session_state:
   st.session_state.money = 1000000
 if "status" not in st.session_state:
   st.session_state.status = "READY"
-if "shields" not in st.session_state:
-  st.session_state.shields = {"얼굴": 0, "몸통": 0, "다리": 0}
+if "shield" not in st.session_state:
+  st.session_state.shield = 0
 if "tears" not in st.session_state:
   st.session_state.tears = 0
-if "pity_counts" not in st.session_state:
-  st.session_state.pity_counts = {"얼굴": 0, "몸통": 0, "다리": 0}
+if "pity_count" not in st.session_state:
+  st.session_state.pity_count = 0
 
 # -----------------------------------------------------------------------------
-# 5. 강화 및 전투력 계산 로직
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
-
-
-def get_total_power():
-  return sum(
-      CORE_DB[part][st.session_state.levels[part]]["power"]
-      for part in ["얼굴", "몸통", "다리"]
-  )
 
 
 def run_enhance():
-  part = st.session_state.selected_part
-  curr = st.session_state.levels[part]
+  curr = st.session_state.level
   if curr >= 30:
     return
 
@@ -332,15 +370,12 @@ def run_enhance():
 
   st.session_state.money -= cost
 
-  if st.session_state.pity_counts[part] >= PITY_MAX - 1:
-    st.session_state.levels[part] += 1
+  if st.session_state.pity_count >= PITY_MAX - 1:
+    st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
-    st.session_state.pity_counts[part] = 0
-    if (
-        st.session_state.levels[part]
-        > st.session_state.max_levels[part]
-    ):
-      st.session_state.max_levels[part] = st.session_state.levels[part]
+    st.session_state.pity_count = 0
+    if st.session_state.level > st.session_state.max_level:
+      st.session_state.max_level = st.session_state.level
     return
 
   sp, down_p, dp, hold_p = PROB_TABLE[curr]
@@ -351,66 +386,58 @@ def run_enhance():
   destroy_limit = down_limit + dp
 
   if r < success_limit:
-    st.session_state.pity_counts[part] = 0
+    st.session_state.pity_count = 0
     if random.random() < CRITICAL_RATE and curr + 2 <= 30:
-      st.session_state.levels[part] += 2
+      st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
-      st.session_state.levels[part] += 1
+      st.session_state.level += 1
       st.session_state.status = "SUCCESS"
   elif r < down_limit:
-    st.session_state.pity_counts[part] += 1
+    st.session_state.pity_count += 1
     if curr > 0:
-      st.session_state.levels[part] -= 1
+      st.session_state.level -= 1
     st.session_state.status = "FAILED"
     st.session_state.tears = min(120, st.session_state.tears + 1)
   elif r < destroy_limit:
-    if st.session_state.shields[part] > 0:
-      st.session_state.shields[part] -= 1
-      st.session_state.pity_counts[part] += 1
+    if st.session_state.shield > 0:
+      st.session_state.shield -= 1
+      st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
       st.session_state.tears = min(120, st.session_state.tears + 1)
     else:
-      st.session_state.pity_counts[part] += 1
-      st.session_state.levels[part] = 0
+      st.session_state.pity_count += 1
+      st.session_state.level = 0
       st.session_state.status = "DESTROYED"
       st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
-    st.session_state.pity_counts[part] += 1
+    st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
     st.session_state.tears = min(120, st.session_state.tears + 1)
 
-  if (
-      st.session_state.levels[part]
-      > st.session_state.max_levels[part]
-  ):
-    st.session_state.max_levels[part] = st.session_state.levels[part]
+  if st.session_state.level > st.session_state.max_level:
+    st.session_state.max_level = st.session_state.level
 
 
 def dev_force_success():
-  part = st.session_state.selected_part
-  curr = st.session_state.levels[part]
+  curr = st.session_state.level
   if curr < 30:
-    st.session_state.levels[part] += 1
+    st.session_state.level += 1
     st.session_state.status = "SUCCESS"
-    if (
-        st.session_state.levels[part]
-        > st.session_state.max_levels[part]
-    ):
-      st.session_state.max_levels[part] = st.session_state.levels[part]
+    if st.session_state.level > st.session_state.max_level:
+      st.session_state.max_level = st.session_state.level
 
 
 def sell():
-  part = st.session_state.selected_part
-  curr = st.session_state.levels[part]
+  curr = st.session_state.level
   if curr == 0:
     return
-  price_val = CORE_DB[part][curr]["price"]
+  price_val = SMELL_DB[curr]["price"]
   if price_val == float("inf"):
     st.session_state.money = float("inf")
   else:
     st.session_state.money += price_val
-  st.session_state.levels[part] = 0
+  st.session_state.level = 0
   st.session_state.status = "READY"
 
 
@@ -463,11 +490,9 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 및 엔딩 처리
+# 7. 메인 레이아웃 및 30단계 엔딩 처리
 # -----------------------------------------------------------------------------
-all_max = all(st.session_state.levels[p] == 30 for p in ["얼굴", "몸통", "다리"])
-
-if all_max:
+if st.session_state.level == 30:
   ending_html = """
     <!DOCTYPE html>
     <html>
@@ -546,10 +571,10 @@ if all_max:
     <body>
         <div id="container"></div>
         <div class="credits-container">
-            <div class="ending-title">★ 완벽한 지온 코어 장착 완료 ★</div>
-            <div class="ending-subtitle">얼굴, 몸통, 다리 3대 코어가 결합하여 우주 최강의 전투력에 도달했습니다!</div>
+            <div class="ending-title">★ 우주 통일 완료 ★</div>
+            <div class="ending-subtitle">태초의 자이온맘과 영원히 하나가 되었습니다</div>
             <div class="credit-box">
-                <div class="credit-line">🏆 CREATED BY : 자이온 팀</div>
+                <div class="credit-line">🏆 CREATED BY :  자이온 팀</div>
             </div>
         </div>
 
@@ -638,50 +663,18 @@ if all_max:
   col1, col2, col3 = st.columns([1, 2, 1])
   with col2:
     if st.button("🔄 우주 초기화 (처음부터 다시하기)", use_container_width=True):
-      st.session_state.levels = {"얼굴": 0, "몸통": 0, "다리": 0}
+      st.session_state.level = 0
       st.session_state.money = 1000000
-      st.session_state.shields = {"얼굴": 0, "몸통": 0, "다리": 0}
+      st.session_state.shield = 0
       st.session_state.tears = 0
-      st.session_state.pity_counts = {"얼굴": 0, "몸통": 0, "다리": 0}
+      st.session_state.pity_count = 0
       st.session_state.status = "READY"
       st.rerun()
 
 else:
-  # 상단에 캐릭터 종합 전투력 대시보드 표시
-  total_power = get_total_power()
-  st.markdown(
-      f"""
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
-            <div style="font-size: 14px; color: #fde68a; font-weight: 700; letter-spacing: 1px;">⚔️ 지온 캐릭터 종합 전투력 (POWER) ⚔️</div>
-            <div style="font-size: 32px; font-weight: 900; color: #00ffff; text-shadow: 0 0 15px rgba(0,255,255,0.6); margin-top: 5px;">{total_power:,} CP</div>
-            <div style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">
-                얼굴 코어 Lv.{st.session_state.levels['얼굴']} | 몸통 코어 Lv.{st.session_state.levels['몸통']} | 다리 코어 Lv.{st.session_state.levels['다리']}
-            </div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
   left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
   with left_col:
-    st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🎯 장착 파츠"
-        " 선택</h4>",
-        unsafe_allow_html=True,
-    )
-    selected_part = st.selectbox(
-        "강화할 부위 선택",
-        ["얼굴", "몸통", "다리"],
-        key="selected_part_box",
-        label_visibility="collapsed",
-    )
-    st.session_state.selected_part = selected_part
-
-    st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-        unsafe_allow_html=True,
-    )
     st.markdown(
         "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
         " 설정</h4>",
@@ -695,18 +688,17 @@ else:
     )
 
     st.markdown(
-        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 코어 강화"
-        " 제어</h4>",
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
+        " 강화 제어</h4>",
         unsafe_allow_html=True,
     )
 
-    curr_lvl = st.session_state.levels[st.session_state.selected_part]
     if st.button(
-        f"🔥 {st.session_state.selected_part} 코어 강화",
+        "🔥 냄새 강화 실행",
         use_container_width=True,
-        disabled=(curr_lvl >= 30),
+        disabled=(st.session_state.level >= 30),
     ):
-      cost = get_enhance_cost(curr_lvl)
+      cost = get_enhance_cost(st.session_state.level)
       if st.session_state.money < cost:
         st.error("강화 비용 부족!")
       else:
@@ -716,18 +708,18 @@ else:
     if dev_mode:
       st.write("")
       if st.button(
-          f"✨ [DEV] {st.session_state.selected_part} 무조건 성공",
+          "✨ [DEV] 무조건 성공",
           use_container_width=True,
-          disabled=(curr_lvl >= 30),
+          disabled=(st.session_state.level >= 30),
       ):
         dev_force_success()
         st.rerun()
 
     st.write("")
     if st.button(
-        f"💰 현재 {st.session_state.selected_part} 코어 판매",
+        "💰 현재 냄새 판매",
         use_container_width=True,
-        disabled=(curr_lvl == 0),
+        disabled=(st.session_state.level == 0),
     ):
       sell()
       st.rerun()
@@ -754,21 +746,16 @@ else:
       )
 
     with s_col2:
-      current_shield_count = st.session_state.shields[
-          st.session_state.selected_part
-      ]
       st.markdown(
           f"<div style='text-align: center;'><div style='font-size:12px;"
           f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
-          f" font-weight:800; color:#ffffff;'>{current_shield_count} /"
+          f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
           " 3개</div></div>",
           unsafe_allow_html=True,
       )
       st.write("")
 
-      pity_left = (
-          PITY_MAX - st.session_state.pity_counts[st.session_state.selected_part]
-      )
+      pity_left = PITY_MAX - st.session_state.pity_count
       st.markdown(
           f"<div style='text-align: center;'><div style='font-size:12px;"
           f" color:#fde68a;'>✨ 자이온맘의 가호</div><div style='font-size:13px;"
@@ -785,7 +772,8 @@ else:
     tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
     with tab_shop1:
-      current_shield_cost = get_shield_cost(curr_lvl)
+      current_shield_cost = get_shield_cost(st.session_state.level)
+      # 폰트 사이즈 키움 (11px -> 14px) 및 가격 강조
       st.markdown(
           f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
           f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
@@ -794,24 +782,27 @@ else:
           unsafe_allow_html=True,
       )
 
-      can_buy_shield = curr_lvl >= 18 and current_shield_count < 3
+      can_buy_shield = (
+          st.session_state.level >= 18 and st.session_state.shield < 3
+      )
       if st.button(
           "방지권 구매", use_container_width=True, disabled=not can_buy_shield
       ):
-        if curr_lvl < 18:
+        if st.session_state.level < 18:
           st.warning("18단계 이상부터 구매 가능합니다.")
-        elif current_shield_count >= 3:
+        elif st.session_state.shield >= 3:
           st.warning("최대 3개까지만 보유 가능합니다.")
         elif st.session_state.money >= current_shield_cost:
           st.session_state.money -= current_shield_cost
-          st.session_state.shields[st.session_state.selected_part] += 1
+          st.session_state.shield += 1
           st.success("파괴 방지권 구매 완료!")
           st.rerun()
         else:
           st.error("금액이 부족합니다.")
 
     with tab_shop2:
-      if curr_lvl >= 28:
+      # 폰트 사이즈 키움 (11px~12px -> 14px) 및 수치 강조
+      if st.session_state.level >= 28:
         st.markdown(
             "<div style='font-size:14px; color:#ef4444; font-weight:700;"
             " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
@@ -827,19 +818,17 @@ else:
             unsafe_allow_html=True,
         )
 
-      can_use_tears = curr_lvl < 28
+      can_use_tears = st.session_state.level < 28
       if st.button(
           "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
       ):
-        if curr_lvl >= 28:
+        if st.session_state.level >= 28:
           st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
         elif st.session_state.tears >= 40:
           st.session_state.tears -= 40
           if random.random() < 0.50:
             add_lvl = random.choice([1, 2, 3])
-            st.session_state.levels[st.session_state.selected_part] = min(
-                30, curr_lvl + add_lvl
-            )
+            st.session_state.level = min(30, st.session_state.level + add_lvl)
             st.session_state.status = (
                 "CRITICAL" if add_lvl >= 2 else "SUCCESS"
             )
@@ -852,14 +841,12 @@ else:
           st.error("눈물 40개가 필요합니다.")
 
   with right_col:
-    current_part = st.session_state.selected_part
-    current_level = st.session_state.levels[current_part]
-    curr_data = CORE_DB[current_part][current_level]
+    current_level = st.session_state.level
+    curr_data = SMELL_DB[current_level]
     card_color = curr_data["color"]
     card_title = curr_data["name"]
     card_desc = curr_data["desc"]
     card_price = format_gold(curr_data["price"])
-    card_power = f"{curr_data['power']:,} CP"
     current_cost = format_gold(get_enhance_cost(current_level))
     tier = curr_data["tier"]
     status = st.session_state.status
@@ -894,12 +881,12 @@ else:
                   opacity: 1;
               }}
 
-              .title-tier-1 {{ font-size: 26px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-              .title-tier-2 {{ font-size: 30px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-              .title-tier-3 {{ font-size: 34px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-              .title-tier-4 {{ font-size: 38px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-              .title-tier-5 {{ font-size: 42px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-              .title-tier-6 {{ font-size: 46px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+              .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+              .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
+              .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
+              .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
+              .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+              .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
 
               @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -914,11 +901,10 @@ else:
                   100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
               }}
 
-              .status-header {{ font-size: 15px; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-              .power-text {{ font-size: 16px; font-weight: 900; color: #00ffff; margin-top: 2px; text-shadow: 0 0 12px rgba(0,255,255,0.8); }}
-              .desc-text {{ font-size: 12px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-              .price-text {{ font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 2px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-              .cost-text {{ font-size: 11px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+              .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+              .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
+              .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+              .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
           </style>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -929,7 +915,6 @@ else:
           <div id="cinematicUi" class="cinematic-ui">
               <div id="statusText" class="status-header">READY</div>
               <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-              <div id="powerText" class="power-text">부위 전투력: {card_power}</div>
               <div id="descText" class="desc-text">"{card_desc}"</div>
               <div id="priceText" class="price-text">예상 가치: {card_price}</div>
               <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
@@ -941,7 +926,6 @@ else:
               const currentLevel = {current_level};
               if (currentLevel >= 20) {{
                   document.getElementById('mainTitle').classList.add('shaking-text');
-                  document.getElementById('powerText').classList.add('shaking-text');
                   document.getElementById('descText').classList.add('shaking-text');
                   document.getElementById('priceText').classList.add('shaking-text');
                   document.getElementById('costText').classList.add('shaking-text');
@@ -1054,23 +1038,45 @@ else:
 
               let baseGeo;
               const lvl = {current_level};
-              const part = "{current_part}";
 
-              if (part === "얼굴") {{
-                  if (lvl <= 5) baseGeo = new THREE.SphereGeometry(2.0, 16, 16);
-                  else if (lvl <= 10) baseGeo = new THREE.DodecahedronGeometry(2.1);
-                  else if (lvl <= 20) baseGeo = new THREE.IcosahedronGeometry(2.2);
-                  else baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-              }} else if (part === "몸통") {{
-                  if (lvl <= 5) baseGeo = new THREE.BoxGeometry(2.2, 2.5, 1.5);
-                  else if (lvl <= 10) baseGeo = new THREE.CylinderGeometry(1.8, 2.2, 2.8, 6);
-                  else if (lvl <= 20) baseGeo = new THREE.ConeGeometry(2.2, 3.2, 8);
-                  else baseGeo = new THREE.OctahedronGeometry(2.6);
+              if (lvl <= 2) {{
+                  baseGeo = new THREE.TetrahedronGeometry(2.3);
+              }} else if (lvl <= 5) {{
+                  baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+              }} else if (lvl <= 8) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+              }} else if (lvl <= 11) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+              }} else if (lvl <= 14) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+              }} else if (lvl <= 17) {{
+                  baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+              }} else if (lvl == 18) {{
+                  baseGeo = new THREE.OctahedronGeometry(2.5);
+              }} else if (lvl == 19) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.4);
+              }} else if (lvl == 20) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.4);
+              }} else if (lvl == 21) {{
+                  baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+              }} else if (lvl == 22) {{
+                  baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+              }} else if (lvl == 23) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+              }} else if (lvl == 24) {{
+                  baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+              }} else if (lvl == 25) {{
+                  baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+              }} else if (lvl == 26) {{
+                  baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+              }} else if (lvl == 27) {{
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+              }} else if (lvl == 28) {{
+                  baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+              }} else if (lvl == 29) {{
+                  baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
               }} else {{
-                  if (lvl <= 5) baseGeo = new THREE.CylinderGeometry(1.5, 1.8, 3.0, 5);
-                  else if (lvl <= 10) baseGeo = new THREE.CylinderGeometry(1.2, 2.0, 3.2, 7);
-                  else if (lvl <= 20) baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                  else baseGeo = new THREE.CylinderGeometry(0.8, 2.3, 3.5, 12);
+                  baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
               }}
 
               const outerMat = new THREE.MeshPhysicalMaterial({{
@@ -1087,7 +1093,7 @@ else:
               const outerMesh = new THREE.Mesh(baseGeo, outerMat);
               objectGroup.add(outerMesh);
 
-              const coreGeo = new THREE.SphereGeometry(1.1, 32, 32);
+              const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
               const coreMat = new THREE.MeshPhysicalMaterial({{
                   color: 0xffffff,
                   emissive: statusColor,
