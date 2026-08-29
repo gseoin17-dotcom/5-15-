@@ -1,13 +1,13 @@
 import streamlit as st
 
-st.set_page_config(page_title="Ball Fight Game", page_icon="⚔️", layout="centered")
+st.set_page_config(page_title="Ball Fight Simulator", page_icon="💥", layout="centered")
 
 game_html = """
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Ball Fight Simulator</title>
+    <title>Ball Fight</title>
     <style>
         body {
             background-color: #ffffff;
@@ -18,9 +18,9 @@ game_html = """
             padding: 10px;
         }
         .game-container {
-            width: 600px;
+            width: 750px;
             margin: 0 auto;
-            border: 3px solid black;
+            border: 4px solid black;
             background: #ffffff;
         }
         canvas {
@@ -28,12 +28,12 @@ game_html = """
             background: #ffffff;
         }
         .scoreboard {
-            width: 600px;
-            margin: 10px auto 0 auto;
+            width: 750px;
+            margin: 12px auto 0 auto;
             display: flex;
             justify-content: space-between;
             border: 2px solid black;
-            padding: 8px;
+            padding: 10px;
             background: #f9f9f9;
             box-sizing: border-box;
         }
@@ -46,13 +46,13 @@ game_html = """
         }
         .name {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 18px;
         }
         .hp-bar-outer {
             background-color: #333;
             border: 2px solid black;
-            height: 20px;
-            margin-top: 4px;
+            height: 24px;
+            margin-top: 5px;
             position: relative;
         }
         .hp-bar-inner {
@@ -67,15 +67,16 @@ game_html = """
             top: 0;
             left: 0;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             color: white;
-            line-height: 16px;
+            line-height: 20px;
         }
         .reset-btn {
             margin-top: 15px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-weight: bold;
+            font-size: 14px;
             background: #ff4b4b;
             color: white;
             border: 2px solid black;
@@ -90,7 +91,8 @@ game_html = """
 <body>
 
 <div class="game-container">
-    <canvas id="gameCanvas" width="600" height="450"></canvas>
+    <!-- 화면을 키운 캔버스 (750x600) -->
+    <canvas id="gameCanvas" width="750" height="600"></canvas>
 </div>
 
 <div class="scoreboard">
@@ -129,28 +131,29 @@ game_html = """
         "빨리 버튼 눌러주세요 현기증 난단 말이에요"
     ];
 
+    // 공 속도를 느리게 설정 (vx, vy 축소)
     let ball1 = {
-        x: 150, y: 225, vx: 1.5, vy: 1.2, radius: 35,
-        hp: 250, maxHp: 250, name: "혜혜", color: "#3498db", cooldown: 0, skillTimer: 300, isSkill: false
+        x: 200, y: 300, vx: 0.9, vy: 0.7, radius: 40,
+        hp: 250, maxHp: 250, name: "혜혜", color: "#3498db", cooldown: 0, skillTimer: 350, isSkill: false
     };
 
     let ball2 = {
-        x: 450, y: 225, vx: -1.5, vy: -1.2, radius: 35,
-        hp: 250, maxHp: 250, name: "릴고아", color: "#e74c3c", cooldown: 0, skillTimer: 420, isSkill: false
+        x: 550, y: 300, vx: -0.9, vy: -0.7, radius: 40,
+        hp: 250, maxHp: 250, name: "릴고아", color: "#e74c3c", cooldown: 0, skillTimer: 450, isSkill: false
     };
 
     function addCrack(x, y) {
-        cracks.push({ x: x, y: y, size: Math.random() * 15 + 15 });
-        if (cracks.length > 12) cracks.shift();
+        cracks.push({ x: x, y: y, size: Math.random() * 20 + 20 });
+        if (cracks.length > 15) cracks.shift();
     }
 
     function triggerSkill(b, enemy) {
-        enemy.hp -= 30;
+        enemy.hp -= 35;
         if (enemy.hp < 0) enemy.hp = 0;
         b.isSkill = true;
-        setTimeout(() => { b.isSkill = false; }, 500);
+        setTimeout(() => { b.isSkill = false; }, 600);
 
-        effects.push({ x: b.x, y: b.y, r: 10, maxR: 70, alpha: 1.0 });
+        effects.push({ x: b.x, y: b.y, r: 10, maxR: 90, alpha: 1.0 });
         chats.push({ text: "💬 " + b.name + " 스킬 발동!", sub: sampleChats[Math.floor(Math.random() * sampleChats.length)] });
         if (chats.length > 3) chats.shift();
     }
@@ -159,8 +162,8 @@ game_html = """
         if (isGameOver) return;
 
         chatTimer++;
-        if (chatTimer > 250) {
-            chats.push({ text: "💬 시청자 응원", sub: sampleChats[Math.floor(Math.random() * sampleChats.length)] });
+        if (chatTimer > 300) {
+            chats.push({ text: "💬 시청자", sub: sampleChats[Math.floor(Math.random() * sampleChats.length)] });
             if (chats.length > 3) chats.shift();
             chatTimer = 0;
         }
@@ -168,7 +171,7 @@ game_html = """
         ball1.x += ball1.vx; ball1.y += ball1.vy;
         ball2.x += ball2.vx; ball2.y += ball2.vy;
 
-        // 벽 충돌
+        // 벽 충돌 시 크랙 생성
         if (ball1.x - ball1.radius < 0) { ball1.x = ball1.radius; ball1.vx *= -1; addCrack(ball1.x, ball1.y); }
         if (ball1.x + ball1.radius > canvas.width) { ball1.x = canvas.width - ball1.radius; ball1.vx *= -1; addCrack(ball1.x, ball1.y); }
         if (ball1.y - ball1.radius < 0) { ball1.y = ball1.radius; ball1.vy *= -1; addCrack(ball1.x, ball1.y); }
@@ -180,14 +183,14 @@ game_html = """
         if (ball2.y + ball2.radius > canvas.height) { ball2.y = canvas.height - ball2.radius; ball2.vy *= -1; addCrack(ball2.x, ball2.y); }
 
         ball1.skillTimer--;
-        if (ball1.skillTimer <= 0) { triggerSkill(ball1, ball2); ball1.skillTimer = 320; }
+        if (ball1.skillTimer <= 0) { triggerSkill(ball1, ball2); ball1.skillTimer = 350; }
         ball2.skillTimer--;
-        if (ball2.skillTimer <= 0) { triggerSkill(ball2, ball1); ball2.skillTimer = 400; }
+        if (ball2.skillTimer <= 0) { triggerSkill(ball2, ball1); ball2.skillTimer = 450; }
 
         if (ball1.cooldown > 0) ball1.cooldown--;
         if (ball2.cooldown > 0) ball2.cooldown--;
 
-        // 공 충돌
+        // 공끼리 충돌
         let dx = ball2.x - ball1.x;
         let dy = ball2.y - ball1.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
@@ -206,7 +209,7 @@ game_html = """
 
             if (ball1.cooldown === 0 && ball2.cooldown === 0) {
                 ball1.hp -= 15; ball2.hp -= 15;
-                ball1.cooldown = 30; ball2.cooldown = 30;
+                ball1.cooldown = 40; ball2.cooldown = 40;
                 if (ball1.hp < 0) ball1.hp = 0;
                 if (ball2.hp < 0) ball2.hp = 0;
             }
@@ -222,33 +225,33 @@ game_html = """
 
     function drawCrack(c) {
         ctx.save();
-        ctx.strokeStyle = "#b0b0b0";
+        ctx.strokeStyle = "#999999";
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(c.x, c.y, c.size * 0.4, 0, Math.PI * 2);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + c.size * 0.6, c.y - c.size * 0.5);
-        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x - c.size * 0.5, c.y + c.size * 0.4);
+        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + c.size * 0.7, c.y - c.size * 0.6);
+        ctx.moveTo(c.x, c.y); ctx.lineTo(c.x - c.size * 0.6, c.y + c.size * 0.5);
         ctx.stroke();
         ctx.restore();
     }
 
     function drawBall(b) {
-        let r = b.isSkill ? b.radius + 8 : b.radius;
+        let r = b.isSkill ? b.radius + 10 : b.radius;
         ctx.beginPath();
         ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
         ctx.fillStyle = b.color;
         ctx.fill();
         ctx.lineWidth = b.isSkill ? 4 : 2;
-        ctx.strokeStyle = b.isSkill ? "#f1c40f" : "#2c3e50";
+        ctx.strokeStyle = b.isSkill ? "#e74c3c" : "#2c3e50";
         ctx.stroke();
         ctx.closePath();
 
         ctx.fillStyle = "black";
-        ctx.font = "bold 13px sans-serif";
+        ctx.font = "bold 14px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(b.name, b.x, b.y - r - 6);
+        ctx.fillText(b.name, b.x, b.y - r - 8);
     }
 
     function draw() {
@@ -259,16 +262,16 @@ game_html = """
         if (chats.length > 0) {
             ctx.save();
             ctx.fillStyle = "rgba(245, 245, 245, 0.95)";
-            ctx.fillRect(80, 10, 440, 45);
+            ctx.fillRect(100, 15, 550, 50);
             ctx.strokeStyle = "#ccc";
-            ctx.strokeRect(80, 10, 440, 45);
+            ctx.strokeRect(100, 15, 550, 50);
 
             ctx.fillStyle = "#333";
-            ctx.font = "12px sans-serif";
+            ctx.font = "13px sans-serif";
             ctx.textAlign = "left";
-            ctx.fillText(chats[chats.length - 1].text, 90, 26);
+            ctx.fillText(chats[chats.length - 1].text, 115, 33);
             ctx.fillStyle = "#666";
-            ctx.fillText(chats[chats.length - 1].sub, 90, 44);
+            ctx.fillText(chats[chats.length - 1].sub, 115, 53);
             ctx.restore();
         }
 
@@ -278,12 +281,12 @@ game_html = """
             ctx.beginPath();
             ctx.arc(ef.x, ef.y, ef.r, 0, Math.PI * 2);
             ctx.strokeStyle = "rgba(231, 76, 60, " + ef.alpha + ")";
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             ctx.stroke();
             ctx.restore();
 
-            ef.r += 2;
-            ef.alpha -= 0.03;
+            ef.r += 2.5;
+            ef.alpha -= 0.025;
             if (ef.alpha <= 0) effects.splice(i, 1);
         }
 
@@ -295,7 +298,7 @@ game_html = """
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = "black";
-            ctx.font = "bold 30px sans-serif";
+            ctx.font = "bold 36px sans-serif";
             ctx.textAlign = "center";
             let winner = ball1.hp > 0 ? ball1.name : (ball2.hp > 0 ? ball2.name : "무승부");
             ctx.fillText("👑 " + winner + " 승리! 👑", canvas.width / 2, canvas.height / 2);
@@ -304,9 +307,9 @@ game_html = """
 
     function resetGame() {
         ball1.hp = 250; ball2.hp = 250;
-        ball1.x = 150; ball1.y = 225;
-        ball2.x = 450; ball2.y = 225;
-        ball1.skillTimer = 300; ball2.skillTimer = 420;
+        ball1.x = 200; ball1.y = 300;
+        ball2.x = 550; ball2.y = 300;
+        ball1.skillTimer = 350; ball2.skillTimer = 450;
         cracks = []; effects = []; isGameOver = false;
     }
 
@@ -323,4 +326,4 @@ game_html = """
 </html>
 """
 
-st.components.v1.html(game_html, height=580)
+st.components.v1.html(game_html, height=720)
