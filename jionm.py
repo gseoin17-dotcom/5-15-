@@ -490,7 +490,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -507,7 +507,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 보유 지표 영역
   s_col1, s_col2 = st.columns(2)
 
   with s_col1:
@@ -549,7 +548,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 상점 탭 영역
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
@@ -616,7 +614,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 자이온 강화 제어를 최하단에 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
@@ -848,18 +845,67 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            // 3D 다각형 대신 제공해주신 이미지를 텍스처로 입힌 Plane(평면) 객체 사용
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.load('image_e10a5f.png', (texture) => {{
-                const planeGeo = new THREE.PlaneGeometry(3.5, 2.1);
-                const planeMat = new THREE.MeshBasicMaterial({{
-                    map: texture,
-                    transparent: true,
-                    side: THREE.DoubleSide
+            // 1단계일 때는 업로드한 손글씨 이미지(image_e10ebe.png)를 평면에 렌더링하고, 그 외에는 기존 3D 다각형 생성
+            if (currentLevel === 1) {{
+                const textureLoader = new THREE.TextureLoader();
+                textureLoader.load('image_e10ebe.png', (texture) => {{
+                    const planeGeo = new THREE.PlaneGeometry(3.5, 2.1);
+                    const planeMat = new THREE.MeshBasicMaterial({{
+                        map: texture,
+                        transparent: true,
+                        side: THREE.DoubleSide
+                    }});
+                    const imageMesh = new THREE.Mesh(planeGeo, planeMat);
+                    objectGroup.add(imageMesh);
                 }});
-                const imageMesh = new THREE.Mesh(planeGeo, planeMat);
-                objectGroup.add(imageMesh);
-            }});
+            }} else {{
+                const shape = new THREE.Shape();
+                const pointsCount = 5 + Math.min(currentLevel, 10);
+                const radius = 1.6;
+                for (let i = 0; i < pointsCount; i++) {{
+                    const angle = (i / pointsCount) * Math.PI * 2;
+                    const r = radius + (i % 2 === 0 ? 0.25 : -0.25) * (1 + currentLevel * 0.04);
+                    const x = Math.cos(angle) * r;
+                    const y = Math.sin(angle) * r;
+                    if (i === 0) shape.moveTo(x, y);
+                    else shape.lineTo(x, y);
+                }}
+                shape.closePath();
+
+                const extrudeSettings = {{
+                    steps: 1,
+                    depth: 0.5 + currentLevel * 0.03,
+                    bevelEnabled: true,
+                    bevelThickness: 0.15,
+                    bevelSize: 0.1,
+                    bevelSegments: 3
+                }};
+
+                const baseGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                baseGeo.center();
+                const baseMat = new THREE.MeshStandardMaterial({{
+                    color: new THREE.Color(tierColor),
+                    roughness: 0.18,
+                    metalness: 0.85,
+                    emissive: new THREE.Color(tierColor),
+                    emissiveIntensity: 0.25 + (currentLevel * 0.02)
+                }});
+                const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+                objectGroup.add(baseMesh);
+
+                const outerGeo = new THREE.IcosahedronGeometry(1.9 + (currentLevel * 0.02), 0);
+                const outerMat = new THREE.MeshPhysicalMaterial({{
+                    color: new THREE.Color(tierColor),
+                    transmission: 0.6,
+                    opacity: 1,
+                    transparent: true,
+                    roughness: 0.1,
+                    ior: 1.5,
+                    wireframe: currentLevel % 2 === 1
+                }});
+                const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+                objectGroup.add(outerMesh);
+            }}
 
             scene.add(objectGroup);
 
