@@ -490,7 +490,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (엔딩 크레딧 제거 버전)
+# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -507,43 +507,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
-      " 강화 제어</h4>",
-      unsafe_allow_html=True,
-  )
-
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 30),
-  ):
-    cost = get_enhance_cost(st.session_state.level)
-    if st.session_state.money < cost:
-      st.error("강화 비용 부족!")
-    else:
-      run_enhance()
-      st.rerun()
-
-  if dev_mode:
-    st.write("")
-    if st.button(
-        "✨ [DEV] 무조건 성공",
-        use_container_width=True,
-        disabled=(st.session_state.level >= 30),
-    ):
-      dev_force_success()
-      st.rerun()
-
-  st.write("")
-  if st.button(
-      "💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)
-  ):
-    sell()
-    st.rerun()
-
-  st.markdown("<br>", unsafe_allow_html=True)
-
+  # 보유 지표 영역
   s_col1, s_col2 = st.columns(2)
 
   with s_col1:
@@ -585,6 +549,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # 상점 탭 영역
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
@@ -645,6 +610,47 @@ with left_col:
         st.rerun()
       else:
         st.error("눈물 40개가 필요합니다.")
+
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
+  # [이동됨] 자이온 강화 제어를 최하단에 배치
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
+      " 강화 제어</h4>",
+      unsafe_allow_html=True,
+  )
+
+  if st.button(
+      "🔥 냄새 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= 30),
+  ):
+    cost = get_enhance_cost(st.session_state.level)
+    if st.session_state.money < cost:
+      st.error("강화 비용 부족!")
+    else:
+      run_enhance()
+      st.rerun()
+
+  if dev_mode:
+    st.write("")
+    if st.button(
+        "✨ [DEV] 무조건 성공",
+        use_container_width=True,
+        disabled=(st.session_state.level >= 30),
+    ):
+      dev_force_success()
+      st.rerun()
+
+  st.write("")
+  if st.button(
+      "💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)
+  ):
+    sell()
+    st.rerun()
 
 with right_col:
   current_level = st.session_state.level
