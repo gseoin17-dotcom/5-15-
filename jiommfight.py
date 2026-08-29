@@ -1,3 +1,4 @@
+import random
 import streamlit as st
 
 st.set_page_config(page_title="공 싸움 게임", layout="centered")
