@@ -1,16 +1,16 @@
 import streamlit as st
 
-st.set_page_config(page_title="공 싸움 스킬 게임", page_icon="⚔️", layout="centered")
+st.set_page_config(page_title="자동 스킬 공 싸움 게임", page_icon="⚡", layout="centered")
 
-st.title("⚔️ 공 배틀 + 스킬 시스템 게임")
-st.write("공 속도가 느려지고 크기가 커졌으며, 체력바 아래의 **[스킬 사용] 버튼**으로 특수 공격을 쓸 수 있습니다!")
+st.title("⚡ 자동 스킬 & 애니메이션 공 배틀 게임")
+st.write("공이 스스로 움직이며, 각자 다른 주기(혜혜: 6초, 릴고아: 8초)로 자동 스킬을 쓰고 화려한 충돌/스킬 이펙트가 발생합니다!")
 
 game_html = """
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Ball Battle with Skills</title>
+    <title>Auto Skill Ball Battle</title>
     <style>
         body {
             background-color: #0e1117;
@@ -56,28 +56,11 @@ game_html = """
         #hpBar1 { background-color: #28a745; }
         #hpBar2 { background-color: #ffc107; }
 
-        .skill-container {
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .skill-btn {
-            padding: 4px 10px;
-            font-size: 12px;
+        .skill-status {
+            margin-top: 6px;
+            font-size: 13px;
             font-weight: bold;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .skill-btn.ready {
-            background-color: #007bff;
-            cursor: pointer;
-        }
-        .skill-btn.ready:hover {
-            background-color: #0056b3;
+            color: #00d2ff;
         }
 
         canvas {
@@ -113,10 +96,7 @@ game_html = """
             <div class="hp-bar-container">
                 <div id="hpBar1" class="hp-bar" style="width: 100%;"></div>
             </div>
-            <div class="skill-container">
-                <span style="font-size: 12px;">스킬 대기중...</span>
-                <button id="skillBtn1" class="skill-btn" onclick="useSkill(1)">스킬 (5초)</button>
-            </div>
+            <div class="skill-status" id="skillStatus1">스킬 충전중 (6초 주기)</div>
         </div>
 
         <div style="font-weight: bold; font-size: 20px; display:flex; align-items:center;">VS</div>
@@ -126,10 +106,7 @@ game_html = """
             <div class="hp-bar-container">
                 <div id="hpBar2" class="hp-bar" style="width: 100%;"></div>
             </div>
-            <div class="skill-container style='flex-direction: row-reverse;'">
-                <button id="skillBtn2" class="skill-btn" onclick="useSkill(2)">스킬 (5초)</button>
-                <span style="font-size: 12px;">스킬 대기중...</span>
-            </div>
+            <div class="skill-status" id="skillStatus2" style="text-align: right;">스킬 충전중 (8초 주기)</div>
         </div>
     </div>
 
@@ -143,45 +120,55 @@ game_html = """
     const ctx = canvas.getContext("2d");
 
     let isGameOver = false;
+    let effects = []; // 스킬/충돌 이펙트 애니메이션 배열
 
-    // 공 설정 (속도 느리게: vx, vy 낮춤 / 크기 크게: radius 키움)
     let ball1 = {
         x: 150, y: 300,
-        vx: 1.8, vy: 1.5,   // 속도 감소
-        radius: 45,         // 크기 증가 (기존 30 -> 45)
+        vx: 1.8, vy: 1.5,
+        radius: 45,
         hp: 250, maxHp: 250,
         name: "혜혜", color: "#ff4b4b",
         cooldown: 0,
-        skillCooldown: 300  // 300프레임 (약 5초 뒤 스킬 활성화)
+        skillMaxTime: 360,     // 6초 주기 (60프레임 * 6)
+        skillTimer: 360,
+        isUsingSkill: false
     };
 
     let ball2 = {
         x: 450, y: 300,
-        vx: -1.8, vy: -1.5, // 속도 감소
-        radius: 45,         // 크기 증가
+        vx: -1.8, vy: -1.5,
+        radius: 45,
         hp: 250, maxHp: 250,
         name: "릴고아", color: "#1c83e1",
         cooldown: 0,
-        skillCooldown: 300
+        skillMaxTime: 480,     // 8초 주기 (60프레임 * 8) - 서로 다름!
+        skillTimer: 480,
+        isUsingSkill: false
     };
 
-    function useSkill(player) {
-        if (isGameOver) return;
-        let b = (player === 1) ? ball1 : ball2;
-        let enemy = (player === 1) ? ball2 : ball1;
+    // 화려한 파동 이펙트 추가 함수
+    function addEffect(x, y, color) {
+        effects.push({
+            x: x,
+            y: y,
+            radius: 10,
+            maxRadius: 70,
+            color: color,
+            alpha: 1.0
+        });
+    }
 
-        if (b.skillCooldown <= 0) {
-            // 스킬 효과: 상대에게 즉시 40의 고정 데미지 + 잠시 속도 폭발
-            enemy.hp -= 40;
-            if (enemy.hp < 0) enemy.hp = 0;
+    function triggerAutoSkill(b, enemy) {
+        // 스킬 발동 시 데미지 및 이펙트
+        enemy.hp -= 35;
+        if (enemy.hp < 0) enemy.hp = 0;
 
-            // 스킬 사용 후 쿨타임 재충전 (다시 8초 뒤 사용 가능)
-            b.skillCooldown = 480; 
-            
-            // 시각적 효과 부여 (스킬 쓴 공은 일시적으로 커짐)
-            b.radius += 10;
-            setTimeout(() => { b.radius -= 10; }, 1000);
-        }
+        // 애니메이션 효과 추가
+        addEffect(b.x, b.y, b.color);
+
+        // 스킬 사용 모션 (잠시 커졌다가 돌아오기)
+        b.isUsingSkill = true;
+        setTimeout(() => { b.isUsingSkill = false; }, 400);
     }
 
     function update() {
@@ -193,45 +180,41 @@ game_html = """
         ball2.x += ball2.vx;
         ball2.y += ball2.vy;
 
-        // 벽 충돌 처리 (공 1)
+        // 벽 충돌 (공 1)
         if (ball1.x - ball1.radius < 0) { ball1.x = ball1.radius; ball1.vx *= -1; }
         if (ball1.x + ball1.radius > canvas.width) { ball1.x = canvas.width - ball1.radius; ball1.vx *= -1; }
         if (ball1.y - ball1.radius < 0) { ball1.y = ball1.radius; ball1.vy *= -1; }
         if (ball1.y + ball1.radius > canvas.height) { ball1.y = canvas.height - ball1.radius; ball1.vy *= -1; }
 
-        // 벽 충돌 처리 (공 2)
+        // 벽 충돌 (공 2)
         if (ball2.x - ball2.radius < 0) { ball2.x = ball2.radius; ball2.vx *= -1; }
         if (ball2.x + ball2.radius > canvas.width) { ball2.x = canvas.width - ball2.radius; ball2.vx *= -1; }
         if (ball2.y - ball2.radius < 0) { ball2.y = ball2.radius; ball2.vy *= -1; }
         if (ball2.y + ball2.radius > canvas.height) { ball2.y = canvas.height - ball2.radius; ball2.vy *= -1; }
 
-        // 데미지 쿨다운 및 스킬 쿨타임 감소
+        // 데미지 쿨다운 감소
         if (ball1.cooldown > 0) ball1.cooldown--;
         if (ball2.cooldown > 0) ball2.cooldown--;
 
-        if (ball1.skillCooldown > 0) ball1.skillCooldown--;
-        if (ball2.skillCooldown > 0) ball2.skillCooldown--;
-
-        // 스킬 버튼 상태 업데이트 UI 반영
-        let btn1 = document.getElementById("skillBtn1");
-        if (ball1.skillCooldown <= 0) {
-            btn1.innerText = "⚡ 스킬 사용!";
-            btn1.className = "skill-btn ready";
-        } else {
-            let sec = Math.ceil(ball1.skillCooldown / 60);
-            btn1.innerText = `대기중 (${sec}초)`;
-            btn1.className = "skill-btn";
+        // 자동 스킬 타이머 감소 및 발동 (서로 다른 주기)
+        ball1.skillTimer--;
+        if (ball1.skillTimer <= 0) {
+            triggerAutoSkill(ball1, ball2);
+            ball1.skillTimer = ball1.skillMaxTime; // 타이머 리셋
         }
 
-        let btn2 = document.getElementById("skillBtn2");
-        if (ball2.skillCooldown <= 0) {
-            btn2.innerText = "⚡ 스킬 사용!";
-            btn2.className = "skill-btn ready";
-        } else {
-            let sec = Math.ceil(ball2.skillCooldown / 60);
-            btn2.innerText = `대기중 (${sec}초)`;
-            btn2.className = "skill-btn";
+        ball2.skillTimer--;
+        if (ball2.skillTimer <= 0) {
+            triggerAutoSkill(ball2, ball1);
+            ball2.skillTimer = ball2.skillMaxTime; // 타이머 리셋
         }
+
+        // UI 갱신 (상단 스킬 충전 표시)
+        let s1Sec = (ball1.skillTimer / 60).toFixed(1);
+        document.getElementById("skillStatus1").innerText = `⚡ 스킬 대기중 (${s1Sec}초)`;
+        
+        let s2Sec = (ball2.skillTimer / 60).toFixed(1);
+        document.getElementById("skillStatus2").innerText = `⚡ 스킬 대기중 (${s2Sec}초)`;
 
         // 공끼리 충돌 계산
         let dx = ball2.x - ball1.x;
@@ -239,7 +222,6 @@ game_html = """
         let distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < ball1.radius + ball2.radius) {
-            // 물리 탄성 반사
             let tempVx = ball1.vx;
             let tempVy = ball1.vy;
             ball1.vx = ball2.vx;
@@ -247,7 +229,6 @@ game_html = """
             ball2.vx = tempVx;
             ball2.vy = tempVy;
 
-            // 겹침 방지 밀어내기
             let overlap = (ball1.radius + ball2.radius) - distance;
             let angle = Math.atan2(dy, dx);
             ball1.x -= Math.cos(angle) * overlap / 2;
@@ -255,25 +236,26 @@ game_html = """
             ball2.x += Math.cos(angle) * overlap / 2;
             ball2.y += Math.sin(angle) * overlap / 2;
 
-            // 일반 충돌 데미지
+            // 일반 충돌 시에도 작은 파동 이펙트 추가
             if (ball1.cooldown === 0 && ball2.cooldown === 0) {
                 ball1.hp -= 15;
                 ball2.hp -= 15;
                 ball1.cooldown = 25;
                 ball2.cooldown = 25;
 
+                addEffect((ball1.x + ball2.x)/2, (ball1.y + ball2.y)/2, "#888888");
+
                 if (ball1.hp < 0) ball1.hp = 0;
                 if (ball2.hp < 0) ball2.hp = 0;
             }
         }
 
-        // UI 텍스트 & 체력바 갱신
+        // HP UI 갱신
         document.getElementById("hp1Text").innerText = ball1.hp;
         document.getElementById("hp2Text").innerText = ball2.hp;
         document.getElementById("hpBar1").style.width = (ball1.hp / ball1.maxHp * 100) + "%";
         document.getElementById("hpBar2").style.width = (ball2.hp / ball2.maxHp * 100) + "%";
 
-        // 게임 종료 체크
         if (ball1.hp <= 0 || ball2.hp <= 0) {
             isGameOver = true;
         }
@@ -282,32 +264,54 @@ game_html = """
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 공 1 그리기 (혜혜)
+        // 이펙트 애니메이션 그리기 (파동 퍼지는 효과)
+        for (let i = effects.length - 1; i >= 0; i--) {
+            let eff = effects[i];
+            ctx.beginPath();
+            ctx.arc(eff.x, eff.y, eff.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = eff.color;
+            ctx.lineWidth = 4;
+            ctx.globalAlpha = eff.alpha;
+            ctx.stroke();
+            ctx.closePath();
+
+            // 퍼지면서 투명해짐
+            eff.radius += 2.5;
+            eff.alpha -= 0.03;
+            if (eff.alpha <= 0 || eff.radius >= eff.maxRadius) {
+                effects.splice(i, 1);
+            }
+        }
+        ctx.globalAlpha = 1.0; // 투명도 초기화
+
+        // 공 1 그리기 (혜혜) - 스킬 사용 시 크기 확장 모션
+        let r1 = ball1.isUsingSkill ? ball1.radius + 15 : ball1.radius;
         ctx.beginPath();
-        ctx.arc(ball1.x, ball1.y, ball1.radius, 0, Math.PI * 2);
+        ctx.arc(ball1.x, ball1.y, r1, 0, Math.PI * 2);
         ctx.fillStyle = ball1.color;
         ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#333";
+        ctx.lineWidth = ball1.isUsingSkill ? 6 : 3;
+        ctx.strokeStyle = ball1.isUsingSkill ? "#ffeb3b" : "#333";
         ctx.stroke();
         ctx.closePath();
 
         ctx.fillStyle = "#333";
         ctx.font = "bold 15px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(ball1.name, ball1.x, ball1.y - ball1.radius - 8);
+        ctx.fillText(ball1.name, ball1.x, ball1.y - r1 - 8);
 
-        // 공 2 그리기 (릴고아)
+        // 공 2 그리기 (릴고아) - 스킬 사용 시 크기 확장 모션
+        let r2 = ball2.isUsingSkill ? ball2.radius + 15 : ball2.radius;
         ctx.beginPath();
-        ctx.arc(ball2.x, ball2.y, ball2.radius, 0, Math.PI * 2);
+        ctx.arc(ball2.x, ball2.y, r2, 0, Math.PI * 2);
         ctx.fillStyle = ball2.color;
         ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#333";
+        ctx.lineWidth = ball2.isUsingSkill ? 6 : 3;
+        ctx.strokeStyle = ball2.isUsingSkill ? "#ffeb3b" : "#333";
         ctx.stroke();
         ctx.closePath();
 
-        ctx.fillText(ball2.name, ball2.x, ball2.y - ball2.radius - 8);
+        ctx.fillText(ball2.name, ball2.x, ball2.y - r2 - 8);
 
         // 게임 종료 화면
         if (isGameOver) {
@@ -330,8 +334,9 @@ game_html = """
         ball2.hp = 250;
         ball1.x = 150; ball1.y = 300;
         ball2.x = 450; ball2.y = 300;
-        ball1.skillCooldown = 300;
-        ball2.skillCooldown = 300;
+        ball1.skillTimer = ball1.skillMaxTime;
+        ball2.skillTimer = ball2.skillMaxTime;
+        effects = [];
         isGameOver = false;
     }
 
