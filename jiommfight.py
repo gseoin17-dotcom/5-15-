@@ -173,5 +173,3 @@ loop();
 
 # Render the HTML/JS component inside Streamlit
 st.components.v1.html(game_html, height=520)
-
-What specific features or characters from the Instagram clip would you like to add next?
