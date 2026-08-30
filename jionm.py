@@ -1,169 +1,3 @@
-
-Gemini
-새 채팅
-채팅 검색
-이미지
-라이브러리
-강화 버튼 비활성화 오류 수정
-강화 애니메이션 버튼 비활성화 구현
-streamlit 강화 버튼 1.5초 쿨타임 추가
-지온냄새 강화 시스템 수정 및 애니메이션 완화
-지온냄새 강화 애니메이션 속도 및 버튼 제어 수정
-애니메이션 재생 시간 단축 방법
-지온냄새 강화 애니메이션 및 텍스트 수정
-3D 강화 애니메이션 구현 코드 수정
-지온냄새 강화 시뮬레이터 업데이트
-지온냄새 강화 파이썬 구문 수정
-지온냄새 강화하기 우주 3D 개조
-자이온 강화 제어 위치 이동
-강화 게임 콘텐츠 추천 20선
-지온냄새 강화 게임 30단계 수정
-지온 키우기 게임 추가 콘텐츠 추천 10선
-게임 추가 기능 아이디어 추천
-스트림릿 공 충돌 데미지 게임
-스트림릿 공 대결 게임 제작
-강화 UI 정보창 위치 변경
-지온냄새 강화 사이트 UI 개편
-지온냄새 강화 UI 텍스트 위치 수정
-지온냄새 강화 게임 3D 블랙홀 배경 업데이트
-우주 블랙홀 이미지 생성 불가
-코스믹 강화 UI 텍스트 크기 수정
-지온냄새 강화 사이트 콘텐츠 추천
-지온냄새 3D 모델 제거 코드
-지온냄새 강화 파이썬 3D 개편
-파이썬 기반 대체 게임 아이디어 추천
-지온냄새 강화 게임 아이디어 추천
-지온냄새 강화 사이트 대규모 업데이트
-3D 배경 및 UI 개편
-상태창 UI 디자인 수정 코드
-3D 다각형 도형 형태 수정
-자이온맘의 따뜻한 일상 순간
-스트림잇과 깃허브 연결 명령어 안내
-MBTI 맞춤형 직업 추천 스트림릿 앱
-스트림릿 깃허브 연동 명령어 안내
-세포분열 실험: 우무 대신 분모자 사용 이유
-우무를 분모자로 변경하기
-대화 시작하기
-사람이 냄새가 나는 원인
-Gemini와의 대화
-강화가 끝나도 강화 버튼이 안눌리는데 수정 해줘
-
-강화 완료 후 버튼이 눌리지 않는 원인은 최고 단계(35단계)에 도달했을 때 강화 실행 버튼의 disabled 조건과 run_enhance() 함수 내부의 레벨 제한 때문입니다.  
-PY
-
-현재 35단계에 도달하면 st.session_state.level >= 35 조건에 의해 버튼이 비활성화되지만, 만약 개발자 모드나 예외 상황으로 레벨이 35 이상으로 올라가거나 리셋 로직이 꼬였을 때 버튼 상태가 풀리지 않는 현상이 발생할 수 있습니다. 또한 PROB_TABLE이나 SMELL_DB의 최대 단계 처리에서도 35단계 이후의 방어가 필요합니다.
-
-아래의 수정 사항을 적용하여 코드를 보완해 보세요.
-
-주요 수정 내용
-강화 버튼 비활성화 조건 강화: 35단계 이상일 때 안전하게 버튼이 고정되도록 처리하고, 돈이 부족할 때의 예외 처리 로직을 점검했습니다.  
-PY
-
-run_enhance() 함수 안정성 확보: 현재 레벨이 35 이상일 경우 함수가 즉시 반환되도록 방어 코드를 공고히 했습니다.  
-PY
-
-수정된 코드 (해당 부분 교체)
-1. run_enhance() 함수 수정 (5번 섹션)
-Python
-def run_enhance():
-  curr = st.session_state.level
-  if curr >= 35:
-    st.session_state.status = "MAX_LEVEL"
-    return
-
-  cost = get_enhance_cost(curr)
-  if st.session_state.money < cost:
-    st.session_state.status = "NOT_ENOUGH_MONEY"
-    return
-
-  st.session_state.money -= cost
-
-  # 천장(Pity) 판정 선적용
-  if st.session_state.pity_count >= PITY_MAX - 1:
-    st.session_state.level = min(35, st.session_state.level + 1)
-    st.session_state.status = "PITY_SUCCESS"
-    st.session_state.pity_count = 0
-    if st.session_state.level > st.session_state.max_level:
-      st.session_state.max_level = st.session_state.level
-    return
-
-  sp, down_p, dp, hold_p = PROB_TABLE.get(curr, (5.0, 40.0, 50.0, 5.0))
-  r = random.uniform(0, 100)
-
-  success_limit = sp
-  down_limit = success_limit + down_p
-  destroy_limit = down_limit + dp
-
-  if r < success_limit:
-    st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= 35:
-      st.session_state.level = min(35, st.session_state.level + 2)
-      st.session_state.status = "CRITICAL"
-    else:
-      st.session_state.level = min(35, st.session_state.level + 1)
-      st.session_state.status = "SUCCESS"
-  elif r < down_limit:
-    st.session_state.pity_count += 1
-    if curr > 0:
-      st.session_state.level -= 1
-    st.session_state.status = "FAILED"
-    st.session_state.tears = min(120, st.session_state.tears + 1)
-  elif r < destroy_limit:
-    if st.session_state.shield > 0:
-      st.session_state.shield -= 1
-      st.session_state.pity_count += 1
-      st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(120, st.session_state.tears + 1)
-    else:
-      st.session_state.pity_count += 1
-      st.session_state.level = 0
-      st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(120, st.session_state.tears + 2)
-  else:
-    st.session_state.pity_count += 1
-    st.session_state.status = "HOLD"
-    st.session_state.tears = min(120, st.session_state.tears + 1)
-
-  if st.session_state.level > st.session_state.max_level:
-    st.session_state.max_level = st.session_state.level
-```[cite: 1]
-
-#### 2. 강화 실행 버튼 부분 수정 (7번 메인 레이아웃 내 사이드바 영역)
-```python
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 35),
-  ):
-    curr = st.session_state.level
-    if curr >= 35:
-      st.warning("이미 최고 단계(35단계)에 도달했습니다!")
-    else:
-      cost = get_enhance_cost(curr)
-      if st.session_state.money < cost:
-        st.error("강화 비용이 부족합니다!")
-      else:
-        run_enhance()
-        st.rerun()
-```[cite: 1]
-
-위와 같이 코드를 수정하면 35단계 도달 시 안전하게 버튼이 잠기고, 판매(`sell()`) 등을 통해 다시 단계를 초기화했을 때 버튼이 정상적으로 다시 활성화됩니다[cite: 1].
-너가 전체 구문을 바꿔서 보내줘
-
-지온냄새 강화하기 게임의 전체 구문과 로직(35단계 확장, 3D 애니메이션 연출 완화, 천장 시스템 및 확률표 등)을 전면적으로 수정하고 재작성한 파이썬 코드를 파일로 생성했습니다.
-
-PY 아이콘
-jionm_fixed
- PY 
-열기
-아래 파일 내용을 복사하시거나 다운로드하여 streamlit run jionm_fixed.py 명령어로 실행하시면 바로 적용된 버전을 확인하실 수 있습니다.
-
-
-
-
-Gemini는 AI이며 인물 등에 관한 정보 제공 시 실수를 할 수 있습니다. 개인 정보 보호 및 Gemini새 창에서 열기
-
-분석 중
 import random
 import streamlit as st
 import streamlit.components.v1 as components
@@ -572,7 +406,6 @@ if "pity_count" not in st.session_state:
 def run_enhance():
   curr = st.session_state.level
   if curr >= 35:
-    st.session_state.status = "MAX_LEVEL"
     return
 
   cost = get_enhance_cost(curr)
@@ -584,7 +417,7 @@ def run_enhance():
 
   # 천장(Pity) 판정 선적용 (설정된 횟수 이상 실패 시 무조건 성공)
   if st.session_state.pity_count >= PITY_MAX - 1:
-    st.session_state.level = min(35, st.session_state.level + 1)
+    st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
@@ -601,10 +434,10 @@ def run_enhance():
   if r < success_limit:
     st.session_state.pity_count = 0
     if random.random() < CRITICAL_RATE and curr + 2 <= 35:
-      st.session_state.level = min(35, st.session_state.level + 2)
+      st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
-      st.session_state.level = min(35, st.session_state.level + 1)
+      st.session_state.level += 1
       st.session_state.status = "SUCCESS"
   elif r < down_limit:
     st.session_state.pity_count += 1
@@ -635,7 +468,7 @@ def run_enhance():
 def dev_force_success():
   curr = st.session_state.level
   if curr < 35:
-    st.session_state.level = min(35, st.session_state.level + 1)
+    st.session_state.level += 1
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
@@ -860,16 +693,12 @@ with left_col:
       use_container_width=True,
       disabled=(st.session_state.level >= 35),
   ):
-    curr = st.session_state.level
-    if curr >= 35:
-      st.warning("이미 최고 단계(35단계)에 도달했습니다!")
+    cost = get_enhance_cost(st.session_state.level)
+    if st.session_state.money < cost:
+      st.error("강화 비용 부족!")
     else:
-      cost = get_enhance_cost(curr)
-      if st.session_state.money < cost:
-        st.error("강화 비용 부족!")
-      else:
-        run_enhance()
-        st.rerun()
+      run_enhance()
+      st.rerun()
 
   if dev_mode:
     st.write("")
@@ -1328,5 +1157,3 @@ with right_col:
     """
 
   components.html(three_js_code, height=580, scrolling=False)
-jionm_fixed.py
-jionm_fixed.py 항목을 표시하는 중입니다.
