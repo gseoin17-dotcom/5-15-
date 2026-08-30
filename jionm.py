@@ -67,8 +67,13 @@ def get_enhance_cost(level):
       28: 65000000,
       29: 100000000,
       30: 150000000,
+      31: 250000000,
+      32: 400000000,
+      33: 700000000,
+      34: 1200000000,
+      35: 2000000000,
   }
-  return cost_table.get(level, 150000000)
+  return cost_table.get(level, 2000000000)
 
 
 def get_shield_cost(level):
@@ -77,7 +82,7 @@ def get_shield_cost(level):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의
+# 3. 게임 데이터베이스 정의 (35단계 확장)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     0: {
@@ -293,8 +298,43 @@ SMELL_DB = {
     30: {
         "name": "30단계 : ★태초의 자이온맘★ 절대신성",
         "desc": "우주를 지온으로 통일한 자이온맘의 완성.",
-        "price": float("inf"),
+        "price": 20000000000,
         "color": "#00ffff",
+        "tier": 6,
+    },
+    31: {
+        "name": "31단계 : 하이퍼 지온 싱귤래리티",
+        "desc": "냄새가 너무 진해져 시공간이 한 점으로 수축한다.",
+        "price": 45000000000,
+        "color": "#7000ff",
+        "tier": 6,
+    },
+    32: {
+        "name": "32단계 : 멀티버스 지온 에센스",
+        "desc": "모든 평행우주의 지온맘이 동시에 미소 짓는다.",
+        "price": 90000000000,
+        "color": "#ff00e1",
+        "tier": 6,
+    },
+    33: {
+        "name": "33단계 : 인피니티 페트리코",
+        "desc": "끝나지 않는 대폭발 속에서 영원히 피어나는 향.",
+        "price": 200000000000,
+        "color": "#00ff66",
+        "tier": 6,
+    },
+    34: {
+        "name": "34단계 : 오메가 자이온 제네시스",
+        "desc": "우주의 탄생과 소멸을 관장하는 궁극의 향기.",
+        "price": 500000000000,
+        "color": "#ff6600",
+        "tier": 6,
+    },
+    35: {
+        "name": "35단계 : ★디 오리지널 앱솔루트 지온★",
+        "desc": "모든 존재의 기원, 완벽에 도달한 완전무결한 냄새.",
+        "price": float("inf"),
+        "color": "#ffffff",
         "tier": 6,
     },
 }
@@ -330,6 +370,11 @@ PROB_TABLE = {
     27: (40.0, 25.0, 30.0, 5.0),
     28: (30.0, 30.0, 35.0, 5.0),
     29: (20.0, 35.0, 40.0, 5.0),
+    30: (15.0, 35.0, 45.0, 5.0),
+    31: (12.0, 35.0, 48.0, 5.0),
+    32: (10.0, 35.0, 50.0, 5.0),
+    33: (8.0, 37.0, 50.0, 5.0),
+    34: (5.0, 40.0, 50.0, 5.0),
 }
 
 CRITICAL_RATE = 0.05
@@ -360,7 +405,7 @@ if "pity_count" not in st.session_state:
 
 def run_enhance():
   curr = st.session_state.level
-  if curr >= 30:
+  if curr >= 35:
     return
 
   cost = get_enhance_cost(curr)
@@ -387,7 +432,7 @@ def run_enhance():
 
   if r < success_limit:
     st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= 30:
+    if random.random() < CRITICAL_RATE and curr + 2 <= 35:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
@@ -421,7 +466,7 @@ def run_enhance():
 
 def dev_force_success():
   curr = st.session_state.level
-  if curr < 30:
+  if curr < 35:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
@@ -490,7 +535,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -507,7 +552,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 보유 지표 영역
   s_col1, s_col2 = st.columns(2)
 
   with s_col1:
@@ -549,7 +593,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 상점 탭 영역
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
@@ -577,10 +620,10 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    if st.session_state.level >= 28:
+    if st.session_state.level >= 32:
       st.markdown(
           "<div style='font-size:14px; color:#ef4444; font-weight:700;"
-          " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
+          " margin-bottom:8px;'>⚠️ 32단계 이상부터는 신성한 기운으로 인해 지온의"
           " 눈물을 사용할 수 없습니다!</div>",
           unsafe_allow_html=True,
       )
@@ -593,15 +636,15 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    can_use_tears = st.session_state.level < 28
+    can_use_tears = st.session_state.level < 32
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
-      if st.session_state.level >= 28:
-        st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
+      if st.session_state.level >= 32:
+        st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears >= 40:
         st.session_state.tears -= 40
         if random.random() < 0.50:
           add_lvl = random.choice([1, 2, 3])
-          st.session_state.level = min(30, st.session_state.level + add_lvl)
+          st.session_state.level = min(35, st.session_state.level + add_lvl)
           st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
           st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
         else:
@@ -616,7 +659,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 자이온 강화 제어 최하단 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
@@ -626,7 +668,7 @@ with left_col:
   if st.button(
       "🔥 냄새 강화 실행",
       use_container_width=True,
-      disabled=(st.session_state.level >= 30),
+      disabled=(st.session_state.level >= 35),
   ):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
@@ -640,7 +682,7 @@ with left_col:
     if st.button(
         "✨ [DEV] 무조건 성공",
         use_container_width=True,
-        disabled=(st.session_state.level >= 30),
+        disabled=(st.session_state.level >= 35),
     ):
       dev_force_success()
       st.rerun()
@@ -887,8 +929,18 @@ with right_col:
                 baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
             }} else if (lvl == 29) {{
                 baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-            }} else {{
+            }} else if (lvl == 30) {{
                 baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+            }} else if (lvl == 31) {{
+                baseGeo = new THREE.OctahedronGeometry(2.7, 2);
+            }} else if (lvl == 32) {{
+                baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
+            }} else if (lvl == 33) {{
+                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
+            }} else if (lvl == 34) {{
+                baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+            }} else {{
+                baseGeo = new THREE.TorusKnotGeometry(1.8, 0.7, 150, 40, 4, 7);
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
