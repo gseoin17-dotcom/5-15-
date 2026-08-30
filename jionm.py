@@ -598,7 +598,6 @@ SMELL_DB = {
     },
 }
 
-# 파괴 확률을 아주 조금 낮추고(dp 감소), 그만큼 성공/유지 확률을 소폭 상향 조정
 PROB_TABLE = {
     False: {
         0: (100.0, 0.0, 0.0, 0.0),
@@ -945,7 +944,7 @@ with left_col:
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
-    min_shield_level = 16 if st.session_state.is_rebirth else 24
+    min_shield_level = 16 if st.session_state.is_rebirth else 20
     current_shield_cost = get_shield_cost(
         st.session_state.level, st.session_state.is_rebirth
     )
