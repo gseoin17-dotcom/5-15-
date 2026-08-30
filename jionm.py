@@ -5,7 +5,7 @@ import streamlit.components.v1 as components
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
-st.set_page_config(
+st.set_page_config(ㄴ
     page_title="지온냄새 강화하기 - SOLAR SYSTEM EDITION",
     page_icon="🌌",
     layout="wide",
