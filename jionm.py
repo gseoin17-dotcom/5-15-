@@ -378,7 +378,7 @@ PROB_TABLE = {
 }
 
 CRITICAL_RATE = 0.05
-PITY_MAX = 5
+PITY_MAX = 3  # 자이온맘의 가호 3번으로 변경
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -443,22 +443,22 @@ def run_enhance():
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
-    st.session_state.tears = min(120, st.session_state.tears + 1)
+    st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(120, st.session_state.tears + 1)
+      st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
     else:
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(120, st.session_state.tears + 2)
+      st.session_state.tears = min(80, st.session_state.tears + 2)  # 눈물 보유한도 80개 적용
   else:
     st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
-    st.session_state.tears = min(120, st.session_state.tears + 1)
+    st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
 
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
@@ -565,7 +565,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 120개</div></div>",
+        " 80개</div></div>",  # 눈물 보유한도 80개 적용
         unsafe_allow_html=True,
     )
 
@@ -574,7 +574,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 3개</div></div>",
+        " 4개</div></div>",  # 방지권 보유한도 4개 적용
         unsafe_allow_html=True,
     )
     st.write("")
@@ -621,18 +621,18 @@ with left_col:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
         f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
+        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 4개<br><b>가격:</b>"  # 방지권 보유한도 4개로 수정
         f" <span style='font-size:14px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 4  # 한도 4개 적용
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
       if st.session_state.level < 18:
         st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 3:
-        st.warning("최대 3개까지만 보유 가능합니다.")
+      elif st.session_state.shield >= 4:  # 한도 4개 적용
+        st.warning("최대 4개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
@@ -652,9 +652,9 @@ with left_col:
     else:
       st.markdown(
           f"<div style='font-size:13px; color:#cbd5e1;"
-          f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (50% 확률로 1~3단계"  # 눈물 요구 개수 20개로 수정
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
-          f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
+          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",  # 눈물 보유한도 80개 적용
           unsafe_allow_html=True,
       )
 
@@ -662,8 +662,8 @@ with left_col:
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
       if st.session_state.level >= 32:
         st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= 40:
-        st.session_state.tears -= 40
+      elif st.session_state.tears >= 20:  # 눈물 요구 개수 20개 적용
+        st.session_state.tears -= 20  # 눈물 요구 개수 20개 적용
         if random.random() < 0.50:
           add_lvl = random.choice([1, 2, 3])
           st.session_state.level = min(35, st.session_state.level + add_lvl)
@@ -674,7 +674,7 @@ with left_col:
           st.warning("눈물의 기적이 실패했습니다...")
         st.rerun()
       else:
-        st.error("눈물 40개가 필요합니다.")
+        st.error("눈물 20개가 필요합니다.")  # 안내 문구 20개로 수정
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -749,7 +749,7 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-                opacity: 1; /* 즉시 나타나도록 변경 */
+                opacity: 1;
                 transition: opacity 0.1s ease-in-out;
             }}
 
@@ -777,10 +777,11 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            /* 하단 설명 텍스트 크기 키우기 요청 반영 */
+            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -1026,11 +1027,10 @@ with right_col:
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                // 파괴 이펙트를 더 강렬하게 (조명 플래시 및 파편 수 대폭 증가)
                 pointLight.color.set("#ff0000");
                 pointLight.intensity = 80;
 
-                const shardCount = 180; // 파편 수 180개로 대폭 강화
+                const shardCount = 180;
                 const shards = [];
                 const shardGroup = new THREE.Group();
                 shardGroup.position.y = -0.7;
@@ -1051,7 +1051,7 @@ with right_col:
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
                     const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 4.0 + Math.random() * 8.0; // 폭발 속도 극대화
+                    const speed = 4.0 + Math.random() * 8.0;
                     
                     shard.userData = {{
                         vx: speed * Math.sin(phi) * Math.cos(theta),
@@ -1083,7 +1083,6 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 35단계 최종 성공 시 개쩌는 거대 펄스/스케일 연출
                 const maxScale = isFinalSuccess ? 1.8 : 1.3;
                 tl.to(objectGroup.scale, {{
                     x: maxScale, y: maxScale, z: maxScale,
