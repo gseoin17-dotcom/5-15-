@@ -749,8 +749,8 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.3s ease-in-out;
+                opacity: 1; /* 즉시 나타나도록 변경 */
+                transition: opacity 0.1s ease-in-out;
             }}
 
             .cinematic-ui.visible {{
@@ -788,7 +788,7 @@ with right_col:
     <body>
         <div id="container"></div>
 
-        <div id="cinematicUi" class="cinematic-ui">
+        <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
             <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
             <div id="descText" class="desc-text">"{card_desc}"</div>
@@ -800,14 +800,16 @@ with right_col:
             const uiElement = document.getElementById('cinematicUi');
 
             const currentLevel = {current_level};
-            if (currentLevel >= 20) {{
+            const status = "{status}";
+            const isFinalSuccess = (currentLevel === 35 && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
+
+            if (currentLevel >= 20 || isFinalSuccess) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
                 document.getElementById('costText').classList.add('shaking-text');
             }}
 
-            const status = "{status}";
             const statusText = document.getElementById('statusText');
             
             const tierColor = "{card_color}";
@@ -816,7 +818,13 @@ with right_col:
             let particleSpeed = 0.6;
             let glowIntensity = 12;
 
-            if (status === "CRITICAL") {{
+            if (isFinalSuccess) {{
+                statusText.innerText = "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 궁극의 35단계 최종 강화 성공!! 👑🌌";
+                statusColor = "#ffffff";
+                particleSize = 0.6;
+                particleSpeed = 2.5;
+                glowIntensity = 50;
+            }} else if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
                 particleSize = 0.35;
@@ -838,9 +846,9 @@ with right_col:
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                 statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
-                statusColor = "#ef4444";
-                particleSpeed = 0.8;
+                statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
+                statusColor = "#ff0000";
+                particleSpeed = 2.0;
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                 statusColor = "#64748b";
@@ -866,14 +874,14 @@ with right_col:
             renderer.shadowMap.enabled = true;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, 40);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
@@ -887,16 +895,16 @@ with right_col:
             }}
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
-                color: 0xffffff,
-                size: 0.07,
+                color: isFinalSuccess ? 0xffd700 : 0xffffff,
+                size: isFinalSuccess ? 0.12 : 0.07,
                 transparent: true,
-                opacity: 0.5,
+                opacity: 0.7,
                 blending: THREE.AdditiveBlending
             }});
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = 500;
+            const particleCount = isFinalSuccess ? 1200 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -911,7 +919,7 @@ with right_col:
 
                 particleVelocities.push({{
                     x: (Math.random() - 0.5) * 0.01 * spd,
-                    y: (0.008 + Math.random() * 0.015) * spd,
+                    y: (0.008 + Math.random() * 0.025) * spd,
                     z: (Math.random() - 0.5) * 0.01 * spd,
                 }});
             }}
@@ -921,7 +929,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.2 : 0.7,
+                opacity: status === "FAILED" ? 0.2 : 0.8,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -981,16 +989,16 @@ with right_col:
             }} else if (lvl == 34) {{
                 baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
             }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(1.8, 0.7, 150, 40, 4, 7);
+                baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
-                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1),
-                metalness: 0.85,
-                roughness: 0.2,
-                transmission: 0.5,
+                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
+                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
+                metalness: 0.9,
+                roughness: 0.1,
+                transmission: 0.6,
                 transparent: true,
                 opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
@@ -998,46 +1006,43 @@ with right_col:
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8,
-                roughness: 0.05,
-                metalness: 0.9,
-                transmission: 0.7
+                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
+                roughness: 0.02,
+                metalness: 0.95,
+                transmission: 0.8
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            // ==========================================
-            // 애니메이션 속도를 0.2초로 단축
-            // ==========================================
-            const tl = gsap.timeline({{
-                onComplete: () => {{
-                    uiElement.classList.add('visible');
-                }}
-            }});
+            const tl = gsap.timeline();
 
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                const shardCount = 30;
+                // 파괴 이펙트를 더 강렬하게 (조명 플래시 및 파편 수 대폭 증가)
+                pointLight.color.set("#ff0000");
+                pointLight.intensity = 80;
+
+                const shardCount = 180; // 파편 수 180개로 대폭 강화
                 const shards = [];
                 const shardGroup = new THREE.Group();
                 shardGroup.position.y = -0.7;
 
                 for(let i=0; i<shardCount; i++) {{
-                    const sGeo = new THREE.BoxGeometry(0.25 + Math.random()*0.15, 0.25 + Math.random()*0.15, 0.25 + Math.random()*0.15);
+                    const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
                     const sMat = new THREE.MeshStandardMaterial({{
                         color: tierColor,
-                        roughness: 0.3,
-                        metalness: 0.8,
-                        emissive: "#ef4444",
-                        emissiveIntensity: 0.6
+                        roughness: 0.1,
+                        metalness: 0.9,
+                        emissive: "#ff2200",
+                        emissiveIntensity: 2.5
                     }});
                     const shard = new THREE.Mesh(sGeo, sMat);
                     shard.position.set(0, 0, 0);
@@ -1046,14 +1051,14 @@ with right_col:
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
                     const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 2.0 + Math.random() * 2.5;
+                    const speed = 4.0 + Math.random() * 8.0; // 폭발 속도 극대화
                     
                     shard.userData = {{
                         vx: speed * Math.sin(phi) * Math.cos(theta),
                         vy: speed * Math.sin(phi) * Math.sin(theta),
                         vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 10,
-                        ry: (Math.random() - 0.5) * 10
+                        rx: (Math.random() - 0.5) * 30,
+                        ry: (Math.random() - 0.5) * 30
                     }};
 
                     shardGroup.add(shard);
@@ -1062,46 +1067,48 @@ with right_col:
                 scene.add(shardGroup);
 
                 tl.to(shardGroup.position, {{
-                    duration: 0.2,
+                    duration: 0.5,
                     ease: "power2.out",
                     onUpdate: function() {{
                         const progress = this.progress();
                         shards.forEach(s => {{
-                            s.position.x += s.userData.vx * 0.015;
-                            s.position.y += s.userData.vy * 0.015 - 0.02;
-                            s.position.z += s.userData.vz * 0.015;
-                            s.rotation.x += s.userData.rx * 0.015;
-                            s.rotation.y += s.userData.ry * 0.015;
+                            s.position.x += s.userData.vx * 0.02;
+                            s.position.y += s.userData.vy * 0.02 - 0.04;
+                            s.position.z += s.userData.vz * 0.02;
+                            s.rotation.x += s.userData.rx * 0.02;
+                            s.rotation.y += s.userData.ry * 0.02;
                             s.material.opacity = 1.0 - progress;
                             s.material.transparent = true;
                         }});
                     }}
                 }});
             }} else {{
+                // 35단계 최종 성공 시 개쩌는 거대 펄스/스케일 연출
+                const maxScale = isFinalSuccess ? 1.8 : 1.3;
                 tl.to(objectGroup.scale, {{
-                    x: 1.3, y: 1.3, z: 1.3,
-                    duration: 0.1,
+                    x: maxScale, y: maxScale, z: maxScale,
+                    duration: 0.12,
                     ease: "power1.inOut"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
-                    duration: 0.1,
+                    duration: 0.12,
                     ease: "power1.out"
                 }});
 
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
-                    duration: 0.2,
+                    duration: 0.25,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12;
+                        const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
                         objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
 
-                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 0.5;
-                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 0.5;
-                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 0.5;
+                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
                     }}
                 }}, 0);
             }}
@@ -1113,11 +1120,15 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5);
+                    const rotSpeed = isFinalSuccess ? 1.8 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
                     outerMesh.rotation.x += 0.005 * rotSpeed;
                     outerMesh.rotation.y += 0.008 * rotSpeed;
                     coreMesh.rotation.x -= 0.01 * rotSpeed;
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
+
+                    if (isFinalSuccess) {{
+                        objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
+                    }}
                 }}
 
                 starField.rotation.y = time * 0.01;
