@@ -487,7 +487,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS (UI 위치 아래로 내리기)
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -511,7 +511,6 @@ st.markdown(
     .element-container, .stMarkdown {
         background: transparent !important;
     }
-    
     div.stButton > button {
         border-radius: 8px !important;
         font-weight: 700 !important;
@@ -1016,11 +1015,10 @@ with right_col:
             scene.add(objectGroup);
 
             // ==========================================
-            // 3초 타임라인 애니메이션 (흔들림 + 확대/축소 + 텍스트 등장)
+            // 피파 스타일 격렬한 지진/팩 오픈 연출 타임라인 (3초)
             // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
-                    // 3초 애니메이션 종료 후 텍스트 등장
                     uiElement.classList.add('visible');
                 }}
             }});
@@ -1082,27 +1080,34 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 1단계: 3초 동안 커졌다가 원래 상태로 돌아오기 (총 3초)
+                // 1단계: 3초 동안 크기가 거대하게 부풀었다가 돌아옴
                 tl.to(objectGroup.scale, {{
-                    x: 1.8, y: 1.8, z: 1.8,
+                    x: 2.1, y: 2.1, z: 2.1,
                     duration: 1.5,
-                    ease: "power2.inOut"
+                    ease: "power2.in"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
                     duration: 1.5,
-                    ease: "bounce.out"
+                    ease: "elastic.out(1, 0.3)"
                 }});
 
-                // 2단계: 애니메이션 진행되는 동안(3초간) 3D 다각형 격렬하게 흔들기
-                tl.to(objectGroup.rotation, {{
-                    z: "+=0.4",
-                    x: "+=0.3",
-                    duration: 0.1,
-                    repeat: 29, // 0.1초 * 30회 = 총 3초 동안 흔들림 유지
-                    yoyo: true,
-                    ease: "power1.inOut"
-                }}, 0); // 타임라인 시작점(0초)부터 동시에 실행
+                // 2단계: FIFA 팩 오픈 연출처럼 사방으로 격렬하게 떨리는 지진 효과 (위치 + 회전 난동)
+                const basePosY = -0.7;
+                tl.to(objectGroup.position, {{
+                    duration: 3.0,
+                    onUpdate: function() {{
+                        const p = this.progress();
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.45; // 중간에 가장 격렬함
+                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity * 3.5;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity * 3.5;
+                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 2.0;
+
+                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                    }}
+                }}, 0);
             }}
 
             const clock = new THREE.Clock();
@@ -1117,7 +1122,6 @@ with right_col:
                     outerMesh.rotation.y += 0.015 * rotSpeed;
                     coreMesh.rotation.x -= 0.02 * rotSpeed;
                     coreMesh.rotation.y -= 0.025 * rotSpeed;
-                    objectGroup.rotation.y += Math.sin(time * 0.7) * 0.005;
                 }}
 
                 starField.rotation.y = time * 0.02;
