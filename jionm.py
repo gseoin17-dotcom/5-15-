@@ -1,6 +1,14 @@
 import random
+import threading
 import streamlit as st
 import streamlit.components.v1 as components
+
+# -----------------------------------------------------------------------------
+# 0. 서버 메모리 공유 변수 및 락 설정 (모든 세션 공유)
+# -----------------------------------------------------------------------------
+ranking_lock = threading.Lock()
+if "GLOBAL_RANKINGS" not in globals():
+  GLOBAL_RANKINGS = []  # 형식: [{'name': '닉네임', 'level': 최고단계}]
 
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
@@ -79,6 +87,20 @@ def get_enhance_cost(level):
 def get_shield_cost(level):
   base_cost = get_enhance_cost(level)
   return max(50000, base_cost * 15)
+
+
+def update_global_ranking(name, level):
+  global GLOBAL_RANKINGS
+  with ranking_lock:
+    existing = next((item for item in GLOBAL_RANKINGS if item["name"] == name), None)
+    if existing:
+      if level > existing["level"]:
+        existing["level"] = level
+    else:
+      GLOBAL_RANKINGS.append({"name": name, "level": level})
+    GLOBAL_RANKINGS = sorted(
+        GLOBAL_RANKINGS, key=lambda x: x["level"], reverse=True
+    )[:10]
 
 
 # -----------------------------------------------------------------------------
@@ -397,6 +419,11 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "player_name" not in st.session_state:
+  st.session_state.player_name = f"지온연구원_{random.randint(100, 999)}"
+
+# 최고 레벨 달성 시 글로벌 랭킹 자동 반영
+update_global_ranking(st.session_state.player_name, st.session_state.max_level)
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -421,6 +448,9 @@ def run_enhance():
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
+      update_global_ranking(
+          st.session_state.player_name, st.session_state.max_level
+      )
     return
 
   sp, down_p, dp, hold_p = PROB_TABLE.get(curr, (5.0, 40.0, 50.0, 5.0))
@@ -462,6 +492,7 @@ def run_enhance():
 
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
+    update_global_ranking(st.session_state.player_name, st.session_state.max_level)
 
 
 def dev_force_success():
@@ -471,6 +502,9 @@ def dev_force_success():
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
+      update_global_ranking(
+          st.session_state.player_name, st.session_state.max_level
+      )
 
 
 def sell():
@@ -544,6 +578,13 @@ with left_col:
       " 설정</h4>",
       unsafe_allow_html=True,
   )
+
+  # 닉네임 설정
+  new_name = st.text_input("연구원 닉네임", value=st.session_state.player_name)
+  if new_name != st.session_state.player_name:
+    st.session_state.player_name = new_name
+    update_global_ranking(st.session_state.player_name, st.session_state.max_level)
+
   dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
 
   st.markdown(
@@ -615,7 +656,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
+  tab_shop1, tab_shop2, tab_shop3 = st.tabs(["🛡️ 방지권", "💧 눈물", "🏆 랭킹"])
 
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
@@ -675,6 +716,37 @@ with left_col:
         st.rerun()
       else:
         st.error("눈물 40개가 필요합니다.")
+
+  with tab_shop3:
+    st.markdown(
+        "<div style='font-size:13px; color:#fde68a;"
+        " margin-bottom:6px;'><b>🌌 실시간 최고 랭킹 Top 10</b></div>",
+        unsafe_allow_html=True,
+    )
+    with ranking_lock:
+      current_rankings = list(GLOBAL_RANKINGS)
+
+    if not current_rankings:
+      st.markdown(
+          "<div style='font-size:12px; color:#94a3b8;'>아직 등록된 랭킹이"
+          " 없습니다.</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      for idx, rank_data in enumerate(current_rankings):
+        medal = (
+            "🥇"
+            if idx == 0
+            else ("🥈" if idx == 1 else ("🥉" if idx == 2 else f"{idx+1}."))
+        )
+        st.markdown(
+            f"<div style='font-size:12px; padding:3px 0; color:#f8fafc;"
+            f" border-bottom:1px solid rgba(255,255,255,0.05);'>"
+            f"<b>{medal} {rank_data['name']}</b> — <span"
+            f" style='color:#38bdf8; font-weight:bold;'>{rank_data['level']}단계</span>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -777,10 +849,10 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 16px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
-            .price-text {{ font-size: 17px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 3px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
+            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
