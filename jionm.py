@@ -34,355 +34,645 @@ def format_gold(amount):
   return "".join(result) + "원"
 
 
-def get_enhance_cost(level):
-  cost_table = {
-      0: 300,
-      1: 300,
-      2: 500,
-      3: 500,
-      4: 1000,
-      5: 1500,
-      6: 2000,
-      7: 2000,
-      8: 3000,
-      9: 5000,
-      10: 10900,
-      11: 20000,
-      12: 35000,
-      13: 55000,
-      14: 100000,
-      15: 180000,
-      16: 300000,
-      17: 300000,
-      18: 500000,
-      19: 800000,
-      20: 1500000,
-      21: 2500000,
-      22: 4000000,
-      23: 6500000,
-      24: 10000000,
-      25: 16000000,
-      26: 25000000,
-      27: 40000000,
-      28: 65000000,
-      29: 100000000,
-      30: 150000000,
-      31: 250000000,
-      32: 400000000,
-      33: 700000000,
-      34: 1200000000,
-      35: 2000000000,
-  }
-  return cost_table.get(level, 2000000000)
+def get_enhance_cost(level, is_rebirth):
+  if is_rebirth:
+    cost_table = {
+        0: 1000000,
+        1: 2500000,
+        2: 5000000,
+        3: 10000000,
+        4: 20000000,
+        5: 40000000,
+        6: 80000000,
+        7: 150000000,
+        8: 300000000,
+        9: 600000000,
+        10: 1200000000,
+        11: 2500000000,
+        12: 5000000000,
+        13: 10000000000,
+        14: 20000000000,
+        15: 40000000000,
+        16: 80000000000,
+        17: 150000000000,
+        18: 300000000000,
+        19: 600000000000,
+        20: 1200000000000,
+        21: 2500000000000,
+        22: 5000000000000,
+        23: 10000000000000,
+        24: 25000000000000,
+        25: 100000000000000,
+    }
+    return cost_table.get(level, 100000000000000)
+  else:
+    cost_table = {
+        0: 300,
+        1: 300,
+        2: 500,
+        3: 500,
+        4: 1000,
+        5: 1500,
+        6: 2000,
+        7: 2000,
+        8: 3000,
+        9: 5000,
+        10: 10900,
+        11: 20000,
+        12: 35000,
+        13: 55000,
+        14: 100000,
+        15: 180000,
+        16: 300000,
+        17: 300000,
+        18: 500000,
+        19: 800000,
+        20: 1500000,
+        21: 2500000,
+        22: 4000000,
+        23: 6500000,
+        24: 10000000,
+        25: 16000000,
+        26: 25000000,
+        27: 40000000,
+        28: 65000000,
+        29: 100000000,
+        30: 150000000,
+        31: 250000000,
+        32: 400000000,
+        33: 700000000,
+        34: 1200000000,
+        35: 2000000000,
+    }
+    return cost_table.get(level, 2000000000)
 
 
-def get_shield_cost(level):
-  base_cost = get_enhance_cost(level)
+def get_shield_cost(level, is_rebirth):
+  base_cost = get_enhance_cost(level, is_rebirth)
   return max(50000, base_cost * 15)
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (35단계 확장)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2 환생: 25단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
-    0: {
-        "name": "0단계 : 무취 지온의 공간",
-        "desc": "아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.",
-        "price": 0,
-        "color": "#4a5568",
-        "tier": 1,
+    False: {
+        0: {
+            "name": "0단계 : 무취 지온의 공간",
+            "desc": "아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.",
+            "price": 0,
+            "color": "#4a5568",
+            "tier": 1,
+        },
+        1: {
+            "name": "1단계 : 스쳐가는 지온냄새",
+            "desc": "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.",
+            "price": 150,
+            "color": "#718096",
+            "tier": 1,
+        },
+        2: {
+            "name": "2단계 : 은은한 자이온냄새",
+            "desc": "체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.",
+            "price": 400,
+            "color": "#38a169",
+            "tier": 1,
+        },
+        3: {
+            "name": "3단계 : 습한 지온냄새",
+            "desc": "사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.",
+            "price": 600,
+            "color": "#276749",
+            "tier": 1,
+        },
+        4: {
+            "name": "4단계 : 진득한 자이온냄새",
+            "desc": "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.",
+            "price": 800,
+            "color": "#319795",
+            "tier": 1,
+        },
+        5: {
+            "name": "5단계 : 자극적인 지온냄새",
+            "desc": "지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.",
+            "price": 3000,
+            "color": "#2c7a7b",
+            "tier": 1,
+        },
+        6: {
+            "name": "6단계 : 풍부한 자이온냄새",
+            "desc": "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.",
+            "price": 3500,
+            "color": "#3182ce",
+            "tier": 2,
+        },
+        7: {
+            "name": "7단계 : 압도적인 지온냄새",
+            "desc": "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.",
+            "price": 6100,
+            "color": "#2b6cb0",
+            "tier": 2,
+        },
+        8: {
+            "name": "8단계 : 폭발하는 지온냄새",
+            "desc": "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.",
+            "price": 10000,
+            "color": "#805ad5",
+            "tier": 2,
+        },
+        9: {
+            "name": "9단계 : 시공을 뒤흔드는 지온냄새",
+            "desc": "화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.",
+            "price": 20000,
+            "color": "#6b46c1",
+            "tier": 2,
+        },
+        10: {
+            "name": "10단계 : 치명적인 자이온냄새",
+            "desc": "맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.",
+            "price": 35100,
+            "color": "#d69e2e",
+            "tier": 2,
+        },
+        11: {
+            "name": "11단계 : 환각을 부르는 지온냄새",
+            "desc": (
+                "썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이"
+                " 스친다."
+            ),
+            "price": 160000,
+            "color": "#b7791f",
+            "tier": 3,
+        },
+        12: {
+            "name": "12단계 : 공간지배 자이온냄새",
+            "desc": "방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.",
+            "price": 350000,
+            "color": "#dd6b20",
+            "tier": 3,
+        },
+        13: {
+            "name": "13단계 : 전성기 지온냄새",
+            "desc": (
+                "음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향."
+            ),
+            "price": 1000000,
+            "color": "#c05621",
+            "tier": 3,
+        },
+        14: {
+            "name": "14단계 : 신성한 자이온냄새",
+            "desc": "너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.",
+            "price": 3000000,
+            "color": "#e53e3e",
+            "tier": 3,
+        },
+        15: {
+            "name": "15단계 : 오리지널 지온냄새",
+            "desc": "하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.",
+            "price": 7500000,
+            "color": "#9b2c2c",
+            "tier": 3,
+        },
+        16: {
+            "name": "16단계 : 우주관통 자이온냄새",
+            "desc": (
+                "대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이"
+                " 폭풍."
+            ),
+            "price": 14200000,
+            "color": "#00f0ff",
+            "tier": 4,
+        },
+        17: {
+            "name": "17단계 : 차원균열 자이온냄새",
+            "desc": (
+                "지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다."
+            ),
+            "price": 20000000,
+            "color": "#ff00ea",
+            "tier": 4,
+        },
+        18: {
+            "name": "18단계 : Absolute 자이온냄새",
+            "desc": (
+                "우주 만물의 원소를 전부 지온이의 체취로 치환해버리는"
+                " 절대악취."
+            ),
+            "price": 30000000,
+            "color": "#ffe600",
+            "tier": 4,
+        },
+        19: {
+            "name": "19단계 : 초월 지온냄새",
+            "desc": "인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.",
+            "price": 47500000,
+            "color": "#ff0055",
+            "tier": 4,
+        },
+        20: {
+            "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
+            "desc": (
+                "자이온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이"
+                " 빨래 냄새."
+            ),
+            "price": 68300000,
+            "color": "#ffaa00",
+            "tier": 4,
+        },
+        21: {
+            "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱 냄새",
+            "desc": (
+                "안 씻고 버티는 지온이를 잡으려고 자이온맘이 휘두른 등짝의"
+                " 내음."
+            ),
+            "price": 101000000,
+            "color": "#ff4500",
+            "tier": 5,
+        },
+        22: {
+            "name": "22단계 : 자이온맘의 전설의 흙된장국 냄새",
+            "desc": (
+                "지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 자이온맘의"
+                " 특제 국물."
+            ),
+            "price": 160000000,
+            "color": "#ff007f",
+            "tier": 5,
+        },
+        23: {
+            "name": "23단계 : 자이온맘의 100년 숙성 원액 냄새",
+            "desc": (
+                "지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어"
+                " 숙성시켰다."
+            ),
+            "price": 230000000,
+            "color": "#7b00ff",
+            "tier": 5,
+        },
+        24: {
+            "name": "24단계 : 자이온맘의 지온스프레이 냄새",
+            "desc": (
+                "방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다"
+                " 역관람당함."
+            ),
+            "price": 300000000,
+            "color": "#0088ff",
+            "tier": 5,
+        },
+        25: {
+            "name": "25단계 : 자이온맘의 대인배적인 냄새",
+            "desc": (
+                "이런 지온이라도 품에 안아주는 자이온맘의 대인배적 냄새"
+                " 포용력."
+            ),
+            "price": 400000000,
+            "color": "#00ffaa",
+            "tier": 5,
+        },
+        26: {
+            "name": "26단계 : 자이온맘의 궁극 필살기 냄새",
+            "desc": (
+                "지온이 방 문을 강제로 열고 환기시키며 뿜어내는 자이온맘의"
+                " 분노."
+            ),
+            "price": 1800000000,
+            "color": "#ccff00",
+            "tier": 6,
+        },
+        27: {
+            "name": "27단계 : 자이온맘의 창조와 냄새",
+            "desc": "지온이의 모든 악취를 정화하려다 자이온맘마저 구속당한 경지.",
+            "price": 2500000000,
+            "color": "#fffb00",
+            "tier": 6,
+        },
+        28: {
+            "name": "28단계 : 자이온맘의 권능 클래식 지온냄새",
+            "desc": (
+                "우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다."
+            ),
+            "price": 5500000000,
+            "color": "#ffffff",
+            "tier": 6,
+        },
+        29: {
+            "name": "29단계 : 클래식 자이온맘",
+            "desc": (
+                "모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의"
+                " 여신."
+            ),
+            "price": 10500000000,
+            "color": "#ff00aa",
+            "tier": 6,
+        },
+        30: {
+            "name": "30단계 : 태초의 자이온맘 ",
+            "desc": "우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.",
+            "price": 20000000000,
+            "color": "#00ffff",
+            "tier": 6,
+        },
+        31: {
+            "name": "31단계 : 하이퍼 지온 싱귤래리티",
+            "desc": (
+                "냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를"
+                " 빨아들인다."
+            ),
+            "price": 45000000000,
+            "color": "#7000ff",
+            "tier": 6,
+        },
+        32: {
+            "name": "32단계 : 멀티버스 지온 에센스",
+            "desc": "모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.",
+            "price": 90000000000,
+            "color": "#ff00e1",
+            "tier": 6,
+        },
+        33: {
+            "name": "33단계 : 인피니티 자이온 페트리코",
+            "desc": "영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.",
+            "price": 200000000000,
+            "color": "#00ff66",
+            "tier": 6,
+        },
+        34: {
+            "name": "34단계 : 오메가 자이온 제네시스",
+            "desc": "지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.",
+            "price": 500000000000,
+            "color": "#ff6600",
+            "tier": 6,
+        },
+        35: {
+            "name": "35단계 : ★디 오리지널 앱솔루트 지온★",
+            "desc": "우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.",
+            "price": float("inf"),
+            "color": "#ffffff",
+            "tier": 6,
+        },
     },
-    1: {
-        "name": "1단계 : 스쳐가는 지온냄새",
-        "desc": "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.",
-        "price": 150,
-        "color": "#718096",
-        "tier": 1,
-    },
-    2: {
-        "name": "2단계 : 은은한 자이온냄새",
-        "desc": "체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.",
-        "price": 400,
-        "color": "#38a169",
-        "tier": 1,
-    },
-    3: {
-        "name": "3단계 : 습한 지온냄새",
-        "desc": "사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.",
-        "price": 600,
-        "color": "#276749",
-        "tier": 1,
-    },
-    4: {
-        "name": "4단계 : 진득한 자이온냄새",
-        "desc": "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.",
-        "price": 800,
-        "color": "#319795",
-        "tier": 1,
-    },
-    5: {
-        "name": "5단계 : 자극적인 지온냄새",
-        "desc": "지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.",
-        "price": 3000,
-        "color": "#2c7a7b",
-        "tier": 1,
-    },
-    6: {
-        "name": "6단계 : 풍부한 자이온냄새",
-        "desc": "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.",
-        "price": 3500,
-        "color": "#3182ce",
-        "tier": 2,
-    },
-    7: {
-        "name": "7단계 : 압도적인 지온냄새",
-        "desc": "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.",
-        "price": 6100,
-        "color": "#2b6cb0",
-        "tier": 2,
-    },
-    8: {
-        "name": "8단계 : 폭발하는 지온냄새",
-        "desc": "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.",
-        "price": 10000,
-        "color": "#805ad5",
-        "tier": 2,
-    },
-    9: {
-        "name": "9단계 : 시공을 뒤흔드는 지온냄새",
-        "desc": "화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.",
-        "price": 20000,
-        "color": "#6b46c1",
-        "tier": 2,
-    },
-    10: {
-        "name": "10단계 : 치명적인 자이온냄새",
-        "desc": "맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.",
-        "price": 35100,
-        "color": "#d69e2e",
-        "tier": 2,
-    },
-    11: {
-        "name": "11단계 : 환각을 부르는 지온냄새",
-        "desc": "썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.",
-        "price": 160000,
-        "color": "#b7791f",
-        "tier": 3,
-    },
-    12: {
-        "name": "12단계 : 공간지배 자이온냄새",
-        "desc": "방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.",
-        "price": 350000,
-        "color": "#dd6b20",
-        "tier": 3,
-    },
-    13: {
-        "name": "13단계 : 전성기 지온냄새",
-        "desc": "음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.",
-        "price": 1000000,
-        "color": "#c05621",
-        "tier": 3,
-    },
-    14: {
-        "name": "14단계 : 신성한 자이온냄새",
-        "desc": "너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.",
-        "price": 3000000,
-        "color": "#e53e3e",
-        "tier": 3,
-    },
-    15: {
-        "name": "15단계 : 오리지널 지온냄새",
-        "desc": "하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.",
-        "price": 7500000,
-        "color": "#9b2c2c",
-        "tier": 3,
-    },
-    16: {
-        "name": "16단계 : 우주관통 자이온냄새",
-        "desc": "대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.",
-        "price": 14200000,
-        "color": "#00f0ff",
-        "tier": 4,
-    },
-    17: {
-        "name": "17단계 : 차원균열 자이온냄새",
-        "desc": "지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.",
-        "price": 20000000,
-        "color": "#ff00ea",
-        "tier": 4,
-    },
-    18: {
-        "name": "18단계 : Absolute 자이온냄새",
-        "desc": "우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.",
-        "price": 30000000,
-        "color": "#ffe600",
-        "tier": 4,
-    },
-    19: {
-        "name": "19단계 : 초월 지온냄새",
-        "desc": "인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.",
-        "price": 47500000,
-        "color": "#ff0055",
-        "tier": 4,
-    },
-    20: {
-        "name": "20단계 : 자이온맘의 포근한 집밥 냄새",
-        "desc": "자이온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.",
-        "price": 68300000,
-        "color": "#ffaa00",
-        "tier": 4,
-    },
-    21: {
-        "name": "21단계 : 자이온맘의 엄격한 등짝 스매싱 냄새",
-        "desc": "안 씻고 버티는 지온이를 잡으려고 자이온맘이 휘두른 등짝의 내음.",
-        "price": 101000000,
-        "color": "#ff4500",
-        "tier": 5,
-    },
-    22: {
-        "name": "22단계 : 자이온맘의 전설의 흙된장국 냄새",
-        "desc": "지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 자이온맘의 특제 국물.",
-        "price": 160000000,
-        "color": "#ff007f",
-        "tier": 5,
-    },
-    23: {
-        "name": "23단계 : 자이온맘의 100년 숙성 원액 냄새",
-        "desc": "지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.",
-        "price": 230000000,
-        "color": "#7b00ff",
-        "tier": 5,
-    },
-    24: {
-        "name": "24단계 : 자이온맘의 지온스프레이 냄새",
-        "desc": "방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.",
-        "price": 300000000,
-        "color": "#0088ff",
-        "tier": 5,
-    },
-    25: {
-        "name": "25단계 : 자이온맘의 대안배적인 냄새",
-        "desc": "이런 지온이라도 품에 안아주는 자이온맘의 대인배적 냄새 포용력.",
-        "price": 400000000,
-        "color": "#00ffaa",
-        "tier": 5,
-    },
-    26: {
-        "name": "26단계 : 자이온맘의 궁극 필살기 냄새",
-        "desc": "지온이 방 문을 강제로 열고 환기시키며 뿜어내는 자이온맘의 분노.",
-        "price": 1800000000,
-        "color": "#ccff00",
-        "tier": 6,
-    },
-    27: {
-        "name": "27단계 : 자이온맘의 창조와 냄새",
-        "desc": "지온이의 모든 악취를 정화하려다 자이온맘마저 구속당한 경지.",
-        "price": 2500000000,
-        "color": "#fffb00",
-        "tier": 6,
-    },
-    28: {
-        "name": "28단계 : 자이온맘의 권능 클래식 지온냄새",
-        "desc": "우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.",
-        "price": 5500000000,
-        "color": "#ffffff",
-        "tier": 6,
-    },
-    29: {
-        "name": "29단계 : 클래식 자이온맘",
-        "desc": "모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.",
-        "price": 10500000000,
-        "color": "#ff00aa",
-        "tier": 6,
-    },
-    30: {
-        "name": "30단계 : 태초의 자이온맘 ",
-        "desc": "우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.",
-        "price": 20000000000,
-        "color": "#00ffff",
-        "tier": 6,
-    },
-    31: {
-        "name": "31단계 : 하이퍼 지온 싱귤래리티",
-        "desc": "냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.",
-        "price": 45000000000,
-        "color": "#7000ff",
-        "tier": 6,
-    },
-    32: {
-        "name": "32단계 : 멀티버스 지온 에센스",
-        "desc": "모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.",
-        "price": 90000000000,
-        "color": "#ff00e1",
-        "tier": 6,
-    },
-    33: {
-        "name": "33단계 : 인피니티 자이온 페트리코",
-        "desc": "영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.",
-        "price": 200000000000,
-        "color": "#00ff66",
-        "tier": 6,
-    },
-    34: {
-        "name": "34단계 : 오메가 자이온 제네시스",
-        "desc": "지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.",
-        "price": 500000000000,
-        "color": "#ff6600",
-        "tier": 6,
-    },
-    35: {
-        "name": "35단계 : ★디 오리지널 앱솔루트 지온★",
-        "desc": "우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.",
-        "price": float("inf"),
-        "color": "#ffffff",
-        "tier": 6,
+    True: {
+        0: {
+            "name": "환생 0단계 : 초신성 핵폐기물 지온",
+            "desc": "환생을 거쳐 새롭게 압축된 태초의 고밀도 방사능 악취.",
+            "price": 500000000,
+            "color": "#ff0055",
+            "tier": 1,
+        },
+        1: {
+            "name": "환생 1단계 : 안드로메다 암모니아 코어",
+            "desc": "안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.",
+            "price": 1200000000,
+            "color": "#00ffff",
+            "tier": 1,
+        },
+        2: {
+            "name": "환생 2단계 : 화이트홀 하이드로겐 냄새",
+            "desc": "우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.",
+            "price": 3000000000,
+            "color": "#ffffff",
+            "tier": 1,
+        },
+        3: {
+            "name": "환생 3단계 : 쿼크 글루온 악취 입자",
+            "desc": "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.",
+            "price": 7000000000,
+            "color": "#ffaa00",
+            "tier": 2,
+        },
+        4: {
+            "name": "환생 4단계 : 차원왜곡 타임루프 찌든내",
+            "desc": "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.",
+            "price": 15000000000,
+            "color": "#9b2c2c",
+            "tier": 2,
+        },
+        5: {
+            "name": "환생 5단계 : 네메시스 다크매터 발냄새",
+            "desc": "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.",
+            "price": 35000000000,
+            "color": "#38a169",
+            "tier": 2,
+        },
+        6: {
+            "name": "환생 6단계 : 슈퍼거대 블랙홀 이벤트호라이즌",
+            "desc": "모든 물리 법칙이 붕괴하고 오직 지온이의 체취만 남는 경계선.",
+            "price": 80000000000,
+            "color": "#805ad5",
+            "tier": 3,
+        },
+        7: {
+            "name": "환생 7단계 : 감마선 버스트 지온 플레어",
+            "desc": "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.",
+            "price": 180000000000,
+            "color": "#e53e3e",
+            "tier": 3,
+        },
+        8: {
+            "name": "환생 8단계 : 하이퍼노바 지온 코어 붕괴",
+            "desc": "거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.",
+            "price": 400000000000,
+            "color": "#ff4500",
+            "tier": 3,
+        },
+        9: {
+            "name": "환생 9단계 : 엘더블루 제네시스 에센스",
+            "desc": "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.",
+            "price": 900000000000,
+            "color": "#0088ff",
+            "tier": 4,
+        },
+        10: {
+            "name": "환생 10단계 : 카이퍼 벨트 코스믹 더스트",
+            "desc": "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.",
+            "price": 2000000000000,
+            "color": "#cbd5e1",
+            "tier": 4,
+        },
+        11: {
+            "name": "환생 11단계 : 오르트 클라우드 딥 프리즈",
+            "desc": "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.",
+            "price": 4500000000000,
+            "color": "#319795",
+            "tier": 4,
+        },
+        12: {
+            "name": "환생 12단계 : 태양풍 플라즈마 제트 스트림",
+            "desc": "태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.",
+            "price": 10000000000000,
+            "color": "#f59e0b",
+            "tier": 5,
+        },
+        13: {
+            "name": "환생 13단계 : 마그네타 자기장 폭풍",
+            "desc": "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.",
+            "price": 25000000000000,
+            "color": "#7000ff",
+            "tier": 5,
+        },
+        14: {
+            "name": "환생 14단계 : 펄서 로테이션 시그널",
+            "desc": "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.",
+            "price": 60000000000000,
+            "color": "#00ff66",
+            "tier": 5,
+        },
+        15: {
+            "name": "환생 15단계 : 웜홀 크로스오버 디멘션",
+            "desc": "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.",
+            "price": 150000000000000,
+            "color": "#ff00ea",
+            "tier": 6,
+        },
+        16: {
+            "name": "환생 16단계 : 스트링 시스코어 엠피리어",
+            "desc": "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.",
+            "price": 350000000000000,
+            "color": "#ccff00",
+            "tier": 6,
+        },
+        17: {
+            "name": "환생 17단계 : 센타우루스 알파 코어",
+            "desc": "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.",
+            "price": 800000000000000,
+            "color": "#ff6600",
+            "tier": 6,
+        },
+        18: {
+            "name": "환생 18단계 : 페가수스 별자리 네뷸라",
+            "desc": "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.",
+            "price": 2000000000000000,
+            "color": "#00f0ff",
+            "tier": 6,
+        },
+        19: {
+            "name": "환생 19단계 : 세인트 오메가 얼티밋 에센스",
+            "desc": "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.",
+            "price": 5000000000000000,
+            "color": "#ffe600",
+            "tier": 6,
+        },
+        20: {
+            "name": "환생 20단계 : 코스믹 인피니티 싱귤래리티",
+            "desc": "모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.",
+            "price": 12000000000000000,
+            "color": "#ff00aa",
+            "tier": 6,
+        },
+        21: {
+            "name": "환생 21단계 : 트랜스센던탈 앱솔루트 가디언",
+            "desc": "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.",
+            "price": 30000000000000000,
+            "color": "#ffffff",
+            "tier": 6,
+        },
+        22: {
+            "name": "환생 22단계 : 하이퍼 자이온 디바인 코어",
+            "desc": "지온이라는 존재 자체가 우주의 신성한 법칙으로 등극한 상태.",
+            "price": 80000000000000000,
+            "color": "#7b00ff",
+            "tier": 6,
+        },
+        23: {
+            "name": "환생 23단계 : 옴니버스 마스터피스 악취",
+            "desc": "모든 평행세계를 통틀어 단 하나만 존재하는 완벽한 걸작 악취.",
+            "price": 200000000000000000,
+            "color": "#00ffff",
+            "tier": 6,
+        },
+        24: {
+            "name": "환생 24단계 : 이터널 제네시스 울티마",
+            "desc": "우주의 탄생과 종말을 영원히 반복하게 만드는 궁극의 고리.",
+            "price": 500000000000000000,
+            "color": "#ff4500",
+            "tier": 6,
+        },
+        25: {
+            "name": "환생 25단계 : ★궁극의 트루 제네시스 지온★",
+            "desc": "모든 환생과 차원을 초월하여 완성된 전 우주 최강의 앱솔루트 향.",
+            "price": float("inf"),
+            "color": "#ffffff",
+            "tier": 6,
+        },
     },
 }
 
 PROB_TABLE = {
-    0: (100.0, 0.0, 0.0, 0.0),
-    1: (100.0, 0.0, 0.0, 0.0),
-    2: (100.0, 0.0, 0.0, 0.0),
-    3: (95.0, 5.0, 0.0, 0.0),
-    4: (95.0, 5.0, 0.0, 0.0),
-    5: (90.0, 10.0, 0.0, 0.0),
-    6: (90.0, 8.0, 2.0, 0.0),
-    7: (90.0, 5.0, 5.0, 0.0),
-    8: (85.0, 10.0, 5.0, 0.0),
-    9: (80.0, 15.0, 5.0, 0.0),
-    10: (80.0, 15.0, 5.0, 0.0),
-    11: (75.0, 15.0, 5.0, 5.0),
-    12: (70.0, 15.0, 5.0, 10.0),
-    13: (70.0, 15.0, 7.0, 8.0),
-    14: (65.0, 15.0, 10.0, 10.0),
-    15: (60.0, 20.0, 10.0, 10.0),
-    16: (60.0, 18.0, 12.0, 10.0),
-    17: (55.0, 20.0, 15.0, 10.0),
-    18: (50.0, 20.0, 17.0, 13.0),
-    19: (50.0, 20.0, 20.0, 10.0),
-    20: (45.0, 22.0, 23.0, 10.0),
-    21: (40.0, 25.0, 25.0, 10.0),
-    22: (40.0, 23.0, 27.0, 10.0),
-    23: (40.0, 20.0, 30.0, 10.0),
-    24: (40.0, 18.0, 32.0, 10.0),
-    25: (35.0, 25.0, 30.0, 10.0),
-    26: (50.0, 20.0, 25.0, 5.0),
-    27: (40.0, 25.0, 30.0, 5.0),
-    28: (30.0, 30.0, 35.0, 5.0),
-    29: (20.0, 35.0, 40.0, 5.0),
-    30: (15.0, 35.0, 45.0, 5.0),
-    31: (12.0, 35.0, 48.0, 5.0),
-    32: (10.0, 35.0, 50.0, 5.0),
-    33: (8.0, 37.0, 50.0, 5.0),
-    34: (5.0, 40.0, 50.0, 5.0),
+    False: {
+        0: (100.0, 0.0, 0.0, 0.0),
+        1: (100.0, 0.0, 0.0, 0.0),
+        2: (100.0, 0.0, 0.0, 0.0),
+        3: (95.0, 5.0, 0.0, 0.0),
+        4: (95.0, 5.0, 0.0, 0.0),
+        5: (90.0, 10.0, 0.0, 0.0),
+        6: (90.0, 8.0, 2.0, 0.0),
+        7: (90.0, 5.0, 5.0, 0.0),
+        8: (85.0, 10.0, 5.0, 0.0),
+        9: (80.0, 15.0, 5.0, 0.0),
+        10: (80.0, 15.0, 5.0, 0.0),
+        11: (75.0, 15.0, 5.0, 5.0),
+        12: (70.0, 15.0, 5.0, 10.0),
+        13: (70.0, 15.0, 7.0, 8.0),
+        14: (65.0, 15.0, 10.0, 10.0),
+        15: (60.0, 20.0, 10.0, 10.0),
+        16: (60.0, 18.0, 12.0, 10.0),
+        17: (55.0, 20.0, 15.0, 10.0),
+        18: (50.0, 20.0, 17.0, 13.0),
+        19: (50.0, 20.0, 20.0, 10.0),
+        20: (45.0, 22.0, 23.0, 10.0),
+        21: (40.0, 25.0, 25.0, 10.0),
+        22: (40.0, 23.0, 27.0, 10.0),
+        23: (40.0, 20.0, 30.0, 10.0),
+        24: (40.0, 18.0, 32.0, 10.0),
+        25: (35.0, 25.0, 30.0, 10.0),
+        26: (50.0, 20.0, 25.0, 5.0),
+        27: (40.0, 25.0, 30.0, 5.0),
+        28: (30.0, 30.0, 35.0, 5.0),
+        29: (20.0, 35.0, 40.0, 5.0),
+        30: (15.0, 35.0, 45.0, 5.0),
+        31: (12.0, 35.0, 48.0, 5.0),
+        32: (10.0, 35.0, 50.0, 5.0),
+        33: (8.0, 37.0, 50.0, 5.0),
+        34: (5.0, 40.0, 50.0, 5.0),
+    },
+    True: {
+        0: (100.0, 0.0, 0.0, 0.0),
+        1: (95.0, 5.0, 0.0, 0.0),
+        2: (90.0, 8.0, 2.0, 0.0),
+        3: (85.0, 10.0, 5.0, 0.0),
+        4: (80.0, 15.0, 5.0, 0.0),
+        5: (75.0, 15.0, 5.0, 5.0),
+        6: (70.0, 15.0, 7.0, 8.0),
+        7: (65.0, 18.0, 10.0, 7.0),
+        8: (60.0, 20.0, 10.0, 10.0),
+        9: (55.0, 20.0, 15.0, 10.0),
+        10: (50.0, 22.0, 18.0, 10.0),
+        11: (45.0, 25.0, 20.0, 10.0),
+        12: (40.0, 25.0, 25.0, 10.0),
+        13: (38.0, 25.0, 27.0, 10.0),
+        14: (35.0, 25.0, 30.0, 10.0),
+        15: (32.0, 28.0, 30.0, 10.0),
+        16: (30.0, 30.0, 35.0, 5.0),
+        17: (25.0, 32.0, 38.0, 5.0),
+        18: (20.0, 35.0, 40.0, 5.0),
+        19: (18.0, 35.0, 42.0, 5.0),
+        20: (15.0, 35.0, 45.0, 5.0),
+        21: (12.0, 38.0, 45.0, 5.0),
+        22: (10.0, 40.0, 45.0, 5.0),
+        23: (8.0, 42.0, 45.0, 5.0),
+        24: (5.0, 45.0, 45.0, 5.0),
+    },
 }
 
 CRITICAL_RATE = 0.05
-PITY_MAX = 3  # 자이온맘의 가호 3번으로 변경
+PITY_MAX = 3
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
+if "is_rebirth" not in st.session_state:
+  st.session_state.is_rebirth = False
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "max_level" not in st.session_state:
@@ -397,6 +687,8 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "rebirth_count" not in st.session_state:
+  st.session_state.rebirth_count = 0
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -404,11 +696,12 @@ if "pity_count" not in st.session_state:
 
 
 def run_enhance():
+  max_lvl = 25 if st.session_state.is_rebirth else 35
   curr = st.session_state.level
-  if curr >= 35:
+  if curr >= max_lvl:
     return
 
-  cost = get_enhance_cost(curr)
+  cost = get_enhance_cost(curr, st.session_state.is_rebirth)
   if st.session_state.money < cost:
     st.session_state.status = "NOT_ENOUGH_MONEY"
     return
@@ -423,7 +716,8 @@ def run_enhance():
       st.session_state.max_level = st.session_state.level
     return
 
-  sp, down_p, dp, hold_p = PROB_TABLE.get(curr, (5.0, 40.0, 50.0, 5.0))
+  current_prob = PROB_TABLE[st.session_state.is_rebirth]
+  sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
   r = random.uniform(0, 100)
 
   success_limit = sp
@@ -432,7 +726,7 @@ def run_enhance():
 
   if r < success_limit:
     st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= 35:
+    if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
@@ -443,30 +737,31 @@ def run_enhance():
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
-    st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
+    st.session_state.tears = min(80, st.session_state.tears + 1)
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
+      st.session_state.tears = min(80, st.session_state.tears + 1)
     else:
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(80, st.session_state.tears + 2)  # 눈물 보유한도 80개 적용
+      st.session_state.tears = min(80, st.session_state.tears + 2)
   else:
     st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
-    st.session_state.tears = min(80, st.session_state.tears + 1)  # 눈물 보유한도 80개 적용
+    st.session_state.tears = min(80, st.session_state.tears + 1)
 
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
 
 def dev_force_success():
+  max_lvl = 25 if st.session_state.is_rebirth else 35
   curr = st.session_state.level
-  if curr < 35:
+  if curr < max_lvl:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
@@ -477,12 +772,24 @@ def sell():
   curr = st.session_state.level
   if curr == 0:
     return
-  price_val = SMELL_DB[curr]["price"]
+  price_val = SMELL_DB[st.session_state.is_rebirth][curr]["price"]
   if price_val == float("inf"):
     st.session_state.money = float("inf")
   else:
     st.session_state.money += price_val
   st.session_state.level = 0
+  st.session_state.status = "READY"
+
+
+def trigger_rebirth():
+  st.session_state.is_rebirth = True
+  st.session_state.level = 0
+  st.session_state.max_level = 0
+  st.session_state.money += 100000000000  # 환생 보너스 골드
+  st.session_state.shield = 4
+  st.session_state.tears = 50
+  st.session_state.pity_count = 0
+  st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
 
 
@@ -539,9 +846,39 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
+  # 환생 모드일 때 모달/선택창 팝업 구현 (35단계 도달 및 미환생 상태일 때)
+  if not st.session_state.is_rebirth and st.session_state.level >= 35:
+    st.markdown(
+        "<div"
+        " style='background:rgba(220,38,38,0.2);border:2px solid"
+        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
+        "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
+        "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
+        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생</b>하시겠습니까?</p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    b_col1, b_col2 = st.columns(2)
+    with b_col1:
+      if st.button("✨ 환생하기", use_container_width=True):
+        trigger_rebirth()
+        st.rerun()
+    with b_col2:
+      if st.button("🔒 아니오", use_container_width=True):
+        st.info("현재 단계를 유지합니다.")
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+  mode_title = (
+      "🌀 [시즌 2] 얼티밋 블랙홀"
+      if st.session_state.is_rebirth
+      else "🌌 [시즌 1] 솔라 시스템"
+  )
   st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🛠️ 시스템"
-      " 설정</h4>",
+      f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
+      f" color:#fde68a;'>{mode_title}</h4>",
       unsafe_allow_html=True,
   )
   dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
@@ -556,7 +893,7 @@ with left_col:
   with s_col1:
     st.markdown(
         f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:15px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
         f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
         unsafe_allow_html=True,
     )
@@ -565,7 +902,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 80개</div></div>",  # 눈물 보유한도 80개 적용
+        " 80개</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -574,7 +911,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 4개</div></div>",  # 방지권 보유한도 4개 적용
+        " 4개</div></div>",
         unsafe_allow_html=True,
     )
     st.write("")
@@ -593,7 +930,8 @@ with left_col:
   )
 
   curr_lvl = st.session_state.level
-  sp, down_p, dp, hold_p = PROB_TABLE.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
+  current_prob = PROB_TABLE[st.session_state.is_rebirth]
+  sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
   st.markdown(
       f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
       f" 강화 확률 ({curr_lvl}단계)</h4>",
@@ -618,20 +956,20 @@ with left_col:
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
-    current_shield_cost = get_shield_cost(st.session_state.level)
+    current_shield_cost = get_shield_cost(
+        st.session_state.level, st.session_state.is_rebirth
+    )
     st.markdown(
         f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 4개<br><b>가격:</b>"
-        f" <span style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+        f"<b>보유한도:</b> 최대 4개<br><b>가격:</b> <span"
+        f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 4
+    can_buy_shield = st.session_state.shield < 4
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
-      if st.session_state.level < 18:
-        st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 4:
+      if st.session_state.shield >= 4:
         st.warning("최대 4개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
@@ -642,10 +980,12 @@ with left_col:
         st.error("금액이 부족합니다.")
 
   with tab_shop2:
-    if st.session_state.level >= 32:
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    limit_lvl = 18 if st.session_state.is_rebirth else 32
+    if st.session_state.level >= limit_lvl:
       st.markdown(
           "<div style='font-size:13px; color:#ef4444; font-weight:700;"
-          " margin-bottom:8px;'>⚠️ 32단계 이상부터는 눈물을 사용할 수"
+          " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
           " 없습니다!</div>",
           unsafe_allow_html=True,
       )
@@ -658,15 +998,16 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    can_use_tears = st.session_state.level < 32
+    can_use_tears = st.session_state.level < limit_lvl
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
-      if st.session_state.level >= 32:
-        st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
+      if st.session_state.level >= limit_lvl:
+        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears >= 20:
         st.session_state.tears -= 20
-        # 100% 확률 성공 로직 적용
         add_lvl = random.choice([1, 2, 3])
-        st.session_state.level = min(35, st.session_state.level + add_lvl)
+        st.session_state.level = min(
+            max_lvl, st.session_state.level + add_lvl
+        )
         st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
         st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
         st.rerun()
@@ -684,12 +1025,13 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  max_lvl = 25 if st.session_state.is_rebirth else 35
   if st.button(
       "🔥 냄새 강화 실행",
       use_container_width=True,
-      disabled=(st.session_state.level >= 35),
+      disabled=(st.session_state.level >= max_lvl),
   ):
-    cost = get_enhance_cost(st.session_state.level)
+    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
@@ -701,7 +1043,7 @@ with left_col:
     if st.button(
         "✨ [DEV] 무조건 성공",
         use_container_width=True,
-        disabled=(st.session_state.level >= 35),
+        disabled=(st.session_state.level >= max_lvl),
     ):
       dev_force_success()
       st.rerun()
@@ -715,12 +1057,15 @@ with left_col:
 
 with right_col:
   current_level = st.session_state.level
-  curr_data = SMELL_DB[current_level]
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
   card_color = curr_data["color"]
   card_title = curr_data["name"]
   card_desc = curr_data["desc"]
   card_price = format_gold(curr_data["price"])
-  current_cost = format_gold(get_enhance_cost(current_level))
+  current_cost = format_gold(
+      get_enhance_cost(current_level, st.session_state.is_rebirth)
+  )
   tier = curr_data["tier"]
   status = st.session_state.status
 
@@ -748,10 +1093,6 @@ with right_col:
                 pointer-events: none;
                 opacity: 1;
                 transition: opacity 0.1s ease-in-out;
-            }}
-
-            .cinematic-ui.visible {{
-                opacity: 1;
             }}
 
             .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
@@ -794,13 +1135,13 @@ with right_col:
         </div>
 
         <script>
-            const uiElement = document.getElementById('cinematicUi');
-
             const currentLevel = {current_level};
+            const maxLvl = {max_lvl};
+            const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
             const status = "{status}";
-            const isFinalSuccess = (currentLevel === 35 && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
+            const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
 
-            if (currentLevel >= 20 || isFinalSuccess) {{
+            if (currentLevel >= 15 || isFinalSuccess) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
@@ -808,7 +1149,6 @@ with right_col:
             }}
 
             const statusText = document.getElementById('statusText');
-            
             const tierColor = "{card_color}";
             let statusColor = "#38bdf8";
             let particleSize = 0.25;
@@ -816,7 +1156,7 @@ with right_col:
             let glowIntensity = 12;
 
             if (isFinalSuccess) {{
-                statusText.innerText = "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 궁극의 35단계 최종 강화 성공!! 👑🌌";
+                statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 환생 궁극 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 궁극의 최종 강화 성공!! 👑🌌";
                 statusColor = "#ffffff";
                 particleSize = 0.6;
                 particleSpeed = 2.5;
@@ -856,7 +1196,7 @@ with right_col:
                 statusColor = "#94a3b8";
                 particleSpeed = 0.4;
             }} else {{
-                statusText.innerText = "READY - 우주 에너지가 차분히 집중됩니다";
+                statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
             }}
             
             statusText.style.color = statusColor;
@@ -892,7 +1232,7 @@ with right_col:
             }}
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
-                color: isFinalSuccess ? 0xffd700 : 0xffffff,
+                color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
                 size: isFinalSuccess ? 0.12 : 0.07,
                 transparent: true,
                 opacity: 0.7,
@@ -939,54 +1279,77 @@ with right_col:
             let baseGeo;
             const lvl = {current_level};
 
-            if (lvl <= 2) {{
-                baseGeo = new THREE.TetrahedronGeometry(2.3);
-            }} else if (lvl <= 5) {{
-                baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-            }} else if (lvl <= 8) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-            }} else if (lvl <= 11) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-            }} else if (lvl <= 14) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-            }} else if (lvl <= 17) {{
-                baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-            }} else if (lvl == 18) {{
-                baseGeo = new THREE.OctahedronGeometry(2.5);
-            }} else if (lvl == 19) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.4);
-            }} else if (lvl == 20) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.4);
-            }} else if (lvl == 21) {{
-                baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-            }} else if (lvl == 22) {{
-                baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-            }} else if (lvl == 23) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-            }} else if (lvl == 24) {{
-                baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-            }} else if (lvl == 25) {{
-                baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-            }} else if (lvl == 26) {{
-                baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-            }} else if (lvl == 27) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-            }} else if (lvl == 28) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-            }} else if (lvl == 29) {{
-                baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-            }} else if (lvl == 30) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-            }} else if (lvl == 31) {{
-                baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-            }} else if (lvl == 32) {{
-                baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-            }} else if (lvl == 33) {{
-                baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-            }} else if (lvl == 34) {{
-                baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+            // 환생 모드 여부에 따라 완전히 다른 독창적 3D 다각형 도형들 적용
+            if (isRebirth) {{
+                if (lvl <= 3) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.3);
+                }} else if (lvl <= 6) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.2);
+                }} else if (lvl <= 9) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.3);
+                }} else if (lvl <= 12) {{
+                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
+                }} else if (lvl <= 15) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
+                }} else if (lvl <= 18) {{
+                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
+                }} else if (lvl <= 21) {{
+                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
+                }} else if (lvl <= 24) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
+                }} else {{
+                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
+                }}
             }} else {{
-                baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                if (lvl <= 2) {{
+                    baseGeo = new THREE.TetrahedronGeometry(2.3);
+                }} else if (lvl <= 5) {{
+                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+                }} else if (lvl <= 8) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+                }} else if (lvl <= 11) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+                }} else if (lvl <= 14) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+                }} else if (lvl <= 17) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+                }} else if (lvl == 18) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.5);
+                }} else if (lvl == 19) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.4);
+                }} else if (lvl == 20) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.4);
+                }} else if (lvl == 21) {{
+                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+                }} else if (lvl == 22) {{
+                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+                }} else if (lvl == 23) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+                }} else if (lvl == 24) {{
+                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+                }} else if (lvl == 25) {{
+                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+                }} else if (lvl == 26) {{
+                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+                }} else if (lvl == 27) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+                }} else if (lvl == 28) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                }} else if (lvl == 29) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+                }} else if (lvl == 30) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+                }} else if (lvl == 31) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
+                }} else if (lvl == 32) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
+                }} else if (lvl == 33) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
+                }} else if (lvl == 34) {{
+                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+                }} else {{
+                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                }}
             }}
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
