@@ -1,5 +1,4 @@
 import random
-import time
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -398,8 +397,6 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
-if "last_enhance_time" not in st.session_state:
-  st.session_state.last_enhance_time = 0.0
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직 (수정 완료)
@@ -691,26 +688,15 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 1초 쿨타임 체크
-  current_time = time.time()
-  time_elapsed = current_time - st.session_state.last_enhance_time
-  is_cooldown = time_elapsed < 1.0
-
-  enhance_btn_disabled = (st.session_state.level >= 35) or is_cooldown
-  enhance_btn_label = (
-      "⏳ 쿨타임 중..." if is_cooldown else "🔥 냄새 강화 실행"
-  )
-
   if st.button(
-      enhance_btn_label,
+      "🔥 냄새 강화 실행",
       use_container_width=True,
-      disabled=enhance_btn_disabled,
+      disabled=(st.session_state.level >= 35),
   ):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
-      st.session_state.last_enhance_time = time.time()
       run_enhance()
       st.rerun()
 
@@ -765,7 +751,7 @@ with right_col:
                 z-index: 100;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.2s ease-in-out;
+                transition: opacity 0.3s ease-in-out;
             }}
 
             .cinematic-ui.visible {{
@@ -912,7 +898,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 파티클 시스템
+            // 파티클 시스템 (과격함 축소)
             const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -1030,7 +1016,7 @@ with right_col:
             scene.add(objectGroup);
 
             // ==========================================
-            // 애니메이션 속도 단축 (기존 대비 절반 수준으로 빠르게 설정)
+            // 애니메이션 부드럽고 차분한 버전 (과격함 대폭 축소)
             // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
@@ -1079,7 +1065,7 @@ with right_col:
                 scene.add(shardGroup);
 
                 tl.to(shardGroup.position, {{
-                    duration: 0.6,
+                    duration: 1.2,
                     ease: "power2.out",
                     onUpdate: function() {{
                         const progress = this.progress();
@@ -1095,25 +1081,25 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 크기 변화 연출 속도 단축 (총 0.6초로 단축)
+                // 크기 변화 연출 부드럽게 (최대 1.3배 수준으로 축소)
                 tl.to(objectGroup.scale, {{
                     x: 1.3, y: 1.3, z: 1.3,
-                    duration: 0.3,
+                    duration: 0.6,
                     ease: "power1.inOut"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
-                    duration: 0.3,
+                    duration: 0.6,
                     ease: "power1.out"
                 }});
 
-                // 진동 효과 시간 단축 (0.6초)
+                // 진동 효과를 아주 은은하고 가볍게 수정
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
-                    duration: 0.6,
+                    duration: 1.2,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12;
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12; // 진동 폭 대폭 감소
                         objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
