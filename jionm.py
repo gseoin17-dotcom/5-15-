@@ -352,6 +352,14 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "achievements" not in st.session_state:
+  # 업적 완료 여부 플래그
+  st.session_state.achievements = {
+      "lvl_10": False,
+      "lvl_20": False,
+      "lvl_30": False,
+      "rich_1": False,
+  }
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -490,7 +498,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -549,15 +557,17 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 상점 탭 영역
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
+  # 상점 / 업적 / 도감 탭 영역
+  tab_shop1, tab_shop2, tab_achieve, tab_codex = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🏆 업적", "📖 도감"]
+  )
 
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
-        f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
+        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
         f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
-        f" <span style='font-size:16px; font-weight:bold; color:#fde68a;'>"
+        f" <span style='font-size:15px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
@@ -579,14 +589,14 @@ with left_col:
   with tab_shop2:
     if st.session_state.level >= 28:
       st.markdown(
-          "<div style='font-size:14px; color:#ef4444; font-weight:700;"
+          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
           " margin-bottom:8px;'>⚠️ 28단계 이상부터는 신성한 기운으로 인해 지온의"
           " 눈물을 사용할 수 없습니다!</div>",
           unsafe_allow_html=True,
       )
     else:
       st.markdown(
-          f"<div style='font-size:14px; color:#cbd5e1;"
+          f"<div style='font-size:13px; color:#cbd5e1;"
           f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
           f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
@@ -611,12 +621,127 @@ with left_col:
       else:
         st.error("눈물 40개가 필요합니다.")
 
+  with tab_achieve:
+    st.markdown(
+        "<div style='font-size:13px; color:#cbd5e1; margin-bottom:6px;'><b>도전"
+        " 과제 보상 시스템</b></div>",
+        unsafe_allow_html=True,
+    )
+
+    # 업적 1: 10단계 달성
+    a1_done = st.session_state.max_level >= 10
+    a1_claimed = st.session_state.achievements["lvl_10"]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 치명적 향기 (최고 10단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 50,000원"
+        f" & 눈물 10개</div>",
+        unsafe_allow_html=True,
+    )
+    if not a1_claimed:
+      if st.button(
+          "보상 받기" if a1_done else "미달성",
+          key="btn_a1",
+          disabled=not a1_done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements["lvl_10"] = True
+        st.session_state.money += 50000
+        st.session_state.tears = min(120, st.session_state.tears + 10)
+        st.success("업적 보상 수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:6px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 업적 2: 20단계 달성
+    a2_done = st.session_state.max_level >= 20
+    a2_claimed = st.session_state.achievements["lvl_20"]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 자이온맘 강림 (최고 20단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 1,000,000원"
+        f" & 눈물 30개</div>",
+        unsafe_allow_html=True,
+    )
+    if not a2_claimed:
+      if st.button(
+          "보상 받기" if a2_done else "미달성",
+          key="btn_a2",
+          disabled=not a2_done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements["lvl_20"] = True
+        st.session_state.money += 1000000
+        st.session_state.tears = min(120, st.session_state.tears + 30)
+        st.success("업적 보상 수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:6px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 업적 3: 30단계 달성
+    a3_done = st.session_state.max_level >= 30
+    a3_claimed = st.session_state.achievements["lvl_30"]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 태초의 완성 (최고 30단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 방지권 3개 &"
+        f" 눈물 50개</div>",
+        unsafe_allow_html=True,
+    )
+    if not a3_claimed:
+      if st.button(
+          "보상 받기" if a3_done else "미달성",
+          key="btn_a3",
+          disabled=not a3_done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements["lvl_30"] = True
+        st.session_state.shield = min(3, st.session_state.shield + 3)
+        st.session_state.tears = min(120, st.session_state.tears + 50)
+        st.success("업적 보상 수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+  with tab_codex:
+    st.markdown(
+        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:6px;'><b>지온"
+        f" 도감 (달성률: {st.session_state.max_level}/30)</b></div>",
+        unsafe_allow_html=True,
+    )
+    # 스크롤 가능한 도감 리스트 영역
+    codex_html = (
+        "<div style='max-height: 220px; overflow-y: auto; padding-right: 5px;'>"
+    )
+    for lvl_idx in range(31):
+      d_info = SMELL_DB[lvl_idx]
+      is_unlocked = lvl_idx <= st.session_state.max_level
+      if is_unlocked:
+        codex_html += f"<div style='background: rgba(255,255,255,0.05); border-left: 3px solid {d_info['color']}; padding: 6px; margin-bottom: 5px; border-radius: 4px;'><div style='font-size:12px; font-weight:bold; color:#fde68a;'>{d_info['name']}</div><div style='font-size:11px; color:#cbd5e1;'>{d_info['desc']}</div></div>"
+      else:
+        codex_html += f"<div style='background: rgba(0,0,0,0.2); border-left: 3px solid #475569; padding: 6px; margin-bottom: 5px; border-radius: 4px;'><div style='font-size:12px; font-weight:bold; color:#64748b;'>??? 단계 (미해제)</div><div style='font-size:11px; color:#475569;'>아직 도달하지 못한 영역입니다.</div></div>"
+    codex_html += "</div>"
+    st.markdown(codex_html, unsafe_allow_html=True)
+
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
-  # [이동됨] 자이온 강화 제어를 최하단에 배치
+  # 자이온 강화 제어
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
