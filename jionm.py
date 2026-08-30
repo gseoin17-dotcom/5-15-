@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - COSMIC EDITION",
+    page_title="지온냄새 강화하기 - SOLAR SYSTEM EDITION",
     page_icon="🌌",
     layout="wide",
 )
@@ -423,7 +423,7 @@ def run_enhance():
       st.session_state.max_level = st.session_state.level
     return
 
-  sp, down_p, dp, hold_p = PROB_TABLE[curr]
+  sp, down_p, dp, hold_p = PROB_TABLE.get(curr, (5.0, 40.0, 50.0, 5.0))
   r = random.uniform(0, 100)
 
   success_limit = sp
@@ -487,7 +487,7 @@ def sell():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS (UI 위치 아래로 내리기)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
@@ -504,7 +504,7 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 2rem !important;
+        padding-top: 5rem !important; /* 위쪽 여백을 늘려 전체 UI를 아래로 내림 */
         padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
@@ -537,7 +537,7 @@ st.markdown(
 # -----------------------------------------------------------------------------
 # 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
-left_col, right_col = st.columns([2.2, 7.8], gap="medium")
+left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
   st.markdown(
@@ -593,14 +593,38 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # 현재 단계 확률 정보 표시
+  curr_lvl = st.session_state.level
+  sp, down_p, dp, hold_p = PROB_TABLE.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
+  st.markdown(
+      f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
+      f" 강화 확률 ({curr_lvl}단계)</h4>",
+      unsafe_allow_html=True,
+  )
+  st.markdown(
+      f"<div style='font-size:12px; color:#cbd5e1; background:rgba(255,255,255,0.05);"
+      f" padding:8px; border-radius:6px;'>"
+      f"• 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>"
+      f"• 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>"
+      f"• 파괴 확률: <b style='color:#ef4444;'>{dp}%</b><br>"
+      f"• 유지 확률: <b style='color:#94a3b8;'>{hold_p}%</b>"
+      f"</div>",
+      unsafe_allow_html=True,
+  )
+
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
-        f"<div style='font-size:14px; color:#cbd5e1; margin-bottom:8px;'>"
+        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
         f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
-        f" <span style='font-size:16px; font-weight:bold; color:#fde68a;'>"
+        f" <span style='font-size:14px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
@@ -622,14 +646,14 @@ with left_col:
   with tab_shop2:
     if st.session_state.level >= 32:
       st.markdown(
-          "<div style='font-size:14px; color:#ef4444; font-weight:700;"
-          " margin-bottom:8px;'>⚠️ 32단계 이상부터는 신성한 기운으로 인해 지온의"
-          " 눈물을 사용할 수 없습니다!</div>",
+          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          " margin-bottom:8px;'>⚠️ 32단계 이상부터는 눈물을 사용할 수"
+          " 없습니다!</div>",
           unsafe_allow_html=True,
       )
     else:
       st.markdown(
-          f"<div style='font-size:14px; color:#cbd5e1;"
+          f"<div style='font-size:13px; color:#cbd5e1;"
           f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
           f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
@@ -855,7 +879,7 @@ with right_col:
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
-            // 1. 배경 우주 별들 (점들 여러 개) 생성
+            // 배경 별들
             const starCount = 1200;
             const starGeo = new THREE.BufferGeometry();
             const starPositions = new Float32Array(starCount * 3);
@@ -875,7 +899,45 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 2. 기존 상승 파티클 시스템
+            // 수금지화목토전해명(9개 행성) 3D 그룹 생성
+            const solarSystemGroup = new THREE.Group();
+            solarSystemGroup.position.y = -0.7;
+            scene.add(solarSystemGroup);
+
+            const planetData = [
+                {{ name: 'Mercury', color: 0xaaaaaa, size: 0.15, distance: 3.2, speed: 1.2 }}, // 수
+                {{ name: 'Venus', color: 0xe3bb76, size: 0.22, distance: 4.0, speed: 0.9 }},   // 금
+                {{ name: 'Earth', color: 0x2277ff, size: 0.25, distance: 4.9, speed: 0.7 }},   // 지
+                {{ name: 'Mars', color: 0xcc4422, size: 0.18, distance: 5.8, speed: 0.55 }},  // 화
+                {{ name: 'Jupiter', color: 0xd4a373, size: 0.45, distance: 7.0, speed: 0.4 }},  // 목
+                {{ name: 'Saturn', color: 0xf4e2bb, size: 0.35, distance: 8.3, speed: 0.3 }},  // 토
+                {{ name: 'Uranus', color: 0x77ddff, size: 0.28, distance: 9.5, speed: 0.22 }}, // 천
+                {{ name: 'Neptune', color: 0x3333cc, size: 0.28, distance: 10.6, speed: 0.17 }},// 해
+                {{ name: 'Pluto', color: 0xaaaa99, size: 0.12, distance: 11.6, speed: 0.12 }}   // 명
+            ];
+
+            const planets = [];
+
+            planetData.forEach((data) => {{
+                const orbitGroup = new THREE.Group();
+                solarSystemGroup.add(orbitGroup);
+
+                const pGeo = new THREE.SphereGeometry(data.size, 16, 16);
+                const pMat = new THREE.MeshStandardMaterial({{
+                    color: data.color,
+                    roughness: 0.7,
+                    metalness: 0.2,
+                    emissive: data.color,
+                    emissiveIntensity: 0.2
+                }});
+                const mesh = new THREE.Mesh(pGeo, pMat);
+                mesh.position.x = data.distance;
+                orbitGroup.add(mesh);
+
+                planets.push({{ group: orbitGroup, speed: data.speed }});
+            }});
+
+            // 기존 상승 파티클 시스템
             const particleCount = 850;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -990,30 +1052,6 @@ with right_col:
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
-            // 3. 토성 고리 스타일의 3D 입자 링(Ring) 추가
-            const ringCount = 600;
-            const ringGeo = new THREE.BufferGeometry();
-            const ringPositions = new Float32Array(ringCount * 3);
-            for(let i=0; i<ringCount; i++) {{
-                const radius = 3.2 + Math.random() * 1.5;
-                const theta = Math.random() * Math.PI * 2;
-                ringPositions[i*3] = Math.cos(theta) * radius;
-                ringPositions[i*3 + 1] = (Math.random() - 0.5) * 0.15;
-                ringPositions[i*3 + 2] = Math.sin(theta) * radius;
-            }}
-            ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
-            const ringMat = new THREE.PointsMaterial({{
-                color: new THREE.Color(tierColor),
-                size: 0.07,
-                transparent: true,
-                opacity: 0.8,
-                blending: THREE.AdditiveBlending
-            }});
-            const saturnRing = new THREE.Points(ringGeo, ringMat);
-            saturnRing.rotation.x = 0.35; // 고리를 비스듬하게 기울여 토성 느낌 연출
-            saturnRing.rotation.z = 0.15;
-            objectGroup.add(saturnRing);
-
             scene.add(objectGroup);
 
             uiElement.classList.add('visible');
@@ -1021,7 +1059,6 @@ with right_col:
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
-                saturnRing.visible = false;
 
                 const shardCount = 55;
                 const shards = [];
@@ -1098,14 +1135,14 @@ with right_col:
                     outerMesh.rotation.y = time * (0.75 * rotSpeed);
                     coreMesh.rotation.x = -time * (1.2 * rotSpeed);
                     coreMesh.rotation.y = -time * (1.5 * rotSpeed);
-                    
-                    // 토성 고리 회전 애니메이션
-                    saturnRing.rotation.y = time * 0.4 * rotSpeed;
-
                     objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                 }}
 
-                // 배경 별들이 아주 미세하게 회전하며 움직이는 느낌
+                // 행성 공전 애니메이션
+                planets.forEach(p => {{
+                    p.group.rotation.y = time * p.speed * 0.25;
+                }});
+
                 starField.rotation.y = time * 0.02;
 
                 const positions = particleGeo.attributes.position.array;
