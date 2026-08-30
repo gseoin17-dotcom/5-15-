@@ -397,6 +397,10 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "is_enhancing" not in st.session_state:
+  st.session_state.is_enhancing = (
+      False  # 강화 버튼 연속 누름 방지용 상태 변수 추가
+  )
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -687,15 +691,17 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 35),
-  ):
+  # 강화 실행 중이거나 최고 단계일 경우 버튼 비활성화 (연타 방지)
+  is_button_disabled = (
+      st.session_state.level >= 35
+  ) or st.session_state.is_enhancing
+
+  if st.button("🔥 냄새 강화 실행", use_container_width=True, disabled=is_button_disabled):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
+      st.session_state.is_enhancing = True  # 강화 시작 시 바로 잠금 처리
       run_enhance()
       st.rerun()
 
@@ -1015,11 +1021,21 @@ with right_col:
             scene.add(objectGroup);
 
             // ==========================================
-            // 애니메이션 속도 단축 버전 (1.5초)
+            // 애니메이션 속도 단축 버전 (1.5초) 및 완료 후 버튼 해제용 스크립트 통신
             // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
                     uiElement.classList.add('visible');
+                    // 애니메이션 완료 후 Streamlit에 상태 해제 알림 (쿼리파라미터 활용 혹은 상위 리렌더링 유도)
+                    const parentWindow = window.parent;
+                    if (parentWindow && parentWindow.document) {{
+                        const buttons = parentWindow.document.querySelectorAll('button');
+                        buttons.forEach(btn => {{
+                            if (btn.innerText.includes('냄새 강화 실행')) {{
+                                btn.disabled = false;
+                            }}
+                        }});
+                    }}
                 }}
             }});
 
@@ -1154,5 +1170,9 @@ with right_col:
     </body>
     </html>
     """
+
+  # 애니메이션이 새로 렌더링될 때(`st.rerun()` 직후) 강화 연타 방지 플래그를 원상복구합니다.
+  if st.session_state.is_enhancing:
+    st.session_state.is_enhancing = False
 
   components.html(three_js_code, height=580, scrolling=False)
