@@ -1,4 +1,5 @@
 import random
+import time  # 시간 함수 사용을 위해 임포트
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -397,6 +398,9 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+# 2초 쿨타임을 위한 마지막 강화 시각 상태 추가
+if "last_enhance_time" not in st.session_state:
+  st.session_state.last_enhance_time = 0.0
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직 (수정 완료)
@@ -688,17 +692,35 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  # 2초 쿨타임 계산 로직
+  current_time = time.time()
+  time_elapsed = current_time - st.session_state.last_enhance_time
+  is_cooldown = time_elapsed < 2.0
+
+  # 쿨타임 중이거나 최대 레벨일 때 버튼 비활성화
+  enhance_disabled = (st.session_state.level >= 35) or is_cooldown
+
+  # 버튼에 표시할 문구 동적 변경 (선택사항)
+  enhance_button_label = (
+      "⏳ 쿨타임 중..." if is_cooldown else "🔥 냄새 강화 실행"
+  )
+
   if st.button(
-      "🔥 냄새 강화 실행",
+      enhance_button_label,
       use_container_width=True,
-      disabled=(st.session_state.level >= 35),
+      disabled=enhance_disabled,
   ):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
+      st.session_state.last_enhance_time = time.time()  # 강화 시각 기록
       run_enhance()
       st.rerun()
+
+  # 쿨타임이 진행 중인 경우, 2초가 지나면 자동으로 화면을 갱신하도록 처리
+  if is_cooldown:
+    st.rerun()
 
   if dev_mode:
     st.write("")
