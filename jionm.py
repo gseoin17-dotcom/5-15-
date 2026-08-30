@@ -855,6 +855,27 @@ with right_col:
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
+            // 1. 배경 우주 별들 (점들 여러 개) 생성
+            const starCount = 1200;
+            const starGeo = new THREE.BufferGeometry();
+            const starPositions = new Float32Array(starCount * 3);
+            for(let i=0; i<starCount; i++) {{
+                starPositions[i*3] = (Math.random() - 0.5) * 40;
+                starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
+                starPositions[i*3 + 2] = (Math.random() - 0.5) * 40 - 10;
+            }}
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            const starMat = new THREE.PointsMaterial({{
+                color: 0xffffff,
+                size: 0.08,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            }});
+            const starField = new THREE.Points(starGeo, starMat);
+            scene.add(starField);
+
+            // 2. 기존 상승 파티클 시스템
             const particleCount = 850;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -969,6 +990,30 @@ with right_col:
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
+            // 3. 토성 고리 스타일의 3D 입자 링(Ring) 추가
+            const ringCount = 600;
+            const ringGeo = new THREE.BufferGeometry();
+            const ringPositions = new Float32Array(ringCount * 3);
+            for(let i=0; i<ringCount; i++) {{
+                const radius = 3.2 + Math.random() * 1.5;
+                const theta = Math.random() * Math.PI * 2;
+                ringPositions[i*3] = Math.cos(theta) * radius;
+                ringPositions[i*3 + 1] = (Math.random() - 0.5) * 0.15;
+                ringPositions[i*3 + 2] = Math.sin(theta) * radius;
+            }}
+            ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
+            const ringMat = new THREE.PointsMaterial({{
+                color: new THREE.Color(tierColor),
+                size: 0.07,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            }});
+            const saturnRing = new THREE.Points(ringGeo, ringMat);
+            saturnRing.rotation.x = 0.35; // 고리를 비스듬하게 기울여 토성 느낌 연출
+            saturnRing.rotation.z = 0.15;
+            objectGroup.add(saturnRing);
+
             scene.add(objectGroup);
 
             uiElement.classList.add('visible');
@@ -976,6 +1021,7 @@ with right_col:
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
+                saturnRing.visible = false;
 
                 const shardCount = 55;
                 const shards = [];
@@ -1052,8 +1098,15 @@ with right_col:
                     outerMesh.rotation.y = time * (0.75 * rotSpeed);
                     coreMesh.rotation.x = -time * (1.2 * rotSpeed);
                     coreMesh.rotation.y = -time * (1.5 * rotSpeed);
+                    
+                    // 토성 고리 회전 애니메이션
+                    saturnRing.rotation.y = time * 0.4 * rotSpeed;
+
                     objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                 }}
+
+                // 배경 별들이 아주 미세하게 회전하며 움직이는 느낌
+                starField.rotation.y = time * 0.02;
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
