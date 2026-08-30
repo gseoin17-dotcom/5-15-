@@ -5,7 +5,7 @@ import streamlit.components.v1 as components
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
-st.set_page_config(ㄴ
+st.set_page_config(
     page_title="지온냄새 강화하기 - SOLAR SYSTEM EDITION",
     page_icon="🌌",
     layout="wide",
@@ -777,10 +777,10 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            .status-header {{ font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 16px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 17px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 3px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -1012,9 +1012,6 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // ==========================================
-            // 애니메이션 속도를 0.2초로 단축
-            // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
                     uiElement.classList.add('visible');
