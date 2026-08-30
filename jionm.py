@@ -616,7 +616,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # [이동됨] 자이온 강화 제어를 최하단에 배치
+  # 자이온 강화 제어 최하단 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
