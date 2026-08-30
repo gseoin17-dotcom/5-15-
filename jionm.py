@@ -1,4 +1,5 @@
 import random
+import time
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -379,6 +380,7 @@ PROB_TABLE = {
 
 CRITICAL_RATE = 0.05
 PITY_MAX = 5
+COOLDOWN_TIME = 2.0  # 2초 쿨타임 설정
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -397,6 +399,8 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "last_enhance_time" not in st.session_state:
+  st.session_state.last_enhance_time = 0.0  # 마지막 강화 시각 기록
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직 (수정 완료)
@@ -656,7 +660,7 @@ with left_col:
           f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
           f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
-          unsafe_allow_html=True,
+          unsafe_allow_html=`,
       )
 
     can_use_tears = st.session_state.level < 32
@@ -688,17 +692,32 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 35),
-  ):
+  # 쿨타임 계산 로직
+  current_time = time.time()
+  elapsed_time = current_time - st.session_state.last_enhance_time
+  is_cooldown = elapsed_time < COOLDOWN_TIME
+
+  # 쿨타임 중일 때 버튼 비활성화 및 안내 문구 표시
+  enhance_disabled = (st.session_state.level >= 35) or is_cooldown
+  button_label = (
+      f"⏳ 쿨타임 중 ({COOLDOWN_TIME - elapsed_time:.1f}초)"
+      if is_cooldown
+      else "🔥 냄새 강화 실행"
+  )
+
+  if st.button(button_label, use_container_width=True, disabled=enhance_disabled):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
+      st.session_state.last_enhance_time = time.time()  # 강화 실행 시간 갱신
       run_enhance()
       st.rerun()
+
+  # 쿨타임 상태일 때 화면을 실시간으로 갱신하여 타이머 잔여 시간을 줄여줌
+  if is_cooldown:
+    time.sleep(0.1)
+    st.rerun()
 
   if dev_mode:
     st.write("")
@@ -898,7 +917,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 파티클 시스템 (과격함 축소)
+            // 파티클 시스템
             const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -1015,9 +1034,6 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // ==========================================
-            // 애니메이션 부드럽고 차분한 버전 (과격함 대폭 축소)
-            // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
                     uiElement.classList.add('visible');
@@ -1081,7 +1097,6 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 크기 변화 연출 부드럽게 (최대 1.3배 수준으로 축소)
                 tl.to(objectGroup.scale, {{
                     x: 1.3, y: 1.3, z: 1.3,
                     duration: 0.6,
@@ -1093,13 +1108,12 @@ with right_col:
                     ease: "power1.out"
                 }});
 
-                // 진동 효과를 아주 은은하고 가볍게 수정
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
                     duration: 1.2,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12; // 진동 폭 대폭 감소
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12;
                         objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
