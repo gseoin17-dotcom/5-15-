@@ -750,20 +750,19 @@ with right_col:
                 z-index: 100;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.5s ease-in-out;
+                transition: opacity 0.3s ease-in-out;
             }}
 
             .cinematic-ui.visible {{
                 opacity: 1;
             }}
 
-            /* 텍스트 크기 기존보다 조금씩 키움 */
-            .title-tier-1 {{ font-size: 32px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 36px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-            .title-tier-3 {{ font-size: 40px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-            .title-tier-4 {{ font-size: 44px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-            .title-tier-5 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-            .title-tier-6 {{ font-size: 52px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+            .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
+            .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
+            .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
+            .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -778,10 +777,10 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            .status-header {{ font-size: 19px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 15px; color: #cbd5e1; margin-top: 3px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
-            .price-text {{ font-size: 17px; font-weight: 800; color: #fbbf24; margin-top: 4px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 14px; font-weight: 700; color: #f87171; margin-top: 3px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            .status-header {{ font-size: 16px; font-weight: 800; margin-bottom: 3px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 13px; color: #cbd5e1; margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 500; }}
+            .price-text {{ font-size: 15px; font-weight: 800; color: #fbbf24; margin-top: 3px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 12px; font-weight: 700; color: #f87171; margin-top: 2px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -1016,7 +1015,7 @@ with right_col:
             scene.add(objectGroup);
 
             // ==========================================
-            // [수정됨] 기존보다 훨씬 차분하고 부드러운 연출 타임라인 (3초)
+            // 애니메이션 속도 단축 버전 (1.5초)
             // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
@@ -1028,7 +1027,7 @@ with right_col:
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                const shardCount = 45;
+                const shardCount = 55;
                 const shards = [];
                 const shardGroup = new THREE.Group();
                 shardGroup.position.y = -0.7;
@@ -1049,14 +1048,14 @@ with right_col:
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
                     const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 2.5 + Math.random() * 3.0; // 속도 감소
+                    const speed = 4.0 + Math.random() * 5.0;
                     
                     shard.userData = {{
                         vx: speed * Math.sin(phi) * Math.cos(theta),
                         vy: speed * Math.sin(phi) * Math.sin(theta),
                         vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 10,
-                        ry: (Math.random() - 0.5) * 10
+                        rx: (Math.random() - 0.5) * 20,
+                        ry: (Math.random() - 0.5) * 20
                     }};
 
                     shardGroup.add(shard);
@@ -1065,13 +1064,13 @@ with right_col:
                 scene.add(shardGroup);
 
                 tl.to(shardGroup.position, {{
-                    duration: 3.0,
+                    duration: 1.5,
                     ease: "power2.out",
                     onUpdate: function() {{
                         const progress = this.progress();
                         shards.forEach(s => {{
                             s.position.x += s.userData.vx * 0.02;
-                            s.position.y += s.userData.vy * 0.02 - 0.03;
+                            s.position.y += s.userData.vy * 0.02 - 0.05;
                             s.position.z += s.userData.vz * 0.02;
                             s.rotation.x += s.userData.rx * 0.02;
                             s.rotation.y += s.userData.ry * 0.02;
@@ -1081,32 +1080,32 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 1단계: 스케일 부풀어 오르는 폭을 대폭 축소 (기존 2.1 -> 1.4)
+                // 크기 변화 연출 (총 1.5초로 단축)
                 tl.to(objectGroup.scale, {{
-                    x: 1.4, y: 1.4, z: 1.4,
-                    duration: 1.5,
+                    x: 2.1, y: 2.1, z: 2.1,
+                    duration: 0.75,
                     ease: "power2.in"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
-                    duration: 1.5,
-                    ease: "elastic.out(1, 0.5)"
+                    duration: 0.75,
+                    ease: "elastic.out(1, 0.3)"
                 }});
 
-                // 2단계: 지진/난동 효과의 강도를 대폭 완화 (계수 축소)
+                // 지진(흔들림) 효과 연출 (1.5초로 단축)
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
-                    duration: 3.0,
+                    duration: 1.5,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.15; // 기존 0.45 -> 0.15로 완화
-                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity * 1.5;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity * 1.5;
-                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 1.0;
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.45;
+                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity * 3.5;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity * 3.5;
+                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 2.0;
 
-                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 1.2;
-                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 1.2;
-                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 1.2;
+                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 4.0;
                     }}
                 }}, 0);
             }}
