@@ -352,8 +352,6 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
-if "action_count" not in st.session_state:
-  st.session_state.action_count = 0
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -371,7 +369,6 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
-  st.session_state.action_count += 1
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -427,7 +424,6 @@ def dev_force_success():
   if curr < 30:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
-    st.session_state.action_count += 1
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
 
@@ -443,7 +439,6 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
-  st.session_state.action_count += 1
 
 
 # -----------------------------------------------------------------------------
@@ -495,7 +490,7 @@ st.markdown(
 )
 
 # -----------------------------------------------------------------------------
-# 7. 메인 레이아웃
+# 7. 메인 레이아웃 (강화 제어 위치 하단 이동 버전)
 # -----------------------------------------------------------------------------
 left_col, right_col = st.columns([2.2, 7.8], gap="medium")
 
@@ -506,21 +501,6 @@ with left_col:
       unsafe_allow_html=True,
   )
   dev_mode = st.toggle("💻 개발자 모드 활성화", value=False)
-
-  st.markdown(
-      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  # 실시간 활동 대시보드 추가
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 15px; color:#fde68a;'>📊 실시간"
-      " 활동 대시보드</h4>",
-      unsafe_allow_html=True,
-  )
-  d_col1, d_col2 = st.columns(2)
-  d_col1.metric("총 활동 횟수", f"{st.session_state.action_count}회")
-  d_col2.metric("앱 상태", "정상 작동 중")
 
   st.markdown(
       "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -591,7 +571,6 @@ with left_col:
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
-        st.session_state.action_count += 1
         st.success("파괴 방지권 구매 완료!")
         st.rerun()
       else:
@@ -620,7 +599,6 @@ with left_col:
         st.warning("28단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears >= 40:
         st.session_state.tears -= 40
-        st.session_state.action_count += 1
         if random.random() < 0.50:
           add_lvl = random.choice([1, 2, 3])
           st.session_state.level = min(30, st.session_state.level + add_lvl)
@@ -638,7 +616,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 자이온 강화 제어
+  # [이동됨] 자이온 강화 제어를 최하단에 배치
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 자이온"
       " 강화 제어</h4>",
