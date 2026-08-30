@@ -397,13 +397,9 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
-if "is_enhancing" not in st.session_state:
-  st.session_state.is_enhancing = (
-      False  # 강화 버튼 연속 누름 방지용 상태 변수 추가
-  )
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 로직 (수정 완료)
 # -----------------------------------------------------------------------------
 
 
@@ -419,6 +415,7 @@ def run_enhance():
 
   st.session_state.money -= cost
 
+  # 천장(Pity) 판정 선적용 (설정된 횟수 이상 실패 시 무조건 성공)
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
@@ -691,17 +688,15 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 강화 실행 중이거나 최고 단계일 경우 버튼 비활성화 (연타 방지)
-  is_button_disabled = (
-      st.session_state.level >= 35
-  ) or st.session_state.is_enhancing
-
-  if st.button("🔥 냄새 강화 실행", use_container_width=True, disabled=is_button_disabled):
+  if st.button(
+      "🔥 냄새 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= 35),
+  ):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
-      st.session_state.is_enhancing = True  # 강화 시작 시 바로 잠금 처리
       run_enhance()
       st.rerun()
 
@@ -818,46 +813,46 @@ with right_col:
             
             const tierColor = "{card_color}";
             let statusColor = "#38bdf8";
-            let particleSize = 0.3;
-            let particleSpeed = 1.0;
-            let glowIntensity = 15;
+            let particleSize = 0.25;
+            let particleSpeed = 0.6;
+            let glowIntensity = 12;
 
             if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
-                particleSize = 0.55;
-                particleSpeed = 2.5;
-                glowIntensity = 35;
+                particleSize = 0.35;
+                particleSpeed = 1.2;
+                glowIntensity = 22;
             }} else if (status === "PITY_SUCCESS") {{
                 statusText.innerText = "✨ 자이온맘의 가호 발동! (천장 100% 성공) ✨";
                 statusColor = "#fde68a";
-                particleSize = 0.45;
-                particleSpeed = 2.0;
-                glowIntensity = 30;
+                particleSize = 0.3;
+                particleSpeed = 1.0;
+                glowIntensity = 20;
             }} else if (status === "SUCCESS") {{
                 statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                 statusColor = tierColor;
-                particleSize = 0.35;
-                particleSpeed = 1.5;
-                glowIntensity = 22;
+                particleSize = 0.28;
+                particleSpeed = 0.8;
+                glowIntensity = 16;
             }} else if (status === "SHIELD_SAVED") {{
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                 statusColor = "#60a5fa";
             }} else if (status === "DESTROYED") {{
                 statusText.innerText = "💥 BLACKHOLE DESTROYED (코어 붕괴됨) 💥";
                 statusColor = "#ef4444";
-                particleSpeed = 1.2;
+                particleSpeed = 0.8;
             }} else if (status === "FAILED") {{
                 statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                 statusColor = "#64748b";
-                particleSpeed = 0.5;
-                glowIntensity = 6;
+                particleSpeed = 0.3;
+                glowIntensity = 5;
             }} else if (status === "HOLD") {{
                 statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                 statusColor = "#94a3b8";
-                particleSpeed = 0.7;
+                particleSpeed = 0.4;
             }} else {{
-                statusText.innerText = "READY - 우주 에너지가 집중됩니다";
+                statusText.innerText = "READY - 우주 에너지가 차분히 집중됩니다";
             }}
             
             statusText.style.color = statusColor;
@@ -875,7 +870,7 @@ with right_col:
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
@@ -884,7 +879,7 @@ with right_col:
             scene.add(pointLight);
 
             // 배경 별들
-            const starCount = 1200;
+            const starCount = 1000;
             const starGeo = new THREE.BufferGeometry();
             const starPositions = new Float32Array(starCount * 3);
             for(let i=0; i<starCount; i++) {{
@@ -895,32 +890,32 @@ with right_col:
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
                 color: 0xffffff,
-                size: 0.08,
+                size: 0.07,
                 transparent: true,
-                opacity: 0.7,
+                opacity: 0.5,
                 blending: THREE.AdditiveBlending
             }});
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 파티클 시스템
-            const particleCount = 850;
+            // 파티클 시스템 (과격함 축소)
+            const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
 
             for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 7.0;
-                particlePositions[i*3 + 1] = -5.0 + Math.random() * 3.0;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
+                particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
+                particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                 
                 let spd = particleSpeed;
-                if (status === "FAILED") spd = 0.3;
+                if (status === "FAILED") spd = 0.2;
 
                 particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.02 * spd,
-                    y: (0.015 + Math.random() * 0.03) * spd,
-                    z: (Math.random() - 0.5) * 0.02 * spd,
+                    x: (Math.random() - 0.5) * 0.01 * spd,
+                    y: (0.008 + Math.random() * 0.015) * spd,
+                    z: (Math.random() - 0.5) * 0.01 * spd,
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
@@ -929,7 +924,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.3 : 0.9,
+                opacity: status === "FAILED" ? 0.2 : 0.7,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -995,10 +990,10 @@ with right_col:
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
-                metalness: 0.9,
-                roughness: 0.15,
-                transmission: 0.6,
+                emissiveIntensity: status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1),
+                metalness: 0.85,
+                roughness: 0.2,
+                transmission: 0.5,
                 transparent: true,
                 opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
@@ -1010,10 +1005,10 @@ with right_col:
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8,
                 roughness: 0.05,
-                metalness: 0.95,
-                transmission: 0.8
+                metalness: 0.9,
+                transmission: 0.7
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
@@ -1021,21 +1016,11 @@ with right_col:
             scene.add(objectGroup);
 
             // ==========================================
-            // 애니메이션 속도 단축 버전 (1.5초) 및 완료 후 버튼 해제용 스크립트 통신
+            // 애니메이션 부드럽고 차분한 버전 (과격함 대폭 축소)
             // ==========================================
             const tl = gsap.timeline({{
                 onComplete: () => {{
                     uiElement.classList.add('visible');
-                    // 애니메이션 완료 후 Streamlit에 상태 해제 알림 (쿼리파라미터 활용 혹은 상위 리렌더링 유도)
-                    const parentWindow = window.parent;
-                    if (parentWindow && parentWindow.document) {{
-                        const buttons = parentWindow.document.querySelectorAll('button');
-                        buttons.forEach(btn => {{
-                            if (btn.innerText.includes('냄새 강화 실행')) {{
-                                btn.disabled = false;
-                            }}
-                        }});
-                    }}
                 }}
             }});
 
@@ -1043,19 +1028,19 @@ with right_col:
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
-                const shardCount = 55;
+                const shardCount = 30;
                 const shards = [];
                 const shardGroup = new THREE.Group();
                 shardGroup.position.y = -0.7;
 
                 for(let i=0; i<shardCount; i++) {{
-                    const sGeo = new THREE.BoxGeometry(0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2, 0.3 + Math.random()*0.2);
+                    const sGeo = new THREE.BoxGeometry(0.25 + Math.random()*0.15, 0.25 + Math.random()*0.15, 0.25 + Math.random()*0.15);
                     const sMat = new THREE.MeshStandardMaterial({{
                         color: tierColor,
-                        roughness: 0.2,
-                        metalness: 0.9,
+                        roughness: 0.3,
+                        metalness: 0.8,
                         emissive: "#ef4444",
-                        emissiveIntensity: 1.0
+                        emissiveIntensity: 0.6
                     }});
                     const shard = new THREE.Mesh(sGeo, sMat);
                     shard.position.set(0, 0, 0);
@@ -1064,14 +1049,14 @@ with right_col:
                     const v = Math.random();
                     const theta = u * 2.0 * Math.PI;
                     const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 4.0 + Math.random() * 5.0;
+                    const speed = 2.0 + Math.random() * 2.5;
                     
                     shard.userData = {{
                         vx: speed * Math.sin(phi) * Math.cos(theta),
                         vy: speed * Math.sin(phi) * Math.sin(theta),
                         vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 20,
-                        ry: (Math.random() - 0.5) * 20
+                        rx: (Math.random() - 0.5) * 10,
+                        ry: (Math.random() - 0.5) * 10
                     }};
 
                     shardGroup.add(shard);
@@ -1080,48 +1065,48 @@ with right_col:
                 scene.add(shardGroup);
 
                 tl.to(shardGroup.position, {{
-                    duration: 1.5,
+                    duration: 1.2,
                     ease: "power2.out",
                     onUpdate: function() {{
                         const progress = this.progress();
                         shards.forEach(s => {{
-                            s.position.x += s.userData.vx * 0.02;
-                            s.position.y += s.userData.vy * 0.02 - 0.05;
-                            s.position.z += s.userData.vz * 0.02;
-                            s.rotation.x += s.userData.rx * 0.02;
-                            s.rotation.y += s.userData.ry * 0.02;
+                            s.position.x += s.userData.vx * 0.015;
+                            s.position.y += s.userData.vy * 0.015 - 0.02;
+                            s.position.z += s.userData.vz * 0.015;
+                            s.rotation.x += s.userData.rx * 0.015;
+                            s.rotation.y += s.userData.ry * 0.015;
                             s.material.opacity = 1.0 - progress;
                             s.material.transparent = true;
                         }});
                     }}
                 }});
             }} else {{
-                // 크기 변화 연출 (총 1.5초로 단축)
+                // 크기 변화 연출 부드럽게 (최대 1.3배 수준으로 축소)
                 tl.to(objectGroup.scale, {{
-                    x: 2.1, y: 2.1, z: 2.1,
-                    duration: 0.75,
-                    ease: "power2.in"
+                    x: 1.3, y: 1.3, z: 1.3,
+                    duration: 0.6,
+                    ease: "power1.inOut"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
-                    duration: 0.75,
-                    ease: "elastic.out(1, 0.3)"
+                    duration: 0.6,
+                    ease: "power1.out"
                 }});
 
-                // 지진(흔들림) 효과 연출 (1.5초로 단축)
+                // 진동 효과를 아주 은은하고 가볍게 수정
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
-                    duration: 1.5,
+                    duration: 1.2,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.45;
-                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity * 3.5;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity * 3.5;
-                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 2.0;
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12; // 진동 폭 대폭 감소
+                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
 
-                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 4.0;
-                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 4.0;
-                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 4.0;
+                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity * 0.5;
+                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity * 0.5;
+                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity * 0.5;
                     }}
                 }}, 0);
             }}
@@ -1133,14 +1118,14 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
-                    outerMesh.rotation.x += 0.01 * rotSpeed;
-                    outerMesh.rotation.y += 0.015 * rotSpeed;
-                    coreMesh.rotation.x -= 0.02 * rotSpeed;
-                    coreMesh.rotation.y -= 0.025 * rotSpeed;
+                    const rotSpeed = status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5);
+                    outerMesh.rotation.x += 0.005 * rotSpeed;
+                    outerMesh.rotation.y += 0.008 * rotSpeed;
+                    coreMesh.rotation.x -= 0.01 * rotSpeed;
+                    coreMesh.rotation.y -= 0.012 * rotSpeed;
                 }}
 
-                starField.rotation.y = time * 0.02;
+                starField.rotation.y = time * 0.01;
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
@@ -1148,10 +1133,10 @@ with right_col:
                     positions[i*3 + 1] += particleVelocities[i].y;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if(positions[i*3 + 1] > 3.0) {{
-                        positions[i*3 + 1] = -5.0;
-                        positions[i*3] = (Math.random() - 0.5) * 7.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 7.0;
+                    if(positions[i*3 + 1] > 2.5) {{
+                        positions[i*3 + 1] = -4.0;
+                        positions[i*3] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
@@ -1170,9 +1155,5 @@ with right_col:
     </body>
     </html>
     """
-
-  # 애니메이션이 새로 렌더링될 때(`st.rerun()` 직후) 강화 연타 방지 플래그를 원상복구합니다.
-  if st.session_state.is_enhancing:
-    st.session_state.is_enhancing = False
 
   components.html(three_js_code, height=580, scrolling=False)
