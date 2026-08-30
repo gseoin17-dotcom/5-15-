@@ -352,13 +352,28 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+
+# 통계 누적 카운터 (업적 판정용)
+if "total_enhancements" not in st.session_state:
+  st.session_state.total_enhancements = 0
+if "total_destroys" not in st.session_state:
+  st.session_state.total_destroys = 0
+
+# 대폭 확장된 업적 리스트 상태값
 if "achievements" not in st.session_state:
-  # 업적 완료 여부 플래그
   st.session_state.achievements = {
-      "lvl_10": False,
-      "lvl_20": False,
-      "lvl_30": False,
-      "rich_1": False,
+      "enh_10": False,  # 강화 시도 10회
+      "enh_50": False,  # 강화 시도 50회
+      "enh_100": False,  # 강화 시도 100회
+      "lvl_5": False,  # 최고 5단계 달성
+      "lvl_10": False,  # 최고 10단계 달성
+      "lvl_15": False,  # 최고 15단계 달성
+      "lvl_20": False,  # 최고 20단계 달성
+      "lvl_25": False,  # 최고 25단계 달성
+      "lvl_30": False,  # 최고 30단계 달성
+      "dest_1": False,  # 파괴 1회 경험
+      "dest_5": False,  # 파괴 5회 경험
+      "rich_1": False,  # 1천만 원 이상 보유
   }
 
 # -----------------------------------------------------------------------------
@@ -377,6 +392,7 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
+  st.session_state.total_enhancements += 1
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -417,6 +433,7 @@ def run_enhance():
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
+      st.session_state.total_destroys += 1
       st.session_state.tears = min(120, st.session_state.tears + 2)
   else:
     st.session_state.pity_count += 1
@@ -432,6 +449,7 @@ def dev_force_success():
   if curr < 30:
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
+    st.session_state.total_enhancements += 1
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
 
@@ -557,9 +575,9 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 상점 / 업적 / 도감 탭 영역
-  tab_shop1, tab_shop2, tab_achieve, tab_codex = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🏆 업적", "📖 도감"]
+  # 상점 / 업적 탭 영역 (도감 제거 완료)
+  tab_shop1, tab_shop2, tab_achieve = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🏆 업적 (확장)"]
   )
 
   with tab_shop1:
@@ -623,31 +641,164 @@ with left_col:
 
   with tab_achieve:
     st.markdown(
-        "<div style='font-size:13px; color:#cbd5e1; margin-bottom:6px;'><b>도전"
-        " 과제 보상 시스템</b></div>",
+        "<div style='font-size:13px; color:#cbd5e1;"
+        " margin-bottom:6px;'><b>도전 과제 (스크롤하여 전체 확인)</b></div>",
         unsafe_allow_html=True,
     )
 
-    # 업적 1: 10단계 달성
-    a1_done = st.session_state.max_level >= 10
-    a1_claimed = st.session_state.achievements["lvl_10"]
+    ach_container_html = (
+        "<div style='max-height: 250px; overflow-y: auto; padding-right: 5px;'>"
+    )
+    st.markdown(ach_container_html, unsafe_allow_html=True)
+
+    # 1. 강화 시도 10회
+    a_id = "enh_10"
+    done = st.session_state.total_enhancements >= 10
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 초보 연금술사 (강화 10회"
+        f" 시도) [{min(10, st.session_state.total_enhancements)}/10]</div><div"
+        f" style='font-size:11px; color:#94a3b8;'>보상: 10,000원 & 눈물"
+        f" 3개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 10000
+        st.session_state.tears = min(120, st.session_state.tears + 3)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 2. 강화 시도 50회
+    a_id = "enh_50"
+    done = st.session_state.total_enhancements >= 50
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 숙련된 코어 (강화 50회"
+        f" 시도) [{min(50, st.session_state.total_enhancements)}/50]</div><div"
+        f" style='font-size:11px; color:#94a3b8;'>보상: 100,000원 & 눈물"
+        f" 10개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 100000
+        st.session_state.tears = min(120, st.session_state.tears + 10)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 3. 강화 시도 100회
+    a_id = "enh_100"
+    done = st.session_state.total_enhancements >= 100
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 냄새에 미친 자 (강화 100회"
+        f" 시도) [{min(100, st.session_state.total_enhancements)}/100]</div><div"
+        f" style='font-size:11px; color:#94a3b8;'>보상: 500,000원 & 눈물"
+        f" 20개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 500000
+        st.session_state.tears = min(120, st.session_state.tears + 20)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 4. 최고 5단계 달성
+    a_id = "lvl_5"
+    done = st.session_state.max_level >= 5
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 자극의 시작 (최고 5단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 5,000원 &"
+        f" 눈물 2개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 5000
+        st.session_state.tears = min(120, st.session_state.tears + 2)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 5. 최고 10단계 달성
+    a_id = "lvl_10"
+    done = st.session_state.max_level >= 10
+    claimed = st.session_state.achievements[a_id]
     st.markdown(
         f"<div style='font-size:12px; color:#fde68a;'>🎯 치명적 향기 (최고 10단계"
         f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 50,000원"
         f" & 눈물 10개</div>",
         unsafe_allow_html=True,
     )
-    if not a1_claimed:
+    if not claimed:
       if st.button(
-          "보상 받기" if a1_done else "미달성",
-          key="btn_a1",
-          disabled=not a1_done,
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
           use_container_width=True,
       ):
-        st.session_state.achievements["lvl_10"] = True
+        st.session_state.achievements[a_id] = True
         st.session_state.money += 50000
         st.session_state.tears = min(120, st.session_state.tears + 10)
-        st.success("업적 보상 수령 완료!")
+        st.success("수령 완료!")
         st.rerun()
     else:
       st.markdown(
@@ -656,28 +807,60 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    st.markdown("<hr style='margin:6px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
 
-    # 업적 2: 20단계 달성
-    a2_done = st.session_state.max_level >= 20
-    a2_claimed = st.session_state.achievements["lvl_20"]
+    # 6. 최고 15단계 달성
+    a_id = "lvl_15"
+    done = st.session_state.max_level >= 15
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 신화급 돌파 (최고 15단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 300,000원"
+        f" & 눈물 15개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 300000
+        st.session_state.tears = min(120, st.session_state.tears + 15)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 7. 최고 20단계 달성
+    a_id = "lvl_20"
+    done = st.session_state.max_level >= 20
+    claimed = st.session_state.achievements[a_id]
     st.markdown(
         f"<div style='font-size:12px; color:#fde68a;'>🎯 자이온맘 강림 (최고 20단계"
         f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 1,000,000원"
         f" & 눈물 30개</div>",
         unsafe_allow_html=True,
     )
-    if not a2_claimed:
+    if not claimed:
       if st.button(
-          "보상 받기" if a2_done else "미달성",
-          key="btn_a2",
-          disabled=not a2_done,
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
           use_container_width=True,
       ):
-        st.session_state.achievements["lvl_20"] = True
+        st.session_state.achievements[a_id] = True
         st.session_state.money += 1000000
         st.session_state.tears = min(120, st.session_state.tears + 30)
-        st.success("업적 보상 수령 완료!")
+        st.success("수령 완료!")
         st.rerun()
     else:
       st.markdown(
@@ -686,28 +869,60 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    st.markdown("<hr style='margin:6px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
 
-    # 업적 3: 30단계 달성
-    a3_done = st.session_state.max_level >= 30
-    a3_claimed = st.session_state.achievements["lvl_30"]
+    # 8. 최고 25단계 달성
+    a_id = "lvl_25"
+    done = st.session_state.max_level >= 25
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 은혜의 경지 (최고 25단계"
+        f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 5,000,000원"
+        f" & 눈물 40개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.money += 5000000
+        st.session_state.tears = min(120, st.session_state.tears + 40)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 9. 최고 30단계 달성
+    a_id = "lvl_30"
+    done = st.session_state.max_level >= 30
+    claimed = st.session_state.achievements[a_id]
     st.markdown(
         f"<div style='font-size:12px; color:#fde68a;'>🎯 태초의 완성 (최고 30단계"
         f" 달성)</div><div style='font-size:11px; color:#94a3b8;'>보상: 방지권 3개 &"
         f" 눈물 50개</div>",
         unsafe_allow_html=True,
     )
-    if not a3_claimed:
+    if not claimed:
       if st.button(
-          "보상 받기" if a3_done else "미달성",
-          key="btn_a3",
-          disabled=not a3_done,
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
           use_container_width=True,
       ):
-        st.session_state.achievements["lvl_30"] = True
+        st.session_state.achievements[a_id] = True
         st.session_state.shield = min(3, st.session_state.shield + 3)
         st.session_state.tears = min(120, st.session_state.tears + 50)
-        st.success("업적 보상 수령 완료!")
+        st.success("수령 완료!")
         st.rerun()
     else:
       st.markdown(
@@ -716,25 +931,102 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-  with tab_codex:
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 10. 파괴 1회 경험
+    a_id = "dest_1"
+    done = st.session_state.total_destroys >= 1
+    claimed = st.session_state.achievements[a_id]
     st.markdown(
-        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:6px;'><b>지온"
-        f" 도감 (달성률: {st.session_state.max_level}/30)</b></div>",
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 블랙홀 체험기 (코어 파괴"
+        f" 1회 경험)</div><div style='font-size:11px; color:#94a3b8;'>보상: 눈물"
+        f" 5개</div>",
         unsafe_allow_html=True,
     )
-    # 스크롤 가능한 도감 리스트 영역
-    codex_html = (
-        "<div style='max-height: 220px; overflow-y: auto; padding-right: 5px;'>"
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.tears = min(120, st.session_state.tears + 5)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 11. 파괴 5회 경험
+    a_id = "dest_5"
+    done = st.session_state.total_destroys >= 5
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 멘탈 붕괴의 정점 (코어"
+        f" 파괴 5회 경험) [{st.session_state.total_destroys}/5]</div><div"
+        f" style='font-size:11px; color:#94a3b8;'>보상: 방지권 1개 & 눈물"
+        f" 15개</div>",
+        unsafe_allow_html=True,
     )
-    for lvl_idx in range(31):
-      d_info = SMELL_DB[lvl_idx]
-      is_unlocked = lvl_idx <= st.session_state.max_level
-      if is_unlocked:
-        codex_html += f"<div style='background: rgba(255,255,255,0.05); border-left: 3px solid {d_info['color']}; padding: 6px; margin-bottom: 5px; border-radius: 4px;'><div style='font-size:12px; font-weight:bold; color:#fde68a;'>{d_info['name']}</div><div style='font-size:11px; color:#cbd5e1;'>{d_info['desc']}</div></div>"
-      else:
-        codex_html += f"<div style='background: rgba(0,0,0,0.2); border-left: 3px solid #475569; padding: 6px; margin-bottom: 5px; border-radius: 4px;'><div style='font-size:12px; font-weight:bold; color:#64748b;'>??? 단계 (미해제)</div><div style='font-size:11px; color:#475569;'>아직 도달하지 못한 영역입니다.</div></div>"
-    codex_html += "</div>"
-    st.markdown(codex_html, unsafe_allow_html=True)
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.shield = min(3, st.session_state.shield + 1)
+        st.session_state.tears = min(120, st.session_state.tears + 15)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("<hr style='margin:4px 0; border-color:rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+
+    # 12. 1천만 원 이상 보유
+    a_id = "rich_1"
+    done = (
+        isinstance(st.session_state.money, float)
+        or st.session_state.money >= 10000000
+    )
+    claimed = st.session_state.achievements[a_id]
+    st.markdown(
+        f"<div style='font-size:12px; color:#fde68a;'>🎯 은하계 부자 (1천만 원"
+        f" 이상 보유)</div><div style='font-size:11px;"
+        f" color:#94a3b8;'>보상: 눈물 10개</div>",
+        unsafe_allow_html=True,
+    )
+    if not claimed:
+      if st.button(
+          "보상 받기" if done else "미달성",
+          key=f"btn_{a_id}",
+          disabled=not done,
+          use_container_width=True,
+      ):
+        st.session_state.achievements[a_id] = True
+        st.session_state.tears = min(120, st.session_state.tears + 10)
+        st.success("수령 완료!")
+        st.rerun()
+    else:
+      st.markdown(
+          "<div style='font-size:11px; color:#34d399; font-weight:700;'>[완료됨]"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
