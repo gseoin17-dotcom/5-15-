@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
-# -------------------------------------------ㄴ----------------------------
+# -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="지온냄새 강화하기 - SOLAR SYSTEM EDITION",
     page_icon="🌌",
@@ -504,7 +504,7 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .block-container {
-        padding-top: 5rem !important; /* 위쪽 여백을 늘려 전체 UI를 아래로 내림 */
+        padding-top: 5rem !important;
         padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
@@ -593,7 +593,6 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # 현재 단계 확률 정보 표시
   curr_lvl = st.session_state.level
   sp, down_p, dp, hold_p = PROB_TABLE.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
   st.markdown(
@@ -899,44 +898,6 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 수금지화목토전해명(9개 행성) 3D 그룹 생성
-            const solarSystemGroup = new THREE.Group();
-            solarSystemGroup.position.y = -0.7;
-            scene.add(solarSystemGroup);
-
-            const planetData = [
-                {{ name: 'Mercury', color: 0xaaaaaa, size: 0.15, distance: 3.2, speed: 1.2 }}, // 수
-                {{ name: 'Venus', color: 0xe3bb76, size: 0.22, distance: 4.0, speed: 0.9 }},   // 금
-                {{ name: 'Earth', color: 0x2277ff, size: 0.25, distance: 4.9, speed: 0.7 }},   // 지
-                {{ name: 'Mars', color: 0xcc4422, size: 0.18, distance: 5.8, speed: 0.55 }},  // 화
-                {{ name: 'Jupiter', color: 0xd4a373, size: 0.45, distance: 7.0, speed: 0.4 }},  // 목
-                {{ name: 'Saturn', color: 0xf4e2bb, size: 0.35, distance: 8.3, speed: 0.3 }},  // 토
-                {{ name: 'Uranus', color: 0x77ddff, size: 0.28, distance: 9.5, speed: 0.22 }}, // 천
-                {{ name: 'Neptune', color: 0x3333cc, size: 0.28, distance: 10.6, speed: 0.17 }},// 해
-                {{ name: 'Pluto', color: 0xaaaa99, size: 0.12, distance: 11.6, speed: 0.12 }}   // 명
-            ];
-
-            const planets = [];
-
-            planetData.forEach((data) => {{
-                const orbitGroup = new THREE.Group();
-                solarSystemGroup.add(orbitGroup);
-
-                const pGeo = new THREE.SphereGeometry(data.size, 16, 16);
-                const pMat = new THREE.MeshStandardMaterial({{
-                    color: data.color,
-                    roughness: 0.7,
-                    metalness: 0.2,
-                    emissive: data.color,
-                    emissiveIntensity: 0.2
-                }});
-                const mesh = new THREE.Mesh(pGeo, pMat);
-                mesh.position.x = data.distance;
-                orbitGroup.add(mesh);
-
-                planets.push({{ group: orbitGroup, speed: data.speed }});
-            }});
-
             // 기존 상승 파티클 시스템
             const particleCount = 850;
             const particleGeo = new THREE.BufferGeometry();
@@ -1137,11 +1098,6 @@ with right_col:
                     coreMesh.rotation.y = -time * (1.5 * rotSpeed);
                     objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
                 }}
-
-                // 행성 공전 애니메이션
-                planets.forEach(p => {{
-                    p.group.rotation.y = time * p.speed * 0.25;
-                }});
 
                 starField.rotation.y = time * 0.02;
 
