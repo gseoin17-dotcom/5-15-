@@ -397,9 +397,11 @@ if "tears" not in st.session_state:
   st.session_state.tears = 0
 if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
+if "is_animating" not in st.session_state:
+  st.session_state.is_animating = False
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직 (수정 완료)
+# 5. 강화 로직
 # -----------------------------------------------------------------------------
 
 
@@ -414,8 +416,8 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
+  st.session_state.is_animating = True  # 애니메이션 시작 상태로 설정
 
-  # 천장(Pity) 판정 선적용 (설정된 횟수 이상 실패 시 무조건 성공)
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
@@ -468,6 +470,7 @@ def run_enhance():
 def dev_force_success():
   curr = st.session_state.level
   if curr < 35:
+    st.session_state.is_animating = True
     st.session_state.level += 1
     st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
@@ -485,6 +488,7 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
+  st.session_state.is_animating = False
 
 
 # -----------------------------------------------------------------------------
@@ -628,7 +632,11 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
+    can_buy_shield = (
+        st.session_state.level >= 18
+        and st.session_state.shield < 3
+        and not st.session_state.is_animating
+    )
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
       if st.session_state.level < 18:
         st.warning("18단계 이상부터 구매 가능합니다.")
@@ -659,12 +667,13 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    can_use_tears = st.session_state.level < 32
+    can_use_tears = st.session_state.level < 32 and not st.session_state.is_animating
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
       if st.session_state.level >= 32:
         st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears >= 40:
         st.session_state.tears -= 40
+        st.session_state.is_animating = True
         if random.random() < 0.50:
           add_lvl = random.choice([1, 2, 3])
           st.session_state.level = min(35, st.session_state.level + add_lvl)
@@ -688,11 +697,11 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= 35),
-  ):
+  # 애니메이션 중이거나 35단계 도달 시 강화 버튼 비활성화
+  can_enhance = (
+      st.session_state.level < 35 and not st.session_state.is_animating
+  )
+  if st.button("🔥 냄새 강화 실행", use_container_width=True, disabled=not can_enhance):
     cost = get_enhance_cost(st.session_state.level)
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
@@ -702,18 +711,16 @@ with left_col:
 
   if dev_mode:
     st.write("")
+    can_dev = st.session_state.level < 35 and not st.session_state.is_animating
     if st.button(
-        "✨ [DEV] 무조건 성공",
-        use_container_width=True,
-        disabled=(st.session_state.level >= 35),
+        "✨ [DEV] 무조건 성공", use_container_width=True, disabled=not can_dev
     ):
       dev_force_success()
       st.rerun()
 
   st.write("")
-  if st.button(
-      "💰 현재 냄새 판매", use_container_width=True, disabled=(st.session_state.level == 0)
-  ):
+  can_sell = st.session_state.level > 0 and not st.session_state.is_animating
+  if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=not can_sell):
     sell()
     st.rerun()
 
@@ -878,7 +885,6 @@ with right_col:
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
-            // 배경 별들
             const starCount = 1000;
             const starGeo = new THREE.BufferGeometry();
             const starPositions = new Float32Array(starCount * 3);
@@ -898,7 +904,6 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 파티클 시스템 (과격함 축소)
             const particleCount = 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
@@ -1015,12 +1020,12 @@ with right_col:
 
             scene.add(objectGroup);
 
-            // ==========================================
-            // 애니메이션 부드럽고 차분한 버전 (과격함 대폭 축소)
-            // ==========================================
+            // 애니메이션 종료 시 부모 창(Streamlit)에 신호를 보내 버튼을 풀기 위한 콜백 연동
             const tl = gsap.timeline({{
                 onComplete: () => {{
                     uiElement.classList.add('visible');
+                    // 애니메이션 완료 후 파이썬 세션 상태의 is_animating을 풀기 위해 부모 페이지 리로드 또는 상태 동기화 트리거
+                    window.parent.postMessage({{ type: 'streamlit:setComponentValue', value: false }}, '*');
                 }}
             }});
 
@@ -1081,7 +1086,6 @@ with right_col:
                     }}
                 }});
             }} else {{
-                // 크기 변화 연출 부드럽게 (최대 1.3배 수준으로 축소)
                 tl.to(objectGroup.scale, {{
                     x: 1.3, y: 1.3, z: 1.3,
                     duration: 0.6,
@@ -1093,13 +1097,12 @@ with right_col:
                     ease: "power1.out"
                 }});
 
-                // 진동 효과를 아주 은은하고 가볍게 수정
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
                     duration: 1.2,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12; // 진동 폭 대폭 감소
+                        const shakeIntensity = Math.sin(p * Math.PI) * 0.12;
                         objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
@@ -1156,4 +1159,8 @@ with right_col:
     </html>
     """
 
-  components.html(three_js_code, height=580, scrolling=False)
+  # 최초 로드시 애니메이션 상태였다면 결과 출력 후 애니메이션 플래그 해제
+  component_val = components.html(three_js_code, height=580, scrolling=False)
+  if st.session_state.is_animating and status != "READY":
+    # 애니메이션이 끝나고 첫 렌더링 사이클이 지나면 잠금을 풀어줍니다.
+    st.session_state.is_animating = False
