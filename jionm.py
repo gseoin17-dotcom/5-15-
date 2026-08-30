@@ -621,17 +621,17 @@ with left_col:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
         f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 4개<br><b>가격:</b>"  # 방지권 보유한도 4개로 수정
+        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 4개<br><b>가격:</b>"
         f" <span style='font-size:14px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
 
-    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 4  # 한도 4개 적용
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 4
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
       if st.session_state.level < 18:
         st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 4:  # 한도 4개 적용
+      elif st.session_state.shield >= 4:
         st.warning("최대 4개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
@@ -652,9 +652,9 @@ with left_col:
     else:
       st.markdown(
           f"<div style='font-size:13px; color:#cbd5e1;"
-          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (50% 확률로 1~3단계"  # 눈물 요구 개수 20개로 수정
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
-          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",  # 눈물 보유한도 80개 적용
+          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
           unsafe_allow_html=True,
       )
 
@@ -662,19 +662,16 @@ with left_col:
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
       if st.session_state.level >= 32:
         st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= 20:  # 눈물 요구 개수 20개 적용
-        st.session_state.tears -= 20  # 눈물 요구 개수 20개 적용
-        if random.random() < 0.50:
-          add_lvl = random.choice([1, 2, 3])
-          st.session_state.level = min(35, st.session_state.level + add_lvl)
-          st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-          st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
-        else:
-          st.session_state.status = "FAILED"
-          st.warning("눈물의 기적이 실패했습니다...")
+      elif st.session_state.tears >= 20:
+        st.session_state.tears -= 20
+        # 100% 확률 성공 로직 적용
+        add_lvl = random.choice([1, 2, 3])
+        st.session_state.level = min(35, st.session_state.level + add_lvl)
+        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
         st.rerun()
       else:
-        st.error("눈물 20개가 필요합니다.")  # 안내 문구 20개로 수정
+        st.error("눈물 20개가 필요합니다.")
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -777,7 +774,6 @@ with right_col:
                 100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
             }}
 
-            /* 하단 설명 텍스트 크기 키우기 요청 반영 */
             .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
             .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
             .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
