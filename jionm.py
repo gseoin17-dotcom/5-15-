@@ -379,8 +379,6 @@ PROB_TABLE = {
 
 CRITICAL_RATE = 0.05
 PITY_MAX = 5
-MAX_SHIELD = 4  # 방지권 제한 갯수 4개로 변경
-TEARS_COST = 20  # 지온의 눈물 소모 갯수 20개로 변경
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -419,11 +417,7 @@ def run_enhance():
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
-    # 34단계에서 35단계 성공 시(마지막 강화 성공) 특별 이펙트 상태 부여
-    if st.session_state.level == 35:
-      st.session_state.status = "FINAL_SUCCESS"
-    else:
-      st.session_state.status = "PITY_SUCCESS"
+    st.session_state.status = "PITY_SUCCESS"
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
@@ -440,16 +434,10 @@ def run_enhance():
     st.session_state.pity_count = 0
     if random.random() < CRITICAL_RATE and curr + 2 <= 35:
       st.session_state.level += 2
-      if st.session_state.level >= 35:
-        st.session_state.status = "FINAL_SUCCESS"
-      else:
-        st.session_state.status = "CRITICAL"
+      st.session_state.status = "CRITICAL"
     else:
       st.session_state.level += 1
-      if st.session_state.level == 35:
-        st.session_state.status = "FINAL_SUCCESS"
-      else:
-        st.session_state.status = "SUCCESS"
+      st.session_state.status = "SUCCESS"
   elif r < down_limit:
     st.session_state.pity_count += 1
     if curr > 0:
@@ -480,10 +468,7 @@ def dev_force_success():
   curr = st.session_state.level
   if curr < 35:
     st.session_state.level += 1
-    if st.session_state.level == 35:
-      st.session_state.status = "FINAL_SUCCESS"
-    else:
-      st.session_state.status = "SUCCESS"
+    st.session_state.status = "SUCCESS"
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
 
@@ -590,7 +575,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        f" {MAX_SHIELD}개</div></div>",  # 최대 4개로 표시[cite: 1]
+        " 3개</div></div>",
         unsafe_allow_html=True,
     )
     st.write("")
@@ -637,20 +622,18 @@ with left_col:
     current_shield_cost = get_shield_cost(st.session_state.level)
     st.markdown(
         f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 {MAX_SHIELD}개<br><b>가격:</b>"
+        f"<b>조건:</b> 18단계 이상 | <b>보유한도:</b> 최대 3개<br><b>가격:</b>"
         f" <span style='font-size:14px; font-weight:bold; color:#fde68a;'>"
         f"{format_gold(current_shield_cost)}</span></div>",
         unsafe_allow_html=True,
     )
 
-    can_buy_shield = (
-        st.session_state.level >= 18 and st.session_state.shield < MAX_SHIELD
-    )
+    can_buy_shield = st.session_state.level >= 18 and st.session_state.shield < 3
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
       if st.session_state.level < 18:
         st.warning("18단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= MAX_SHIELD:
-        st.warning(f"최대 {MAX_SHIELD}개까지만 보유 가능합니다.")  #[cite: 1]
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
@@ -670,8 +653,8 @@ with left_col:
     else:
       st.markdown(
           f"<div style='font-size:13px; color:#cbd5e1;"
-          f" margin-bottom:8px;'><b>효과:</b> 눈물 {TEARS_COST}개 소모 (50% 확률로"
-          f" 1~3단계 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 40개 소모 (50% 확률로 1~3단계"
+          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
           f" color:#38bdf8;'>{st.session_state.tears} / 120개</span></div>",
           unsafe_allow_html=True,
       )
@@ -680,24 +663,19 @@ with left_col:
     if st.button("눈물 기적 가동", use_container_width=True, disabled=not can_use_tears):
       if st.session_state.level >= 32:
         st.warning("32단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= TEARS_COST:  #[cite: 1]
-        st.session_state.tears -= TEARS_COST
+      elif st.session_state.tears >= 40:
+        st.session_state.tears -= 40
         if random.random() < 0.50:
           add_lvl = random.choice([1, 2, 3])
           st.session_state.level = min(35, st.session_state.level + add_lvl)
-          if st.session_state.level == 35:
-            st.session_state.status = "FINAL_SUCCESS"
-          else:
-            st.session_state.status = (
-                "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-            )
+          st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
           st.success(f"눈물 기적 대성공! {add_lvl}단계 상승!")
         else:
           st.session_state.status = "FAILED"
           st.warning("눈물의 기적이 실패했습니다...")
         st.rerun()
       else:
-        st.error(f"눈물 {TEARS_COST}개가 필요합니다.")  #[cite: 1]
+        st.error("눈물 40개가 필요합니다.")
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -773,7 +751,7 @@ with right_col:
                 z-index: 100;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.4s ease-in-out;
+                transition: opacity 0.5s ease-in-out;
             }}
 
             .cinematic-ui.visible {{
@@ -839,13 +817,7 @@ with right_col:
             let particleSpeed = 1.0;
             let glowIntensity = 15;
 
-            if (status === "FINAL_SUCCESS") {{
-                statusText.innerText = "🌟 [LEGENDARY] 35단계 최종 강화 대성공!! 만물의 절대 지온 개방!! 🌟";
-                statusColor = "#00ffff"; 
-                particleSize = 0.7;
-                particleSpeed = 4.0;
-                glowIntensity = 50;
-            }} else if (status === "CRITICAL") {{
+            if (status === "CRITICAL") {{
                 statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
                 particleSize = 0.55;
@@ -926,8 +898,8 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            // 기존 상승 파티클 시스템
-            const particleCount = status === "FINAL_SUCCESS" ? 2000 : 850;
+            // 파티클 시스템
+            const particleCount = 850;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1017,8 +989,8 @@ with right_col:
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
-                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" || status === "FINAL_SUCCESS" ? statusColor : "#111111",
-                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : (status === "FINAL_SUCCESS" ? 3.5 : 0.15)),
+                emissive: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111",
+                emissiveIntensity: status === "SUCCESS" ? 0.5 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.9 : 0.15),
                 metalness: 0.9,
                 roughness: 0.15,
                 transmission: 0.6,
@@ -1033,7 +1005,7 @@ with right_col:
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : (status === "FINAL_SUCCESS" ? 8.0 : 1.2),
+                emissiveIntensity: status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 3.0 : 1.2,
                 roughness: 0.05,
                 metalness: 0.95,
                 transmission: 0.8
@@ -1043,7 +1015,15 @@ with right_col:
 
             scene.add(objectGroup);
 
-            uiElement.classList.add('visible');
+            // ==========================================
+            // 3초 타임라인 애니메이션 (흔들림 + 확대/축소 + 텍스트 등장)
+            // ==========================================
+            const tl = gsap.timeline({{
+                onComplete: () => {{
+                    // 3초 애니메이션 종료 후 텍스트 등장
+                    uiElement.classList.add('visible');
+                }}
+            }});
 
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
@@ -1085,8 +1065,8 @@ with right_col:
                 }}
                 scene.add(shardGroup);
 
-                gsap.to(shardGroup.position, {{
-                    duration: 1.2,
+                tl.to(shardGroup.position, {{
+                    duration: 3.0,
                     ease: "power2.out",
                     onUpdate: function() {{
                         const progress = this.progress();
@@ -1101,29 +1081,28 @@ with right_col:
                         }});
                     }}
                 }});
-            }} else if (status === "FINAL_SUCCESS") {{
-                // 35단계 최종 성공 시 개쩌는 거대 폭발 및 무한 회전/확대 이펙트[cite: 1]
-                const ringGeo = new THREE.RingGeometry(0.1, 0.5, 32);
-                const ringMat = new THREE.MeshBasicMaterial({{ color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 1.0 }});
-                const shockwave = new THREE.Mesh(ringGeo, ringMat);
-                shockwave.rotation.x = Math.PI / 2;
-                shockwave.position.y = -0.7;
-                scene.add(shockwave);
+            }} else {{
+                // 1단계: 3초 동안 커졌다가 원래 상태로 돌아오기 (총 3초)
+                tl.to(objectGroup.scale, {{
+                    x: 1.8, y: 1.8, z: 1.8,
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                }})
+                .to(objectGroup.scale, {{
+                    x: 1.0, y: 1.0, z: 1.0,
+                    duration: 1.5,
+                    ease: "bounce.out"
+                }});
 
-                gsap.to(shockwave.scale, {{ x: 15, y: 15, z: 15, duration: 1.2, ease: "power2.out" }});
-                gsap.to(ringMat, {{ opacity: 0, duration: 1.2, ease: "power2.out", onComplete: () => scene.remove(shockwave) }});
-
-                gsap.fromTo(objectGroup.scale, {{x: 0.1, y: 0.1, z: 0.1}}, {{x: 1.8, y: 1.8, z: 1.8, duration: 0.6, ease: "back.out(1.7)"}});
-                gsap.to(objectGroup.scale, {{x: 1.2, y: 1.2, z: 1.2, duration: 0.5, delay: 0.6, yoyo: true, repeat: -1}});
-            }} else if (status === "CRITICAL" || status === "PITY_SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.2, y: 0.2, z: 0.2}}, {{x: 1.3, y: 1.3, z: 1.3, duration: 0.5, ease: "power2.out"}});
-                gsap.to(objectGroup.scale, {{x: 1, y: 1, z: 1, duration: 0.3, delay: 0.5}});
-            }} else if (status === "SUCCESS") {{
-                gsap.fromTo(objectGroup.scale, {{x: 0.8, y: 0.8, z: 0.8}}, {{x: 1.15, y: 1.15, z: 1.15, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.out"}});
-            }} else if (status === "FAILED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.05, y: 1.05, z: 1.05}}, {{x: 0.92, y: 0.92, z: 0.92, duration: 0.3, ease: "power1.out"}});
-            }} else if (status === "SHIELD_SAVED") {{
-                gsap.fromTo(objectGroup.scale, {{x: 1.25, y: 1.25, z: 1.25}}, {{x: 1, y: 1, z: 1, duration: 0.4, ease: "back.out(2)"}});
+                // 2단계: 애니메이션 진행되는 동안(3초간) 3D 다각형 격렬하게 흔들기
+                tl.to(objectGroup.rotation, {{
+                    z: "+=0.4",
+                    x: "+=0.3",
+                    duration: 0.1,
+                    repeat: 29, // 0.1초 * 30회 = 총 3초 동안 흔들림 유지
+                    yoyo: true,
+                    ease: "power1.inOut"
+                }}, 0); // 타임라인 시작점(0초)부터 동시에 실행
             }}
 
             const clock = new THREE.Clock();
@@ -1133,12 +1112,12 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = status === "FINAL_SUCCESS" ? 2.5 : (status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65));
-                    outerMesh.rotation.x = time * (0.5 * rotSpeed);
-                    outerMesh.rotation.y = time * (0.75 * rotSpeed);
-                    coreMesh.rotation.x = -time * (1.2 * rotSpeed);
-                    coreMesh.rotation.y = -time * (1.5 * rotSpeed);
-                    objectGroup.rotation.y = Math.sin(time * 0.7) * 0.25;
+                    const rotSpeed = status === "FAILED" ? 0.4 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 1.2 : 0.65);
+                    outerMesh.rotation.x += 0.01 * rotSpeed;
+                    outerMesh.rotation.y += 0.015 * rotSpeed;
+                    coreMesh.rotation.x -= 0.02 * rotSpeed;
+                    coreMesh.rotation.y -= 0.025 * rotSpeed;
+                    objectGroup.rotation.y += Math.sin(time * 0.7) * 0.005;
                 }}
 
                 starField.rotation.y = time * 0.02;
