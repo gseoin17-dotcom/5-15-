@@ -956,20 +956,31 @@ with left_col:
   tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
 
   with tab_shop1:
+    min_shield_level = 16 if st.session_state.is_rebirth else 24
     current_shield_cost = get_shield_cost(
         st.session_state.level, st.session_state.is_rebirth
     )
-    st.markdown(
-        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"<b>보유한도:</b> 최대 4개<br><b>가격:</b> <span"
-        f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
-        f"{format_gold(current_shield_cost)}</span></div>",
-        unsafe_allow_html=True,
-    )
 
-    can_buy_shield = st.session_state.shield < 4
+    if st.session_state.level < min_shield_level:
+      st.markdown(
+          f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+          f"<b>보유한도:</b> 최대 4개<br><b>가격:</b> <span"
+          f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
+          unsafe_allow_html=True,
+      )
+
+    can_buy_shield = (st.session_state.shield < 4) and (st.session_state.level >= min_shield_level)
     if st.button("방지권 구매", use_container_width=True, disabled=not can_buy_shield):
-      if st.session_state.shield >= 4:
+      if st.session_state.level < min_shield_level:
+        st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
+      elif st.session_state.shield >= 4:
         st.warning("최대 4개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
@@ -1279,7 +1290,6 @@ with right_col:
             let baseGeo;
             const lvl = {current_level};
 
-            // 환생 모드 여부에 따라 완전히 다른 독창적 3D 다각형 도형들 적용
             if (isRebirth) {{
                 if (lvl <= 3) {{
                     baseGeo = new THREE.OctahedronGeometry(2.3);
