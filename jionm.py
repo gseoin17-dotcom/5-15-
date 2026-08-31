@@ -765,6 +765,7 @@ def run_enhance():
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
+  # 워프권 자동 해금
   if st.session_state.level >= 30 and not st.session_state.is_rebirth:
     st.session_state.unlocked_warps[30] = True
   if st.session_state.level >= 25:
@@ -967,7 +968,9 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp = st.tabs(["🛡️ 방지권", "💧 눈물", "🚀 워프권"])
+  tab_shop1, tab_shop2, tab_warp, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🛠️ 개발자 모드"]
+  )
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
@@ -1052,17 +1055,15 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    # 30강 워프권 추가 및 가격 설정
     warp_prices = {
-        10: 10000000,  # 1,000만원
-        15: 50000000,  # 5,000만원
-        20: 200000000,  # 2억 원
-        25: 1000000000,  # 10억 원
-        30: 5000000000,  # 50억 원 (시즌 1 전용)
+        10: 10000000,
+        15: 50000000,
+        20: 200000000,
+        25: 1000000000,
+        30: 5000000000,
     }
 
     for w_level, w_price in warp_prices.items():
-      # 시즌2 환생 상태일 때 30강 워프는 숨기거나 비활성화 처리
       if w_level == 30 and st.session_state.is_rebirth:
         continue
 
@@ -1097,6 +1098,50 @@ with left_col:
             st.session_state.status = "SUCCESS"
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
+
+  # -----------------------------------------------------------------------------
+  # 개발자 모드 탭 내용 추가
+  # -----------------------------------------------------------------------------
+  with tab_dev:
+    st.markdown(
+        "<div style='font-size:12px; color:#f87171; font-weight:700;"
+        " margin-bottom:8px;'>⚠️ 개발자 치트키 구역입니다. 비용 없이 무조건"
+        " 성공합니다!</div>",
+        unsafe_allow_html=True,
+    )
+
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+
+    if st.button(
+        "✨ [치트] 무조건 강제 성공 (+1)",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl),
+    ):
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
+
+      # 워프권 자동 해금 연동
+      if st.session_state.level >= 30 and not st.session_state.is_rebirth:
+        st.session_state.unlocked_warps[30] = True
+      if st.session_state.level >= 25:
+        st.session_state.unlocked_warps[25] = True
+      if st.session_state.level >= 20:
+        st.session_state.unlocked_warps[20] = True
+      if st.session_state.level >= 15 and not st.session_state.is_rebirth:
+        st.session_state.unlocked_warps[15] = True
+      if st.session_state.level >= 10 and not st.session_state.is_rebirth:
+        st.session_state.unlocked_warps[10] = True
+
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
+
+    if st.button("💰 [치트] 자금 무한 충전 (+100조)", use_container_width=True):
+      if st.session_state.money != float("inf"):
+        st.session_state.money += 100000000000000  # 100조
+      st.success("자금이 대량 충전되었습니다!")
+      st.rerun()
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
