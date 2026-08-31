@@ -689,6 +689,8 @@ if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
+if "ever_rebirth" not in st.session_state:
+  st.session_state.ever_rebirth = False  # 환생을 한 번이라도 했는지 추적하는 변수
 if "unlocked_warps" not in st.session_state:
   st.session_state.unlocked_warps = {
       10: False,
@@ -810,6 +812,7 @@ def sell():
 
 def trigger_rebirth():
   st.session_state.is_rebirth = True
+  st.session_state.ever_rebirth = True
   st.session_state.level = 0
   st.session_state.max_level = 0
   st.session_state.money = 1000000000
@@ -825,6 +828,14 @@ def return_to_season1():
   st.session_state.level = 0
   st.session_state.max_level = 0
   st.session_state.money = 1000000
+  st.session_state.status = "READY"
+
+
+def return_to_season2():
+  st.session_state.is_rebirth = True
+  st.session_state.level = 0
+  st.session_state.max_level = 0
+  st.session_state.money = 1000000000
   st.session_state.status = "READY"
 
 
@@ -906,10 +917,20 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-  # 시즌 1에서 환생을 완료하여 시즌 2에 진입한 경우에만 '시즌 1로 돌아가기' 버튼 노출
+  # 시즌 2 상태일 때 시즌 1로 돌아가기 버튼 노출
   if st.session_state.is_rebirth:
     if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
       return_to_season1()
+      st.rerun()
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+  # 시즌 1 상태이면서 한 번이라도 환생(시즌 2)을 경험했던 적이 있다면 다시 시즌 2로 갈 수 있는 버튼 노출
+  if (not st.session_state.is_rebirth) and st.session_state.ever_rebirth:
+    if st.button("▶ 시즌 2로 돌아가기", use_container_width=True):
+      return_to_season2()
       st.rerun()
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
