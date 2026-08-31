@@ -689,8 +689,6 @@ if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
-if "has_started" not in st.session_state:
-  st.session_state.has_started = False  # 최초 시작 여부 상태 추가[cite: 1]
 if "unlocked_warps" not in st.session_state:
   st.session_state.unlocked_warps = {
       10: False,
@@ -820,7 +818,6 @@ def trigger_rebirth():
   st.session_state.pity_count = 0
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
-  st.session_state.has_started = True  # 환생했으므로 이제 버튼 해제
 
 
 def return_to_season1():
@@ -884,27 +881,7 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
-  # 최초 시작 시 (시즌 1이며 아직 환생을 한 번도 안 한 상태) 안내 및 버튼 활성화 제어[cite: 1]
-  if not st.session_state.is_rebirth and not st.session_state.has_started:
-    st.markdown(
-        "<div"
-        " style='background:rgba(220,38,38,0.2);border:2px solid"
-        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
-        "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 최초 시작 안내</h3>"
-        "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
-        " 0;'>버튼을 활성화하려면 먼저 <b>환생하기</b>를 진행해야 합니다!</p>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
-    if st.button("✨ 환생하고 버튼 잠금 해제하기", use_container_width=True):
-      trigger_rebirth()
-      st.rerun()
-    st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-        unsafe_allow_html=True,
-    )
-
-  # 시즌 1 한계 도달 시 환생 안내
+  # 시즌 1 한계 도달 시 환생 안내 (시즌 1이면서 35단계 이상일 때만 표시)
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
@@ -929,7 +906,7 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-  # 시즌 2일 때 시즌 1로 돌아갈 수 있는 버튼 추가[cite: 1]
+  # 시즌 1에서 환생을 완료하여 시즌 2에 진입한 경우에만 '시즌 1로 돌아가기' 버튼 노출
   if st.session_state.is_rebirth:
     if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
       return_to_season1()
@@ -1045,17 +1022,13 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    can_buy_shield = (
-        st.session_state.has_started
-        and (st.session_state.shield < 4)
-        and (st.session_state.level >= min_shield_level)
+    can_buy_shield = (st.session_state.shield < 4) and (
+        st.session_state.level >= min_shield_level
     )
     if st.button(
         "방지권 구매", use_container_width=True, disabled=not can_buy_shield
     ):
-      if not st.session_state.has_started:
-        st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
-      elif st.session_state.level < min_shield_level:
+      if st.session_state.level < min_shield_level:
         st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
       elif st.session_state.shield >= 4:
         st.warning("최대 4개까지만 보유 가능합니다.")
@@ -1086,15 +1059,11 @@ with left_col:
           unsafe_allow_html=True,
       )
 
-    can_use_tears = st.session_state.has_started and (
-        st.session_state.level < limit_lvl
-    )
+    can_use_tears = st.session_state.level < limit_lvl
     if st.button(
         "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
     ):
-      if not st.session_state.has_started:
-        st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
-      elif st.session_state.level >= limit_lvl:
+      if st.session_state.level >= limit_lvl:
         st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears >= 20:
         st.session_state.tears -= 20
@@ -1154,19 +1123,13 @@ with left_col:
             unsafe_allow_html=True,
         )
       with c2:
-        can_warp = (
-            st.session_state.has_started
-            and is_unlocked
-            and (st.session_state.level < w_level)
-        )
         if st.button(
             "이동",
             key=f"warp_{st.session_state.is_rebirth}_{w_level}",
-            disabled=not can_warp,
+            disabled=not is_unlocked
+            or (st.session_state.level >= w_level),
         ):
-          if not st.session_state.has_started:
-            st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
-          elif not is_unlocked:
+          if not is_unlocked:
             st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
           elif st.session_state.money < w_price:
             st.error("보유 금액이 부족합니다!")
@@ -1192,53 +1155,42 @@ with left_col:
     if st.button(
         "✨ [치트] 무조건 강제 성공 (+1)",
         use_container_width=True,
-        disabled=(not st.session_state.has_started)
-        or (st.session_state.level >= max_lvl),
+        disabled=(st.session_state.level >= max_lvl),
     ):
-      if not st.session_state.has_started:
-        st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
+
+      if not st.session_state.is_rebirth:
+        if st.session_state.level >= 30:
+          st.session_state.unlocked_warps[30] = True
+        if st.session_state.level >= 25:
+          st.session_state.unlocked_warps[25] = True
+        if st.session_state.level >= 20:
+          st.session_state.unlocked_warps[20] = True
+        if st.session_state.level >= 15:
+          st.session_state.unlocked_warps[15] = True
+        if st.session_state.level >= 10:
+          st.session_state.unlocked_warps[10] = True
       else:
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
-        if st.session_state.level > st.session_state.max_level:
-          st.session_state.max_level = st.session_state.level
+        if st.session_state.level >= 20:
+          st.session_state.unlocked_season2_warps[20] = True
+        if st.session_state.level >= 15:
+          st.session_state.unlocked_season2_warps[15] = True
+        if st.session_state.level >= 10:
+          st.session_state.unlocked_season2_warps[10] = True
+        if st.session_state.level >= 5:
+          st.session_state.unlocked_season2_warps[5] = True
 
-        if not st.session_state.is_rebirth:
-          if st.session_state.level >= 30:
-            st.session_state.unlocked_warps[30] = True
-          if st.session_state.level >= 25:
-            st.session_state.unlocked_warps[25] = True
-          if st.session_state.level >= 20:
-            st.session_state.unlocked_warps[20] = True
-          if st.session_state.level >= 15:
-            st.session_state.unlocked_warps[15] = True
-          if st.session_state.level >= 10:
-            st.session_state.unlocked_warps[10] = True
-        else:
-          if st.session_state.level >= 20:
-            st.session_state.unlocked_season2_warps[20] = True
-          if st.session_state.level >= 15:
-            st.session_state.unlocked_season2_warps[15] = True
-          if st.session_state.level >= 10:
-            st.session_state.unlocked_season2_warps[10] = True
-          if st.session_state.level >= 5:
-            st.session_state.unlocked_season2_warps[5] = True
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
 
-        st.success("개발자 권한으로 강제 성공 처리되었습니다!")
-        st.rerun()
-
-    if st.button(
-        "💰 [치트] 자금 무한 충전 (+100조)",
-        use_container_width=True,
-        disabled=not st.session_state.has_started,
-    ):
-      if not st.session_state.has_started:
-        st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
-      else:
-        if st.session_state.money != float("inf"):
-          st.session_state.money += 100000000000000
-        st.success("자금이 대량 충전되었습니다!")
-        st.rerun()
+    if st.button("💰 [치트] 자금 무한 충전 (+100조)", use_container_width=True):
+      if st.session_state.money != float("inf"):
+        st.session_state.money += 100000000000000
+      st.success("자금이 대량 충전되었습니다!")
+      st.rerun()
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1252,30 +1204,26 @@ with left_col:
   )
 
   max_lvl = 25 if st.session_state.is_rebirth else 35
-  can_enhance = st.session_state.has_started and (
-      st.session_state.level < max_lvl
-  )
-  if st.button("🔥 냄새 강화 실행", use_container_width=True, disabled=not can_enhance):
-    if not st.session_state.has_started:
-      st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
+  if st.button(
+      "🔥 냄새 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= max_lvl),
+  ):
+    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+    if st.session_state.money < cost:
+      st.error("강화 비용 부족!")
     else:
-      cost = get_enhance_cost(
-          st.session_state.level, st.session_state.is_rebirth
-      )
-      if st.session_state.money < cost:
-        st.error("강화 비용 부족!")
-      else:
-        run_enhance()
-        st.rerun()
+      run_enhance()
+      st.rerun()
 
   st.write("")
-  can_sell = st.session_state.has_started and (st.session_state.level > 0)
-  if st.button("💰 현재 냄새 판매", use_container_width=True, disabled=not can_sell):
-    if not st.session_state.has_started:
-      st.warning("먼저 환생을 진행해야 버튼을 누를 수 있습니다.")
-    else:
-      sell()
-      st.rerun()
+  if st.button(
+      "💰 현재 냄새 판매",
+      use_container_width=True,
+      disabled=(st.session_state.level == 0),
+  ):
+    sell()
+    st.rerun()
 
 with right_col:
   current_level = st.session_state.level
