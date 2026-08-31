@@ -759,7 +759,6 @@ def run_enhance():
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
-  # 최고 단계 달성 시 워프권 해금 조건 체크 (20강, 25강 등)
   if st.session_state.level >= 20:
     st.session_state.unlocked_warps[20] = True
   if st.session_state.level >= 25:
@@ -787,7 +786,7 @@ def trigger_rebirth():
   st.session_state.is_rebirth = True
   st.session_state.level = 0
   st.session_state.max_level = 0
-  st.session_state.money += 100000000000  # 환생 보너스 골드
+  st.session_state.money += 100000000000
   st.session_state.shield = 4
   st.session_state.tears = 50
   st.session_state.pity_count = 0
@@ -1035,20 +1034,19 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 돈을 내고 워프권을 사용할 수 있습니다.</div>",
+        " 도달한 적이 있으면 저렴해진 비용으로 워프권을 사용할 수 있습니다.</div>",
         unsafe_allow_html=True,
     )
 
-    # 워프권 설정 (단계별 가격 지정)
+    # 워프권 가격 대폭 하향 조정
     warp_prices = {
-        10: 50000000,
-        15: 300000000,
-        20: 2000000000,
-        25: 15000000000,
+        10: 10000000,     # 1,000만원
+        15: 50000000,     # 5,000만원
+        20: 200000000,    # 2억 원
+        25: 1000000000,   # 10억 원
     }
 
     for w_level, w_price in warp_prices.items():
-      # 현재 단계보다 낮거나 같은 경우만 워프 의미가 있으므로 체크
       is_unlocked = (
           st.session_state.unlocked_warps.get(w_level, False)
           or st.session_state.max_level >= w_level
