@@ -690,7 +690,13 @@ if "pity_count" not in st.session_state:
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
 if "unlocked_warps" not in st.session_state:
-  st.session_state.unlocked_warps = {10: False, 15: False, 20: False, 25: False}
+  st.session_state.unlocked_warps = {
+      10: False,
+      15: False,
+      20: False,
+      25: False,
+      30: False,
+  }
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -759,10 +765,12 @@ def run_enhance():
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
-  if st.session_state.level >= 20:
-    st.session_state.unlocked_warps[20] = True
+  if st.session_state.level >= 30 and not st.session_state.is_rebirth:
+    st.session_state.unlocked_warps[30] = True
   if st.session_state.level >= 25:
     st.session_state.unlocked_warps[25] = True
+  if st.session_state.level >= 20:
+    st.session_state.unlocked_warps[20] = True
   if st.session_state.level >= 15 and not st.session_state.is_rebirth:
     st.session_state.unlocked_warps[15] = True
   if st.session_state.level >= 10 and not st.session_state.is_rebirth:
@@ -792,7 +800,13 @@ def trigger_rebirth():
   st.session_state.pity_count = 0
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
-  st.session_state.unlocked_warps = {10: False, 15: False, 20: False, 25: False}
+  st.session_state.unlocked_warps = {
+      10: False,
+      15: False,
+      20: False,
+      25: False,
+      30: False,
+  }
 
 
 # -----------------------------------------------------------------------------
@@ -1038,15 +1052,20 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    # 워프권 가격 대폭 하향 조정
+    # 30강 워프권 추가 및 가격 설정
     warp_prices = {
-        10: 10000000,     # 1,000만원
-        15: 50000000,     # 5,000만원
-        20: 200000000,    # 2억 원
-        25: 1000000000,   # 10억 원
+        10: 10000000,  # 1,000만원
+        15: 50000000,  # 5,000만원
+        20: 200000000,  # 2억 원
+        25: 1000000000,  # 10억 원
+        30: 5000000000,  # 50억 원 (시즌 1 전용)
     }
 
     for w_level, w_price in warp_prices.items():
+      # 시즌2 환생 상태일 때 30강 워프는 숨기거나 비활성화 처리
+      if w_level == 30 and st.session_state.is_rebirth:
+        continue
+
       is_unlocked = (
           st.session_state.unlocked_warps.get(w_level, False)
           or st.session_state.max_level >= w_level
