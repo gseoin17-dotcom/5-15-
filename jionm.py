@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="지온냄새 강화하기 - SOLAR SYSTEM EDITION",
+    page_title="지온냄새 강화하기 - SOLAR & BLACKHOLE EDITION",
     page_icon="🌌",
     layout="wide",
 )
@@ -113,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2 환생: 25단계)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -416,154 +416,154 @@ SMELL_DB = {
         0: {
             "name": "환생 0단계 : 초신성 핵폐기물 지온",
             "desc": "환생을 거쳐 새롭게 압축된 태초의 고밀도 방사능 악취.",
-            "price": 500000000,
+            "price": 1000000000,  # 시즌 2 기본 시작 가격 (10억)
             "color": "#ff0055",
             "tier": 1,
         },
         1: {
             "name": "환생 1단계 : 안드로메다 지온 암모니아",
             "desc": "안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.",
-            "price": 1200000000,
+            "price": 2500000000,
             "color": "#00ffff",
             "tier": 1,
         },
         2: {
             "name": "환생 2단계 : 화이트홀 지온 하이드로겐",
             "desc": "우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.",
-            "price": 3000000000,
+            "price": 6000000000,
             "color": "#ffffff",
             "tier": 1,
         },
         3: {
             "name": "환생 3단계 : 쿼크 글루온 지온 악취",
             "desc": "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.",
-            "price": 7000000000,
+            "price": 15000000000,
             "color": "#ffaa00",
             "tier": 2,
         },
         4: {
             "name": "환생 4단계 : 차원왜곡 지온 타임루프 찌든내 ",
             "desc": "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.",
-            "price": 15000000000,
+            "price": 35000000000,
             "color": "#9b2c2c",
             "tier": 2,
         },
         5: {
             "name": "환생 5단계 : 네메시스 지온 다크매터",
             "desc": "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.",
-            "price": 35000000000,
+            "price": 80000000000,
             "color": "#38a169",
             "tier": 2,
         },
         6: {
             "name": "환생 6단계 : 메가 블랙홀 지온 호라이즌",
             "desc": "모든 물리 법칙이 붕괴하고 오직 지온이의 체취만 남는 경계선.",
-            "price": 80000000000,
+            "price": 180000000000,
             "color": "#805ad5",
             "tier": 3,
         },
         7: {
             "name": "환생 7단계 : 감마선 버스트 지온 플레어",
             "desc": "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.",
-            "price": 180000000000,
+            "price": 400000000000,
             "color": "#e53e3e",
             "tier": 3,
         },
         8: {
             "name": "환생 8단계 : 하이퍼노바 지온 코어 붕괴",
             "desc": "거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.",
-            "price": 400000000000,
+            "price": 900000000000,
             "color": "#ff4500",
             "tier": 3,
         },
         9: {
             "name": "환생 9단계 : 엘더블루 제네시스 지온",
             "desc": "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.",
-            "price": 900000000000,
+            "price": 2000000000000,
             "color": "#0088ff",
             "tier": 4,
         },
         10: {
             "name": "환생 10단계 : 카이퍼 지온 벨트 코스믹 더스트",
             "desc": "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.",
-            "price": 2000000000000,
+            "price": 4500000000000,
             "color": "#cbd5e1",
             "tier": 4,
         },
         11: {
             "name": "환생 11단계 : 지온오르트 클라우드 딥 프리즈",
             "desc": "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.",
-            "price": 4500000000000,
+            "price": 10000000000000,
             "color": "#319795",
             "tier": 4,
         },
         12: {
             "name": "환생 12단계 : 태양풍 플라즈마 지온제트 스트림",
             "desc": "태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.",
-            "price": 10000000000000,
+            "price": 22000000000000,
             "color": "#f59e0b",
             "tier": 5,
         },
         13: {
             "name": "환생 13단계 : 마그네타 지온자기장 폭풍",
             "desc": "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.",
-            "price": 25000000000000,
+            "price": 50000000000000,
             "color": "#7000ff",
             "tier": 5,
         },
         14: {
             "name": "환생 14단계 : 펄서 지온로테이션 시그널",
             "desc": "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.",
-            "price": 60000000000000,
+            "price": 120000000000000,
             "color": "#00ff66",
             "tier": 5,
         },
         15: {
             "name": "환생 15단계 : 웜홀 크로스오버 지온 디멘션",
             "desc": "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.",
-            "price": 150000000000000,
+            "price": 280000000000000,
             "color": "#ff00ea",
             "tier": 6,
         },
         16: {
             "name": "환생 16단계 : 스트링 시스코어 지온 엠피리어",
             "desc": "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.",
-            "price": 350000000000000,
+            "price": 600000000000000,
             "color": "#ccff00",
             "tier": 6,
         },
         17: {
             "name": "환생 17단계 : 센타우루스 지온 알파 코어",
             "desc": "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.",
-            "price": 800000000000000,
+            "price": 1300000000000000,
             "color": "#ff6600",
             "tier": 6,
         },
         18: {
             "name": "환생 18단계 : 페가수스 지온 별자리 네뷸라",
             "desc": "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.",
-            "price": 2000000000000000,
+            "price": 3000000000000000,
             "color": "#00f0ff",
             "tier": 6,
         },
         19: {
             "name": "환생 19단계 : 지온세인트 오메가 얼티밋 에센스",
             "desc": "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.",
-            "price": 5000000000000000,
+            "price": 7000000000000000,
             "color": "#ffe600",
             "tier": 6,
         },
         20: {
             "name": "환생 20단계 : 코스믹 인피니티 싱귤지온래리티",
             "desc": "모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.",
-            "price": 12000000000000000,
+            "price": 15000000000000000,
             "color": "#ff00aa",
             "tier": 6,
         },
         21: {
             "name": "환생 21단계 : 지온트랜스센던탈 앱솔루트 가디언",
             "desc": "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.",
-            "price": 30000000000000000,
+            "price": 35000000000000000,
             "color": "#ffffff",
             "tier": 6,
         },
@@ -697,6 +697,13 @@ if "unlocked_warps" not in st.session_state:
       25: False,
       30: False,
   }
+if "unlocked_season2_warps" not in st.session_state:
+  st.session_state.unlocked_season2_warps = {
+      5: False,
+      10: False,
+      15: False,
+      20: False,
+  }
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -766,16 +773,26 @@ def run_enhance():
     st.session_state.max_level = st.session_state.level
 
   # 워프권 자동 해금
-  if st.session_state.level >= 30 and not st.session_state.is_rebirth:
-    st.session_state.unlocked_warps[30] = True
-  if st.session_state.level >= 25:
-    st.session_state.unlocked_warps[25] = True
-  if st.session_state.level >= 20:
-    st.session_state.unlocked_warps[20] = True
-  if st.session_state.level >= 15 and not st.session_state.is_rebirth:
-    st.session_state.unlocked_warps[15] = True
-  if st.session_state.level >= 10 and not st.session_state.is_rebirth:
-    st.session_state.unlocked_warps[10] = True
+  if not st.session_state.is_rebirth:
+    if st.session_state.level >= 30:
+      st.session_state.unlocked_warps[30] = True
+    if st.session_state.level >= 25:
+      st.session_state.unlocked_warps[25] = True
+    if st.session_state.level >= 20:
+      st.session_state.unlocked_warps[20] = True
+    if st.session_state.level >= 15:
+      st.session_state.unlocked_warps[15] = True
+    if st.session_state.level >= 10:
+      st.session_state.unlocked_warps[10] = True
+  else:
+    if st.session_state.level >= 20:
+      st.session_state.unlocked_season2_warps[20] = True
+    if st.session_state.level >= 15:
+      st.session_state.unlocked_season2_warps[15] = True
+    if st.session_state.level >= 10:
+      st.session_state.unlocked_season2_warps[10] = True
+    if st.session_state.level >= 5:
+      st.session_state.unlocked_season2_warps[5] = True
 
 
 def sell():
@@ -795,19 +812,21 @@ def trigger_rebirth():
   st.session_state.is_rebirth = True
   st.session_state.level = 0
   st.session_state.max_level = 0
-  st.session_state.money += 100000000000
+  # 시즌 2 시작 기본 자금 값 (10억 원)으로 초기화 반영[cite: 1]
+  st.session_state.money = 1000000000
   st.session_state.shield = 4
   st.session_state.tears = 50
   st.session_state.pity_count = 0
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
-  st.session_state.unlocked_warps = {
-      10: False,
-      15: False,
-      20: False,
-      25: False,
-      30: False,
-  }
+
+
+def return_to_season1():
+  st.session_state.is_rebirth = False
+  st.session_state.level = 0
+  st.session_state.max_level = 0
+  st.session_state.money = 1000000
+  st.session_state.status = "READY"
 
 
 # -----------------------------------------------------------------------------
@@ -863,6 +882,7 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
+  # 시즌 1 한계 도달 시 환생 안내
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
@@ -870,7 +890,7 @@ with left_col:
         " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
         "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
         "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
-        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생</b>하시겠습니까?</p>"
+        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
         "</div>",
         unsafe_allow_html=True,
     )
@@ -882,6 +902,16 @@ with left_col:
     with b_col2:
       if st.button("🔒 아니오", use_container_width=True):
         st.info("현재 단계를 유지합니다.")
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+  # 시즌 2일 때 시즌 1로 돌아갈 수 있는 버튼 추가[cite: 1]
+  if st.session_state.is_rebirth:
+    if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
+      return_to_season1()
+      st.rerun()
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
@@ -1051,26 +1081,41 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 저렴해진 비용으로 워프권을 사용할 수 있습니다.</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
         unsafe_allow_html=True,
     )
 
-    warp_prices = {
-        10: 10000000,
-        15: 50000000,
-        20: 200000000,
-        25: 1000000000,
-        30: 5000000000,
-    }
+    # 시즌 1 및 시즌 2 워프권 분기 설정[cite: 1]
+    if not st.session_state.is_rebirth:
+      warp_prices = {
+          10: 10000000,
+          15: 50000000,
+          20: 200000000,
+          25: 1000000000,
+          30: 5000000000,
+      }
+      active_warps = warp_prices.items()
+    else:
+      season2_warp_prices = {
+          5: 5000000000,
+          10: 25000000000,
+          15: 100000000000,
+          20: 500000000000,
+      }
+      active_warps = season2_warp_prices.items()
 
-    for w_level, w_price in warp_prices.items():
-      if w_level == 30 and st.session_state.is_rebirth:
-        continue
+    for w_level, w_price in active_warps:
+      if not st.session_state.is_rebirth:
+        is_unlocked = (
+            st.session_state.unlocked_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
+      else:
+        is_unlocked = (
+            st.session_state.unlocked_season2_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
 
-      is_unlocked = (
-          st.session_state.unlocked_warps.get(w_level, False)
-          or st.session_state.max_level >= w_level
-      )
       c1, c2 = st.columns([1.2, 1])
       with c1:
         st.markdown(
@@ -1082,7 +1127,7 @@ with left_col:
       with c2:
         if st.button(
             "이동",
-            key=f"warp_{w_level}",
+            key=f"warp_{st.session_state.is_rebirth}_{w_level}",
             disabled=not is_unlocked
             or (st.session_state.level >= w_level),
         ):
@@ -1099,9 +1144,6 @@ with left_col:
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
-  # -----------------------------------------------------------------------------
-  # 개발자 모드 탭 내용 추가
-  # -----------------------------------------------------------------------------
   with tab_dev:
     st.markdown(
         "<div style='font-size:12px; color:#f87171; font-weight:700;"
@@ -1123,23 +1165,33 @@ with left_col:
         st.session_state.max_level = st.session_state.level
 
       # 워프권 자동 해금 연동
-      if st.session_state.level >= 30 and not st.session_state.is_rebirth:
-        st.session_state.unlocked_warps[30] = True
-      if st.session_state.level >= 25:
-        st.session_state.unlocked_warps[25] = True
-      if st.session_state.level >= 20:
-        st.session_state.unlocked_warps[20] = True
-      if st.session_state.level >= 15 and not st.session_state.is_rebirth:
-        st.session_state.unlocked_warps[15] = True
-      if st.session_state.level >= 10 and not st.session_state.is_rebirth:
-        st.session_state.unlocked_warps[10] = True
+      if not st.session_state.is_rebirth:
+        if st.session_state.level >= 30:
+          st.session_state.unlocked_warps[30] = True
+        if st.session_state.level >= 25:
+          st.session_state.unlocked_warps[25] = True
+        if st.session_state.level >= 20:
+          st.session_state.unlocked_warps[20] = True
+        if st.session_state.level >= 15:
+          st.session_state.unlocked_warps[15] = True
+        if st.session_state.level >= 10:
+          st.session_state.unlocked_warps[10] = True
+      else:
+        if st.session_state.level >= 20:
+          st.session_state.unlocked_season2_warps[20] = True
+        if st.session_state.level >= 15:
+          st.session_state.unlocked_season2_warps[15] = True
+        if st.session_state.level >= 10:
+          st.session_state.unlocked_season2_warps[10] = True
+        if st.session_state.level >= 5:
+          st.session_state.unlocked_season2_warps[5] = True
 
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
 
     if st.button("💰 [치트] 자금 무한 충전 (+100조)", use_container_width=True):
       if st.session_state.money != float("inf"):
-        st.session_state.money += 100000000000000  # 100조
+        st.session_state.money += 100000000000000
       st.success("자금이 대량 충전되었습니다!")
       st.rerun()
 
@@ -1277,7 +1329,7 @@ with right_col:
             let glowIntensity = 12;
 
             if (isFinalSuccess) {{
-                statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 환생 궁극 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 궁극의 최종 강화 성공!! 👑🌌";
+                statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
                 statusColor = "#ffffff";
                 particleSize = 0.6;
                 particleSpeed = 2.5;
