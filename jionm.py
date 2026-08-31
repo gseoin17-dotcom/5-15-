@@ -113,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계) - 마지막 단계 돈 단위를 유한한 값으로 수정
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -407,7 +407,7 @@ SMELL_DB = {
         35: {
             "name": "35단계 : ★디 오리지널 앱솔루트 지온★",
             "desc": "우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.",
-            "price": float("inf"),
+            "price": 1000000000000,  # 무한대 대신 유한한 값(1조 원) 설정
             "color": "#ffffff",
             "tier": 6,
         },
@@ -591,7 +591,7 @@ SMELL_DB = {
         25: {
             "name": "환생 25단계 : ★그냥 성지온★",
             "desc": "모든 환생과 차원을 초월하여 완성된 전 우주 최강의 앱솔루트 향.",
-            "price": float("inf"),
+            "price": 1000000000000000000,  # 무한대 대신 유한한 값(1해 원) 설정
             "color": "#ffffff",
             "tier": 6,
         },
@@ -712,6 +712,10 @@ def sync_session_state(target_season):
   st.session_state.current_season = target_season
   st.session_state.is_rebirth = target_season == 2
   data = st.session_state.season_data[target_season]
+
+  # 시즌 2에서 시즌 1로 돌아올 때 시즌 1은 1강부터 시작(level을 0으로 강제 초기화)하도록 수정
+  if target_season == 1:
+    data["level"] = 0
 
   st.session_state.level = data["level"]
   st.session_state.max_level = data["max_level"]
