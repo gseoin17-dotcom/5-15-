@@ -1020,10 +1020,10 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    # 시즌 2의 방지권 금액을 예상 가치의 8분의 1로 설정 (예시: 8경 -> 1경)
+    # 시즌 2의 방지권 금액을 예상 가치의 2분의 1로 상향 조정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
-          SMELL_DB[True][st.session_state.level]["price"] / 8
+          SMELL_DB[True][st.session_state.level]["price"] / 2
       )
     else:
       current_shield_cost = get_shield_cost(
