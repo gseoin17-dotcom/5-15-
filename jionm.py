@@ -1020,10 +1020,10 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    # 시즌 2의 방지권 금액을 예상 가치의 2분의 1로 상향 조정
+    # 시즌 2의 방지권 금액을 예상 가치의 5분의 1로 설정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
-          SMELL_DB[True][st.session_state.level]["price"] / 2
+          SMELL_DB[True][st.session_state.level]["price"] / 5
       )
     else:
       current_shield_cost = get_shield_cost(
@@ -1120,7 +1120,7 @@ with left_col:
       active_warps = warp_prices.items()
     else:
       season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 8)
+          w_level: int(SMELL_DB[True][w_level]["price"] / 5)
           for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
