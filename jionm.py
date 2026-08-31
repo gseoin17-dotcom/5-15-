@@ -669,43 +669,87 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 3
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화
+# 4. 세션 상태 초기화 (시즌별 독립 데이터 저장소 구현)
 # -----------------------------------------------------------------------------
-if "is_rebirth" not in st.session_state:
-  st.session_state.is_rebirth = False
-if "level" not in st.session_state:
-  st.session_state.level = 0
-if "max_level" not in st.session_state:
-  st.session_state.max_level = 0
-if "money" not in st.session_state:
-  st.session_state.money = 1000000
-if "status" not in st.session_state:
-  st.session_state.status = "READY"
-if "shield" not in st.session_state:
-  st.session_state.shield = 0
-if "tears" not in st.session_state:
-  st.session_state.tears = 0
-if "pity_count" not in st.session_state:
-  st.session_state.pity_count = 0
+if "current_season" not in st.session_state:
+  st.session_state.current_season = 1
+
+if "season_data" not in st.session_state:
+  st.session_state.season_data = {
+      1: {
+          "level": 0,
+          "max_level": 0,
+          "money": 1000000,
+          "status": "READY",
+          "shield": 0,
+          "tears": 0,
+          "pity_count": 0,
+          "unlocked_warps": {
+              10: False,
+              15: False,
+              20: False,
+              25: False,
+              30: False,
+          },
+      },
+      2: {
+          "level": 0,
+          "max_level": 0,
+          "money": 1000000000,
+          "status": "READY",
+          "shield": 4,
+          "tears": 50,
+          "pity_count": 0,
+          "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
+      },
+  }
+
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
-if "ever_rebirth" not in st.session_state:
-  st.session_state.ever_rebirth = False  # 환생을 한 번이라도 했는지 추적하는 변수
-if "unlocked_warps" not in st.session_state:
-  st.session_state.unlocked_warps = {
-      10: False,
-      15: False,
-      20: False,
-      25: False,
-      30: False,
-  }
-if "unlocked_season2_warps" not in st.session_state:
-  st.session_state.unlocked_season2_warps = {
-      5: False,
-      10: False,
-      15: False,
-      20: False,
-  }
+
+
+def sync_session_state(target_season):
+  st.session_state.current_season = target_season
+  st.session_state.is_rebirth = target_season == 2
+  data = st.session_state.season_data[target_season]
+
+  st.session_state.level = data["level"]
+  st.session_state.max_level = data["max_level"]
+  st.session_state.money = data["money"]
+  st.session_state.status = data["status"]
+  st.session_state.shield = data["shield"]
+  st.session_state.tears = data["tears"]
+  st.session_state.pity_count = data["pity_count"]
+
+  if target_season == 1:
+    st.session_state.unlocked_warps = data["unlocked_warps"]
+  else:
+    st.session_state.unlocked_season2_warps = data["unlocked_season2_warps"]
+
+
+def save_current_season_state():
+  s = 2 if st.session_state.get("is_rebirth", False) else 1
+  st.session_state.season_data[s]["level"] = st.session_state.level
+  st.session_state.season_data[s]["max_level"] = st.session_state.max_level
+  st.session_state.season_data[s]["money"] = st.session_state.money
+  st.session_state.season_data[s]["status"] = st.session_state.status
+  st.session_state.season_data[s]["shield"] = st.session_state.shield
+  st.session_state.season_data[s]["tears"] = st.session_state.tears
+  st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
+
+  if s == 1:
+    st.session_state.season_data[1]["unlocked_warps"] = (
+        st.session_state.unlocked_warps
+    )
+  else:
+    st.session_state.season_data[2]["unlocked_season2_warps"] = (
+        st.session_state.unlocked_season2_warps
+    )
+
+
+# 초기 실행 시 상태 동기화
+if "is_rebirth" not in st.session_state:
+  sync_session_state(1)
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -713,14 +757,17 @@ if "unlocked_season2_warps" not in st.session_state:
 
 
 def run_enhance():
+  save_current_season_state()
   max_lvl = 25 if st.session_state.is_rebirth else 35
   curr = st.session_state.level
   if curr >= max_lvl:
+    save_current_season_state()
     return
 
   cost = get_enhance_cost(curr, st.session_state.is_rebirth)
   if st.session_state.money < cost:
     st.session_state.status = "NOT_ENOUGH_MONEY"
+    save_current_season_state()
     return
 
   st.session_state.money -= cost
@@ -731,6 +778,7 @@ def run_enhance():
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
+    save_current_season_state()
     return
 
   current_prob = PROB_TABLE[st.session_state.is_rebirth]
@@ -776,28 +824,19 @@ def run_enhance():
 
   # 워프권 자동 해금
   if not st.session_state.is_rebirth:
-    if st.session_state.level >= 30:
-      st.session_state.unlocked_warps[30] = True
-    if st.session_state.level >= 25:
-      st.session_state.unlocked_warps[25] = True
-    if st.session_state.level >= 20:
-      st.session_state.unlocked_warps[20] = True
-    if st.session_state.level >= 15:
-      st.session_state.unlocked_warps[15] = True
-    if st.session_state.level >= 10:
-      st.session_state.unlocked_warps[10] = True
+    for w_lvl in [10, 15, 20, 25, 30]:
+      if st.session_state.level >= w_lvl:
+        st.session_state.unlocked_warps[w_lvl] = True
   else:
-    if st.session_state.level >= 20:
-      st.session_state.unlocked_season2_warps[20] = True
-    if st.session_state.level >= 15:
-      st.session_state.unlocked_season2_warps[15] = True
-    if st.session_state.level >= 10:
-      st.session_state.unlocked_season2_warps[10] = True
-    if st.session_state.level >= 5:
-      st.session_state.unlocked_season2_warps[5] = True
+    for w_lvl in [5, 10, 15, 20]:
+      if st.session_state.level >= w_lvl:
+        st.session_state.unlocked_season2_warps[w_lvl] = True
+
+  save_current_season_state()
 
 
 def sell():
+  save_current_season_state()
   curr = st.session_state.level
   if curr == 0:
     return
@@ -808,35 +847,21 @@ def sell():
     st.session_state.money += price_val
   st.session_state.level = 0
   st.session_state.status = "READY"
+  save_current_season_state()
 
 
 def trigger_rebirth():
-  st.session_state.is_rebirth = True
-  st.session_state.ever_rebirth = True
-  st.session_state.level = 0
-  st.session_state.max_level = 0
-  st.session_state.money = 1000000000
-  st.session_state.shield = 4
-  st.session_state.tears = 50
-  st.session_state.pity_count = 0
+  save_current_season_state()
+  sync_session_state(2)
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
+  save_current_season_state()
 
 
 def return_to_season1():
-  st.session_state.is_rebirth = False
-  st.session_state.level = 0
-  st.session_state.max_level = 0
-  st.session_state.money = 1000000
-  st.session_state.status = "READY"
-
-
-def return_to_season2():
-  st.session_state.is_rebirth = True
-  st.session_state.level = 0
-  st.session_state.max_level = 0
-  st.session_state.money = 1000000000
-  st.session_state.status = "READY"
+  save_current_season_state()
+  sync_session_state(1)
+  save_current_season_state()
 
 
 # -----------------------------------------------------------------------------
@@ -892,7 +917,7 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
-  # 시즌 1 한계 도달 시 환생 안내 (시즌 1이면서 35단계 이상일 때만 표시)
+  # 시즌 1 한계 도달 시 환생 안내
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
@@ -917,20 +942,10 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-  # 시즌 2 상태일 때 시즌 1로 돌아가기 버튼 노출
+  # 시즌 2인 경우 시즌 1로 돌아가기 버튼 노출
   if st.session_state.is_rebirth:
     if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
       return_to_season1()
-      st.rerun()
-    st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-        unsafe_allow_html=True,
-    )
-
-  # 시즌 1 상태이면서 한 번이라도 환생(시즌 2)을 경험했던 적이 있다면 다시 시즌 2로 갈 수 있는 버튼 노출
-  if (not st.session_state.is_rebirth) and st.session_state.ever_rebirth:
-    if st.button("▶ 시즌 2로 돌아가기", use_container_width=True):
-      return_to_season2()
       st.rerun()
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1056,6 +1071,7 @@ with left_col:
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
+        save_current_season_state()
         st.success("파괴 방지권 구매 완료!")
         st.rerun()
       else:
@@ -1093,6 +1109,7 @@ with left_col:
             max_lvl, st.session_state.level + add_lvl
         )
         st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+        save_current_season_state()
         st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
         st.rerun()
       else:
@@ -1160,6 +1177,7 @@ with left_col:
             if w_level > st.session_state.max_level:
               st.session_state.max_level = w_level
             st.session_state.status = "SUCCESS"
+            save_current_season_state()
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
@@ -1184,32 +1202,22 @@ with left_col:
         st.session_state.max_level = st.session_state.level
 
       if not st.session_state.is_rebirth:
-        if st.session_state.level >= 30:
-          st.session_state.unlocked_warps[30] = True
-        if st.session_state.level >= 25:
-          st.session_state.unlocked_warps[25] = True
-        if st.session_state.level >= 20:
-          st.session_state.unlocked_warps[20] = True
-        if st.session_state.level >= 15:
-          st.session_state.unlocked_warps[15] = True
-        if st.session_state.level >= 10:
-          st.session_state.unlocked_warps[10] = True
+        for w_lvl in [10, 15, 20, 25, 30]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_warps[w_lvl] = True
       else:
-        if st.session_state.level >= 20:
-          st.session_state.unlocked_season2_warps[20] = True
-        if st.session_state.level >= 15:
-          st.session_state.unlocked_season2_warps[15] = True
-        if st.session_state.level >= 10:
-          st.session_state.unlocked_season2_warps[10] = True
-        if st.session_state.level >= 5:
-          st.session_state.unlocked_season2_warps[5] = True
+        for w_lvl in [5, 10, 15, 20]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_season2_warps[w_lvl] = True
 
+      save_current_season_state()
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
 
     if st.button("💰 [치트] 자금 무한 충전 (+100조)", use_container_width=True):
       if st.session_state.money != float("inf"):
         st.session_state.money += 100000000000000
+      save_current_season_state()
       st.success("자금이 대량 충전되었습니다!")
       st.rerun()
 
