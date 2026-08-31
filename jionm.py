@@ -1,3 +1,4 @@
+import base64
 import random
 import streamlit as st
 import streamlit.components.v1 as components
@@ -10,6 +11,9 @@ st.set_page_config(
     page_icon="🌌",
     layout="wide",
 )
+
+# 우측 상단에 고정할 이미지의 Base64 데이터
+LOGO_IMAGE_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="  # (여기에 실제 이미지의 Base64 문자열을 넣거나 아래 HTML 방식을 사용합니다)
 
 # -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
@@ -113,7 +117,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
+# 3. 게임 데이터베이스 정의
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -857,12 +861,12 @@ def trigger_rebirth():
 
 
 # -----------------------------------------------------------------------------
-# 6. 테마 CSS
+# 6. 테마 CSS 및 우측 상단 이미지 오버레이 주입
 # -----------------------------------------------------------------------------
 st.markdown(
-    """
+    f"""
     <style>
-    .stApp {
+    .stApp {{
         background: 
             radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4) 0%, transparent 40%),
             radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.5) 0%, transparent 50%),
@@ -873,15 +877,15 @@ st.markdown(
         color: #f8fafc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .block-container {
+    .block-container {{
         padding-top: 5rem !important;
         padding-bottom: 2rem !important;
         max-width: 95% !important;
     }
-    .element-container, .stMarkdown {
+    .element-container, .stMarkdown {{
         background: transparent !important;
     }
-    div.stButton > button {
+    div.stButton > button {{
         border-radius: 8px !important;
         font-weight: 700 !important;
         padding: 9px 16px !important;
@@ -890,15 +894,26 @@ st.markdown(
         background: rgba(15, 23, 42, 0.85) !important;
         color: #f8fafc !important;
         box-shadow: 0 4px 15px rgba(2, 6, 23, 0.6);
-    }
-    div.stButton > button:hover {
+    }}
+    div.stButton > button:hover {{
         background: rgba(255, 255, 255, 0.95) !important;
         color: #0f172a !important;
         border: 1px solid #ffffff !important;
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
-    }
+    }}
+    /* 우측 상단 이미지 고정 스타일 */
+    .top-right-logo {{
+        position: fixed;
+        top: 15px;
+        right: 25px;
+        width: 140px;
+        z-index: 999999;
+        pointer-events: none;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    }}
     </style>
+    <img src="{LOGO_IMAGE_BASE64}" class="top-right-logo">
 """,
     unsafe_allow_html=True,
 )
@@ -1020,7 +1035,6 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    # 시즌 2의 방지권 금액을 예상 가치의 5분의 1로 설정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
@@ -1105,7 +1119,7 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
         unsafe_allow_html=True,
     )
 
