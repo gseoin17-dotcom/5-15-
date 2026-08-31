@@ -416,7 +416,7 @@ SMELL_DB = {
         0: {
             "name": "환생 0단계 : 초신성 핵폐기물 지온",
             "desc": "환생을 거쳐 새롭게 압축된 태초의 고밀도 방사능 악취.",
-            "price": 1000000000,  # 시즌 2 기본 시작 가격 (10억)
+            "price": 1000000000,
             "color": "#ff0055",
             "tier": 1,
         },
@@ -669,10 +669,31 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 3
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화
+# 4. 세션 상태 초기화 (양방향 백업/복원 로직 적용)
 # -----------------------------------------------------------------------------
 if "is_rebirth" not in st.session_state:
   st.session_state.is_rebirth = False
+
+if "season1_data" not in st.session_state:
+  st.session_state.season1_data = {
+      "level": 0,
+      "max_level": 0,
+      "money": 1000000,
+      "shield": 0,
+      "tears": 0,
+      "pity_count": 0,
+  }
+
+if "season2_data" not in st.session_state:
+  st.session_state.season2_data = {
+      "level": 0,
+      "max_level": 0,
+      "money": 1000000000,
+      "shield": 4,
+      "tears": 50,
+      "pity_count": 0,
+  }
+
 if "level" not in st.session_state:
   st.session_state.level = 0
 if "max_level" not in st.session_state:
@@ -706,7 +727,7 @@ if "unlocked_season2_warps" not in st.session_state:
   }
 
 # -----------------------------------------------------------------------------
-# 5. 강화 로직
+# 5. 강화 및 시즌 전환 로직
 # -----------------------------------------------------------------------------
 
 
@@ -809,23 +830,63 @@ def sell():
 
 
 def trigger_rebirth():
+  st.session_state.season1_data = {
+      "level": st.session_state.level,
+      "max_level": st.session_state.max_level,
+      "money": st.session_state.money,
+      "shield": st.session_state.shield,
+      "tears": st.session_state.tears,
+      "pity_count": st.session_state.pity_count,
+  }
   st.session_state.is_rebirth = True
-  st.session_state.level = 0
-  st.session_state.max_level = 0
-  # 시즌 2 시작 기본 자금 값 (10억 원)으로 초기화 반영[cite: 1]
-  st.session_state.money = 1000000000
-  st.session_state.shield = 4
-  st.session_state.tears = 50
-  st.session_state.pity_count = 0
   st.session_state.rebirth_count += 1
+
+  s2 = st.session_state.season2_data
+  st.session_state.level = s2["level"]
+  st.session_state.max_level = s2["max_level"]
+  st.session_state.money = s2["money"]
+  st.session_state.shield = s2["shield"]
+  st.session_state.tears = s2["tears"]
+  st.session_state.pity_count = s2["pity_count"]
   st.session_state.status = "READY"
 
 
-def return_to_season1():
-  st.session_state.is_rebirth = False
-  st.session_state.level = 0
-  st.session_state.max_level = 0
-  st.session_state.money = 1000000
+def switch_season():
+  if st.session_state.is_rebirth:
+    st.session_state.season2_data = {
+        "level": st.session_state.level,
+        "max_level": st.session_state.max_level,
+        "money": st.session_state.money,
+        "shield": st.session_state.shield,
+        "tears": st.session_state.tears,
+        "pity_count": st.session_state.pity_count,
+    }
+    st.session_state.is_rebirth = False
+    s1 = st.session_state.season1_data
+    st.session_state.level = s1["level"]
+    st.session_state.max_level = s1["max_level"]
+    st.session_state.money = s1["money"]
+    st.session_state.shield = s1["shield"]
+    st.session_state.tears = s1["tears"]
+    st.session_state.pity_count = s1["pity_count"]
+  else:
+    st.session_state.season1_data = {
+        "level": st.session_state.level,
+        "max_level": st.session_state.max_level,
+        "money": st.session_state.money,
+        "shield": st.session_state.shield,
+        "tears": st.session_state.tears,
+        "pity_count": st.session_state.pity_count,
+    }
+    st.session_state.is_rebirth = True
+    s2 = st.session_state.season2_data
+    st.session_state.level = s2["level"]
+    st.session_state.max_level = s2["max_level"]
+    st.session_state.money = s2["money"]
+    st.session_state.shield = s2["shield"]
+    st.session_state.tears = s2["tears"]
+    st.session_state.pity_count = s2["pity_count"]
+
   st.session_state.status = "READY"
 
 
@@ -882,7 +943,6 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
-  # 시즌 1 한계 도달 시 환생 안내
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
@@ -907,15 +967,17 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-  # 시즌 2일 때 시즌 1로 돌아갈 수 있는 버튼 추가[cite: 1]
-  if st.session_state.is_rebirth:
-    if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
-      return_to_season1()
-      st.rerun()
-    st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-        unsafe_allow_html=True,
-    )
+  # 시즌 1과 시즌 2를 자유롭게 오갈 수 있는 전환 버튼
+  button_label = (
+      "◀ 시즌 1로 돌아가기" if st.session_state.is_rebirth else "▶ 시즌 2로 이동하기"
+  )
+  if st.button(button_label, use_container_width=True):
+    switch_season()
+    st.rerun()
+  st.markdown(
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
 
   mode_title = (
       "🌀 [시즌 2] 얼티밋 블랙홀"
@@ -1085,7 +1147,6 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    # 시즌 1 및 시즌 2 워프권 분기 설정[cite: 1]
     if not st.session_state.is_rebirth:
       warp_prices = {
           10: 10000000,
@@ -1164,7 +1225,6 @@ with left_col:
       if st.session_state.level > st.session_state.max_level:
         st.session_state.max_level = st.session_state.level
 
-      # 워프권 자동 해금 연동
       if not st.session_state.is_rebirth:
         if st.session_state.level >= 30:
           st.session_state.unlocked_warps[30] = True
