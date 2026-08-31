@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # 우측 상단에 고정할 이미지의 Base64 데이터
-LOGO_IMAGE_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="  # (여기에 실제 이미지의 Base64 문자열을 넣거나 아래 HTML 방식을 사용합니다)
+LOGO_IMAGE_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
 
 # -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
@@ -736,7 +736,6 @@ def save_current_season_state():
   st.session_state.season_data[s]["level"] = st.session_state.level
   st.session_state.season_data[s]["max_level"] = st.session_state.max_level
   st.session_state.season_data[s]["money"] = st.session_state.money
-  st.session_state.season_data[s]["status"] = st.session_state.status
   st.session_state.season_data[s]["shield"] = st.session_state.shield
   st.session_state.season_data[s]["tears"] = st.session_state.tears
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
@@ -1267,6 +1266,9 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
+  # -----------------------------------------------------------------------------
+  # 수정 포인트: f-string 내부의 JS/CSS 중괄호는 이중 중괄호 `{{`, `}}`로 변경
+  # -----------------------------------------------------------------------------
   three_js_code = f"""
     <!DOCTYPE html>
     <html>
