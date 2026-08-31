@@ -689,6 +689,8 @@ if "pity_count" not in st.session_state:
   st.session_state.pity_count = 0
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
+if "unlocked_warps" not in st.session_state:
+  st.session_state.unlocked_warps = {10: False, 15: False, 20: False, 25: False}
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -757,6 +759,16 @@ def run_enhance():
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
+  # 최고 단계 달성 시 워프권 해금 조건 체크 (20강, 25강 등)
+  if st.session_state.level >= 20:
+    st.session_state.unlocked_warps[20] = True
+  if st.session_state.level >= 25:
+    st.session_state.unlocked_warps[25] = True
+  if st.session_state.level >= 15 and not st.session_state.is_rebirth:
+    st.session_state.unlocked_warps[15] = True
+  if st.session_state.level >= 10 and not st.session_state.is_rebirth:
+    st.session_state.unlocked_warps[10] = True
+
 
 def sell():
   curr = st.session_state.level
@@ -781,6 +793,7 @@ def trigger_rebirth():
   st.session_state.pity_count = 0
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
+  st.session_state.unlocked_warps = {10: False, 15: False, 20: False, 25: False}
 
 
 # -----------------------------------------------------------------------------
@@ -941,7 +954,7 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2 = st.tabs(["🛡️ 방지권", "💧 눈물"])
+  tab_shop1, tab_shop2, tab_warp = st.tabs(["🛡️ 방지권", "💧 눈물", "🚀 워프권"])
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
@@ -1018,6 +1031,55 @@ with left_col:
         st.rerun()
       else:
         st.error("눈물 20개가 필요합니다.")
+
+  with tab_warp:
+    st.markdown(
+        "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
+        " 도달한 적이 있으면 돈을 내고 워프권을 사용할 수 있습니다.</div>",
+        unsafe_allow_html=True,
+    )
+
+    # 워프권 설정 (단계별 가격 지정)
+    warp_prices = {
+        10: 50000000,
+        15: 300000000,
+        20: 2000000000,
+        25: 15000000000,
+    }
+
+    for w_level, w_price in warp_prices.items():
+      # 현재 단계보다 낮거나 같은 경우만 워프 의미가 있으므로 체크
+      is_unlocked = (
+          st.session_state.unlocked_warps.get(w_level, False)
+          or st.session_state.max_level >= w_level
+      )
+      c1, c2 = st.columns([1.2, 1])
+      with c1:
+        st.markdown(
+            f"<div style='font-size:13px; font-weight:bold;"
+            f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
+            f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+            unsafe_allow_html=True,
+        )
+      with c2:
+        if st.button(
+            "이동",
+            key=f"warp_{w_level}",
+            disabled=not is_unlocked
+            or (st.session_state.level >= w_level),
+        ):
+          if not is_unlocked:
+            st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
+          elif st.session_state.money < w_price:
+            st.error("보유 금액이 부족합니다!")
+          else:
+            st.session_state.money -= w_price
+            st.session_state.level = w_level
+            if w_level > st.session_state.max_level:
+              st.session_state.max_level = w_level
+            st.session_state.status = "SUCCESS"
+            st.success(f"🚀 {w_level}단계로 워프 성공!")
+            st.rerun()
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
