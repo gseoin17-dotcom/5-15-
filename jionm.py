@@ -858,12 +858,6 @@ def trigger_rebirth():
   save_current_season_state()
 
 
-def return_to_season1():
-  save_current_season_state()
-  sync_session_state(1)
-  save_current_season_state()
-
-
 # -----------------------------------------------------------------------------
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
@@ -937,16 +931,6 @@ with left_col:
     with b_col2:
       if st.button("🔒 아니오", use_container_width=True):
         st.info("현재 단계를 유지합니다.")
-    st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-        unsafe_allow_html=True,
-    )
-
-  # 시즌 2인 경우 시즌 1로 돌아가기 버튼 노출
-  if st.session_state.is_rebirth:
-    if st.button("◀ 시즌 1로 돌아가기", use_container_width=True):
-      return_to_season1()
-      st.rerun()
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
