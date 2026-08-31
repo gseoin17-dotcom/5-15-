@@ -1113,11 +1113,10 @@ with left_col:
       }
       active_warps = warp_prices.items()
     else:
+      # 시즌 2 워프권 가격을 해당 강화 단계 예상 가치의 4분의 1배로 설정
       season2_warp_prices = {
-          5: 5000000000,
-          10: 25000000000,
-          15: 100000000000,
-          20: 500000000000,
+          w_level: int(SMELL_DB[True][w_level]["price"] / 4)
+          for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
 
