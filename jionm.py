@@ -736,6 +736,7 @@ def save_current_season_state():
   st.session_state.season_data[s]["level"] = st.session_state.level
   st.session_state.season_data[s]["max_level"] = st.session_state.max_level
   st.session_state.season_data[s]["money"] = st.session_state.money
+  st.session_state.season_data[s]["status"] = st.session_state.status
   st.session_state.season_data[s]["shield"] = st.session_state.shield
   st.session_state.season_data[s]["tears"] = st.session_state.tears
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
@@ -901,7 +902,6 @@ st.markdown(
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
     }}
-    /* 우측 상단 이미지 고정 스타일 */
     .top-right-logo {{
         position: fixed;
         top: 15px;
@@ -1266,10 +1266,7 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
-  # -----------------------------------------------------------------------------
-  # 수정 포인트: f-string 내부의 JS/CSS 중괄호는 이중 중괄호 `{{`, `}}`로 변경
-  # -----------------------------------------------------------------------------
-  three_js_code = f"""
+  three_js_template = """
     <!DOCTYPE html>
     <html>
     <head>
@@ -1328,76 +1325,76 @@ with right_col:
 
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
-            <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-            <div id="descText" class="desc-text">"{card_desc}"</div>
-            <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-            <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
+            <div id="mainTitle" class="title-tier-__TIER__">__CARD_TITLE__</div>
+            <div id="descText" class="desc-text">"__CARD_DESC__"</div>
+            <div id="priceText" class="price-text">예상 가치: __CARD_PRICE__</div>
+            <div id="costText" class="cost-text">필요 강화 비용: __CURRENT_COST__</div>
         </div>
 
         <script>
-            const currentLevel = {current_level};
-            const maxLvl = {max_lvl};
-            const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
-            const status = "{status}";
+            const currentLevel = __CURRENT_LEVEL__;
+            const maxLvl = __MAX_LVL__;
+            const isRebirth = __IS_REBIRTH__;
+            const status = "__STATUS__";
             const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
 
-            if (currentLevel >= 15 || isFinalSuccess) {{
+            if (currentLevel >= 15 || isFinalSuccess) {
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
                 document.getElementById('costText').classList.add('shaking-text');
-            }}
+            }
 
             const statusText = document.getElementById('statusText');
-            const tierColor = "{card_color}";
+            const tierColor = "__CARD_COLOR__";
             let statusColor = "#38bdf8";
             let particleSize = 0.25;
             let particleSpeed = 0.6;
             let glowIntensity = 12;
 
-            if (isFinalSuccess) {{
+            if (isFinalSuccess) {
                 statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
                 statusColor = "#ffffff";
                 particleSize = 0.6;
                 particleSpeed = 2.5;
                 glowIntensity = 50;
-            }} else if (status === "CRITICAL") {{
+            } else if (status === "CRITICAL") {
                 statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
                 statusColor = "#ffffff"; 
                 particleSize = 0.35;
                 particleSpeed = 1.2;
                 glowIntensity = 22;
-            }} else if (status === "PITY_SUCCESS") {{
+            } else if (status === "PITY_SUCCESS") {
                 statusText.innerText = "✨ 지온맘의 가호 발동! (천장 100% 성공) ✨";
                 statusColor = "#fde68a";
                 particleSize = 0.3;
                 particleSpeed = 1.0;
                 glowIntensity = 20;
-            }} else if (status === "SUCCESS") {{
+            } else if (status === "SUCCESS") {
                 statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
                 statusColor = tierColor;
                 particleSize = 0.28;
                 particleSpeed = 0.8;
                 glowIntensity = 16;
-            }} else if (status === "SHIELD_SAVED") {{
+            } else if (status === "SHIELD_SAVED") {
                 statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                 statusColor = "#60a5fa";
-            }} else if (status === "DESTROYED") {{
+            } else if (status === "DESTROYED") {
                 statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
                 statusColor = "#ff0000";
                 particleSpeed = 2.0;
-            }} else if (status === "FAILED") {{
+            } else if (status === "FAILED") {
                 statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                 statusColor = "#64748b";
                 particleSpeed = 0.3;
                 glowIntensity = 5;
-            }} else if (status === "HOLD") {{
+            } else if (status === "HOLD") {
                 statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
                 statusColor = "#94a3b8";
                 particleSpeed = 0.4;
-            }} else {{
+            } else {
                 statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
-            }}
+            }
             
             statusText.style.color = statusColor;
 
@@ -1405,7 +1402,7 @@ with right_col:
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0.6, 10.0);
 
-            const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.shadowMap.enabled = true;
@@ -1425,19 +1422,19 @@ with right_col:
             const starCount = 1000;
             const starGeo = new THREE.BufferGeometry();
             const starPositions = new Float32Array(starCount * 3);
-            for(let i=0; i<starCount; i++) {{
+            for(let i=0; i<starCount; i++) {
                 starPositions[i*3] = (Math.random() - 0.5) * 40;
                 starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
                 starPositions[i*3 + 2] = (Math.random() - 0.5) * 40 - 10;
-            }}
+            }
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-            const starMat = new THREE.PointsMaterial({{
+            const starMat = new THREE.PointsMaterial({
                 color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
                 size: isFinalSuccess ? 0.12 : 0.07,
                 transparent: true,
                 opacity: 0.7,
                 blending: THREE.AdditiveBlending
-            }});
+            });
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
@@ -1446,7 +1443,7 @@ with right_col:
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
 
-            for(let i=0; i<particleCount; i++) {{
+            for(let i=0; i<particleCount; i++) {
                 particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
                 particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
@@ -1454,22 +1451,22 @@ with right_col:
                 let spd = particleSpeed;
                 if (status === "FAILED") spd = 0.2;
 
-                particleVelocities.push({{
+                particleVelocities.push({
                     x: (Math.random() - 0.5) * 0.01 * spd,
                     y: (0.008 + Math.random() * 0.025) * spd,
                     z: (Math.random() - 0.5) * 0.01 * spd,
-                }});
-            }}
+                });
+            }
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
             
-            const particleMat = new THREE.PointsMaterial({{
+            const particleMat = new THREE.PointsMaterial({
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
                 opacity: status === "FAILED" ? 0.2 : 0.8,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
-            }});
+            });
             const particleSystem = new THREE.Points(particleGeo, particleMat);
             scene.add(particleSystem);
 
@@ -1477,81 +1474,81 @@ with right_col:
             objectGroup.position.y = -0.7;
 
             let baseGeo;
-            const lvl = {current_level};
+            const lvl = __CURRENT_LEVEL__;
 
-            if (isRebirth) {{
-                if (lvl <= 3) {{
+            if (isRebirth) {
+                if (lvl <= 3) {
                     baseGeo = new THREE.OctahedronGeometry(2.3);
-                }} else if (lvl <= 6) {{
+                } else if (lvl <= 6) {
                     baseGeo = new THREE.DodecahedronGeometry(2.2);
-                }} else if (lvl <= 9) {{
+                } else if (lvl <= 9) {
                     baseGeo = new THREE.IcosahedronGeometry(2.3);
-                }} else if (lvl <= 12) {{
+                } else if (lvl <= 12) {
                     baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                }} else if (lvl <= 15) {{
+                } else if (lvl <= 15) {
                     baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
-                }} else if (lvl <= 18) {{
+                } else if (lvl <= 18) {
                     baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
-                }} else if (lvl <= 21) {{
+                } else if (lvl <= 21) {
                     baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
-                }} else if (lvl <= 24) {{
+                } else if (lvl <= 24) {
                     baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
-                }} else {{
+                } else {
                     baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
-                }}
-            }} else {{
-                if (lvl <= 2) {{
+                }
+            } else {
+                if (lvl <= 2) {
                     baseGeo = new THREE.TetrahedronGeometry(2.3);
-                }} else if (lvl <= 5) {{
+                } else if (lvl <= 5) {
                     baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-                }} else if (lvl <= 8) {{
+                } else if (lvl <= 8) {
                     baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-                }} else if (lvl <= 11) {{
+                } else if (lvl <= 11) {
                     baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-                }} else if (lvl <= 14) {{
+                } else if (lvl <= 14) {
                     baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-                }} else if (lvl <= 17) {{
+                } else if (lvl <= 17) {
                     baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-                }} else if (lvl == 18) {{
+                } else if (lvl == 18) {
                     baseGeo = new THREE.OctahedronGeometry(2.5);
-                }} else if (lvl == 19) {{
+                } else if (lvl == 19) {
                     baseGeo = new THREE.DodecahedronGeometry(2.4);
-                }} else if (lvl == 20) {{
+                } else if (lvl == 20) {
                     baseGeo = new THREE.IcosahedronGeometry(2.4);
-                }} else if (lvl == 21) {{
+                } else if (lvl == 21) {
                     baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-                }} else if (lvl == 22) {{
+                } else if (lvl == 22) {
                     baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-                }} else if (lvl == 23) {{
+                } else if (lvl == 23) {
                     baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-                }} else if (lvl == 24) {{
+                } else if (lvl == 24) {
                     baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-                }} else if (lvl == 25) {{
+                } else if (lvl == 25) {
                     baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-                }} else if (lvl == 26) {{
+                } else if (lvl == 26) {
                     baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-                }} else if (lvl == 27) {{
+                } else if (lvl == 27) {
                     baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-                }} else if (lvl == 28) {{
+                } else if (lvl == 28) {
                     baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-                }} else if (lvl == 29) {{
+                } else if (lvl == 29) {
                     baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-                }} else if (lvl == 30) {{
+                } else if (lvl == 30) {
                     baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-                }} else if (lvl == 31) {{
+                } else if (lvl == 31) {
                     baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-                }} else if (lvl == 32) {{
+                } else if (lvl == 32) {
                     baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-                }} else if (lvl == 33) {{
+                } else if (lvl == 33) {
                     baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-                }} else if (lvl == 34) {{
+                } else if (lvl == 34) {
                     baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
-                }} else {{
+                } else {
                     baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
-                }}
-            }}
+                }
+            }
 
-            const outerMat = new THREE.MeshPhysicalMaterial({{
+            const outerMat = new THREE.MeshPhysicalMaterial({
                 color: tierColor,
                 emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
                 emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
@@ -1561,19 +1558,19 @@ with right_col:
                 transparent: true,
                 opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
-            }});
+            });
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
             const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
-            const coreMat = new THREE.MeshPhysicalMaterial({{
+            const coreMat = new THREE.MeshPhysicalMaterial({
                 color: 0xffffff,
                 emissive: statusColor,
                 emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
                 roughness: 0.02,
                 metalness: 0.95,
                 transmission: 0.8
-            }});
+            });
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
 
@@ -1581,7 +1578,7 @@ with right_col:
 
             const tl = gsap.timeline();
 
-            if (status === "DESTROYED") {{
+            if (status === "DESTROYED") {
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
@@ -1593,15 +1590,15 @@ with right_col:
                 const shardGroup = new THREE.Group();
                 shardGroup.position.y = -0.7;
 
-                for(let i=0; i<shardCount; i++) {{
+                for(let i=0; i<shardCount; i++) {
                     const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
-                    const sMat = new THREE.MeshStandardMaterial({{
+                    const sMat = new THREE.MeshStandardMaterial({
                         color: tierColor,
                         roughness: 0.1,
                         metalness: 0.9,
                         emissive: "#ff2200",
                         emissiveIntensity: 2.5
-                    }});
+                    });
                     const shard = new THREE.Mesh(sGeo, sMat);
                     shard.position.set(0, 0, 0);
                     
@@ -1611,25 +1608,25 @@ with right_col:
                     const phi = Math.acos(2.0 * v - 1.0);
                     const speed = 4.0 + Math.random() * 8.0;
                     
-                    shard.userData = {{
+                    shard.userData = {
                         vx: speed * Math.sin(phi) * Math.cos(theta),
                         vy: speed * Math.sin(phi) * Math.sin(theta),
                         vz: speed * Math.cos(phi),
                         rx: (Math.random() - 0.5) * 30,
                         ry: (Math.random() - 0.5) * 30
-                    }};
+                    };
 
                     shardGroup.add(shard);
                     shards.push(shard);
-                }}
+                }
                 scene.add(shardGroup);
 
-                tl.to(shardGroup.position, {{
+                tl.to(shardGroup.position, {
                     duration: 0.5,
                     ease: "power2.out",
-                    onUpdate: function() {{
+                    onUpdate: function() {
                         const progress = this.progress();
-                        shards.forEach(s => {{
+                        shards.forEach(s => {
                             s.position.x += s.userData.vx * 0.02;
                             s.position.y += s.userData.vy * 0.02 - 0.04;
                             s.position.z += s.userData.vz * 0.02;
@@ -1637,26 +1634,26 @@ with right_col:
                             s.rotation.y += s.userData.ry * 0.02;
                             s.material.opacity = 1.0 - progress;
                             s.material.transparent = true;
-                        }});
-                    }}
-                }});
-            }} else {{
+                        });
+                    }
+                });
+            } else {
                 const maxScale = isFinalSuccess ? 1.8 : 1.3;
-                tl.to(objectGroup.scale, {{
+                tl.to(objectGroup.scale, {
                     x: maxScale, y: maxScale, z: maxScale,
                     duration: 0.12,
                     ease: "power1.inOut"
-                }})
-                .to(objectGroup.scale, {{
+                })
+                .to(objectGroup.scale, {
                     x: 1.0, y: 1.0, z: 1.0,
                     duration: 0.12,
                     ease: "power1.out"
-                }});
+                });
 
                 const basePosY = -0.7;
-                tl.to(objectGroup.position, {{
+                tl.to(objectGroup.position, {
                     duration: 0.25,
-                    onUpdate: function() {{
+                    onUpdate: function() {
                         const p = this.progress();
                         const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
                         objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
@@ -1666,57 +1663,74 @@ with right_col:
                         objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
                         objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
-                    }}
-                }}, 0);
-            }}
+                    }
+                }, 0);
+            }
 
             const clock = new THREE.Clock();
 
-            function animate() {{
+            function animate() {
                 requestAnimationFrame(animate);
                 const time = clock.getElapsedTime();
 
-                if (status !== "DESTROYED") {{
+                if (status !== "DESTROYED") {
                     const rotSpeed = isFinalSuccess ? 1.8 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
                     outerMesh.rotation.x += 0.005 * rotSpeed;
                     outerMesh.rotation.y += 0.008 * rotSpeed;
                     coreMesh.rotation.x -= 0.01 * rotSpeed;
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
-                    if (isFinalSuccess) {{
+                    if (isFinalSuccess) {
                         objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
-                    }}
-                }}
+                    }
+                }
 
                 starField.rotation.y = time * 0.01;
 
                 const positions = particleGeo.attributes.position.array;
-                for(let i=0; i<particleCount; i++) {{
+                for(let i=0; i<particleCount; i++) {
                     positions[i*3] += particleVelocities[i].x;
                     positions[i*3 + 1] += particleVelocities[i].y;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if(positions[i*3 + 1] > 2.5) {{
+                    if(positions[i*3 + 1] > 2.5) {
                         positions[i*3 + 1] = -4.0;
                         positions[i*3] = (Math.random() - 0.5) * 6.0;
                         positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
-                    }}
-                }}
+                    }
+                }
                 particleGeo.attributes.position.needsUpdate = true;
 
                 renderer.render(scene, camera);
-            }}
+            }
 
             animate();
 
-            window.addEventListener('resize', () => {{
+            window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-            }});
+            });
         </script>
     </body>
     </html>
     """
 
+  three_js_code = (
+      three_js_template.replace("__CURRENT_LEVEL__", str(current_level))
+      .replace("__MAX_LVL__", str(max_lvl))
+      .replace(
+          "__IS_REBIRTH__",
+          "true" if st.session_state.is_rebirth else "false",
+      )
+      .replace("__STATUS__", str(status))
+      .replace("__TIER__", str(tier))
+      .replace("__CARD_TITLE__", str(card_title))
+      .replace("__CARD_DESC__", str(card_desc))
+      .replace("__CARD_PRICE__", str(card_price))
+      .replace("__CURRENT_COST__", str(current_cost))
+      .replace("__CARD_COLOR__", str(card_color))
+  )
+
   components.html(three_js_code, height=580, scrolling=False)
+```[cite: 1]
