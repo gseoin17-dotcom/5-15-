@@ -113,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
+# 3. 게임 데이터베이스 정의
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -1020,7 +1020,6 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    # 시즌 2의 방지권 금액을 예상 가치의 5분의 1로 설정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
@@ -1240,6 +1239,13 @@ with left_col:
     st.rerun()
 
 with right_col:
+  # --- 우측 상단 로고 이미지 배치 영역 ---
+  # 레이아웃을 좌우로 나누어 우측 끝에 로고를 배치합니다.
+  _, logo_col = st.columns([5, 1.2])
+  with logo_col:
+    st.image("logo.png", width=140)
+  # ----------------------------------------
+
   current_level = st.session_state.level
   max_lvl = 25 if st.session_state.is_rebirth else 35
   curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
