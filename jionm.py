@@ -113,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -1020,9 +1020,15 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    current_shield_cost = get_shield_cost(
-        st.session_state.level, st.session_state.is_rebirth
-    )
+    # 시즌 2의 방지권 금액을 예상 가치의 8분의 1로 설정 (예시: 8경 -> 1경)
+    if st.session_state.is_rebirth:
+      current_shield_cost = int(
+          SMELL_DB[True][st.session_state.level]["price"] / 8
+      )
+    else:
+      current_shield_cost = get_shield_cost(
+          st.session_state.level, st.session_state.is_rebirth
+      )
 
     if st.session_state.level < min_shield_level:
       st.markdown(
@@ -1113,7 +1119,6 @@ with left_col:
       }
       active_warps = warp_prices.items()
     else:
-      # 시즌 2 워프권 가격을 해당 강화 단계 예상 가치의 8분의 1배로 설정
       season2_warp_prices = {
           w_level: int(SMELL_DB[True][w_level]["price"] / 8)
           for w_level in [5, 10, 15, 20]
