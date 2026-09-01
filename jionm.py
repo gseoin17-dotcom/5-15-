@@ -1177,7 +1177,7 @@ with left_col:
     max_lvl = 25 if st.session_state.is_rebirth else 35
 
     if st.button(
-        "✨ [치트] 무조건 강제 성공 (+1)",
+        "✨ 강제 성공 (+1)",
         use_container_width=True,
         disabled=(st.session_state.level >= max_lvl),
     ):
@@ -1199,11 +1199,11 @@ with left_col:
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
 
-    if st.button("💰 [치트] 자금 무한 충전 (+100조)", use_container_width=True):
+    if st.button("💰 자금 충전 (+100경)", use_container_width=True):
       if st.session_state.money != float("inf"):
-        st.session_state.money += 100000000000000
+        st.session_state.money += 1000000000000000000
       save_current_season_state()
-      st.success("자금이 대량 충전되었습니다!")
+      st.success("자금이 충전되었습니다!")
       st.rerun()
 
   st.markdown(
