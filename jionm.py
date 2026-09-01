@@ -1170,7 +1170,7 @@ with left_col:
     st.markdown(
         "<div style='font-size:12px; color:#f87171; font-weight:700;"
         " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
-        " 성공합니다!</div>",
+        " 성공합니다</div>",
         unsafe_allow_html=True,
     )
 
