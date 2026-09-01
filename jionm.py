@@ -1169,7 +1169,7 @@ with left_col:
   with tab_dev:
     st.markdown(
         "<div style='font-size:12px; color:#f87171; font-weight:700;"
-        " margin-bottom:8px;'>⚠️ 개발자 치트키 구역입니다. 비용 없이 무조건"
+        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
         " 성공합니다!</div>",
         unsafe_allow_html=True,
     )
