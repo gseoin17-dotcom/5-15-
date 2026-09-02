@@ -1,7 +1,6 @@
 import random
 import streamlit as st
 import streamlit.components.v1 as components
-
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
@@ -666,7 +665,7 @@ PROB_TABLE = {
 }
 
 CRITICAL_RATE = 0.05
-PITY_MAX = 3
+PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -860,6 +859,11 @@ def trigger_rebirth():
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
+    f"""
+""",
+    unsafe_allow_html=True,
+)
+st.markdown(
     """
     <style>
     /* Apple-inspired Liquid Glass UI */
@@ -868,7 +872,7 @@ st.markdown(
         background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.24), transparent 32%),
                     radial-gradient(circle at 85% 75%, rgba(180,100,255,.20), transparent 34%),
                     linear-gradient(135deg,#070b16,#101827 55%,#070a12);
-        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
     .block-container { padding-top: 3.2rem !important; padding-bottom:2rem !important; max-width:94% !important; }
     .element-container, .stMarkdown { background:transparent !important; }
@@ -959,7 +963,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 4개</div></div>",
+        " 3개</div></div>",
         unsafe_allow_html=True,
     )
     st.write("")
@@ -967,7 +971,7 @@ with left_col:
     pity_left = PITY_MAX - st.session_state.pity_count
     st.markdown(
         f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>✨ 지온맘의 가호</div><div style='font-size:13px;"
+        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
         f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
         unsafe_allow_html=True,
     )
@@ -1026,13 +1030,13 @@ with left_col:
     else:
       st.markdown(
           f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-          f"<b>보유한도:</b> 최대 4개<br><b>가격:</b> <span"
+          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
           f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
           f"{format_gold(current_shield_cost)}</span></div>",
           unsafe_allow_html=True,
       )
 
-    can_buy_shield = (st.session_state.shield < 4) and (
+    can_buy_shield = (st.session_state.shield < 3) and (
         st.session_state.level >= min_shield_level
     )
     if st.button(
@@ -1040,8 +1044,8 @@ with left_col:
     ):
       if st.session_state.level < min_shield_level:
         st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 4:
-        st.warning("최대 4개까지만 보유 가능합니다.")
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
@@ -1184,13 +1188,6 @@ with left_col:
 
       save_current_season_state()
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
-      st.rerun()
-
-    if st.button("💰 자금 충전 (+100경)", use_container_width=True):
-      if st.session_state.money != float("inf"):
-        st.session_state.money += 1000000000000000000
-      save_current_season_state()
-      st.success("자금이 충전되었습니다!")
       st.rerun()
 
   st.markdown(
@@ -1339,7 +1336,7 @@ with right_col:
                 particleSpeed = 1.2;
                 glowIntensity = 22;
             }} else if (status === "PITY_SUCCESS") {{
-                statusText.innerText = "✨ 지온맘의 가호 발동! (천장 100% 성공) ✨";
+                statusText.innerText = "✨ 지온이의 가오 발동! (천장 100% 성공) ✨";
                 statusColor = "#fde68a";
                 particleSize = 0.3;
                 particleSpeed = 1.0;
