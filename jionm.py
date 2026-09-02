@@ -1,5 +1,4 @@
 import random
-import time
 import streamlit as st
 import streamlit.components.v1 as components
 # -----------------------------------------------------------------------------
@@ -750,15 +749,6 @@ def save_current_season_state():
 if "is_rebirth" not in st.session_state:
   sync_session_state(1)
 
-# 최종 강화 연출 상태: 강화 결과를 화면에 바로 노출하지 않고
-# 브라우저에서 장면을 먼저 재생한 뒤 자동으로 한 번 새로고침한다.
-if "final_cinematic_started" not in st.session_state:
-  st.session_state.final_cinematic_started = 0.0
-if st.session_state.final_cinematic_started:
-  if time.time() - st.session_state.final_cinematic_started >= 10.8:
-    st.session_state.final_cinematic_started = 0.0
-
-
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
@@ -910,19 +900,6 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
-  if st.session_state.final_cinematic_started:
-    st.markdown(
-        """<div style="position:fixed;left:0;top:0;width:27vw;height:100vh;z-index:99990;
-        background:radial-gradient(circle at 50% 35%,rgba(25,15,70,.98),rgba(3,5,18,.995) 70%);
-        display:flex;align-items:center;justify-content:center;text-align:center;
-        box-shadow:20px 0 60px rgba(0,0,0,.55);pointer-events:auto;">
-        <div style="padding:24px;color:white;font-weight:900;">
-          <div style="font-size:13px;letter-spacing:4px;color:#c4b5fd;">DIMENSION BREAKTHROUGH</div>
-          <div style="font-size:28px;margin-top:14px;">최종 강화 연출 중</div>
-          <div style="font-size:12px;margin-top:10px;color:#94a3b8;">결과 공개까지 잠시만 기다려주세요</div>
-        </div></div>""",
-        unsafe_allow_html=True,
-    )
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
@@ -934,9 +911,14 @@ with left_col:
         "</div>",
         unsafe_allow_html=True,
     )
-    if st.button("✨ 환생하기", use_container_width=True):
-      trigger_rebirth()
-      st.rerun()
+    b_col1, b_col2 = st.columns(2)
+    with b_col1:
+      if st.button("✨ 환생하기", use_container_width=True):
+        trigger_rebirth()
+        st.rerun()
+    with b_col2:
+      if st.button("🔒 아니오", use_container_width=True):
+        st.info("현재 단계를 유지합니다.")
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
@@ -1230,10 +1212,6 @@ with left_col:
       st.error("강화 비용 부족!")
     else:
       run_enhance()
-      # 34→35 / 24→25 성공이면 먼저 최종 연출 화면을 띄운다.
-      final_max = 25 if st.session_state.is_rebirth else 35
-      if st.session_state.level >= final_max and st.session_state.status in ("SUCCESS", "CRITICAL", "PITY_SUCCESS"):
-        st.session_state.final_cinematic_started = time.time()
       st.rerun()
 
   st.write("")
@@ -1272,16 +1250,6 @@ with right_col:
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-            #finalCinematic {{
-                position:absolute; inset:0; z-index:200; display:none;
-                align-items:center; justify-content:center; text-align:center;
-                background:radial-gradient(circle, rgba(124,58,237,.12), rgba(0,0,0,.48) 55%, rgba(0,0,0,.82));
-                pointer-events:none;
-            }}
-            #finalCinematic .fc-inner {{ transform:scale(.72); opacity:0; }}
-            #finalCinematic .fc-kicker {{ font-size:13px; letter-spacing:7px; color:#c4b5fd; font-weight:900; text-shadow:0 0 20px #8b5cf6; }}
-            #finalCinematic .fc-title {{ margin-top:18px; font-size:46px; font-weight:1000; color:white; text-shadow:0 0 12px #fff,0 0 45px #a855f7,0 0 90px #6366f1; }}
-            #finalCinematic .fc-sub {{ margin-top:12px; font-size:19px; color:#e9d5ff; font-weight:800; }}
             .cinematic-ui {{
                 position: absolute;
                 bottom: 25px; 
@@ -1326,14 +1294,6 @@ with right_col:
     <body>
         <div id="container"></div>
 
-        <div id="finalCinematic">
-          <div class="fc-inner">
-            <div class="fc-kicker">ULTIMATE DIMENSION</div>
-            <div class="fc-title">최종 단계 돌파</div>
-            <div class="fc-sub">시즌 {1 if not st.session_state.is_rebirth else 2} · {max_lvl}단계</div>
-          </div>
-        </div>
-
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
             <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
@@ -1348,23 +1308,6 @@ with right_col:
             const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
             const status = "{status}";
             const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
-            const finalCinematicPending = {"true" if st.session_state.final_cinematic_started else "false"};
-
-            if (finalCinematicPending && isFinalSuccess) {{
-                const fc = document.getElementById('finalCinematic');
-                const inner = fc.querySelector('.fc-inner');
-                const ui = document.getElementById('cinematicUi');
-                fc.style.display = 'flex';
-                ui.style.opacity = '0';
-                gsap.timeline()
-                  .to(inner, {{opacity:1, scale:1.0, duration:1.5, ease:'back.out(1.7')}})
-                  .to(inner, {{scale:1.08, duration:1.2, ease:'power2.inOut', repeat:2, yoyo:true}}, '+=0.2')
-                  .to(fc, {{opacity:0, duration:1.4, ease:'power2.inOut'}}, '+=3.2')
-                  .to(ui, {{opacity:1, duration:0.8}}, '-=0.5');
-                setTimeout(() => {{
-                    try {{ window.top.location.reload(); }} catch(e) {{ window.parent.location.reload(); }}
-                }}, 10500);
-            }}
 
             if (currentLevel >= 15 || isFinalSuccess) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
@@ -1669,18 +1612,18 @@ with right_col:
                 const maxScale = isFinalSuccess ? 1.8 : 1.3;
                 tl.to(objectGroup.scale, {{
                     x: maxScale, y: maxScale, z: maxScale,
-                    duration: isFinalSuccess ? 1.8 : 0.12,
+                    duration: 0.12,
                     ease: "power1.inOut"
                 }})
                 .to(objectGroup.scale, {{
                     x: 1.0, y: 1.0, z: 1.0,
-                    duration: isFinalSuccess ? 1.1 : 0.12,
+                    duration: 0.12,
                     ease: "power1.out"
                 }});
 
                 const basePosY = -0.7;
                 tl.to(objectGroup.position, {{
-                    duration: isFinalSuccess ? 2.2 : 0.25,
+                    duration: 0.25,
                     onUpdate: function() {{
                         const p = this.progress();
                         const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
