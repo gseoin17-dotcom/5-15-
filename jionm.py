@@ -667,53 +667,6 @@ PROB_TABLE = {
 CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
-# 워프권 가격 조정: 기존보다 조금 비싸게
-SEASON1_WARP_MULTIPLIER = 1.5
-SEASON2_WARP_MULTIPLIER = 1.25
-
-# 업적 / 칭호 시스템
-ACHIEVEMENTS = {
-    "first_enhance": {"name": "첫 강화", "desc": "처음으로 강화를 시도했습니다.", "title": "초보 강화사"},
-    "level_10": {"name": "10단계 돌파", "desc": "시즌 1에서 10단계에 도달했습니다.", "title": "지온 입문자"},
-    "level_20": {"name": "20단계 돌파", "desc": "시즌 1에서 20단계에 도달했습니다.", "title": "냄새 지배자"},
-    "season1_clear": {"name": "시즌 1 정복", "desc": "시즌 1 최종 35단계를 달성했습니다.", "title": "지온의 절대자"},
-    "season2_start": {"name": "새로운 차원", "desc": "시즌 2를 시작했습니다.", "title": "차원 여행자"},
-    "season2_10": {"name": "자이온 10단계", "desc": "시즌 2에서 10단계에 도달했습니다.", "title": "자이온 연구원"},
-    "season2_clear": {"name": "시즌 2 정복", "desc": "시즌 2 최종 25단계를 달성했습니다.", "title": "심플 성지온"},
-    "auto_enhance": {"name": "자동 강화", "desc": "자동 강화 시스템을 사용했습니다.", "title": "자동 강화 전문가"},
-}
-
-def update_achievements():
-    level = st.session_state.level
-    rebirth = st.session_state.is_rebirth
-    unlocked = st.session_state.achievements
-    if st.session_state.total_enhance_count > 0:
-        unlocked.add("first_enhance")
-    if not rebirth and level >= 10:
-        unlocked.add("level_10")
-    if not rebirth and level >= 20:
-        unlocked.add("level_20")
-    if not rebirth and level >= 35:
-        unlocked.add("season1_clear")
-    if rebirth:
-        unlocked.add("season2_start")
-        if level >= 10:
-            unlocked.add("season2_10")
-        if level >= 25:
-            unlocked.add("season2_clear")
-
-
-def get_current_title():
-    update_achievements()
-    preferred = [
-        "season2_clear", "season1_clear", "season2_10", "level_20",
-        "level_10", "auto_enhance", "season2_start", "first_enhance"
-    ]
-    for key in preferred:
-        if key in st.session_state.achievements:
-            return ACHIEVEMENTS[key]["title"]
-    return "칭호 없음"
-
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
@@ -752,12 +705,6 @@ if "season_data" not in st.session_state:
 
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
-if "achievements" not in st.session_state:
-  st.session_state.achievements = set()
-if "total_enhance_count" not in st.session_state:
-  st.session_state.total_enhance_count = 0
-if "auto_running" not in st.session_state:
-  st.session_state.auto_running = False
 
 
 def sync_session_state(target_season):
@@ -822,7 +769,6 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
-  st.session_state.total_enhance_count += 1
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -883,34 +829,7 @@ def run_enhance():
       if st.session_state.level >= w_lvl:
         st.session_state.unlocked_season2_warps[w_lvl] = True
 
-  update_achievements()
   save_current_season_state()
-
-
-def auto_enhance_to(target_level):
-  max_lvl = 25 if st.session_state.is_rebirth else 35
-  target_level = max(0, min(int(target_level), max_lvl))
-  if target_level <= st.session_state.level:
-    st.session_state.status = "READY"
-    return 0, "이미 목표 단계 이상입니다."
-
-  count = 0
-  while st.session_state.level < target_level:
-    before = st.session_state.level
-    cost = get_enhance_cost(before, st.session_state.is_rebirth)
-    if st.session_state.money < cost:
-      st.session_state.status = "NOT_ENOUGH_MONEY"
-      break
-    run_enhance()
-    count += 1
-    # 파괴 등으로 단계가 내려갈 수 있으므로 무한루프 방지
-    if count >= 5000:
-      break
-
-  st.session_state.achievements.add("auto_enhance")
-  update_achievements()
-  save_current_season_state()
-  return count, f"목표 {target_level}단계 자동 강화를 종료했습니다. 현재 {st.session_state.level}단계"
 
 
 def sell():
@@ -930,7 +849,6 @@ def sell():
 
 def trigger_rebirth():
   save_current_season_state()
-  st.session_state.achievements.add("season1_clear")
   sync_session_state(2)
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
@@ -1053,14 +971,6 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-  update_achievements()
-  st.markdown(
-      f"<div style='text-align:center;padding:8px;border:1px solid rgba(253,230,138,.2);"
-      f"border-radius:12px;background:rgba(253,230,138,.05);margin-bottom:10px;'>"
-      f"🏆 칭호 <b style='color:#fde68a;'>{get_current_title()}</b></div>",
-      unsafe_allow_html=True,
-  )
-
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
@@ -1090,8 +1000,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적·칭호", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1187,16 +1097,16 @@ with left_col:
 
     if not st.session_state.is_rebirth:
       warp_prices = {
-          10: int(10000000 * SEASON1_WARP_MULTIPLIER),
-          15: int(50000000 * SEASON1_WARP_MULTIPLIER),
-          20: int(200000000 * SEASON1_WARP_MULTIPLIER),
-          25: int(1000000000 * SEASON1_WARP_MULTIPLIER),
-          30: int(5000000000 * SEASON1_WARP_MULTIPLIER),
+          10: 10000000,
+          15: 50000000,
+          20: 200000000,
+          25: 1000000000,
+          30: 5000000000,
       }
       active_warps = warp_prices.items()
     else:
       season2_warp_prices = {
-          w_level: int((SMELL_DB[True][w_level]["price"] / 5) * SEASON2_WARP_MULTIPLIER)
+          w_level: int(SMELL_DB[True][w_level]["price"] / 5)
           for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
@@ -1242,25 +1152,6 @@ with left_col:
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
-  with tab_ach:
-    update_achievements()
-    st.markdown(
-        f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-        f"🏅 현재 칭호: <b style='color:#fde68a; font-size:16px;'>{get_current_title()}</b><br>"
-        f"달성 업적: <b>{len(st.session_state.achievements)} / {len(ACHIEVEMENTS)}</b></div>",
-        unsafe_allow_html=True,
-    )
-    for key, ach in ACHIEVEMENTS.items():
-      done = key in st.session_state.achievements
-      icon = "✅" if done else "🔒"
-      st.markdown(
-          f"<div style='padding:10px;margin:6px 0;border:1px solid rgba(255,255,255,.12);"
-          f"border-radius:12px;background:rgba(255,255,255,.05);'>"
-          f"{icon} <b>{ach['name']}</b> — {ach['desc']}<br>"
-          f"<span style='font-size:12px;color:#fde68a;'>칭호: {ach['title']}</span></div>",
-          unsafe_allow_html=True,
-      )
-
   with tab_dev:
     st.markdown(
         "<div style='font-size:12px; color:#f87171; font-weight:700;"
@@ -1294,24 +1185,6 @@ with left_col:
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
 
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🤖 자동 강화</h4>",
-      unsafe_allow_html=True,
-  )
-  auto_target = st.number_input(
-      "목표 단계", min_value=1, max_value=(25 if st.session_state.is_rebirth else 35),
-      value=min(max(1, st.session_state.level + 1), (25 if st.session_state.is_rebirth else 35)),
-      step=1, key=f"auto_target_{st.session_state.is_rebirth}"
-  )
-  if st.button("🤖 목표 단계까지 자동 강화", use_container_width=True):
-    count, message = auto_enhance_to(auto_target)
-    st.success(f"자동 강화 {count}회 실행 — {message}")
-    st.rerun()
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
