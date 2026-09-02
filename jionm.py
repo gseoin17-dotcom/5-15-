@@ -687,6 +687,16 @@ ACHIEVEMENTS = {
     "seller": {"name": "냄새 장사꾼", "desc": "냄새를 판매해 돈을 획득하세요.", "title": "냄새 상인", "reward": 25000},
     "enhance_50": {"name": "강화광", "desc": "강화를 총 50회 시도하세요.", "title": "강화 중독자", "reward": 200000},
     "enhance_100": {"name": "강화의 끝", "desc": "강화를 총 100회 시도하세요.", "title": "강화의 신", "reward": 1000000},
+    "level_5": {"name": "첫 강화", "desc": "5단계에 도달하세요.", "title": "냄새 입문자", "reward": 5000},
+    "level_15": {"name": "중급 냄새꾼", "desc": "15단계에 도달하세요.", "title": "냄새 수집가", "reward": 50000},
+    "level_25": {"name": "고급 냄새꾼", "desc": "25단계에 도달하세요.", "title": "냄새 지배자", "reward": 250000},
+    "s2_level_5": {"name": "자이온 입문", "desc": "시즌 2에서 5단계에 도달하세요.", "title": "자이온 견습생", "reward": 1000000},
+    "s2_level_15": {"name": "자이온 숙련", "desc": "시즌 2에서 15단계에 도달하세요.", "title": "자이온 숙련자", "reward": 15000000},
+    "warp_10": {"name": "워프 마스터", "desc": "워프권을 10회 사용하세요.", "title": "공간의 지배자", "reward": 500000},
+    "enhance_200": {"name": "강화는 계속된다", "desc": "강화를 총 200회 시도하세요.", "title": "강화의 초월자", "reward": 5000000},
+    "rich": {"name": "부자 냄새", "desc": "보유 금액 10억을 달성하세요.", "title": "지온 재벌", "reward": 1000000},
+    "seller_10": {"name": "장사의 신", "desc": "판매를 10회 성공하세요.", "title": "전설의 상인", "reward": 300000},
+    "survivor": {"name": "기적의 생존", "desc": "20단계 이상에서 강화 실패 후 살아남으세요.", "title": "불굴의 지온", "reward": 300000},
 }
 
 
@@ -703,6 +713,8 @@ def init_progress():
         st.session_state.enhance_attempts = 0
     if "warp_uses" not in st.session_state:
         st.session_state.warp_uses = 0
+    if "sell_count" not in st.session_state:
+        st.session_state.sell_count = 0
 
 def unlock_achievement(key):
     if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
@@ -721,6 +733,26 @@ def check_achievements():
         unlock_achievement("enhance_50")
     if st.session_state.enhance_attempts >= 100:
         unlock_achievement("enhance_100")
+    if st.session_state.enhance_attempts >= 200:
+        unlock_achievement("enhance_200")
+    if st.session_state.warp_uses >= 10:
+        unlock_achievement("warp_10")
+    if st.session_state.sell_count >= 10:
+        unlock_achievement("seller_10")
+    if st.session_state.money >= 1_000_000_000:
+        unlock_achievement("rich")
+    if not st.session_state.is_rebirth and level >= 5:
+        unlock_achievement("level_5")
+    if not st.session_state.is_rebirth and level >= 15:
+        unlock_achievement("level_15")
+    if not st.session_state.is_rebirth and level >= 25:
+        unlock_achievement("level_25")
+    if st.session_state.is_rebirth and level >= 5:
+        unlock_achievement("s2_level_5")
+    if st.session_state.is_rebirth and level >= 15:
+        unlock_achievement("s2_level_15")
+    if st.session_state.status == "FAIL" and level >= 20:
+        unlock_achievement("survivor")
     if st.session_state.warp_uses >= 5:
         unlock_achievement("warp_5")
     if not st.session_state.is_rebirth and level == 0 and st.session_state.max_level >= 34:
@@ -1270,13 +1302,19 @@ with left_col:
     achieved = sum(st.session_state.achievements.values())
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
     achievement_items = list(ACHIEVEMENTS.items())
-    ach_col1, ach_col2 = st.columns(2)
+    ach_cols = st.columns(3)
     for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      target_col = ach_col1 if i % 2 == 0 else ach_col2
-      with target_col:
-        st.markdown(f"{icon} **{info['name']}** — {info['desc']}<br>칭호: {info['title']} · 보상: {format_gold(info['reward'])}", unsafe_allow_html=True)
+      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
+      border = "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      with ach_cols[i % 3]:
+        st.markdown(
+          f"<div style='background:{bg}; border:1px solid {border}; border-radius:12px; padding:10px; margin:0 0 10px 0; min-height:92px;'>"
+          f"<div style='font-size:14px;font-weight:800'>{icon} {info['name']}</div>"
+          f"<div style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div>"
+          f"<div style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️ {info['title']} · 💰 {format_gold(info['reward'])}</div>"
+          f"</div>", unsafe_allow_html=True)
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
