@@ -862,45 +862,32 @@ def trigger_rebirth():
 st.markdown(
     """
     <style>
+    /* Apple-inspired Liquid Glass UI */
+    :root { --glass: rgba(255,255,255,.10); --glass-strong: rgba(255,255,255,.16); --stroke: rgba(255,255,255,.22); }
     .stApp {
-        background: 
-            radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.5) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, #020617 100%);
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        color: #f8fafc;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.24), transparent 32%),
+                    radial-gradient(circle at 85% 75%, rgba(180,100,255,.20), transparent 34%),
+                    linear-gradient(135deg,#070b16,#101827 55%,#070a12);
+        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
     }
-    .block-container {
-        padding-top: 5rem !important;
-        padding-bottom: 2rem !important;
-        max-width: 95% !important;
-    }
-    .element-container, .stMarkdown {
-        background: transparent !important;
-    }
+    .block-container { padding-top: 3.2rem !important; padding-bottom:2rem !important; max-width:94% !important; }
+    .element-container, .stMarkdown { background:transparent !important; }
     div.stButton > button {
-        border-radius: 8px !important;
-        font-weight: 700 !important;
-        padding: 9px 16px !important;
-        transition: all 0.2s ease !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        background: rgba(15, 23, 42, 0.85) !important;
-        color: #f8fafc !important;
-        box-shadow: 0 4px 15px rgba(2, 6, 23, 0.6);
+        border:1px solid var(--stroke) !important; border-radius:16px !important;
+        padding:11px 16px !important; font-weight:650 !important; color:#fff !important;
+        background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.06)) !important;
+        backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
+        box-shadow:inset 0 1px rgba(255,255,255,.20),0 10px 30px rgba(0,0,0,.22) !important;
+        transition:transform .2s ease,background .2s ease,box-shadow .2s ease !important;
     }
-    div.stButton > button:hover {
-        background: rgba(255, 255, 255, 0.95) !important;
-        color: #0f172a !important;
-        border: 1px solid #ffffff !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
-    }
+    div.stButton > button:hover { transform:translateY(-1px) scale(1.01); background:rgba(255,255,255,.20) !important; box-shadow:inset 0 1px rgba(255,255,255,.3),0 14px 35px rgba(0,0,0,.28) !important; }
+    div.stButton > button:active { transform:scale(.98); }
+    [data-testid="stTabs"] button { border-radius:14px !important; }
+    [data-testid="stTabs"] [aria-selected="true"] { background:rgba(255,255,255,.13) !important; backdrop-filter:blur(18px); }
+    [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
+    hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
-""",
-    unsafe_allow_html=True,
+    """, unsafe_allow_html=True,
 )
 
 # -----------------------------------------------------------------------------
