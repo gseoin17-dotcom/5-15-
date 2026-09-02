@@ -1396,7 +1396,7 @@ with right_col:
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
                 color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
-                size: isFinalSuccess ? 0.12 : 0.07,
+                size: isFinalSuccess ? 0.16 : 0.07,
                 transparent: true,
                 opacity: 0.7,
                 blending: THREE.AdditiveBlending
@@ -1404,7 +1404,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = isFinalSuccess ? 1200 : 500;
+            const particleCount = isFinalSuccess ? 2200 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1544,7 +1544,96 @@ with right_col:
 
             const tl = gsap.timeline();
 
-            if (status === "DESTROYED") {{
+            // -----------------------------------------------------------------
+            // 최종 단계 전용 시네마틱 연출
+            // 시즌1 34 -> 35 / 시즌2 24 -> 25 성공 시 약 9초 동안 진행
+            // -----------------------------------------------------------------
+            if (isFinalSuccess) {{
+                // 화면 연출용 DOM
+                const cinematicFlash = document.createElement("div");
+                cinematicFlash.style.cssText = `
+                    position:fixed; inset:0; z-index:999; pointer-events:none;
+                    background:radial-gradient(circle, rgba(255,255,255,0.98), rgba(255,255,255,0) 58%);
+                    opacity:0; mix-blend-mode:screen;
+                `;
+                document.body.appendChild(cinematicFlash);
+
+                const finalText = document.createElement("div");
+                finalText.style.cssText = `
+                    position:fixed; left:50%; top:42%; transform:translate(-50%,-50%) scale(.5);
+                    z-index:1000; pointer-events:none; opacity:0; text-align:center;
+                    font-size:clamp(32px,6vw,82px); font-weight:1000; letter-spacing:4px;
+                    color:#fff; text-shadow:0 0 12px #fff,0 0 35px #8b5cf6,0 0 75px #00eaff,0 0 120px #ff00e1;
+                    white-space:nowrap;
+                `;
+                finalText.innerHTML = isRebirth ? "⚡ ULTIMATE REBIRTH ⚡" : "🌌 ULTIMATE ABSOLUTE 🌌";
+                document.body.appendChild(finalText);
+
+                // 최종 코어를 거대하게 만들고, 시작은 아주 천천히
+                objectGroup.scale.set(0.12, 0.12, 0.12);
+                coreMesh.scale.set(0.35, 0.35, 0.35);
+                objectGroup.position.y = -0.7;
+
+                // 다중 에너지 링
+                const finalRings = [];
+                for (let i = 0; i < 7; i++) {{
+                    const ringGeo = new THREE.TorusGeometry(1.5 + i * 0.48, 0.025 + i * 0.008, 16, 96);
+                    const ringMat = new THREE.MeshBasicMaterial({{
+                        color: i % 2 === 0 ? 0xffffff : new THREE.Color(statusColor),
+                        transparent: true, opacity: 0.0,
+                        blending: THREE.AdditiveBlending, depthWrite: false
+                    }});
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.7;
+                    ring.rotation.y = (Math.random() - 0.5) * 0.7;
+                    ring.scale.setScalar(0.05);
+                    scene.add(ring);
+                    finalRings.push(ring);
+                }}
+
+                // 1단계: 정적 → 에너지 집결 (약 2.4초)
+                tl.to(pointLight, {{ intensity: 3, duration: 1.0, ease: "power1.in" }})
+                  .to(objectGroup.scale, {{ x:0.45, y:0.45, z:0.45, duration:1.4, ease:"power2.inOut" }}, "<")
+                  .to(coreMesh.scale, {{ x:1.4, y:1.4, z:1.4, duration:1.4, ease:"power2.inOut" }}, "<")
+                  .to(finalRings.map(r => r.material), {{ opacity:0.55, duration:1.2, stagger:0.08, ease:"power2.out" }}, "<0.2")
+                  .to(finalRings.map(r => r.scale), {{ x:0.35, y:0.35, z:0.35, duration:1.5, stagger:0.06, ease:"power2.out" }}, "<")
+
+                  // 2단계: 폭주 직전의 정적 (약 1.6초)
+                  .to(objectGroup.scale, {{ x:0.7, y:0.7, z:0.7, duration:1.0, ease:"power2.in" }})
+                  .to(pointLight, {{ intensity:90, duration:0.8, ease:"power2.in" }}, "<0.15")
+                  .to(cinematicFlash, {{ opacity:0.12, duration:0.5, yoyo:true, repeat:3, ease:"sine.inOut" }}, "<")
+
+                  // 3단계: 초대형 폭발 (약 0.9초)
+                  .to(objectGroup.scale, {{ x:2.6, y:2.6, z:2.6, duration:0.28, ease:"power4.out" }})
+                  .to(coreMesh.scale, {{ x:2.8, y:2.8, z:2.8, duration:0.22, ease:"power4.out" }}, "<")
+                  .to(cinematicFlash, {{ opacity:0.95, duration:0.08, ease:"power4.out" }}, "<")
+                  .to(cinematicFlash, {{ opacity:0, duration:0.7, ease:"power3.out" }})
+
+                  // 4단계: 충격파 + 링 확장
+                  .to(finalRings.map(r => r.scale), {{ x:3.5, y:3.5, z:3.5, duration:1.5, stagger:0.04, ease:"power3.out" }}, "<0.05")
+                  .to(finalRings.map(r => r.material), {{ opacity:0, duration:1.5, stagger:0.04, ease:"power2.out" }}, "<")
+
+                  // 5단계: 최종 형상 등장 (약 1.5초)
+                  .to(objectGroup.scale, {{ x:1.15, y:1.15, z:1.15, duration:0.8, ease:"elastic.out(1,0.35)" }})
+                  .to(coreMesh.scale, {{ x:1.25, y:1.25, z:1.25, duration:0.8, ease:"elastic.out(1,0.4)" }}, "<")
+                  .to(pointLight, {{ intensity:50, duration:0.8, ease:"power2.out" }}, "<")
+
+                  // 6단계: 최종 문구 등장
+                  .to(finalText, {{ opacity:1, scale:1, duration:0.65, ease:"back.out(1.7)" }})
+                  .to(finalText, {{ scale:1.06, duration:0.55, yoyo:true, repeat:3, ease:"sine.inOut" }})
+                  .to(finalText, {{ opacity:0, duration:0.5, ease:"power2.in" }})
+                  .to(cinematicFlash, {{ opacity:0, duration:0.2 }}, "<")
+                  .call(() => {{
+                      cinematicFlash.remove();
+                      finalText.remove();
+                  }});
+
+                // 최종 연출 중에는 카메라도 미세하게 흔들리게 함
+                gsap.to(camera.position, {{
+                    x:0.16, y:0.72, duration:0.16, repeat:18, yoyo:true,
+                    ease:"sine.inOut", delay:2.6
+                }});
+            }} else if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
 
