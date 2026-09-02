@@ -1383,9 +1383,9 @@ with left_col:
         st.session_state.auto_enhancing = False
         st.error(f"⛔ 자동 강화 중단: {result}")
       else:
-        st.info(f"🤖 자동 강화 중... {st.session_state.level} / {target}단계")
+        st.markdown(f"<div style='padding:10px;border-radius:10px;background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.45);font-weight:700;'>🤖 자동 강화 중 &nbsp; {st.session_state.level} / {target}단계 &nbsp; | &nbsp; 결과: {result}</div>", unsafe_allow_html=True)
         import time
-        time.sleep(0.7)
+        time.sleep(0.8)
         st.rerun()
 
   if st.button(
