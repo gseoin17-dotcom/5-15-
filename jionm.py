@@ -15,7 +15,84 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. 유틸리티 함수 및 비용 설정
+# 2. 세션 상태 초기화 (에러 방지를 위해 가장 먼저 실행)
+# -----------------------------------------------------------------------------
+if "current_season" not in st.session_state:
+  st.session_state.current_season = 1
+
+if "season_data" not in st.session_state:
+  st.session_state.season_data = {
+      1: {
+          "level": 0,
+          "max_level": 0,
+          "money": 1000000,
+          "status": "READY",
+          "shield": 0,
+          "tears": 0,
+          "pity_count": 0,
+          "unlocked_warps": {
+              10: False,
+              15: False,
+              20: False,
+              25: False,
+              30: False,
+          },
+      },
+      2: {
+          "level": 0,
+          "max_level": 0,
+          "money": 1000000000,
+          "status": "READY",
+          "shield": 4,
+          "tears": 50,
+          "pity_count": 0,
+          "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
+      },
+      3: {
+          "level": 0,
+          "max_level": 0,
+          "money": 5000000000,
+          "status": "READY",
+          "shield": 4,
+          "tears": 50,
+          "pity_count": 0,
+          "unlocked_season3_warps": {3: False, 6: False, 9: False, 12: False},
+      },
+  }
+
+if "auto_enhance" not in st.session_state:
+  st.session_state.auto_enhance = False
+
+
+def sync_session_state(target_season):
+  st.session_state.current_season = target_season
+  data = st.session_state.season_data[target_season]
+
+  st.session_state.level = data["level"]
+  st.session_state.max_level = data["max_level"]
+  st.session_state.money = data["money"]
+  st.session_state.status = data["status"]
+  st.session_state.shield = data["shield"]
+  st.session_state.tears = data["tears"]
+  st.session_state.pity_count = data["pity_count"]
+
+  if target_season == 1:
+    st.session_state.unlocked_warps = data["unlocked_warps"]
+  elif target_season == 2:
+    st.session_state.unlocked_season2_warps = data["unlocked_season2_warps"]
+  else:
+    st.session_state.unlocked_season3_warps = data["unlocked_season3_warps"]
+
+
+# 앱 구동 시점 및 세션 동기화 보장
+if (
+    "level" not in st.session_state
+    or "current_season" not in st.session_state
+):
+  sync_session_state(st.session_state.get("current_season", 1))
+
+# -----------------------------------------------------------------------------
+# 3. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
 
 
@@ -136,7 +213,7 @@ def get_shield_cost(level, season):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 / 시즌3: 15단계)
+# 4. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 / 시즌3: 15단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     1: {
@@ -857,103 +934,6 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 3
 
 # -----------------------------------------------------------------------------
-# 4. 세션 상태 초기화
-# -----------------------------------------------------------------------------
-if "current_season" not in st.session_state:
-  st.session_state.current_season = 1
-
-if "season_data" not in st.session_state:
-  st.session_state.season_data = {
-      1: {
-          "level": 0,
-          "max_level": 0,
-          "money": 1000000,
-          "status": "READY",
-          "shield": 0,
-          "tears": 0,
-          "pity_count": 0,
-          "unlocked_warps": {
-              10: False,
-              15: False,
-              20: False,
-              25: False,
-              30: False,
-          },
-      },
-      2: {
-          "level": 0,
-          "max_level": 0,
-          "money": 1000000000,
-          "status": "READY",
-          "shield": 4,
-          "tears": 50,
-          "pity_count": 0,
-          "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
-      },
-      3: {
-          "level": 0,
-          "max_level": 0,
-          "money": 5000000000,
-          "status": "READY",
-          "shield": 4,
-          "tears": 50,
-          "pity_count": 0,
-          "unlocked_season3_warps": {3: False, 6: False, 9: False, 12: False},
-      },
-  }
-
-if "auto_enhance" not in st.session_state:
-  st.session_state.auto_enhance = False
-
-
-def sync_session_state(target_season):
-  st.session_state.current_season = target_season
-  data = st.session_state.season_data[target_season]
-
-  st.session_state.level = data["level"]
-  st.session_state.max_level = data["max_level"]
-  st.session_state.money = data["money"]
-  st.session_state.status = data["status"]
-  st.session_state.shield = data["shield"]
-  st.session_state.tears = data["tears"]
-  st.session_state.pity_count = data["pity_count"]
-
-  if target_season == 1:
-    st.session_state.unlocked_warps = data["unlocked_warps"]
-  elif target_season == 2:
-    st.session_state.unlocked_season2_warps = data["unlocked_season2_warps"]
-  else:
-    st.session_state.unlocked_season3_warps = data["unlocked_season3_warps"]
-
-
-def save_current_season_state():
-  s = st.session_state.get("current_season", 1)
-  st.session_state.season_data[s]["level"] = st.session_state.level
-  st.session_state.season_data[s]["max_level"] = st.session_state.max_level
-  st.session_state.season_data[s]["money"] = st.session_state.money
-  st.session_state.season_data[s]["status"] = st.session_state.status
-  st.session_state.season_data[s]["shield"] = st.session_state.shield
-  st.session_state.season_data[s]["tears"] = st.session_state.tears
-  st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
-
-  if s == 1:
-    st.session_state.season_data[1]["unlocked_warps"] = (
-        st.session_state.unlocked_warps
-    )
-  elif s == 2:
-    st.session_state.season_data[2]["unlocked_season2_warps"] = (
-        st.session_state.unlocked_season2_warps
-    )
-  else:
-    st.session_state.season_data[3]["unlocked_season3_warps"] = (
-        st.session_state.unlocked_season3_warps
-    )
-
-
-if "current_season" not in st.session_state:
-  sync_session_state(1)
-
-# -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
 
@@ -1073,6 +1053,30 @@ def trigger_season(target_s):
   sync_session_state(target_s)
   st.session_state.status = "READY"
   save_current_season_state()
+
+
+def save_current_season_state():
+  s = st.session_state.get("current_season", 1)
+  st.session_state.season_data[s]["level"] = st.session_state.level
+  st.session_state.season_data[s]["max_level"] = st.session_state.max_level
+  st.session_state.season_data[s]["money"] = st.session_state.money
+  st.session_state.season_data[s]["status"] = st.session_state.status
+  st.session_state.season_data[s]["shield"] = st.session_state.shield
+  st.session_state.season_data[s]["tears"] = st.session_state.tears
+  st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
+
+  if s == 1:
+    st.session_state.season_data[1]["unlocked_warps"] = (
+        st.session_state.unlocked_warps
+    )
+  elif s == 2:
+    st.session_state.season_data[2]["unlocked_season2_warps"] = (
+        st.session_state.unlocked_season2_warps
+    )
+  else:
+    st.session_state.season_data[3]["unlocked_season3_warps"] = (
+        st.session_state.unlocked_season3_warps
+    )
 
 
 # -----------------------------------------------------------------------------
