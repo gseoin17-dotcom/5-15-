@@ -12,6 +12,65 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
+# 1-1. 인트로 영상 세션 상태 초기화
+# -----------------------------------------------------------------------------
+if "intro_played" not in st.session_state:
+  st.session_state.intro_played = (
+      False  # True로 바꾸면 인트로를 건너뛰고 바로 게임 시작 가능
+  )
+
+# 인트로 영상 재생 구간 (아직 인트로를 안 봤다면)
+if not st.session_state.intro_played:
+  st.markdown(
+      "<h1 style='text-align: center;'>🌌 지온냄새 강화하기 : 인트로 🌌</h1>",
+      unsafe_allow_html=True,
+  )
+
+  # 같은 폴더에 위치한 비디오 파일 불러오기
+  video_file_path = "VID_20260902_064627_681_bsl.mp4"
+  try:
+    st.video(video_file_path)
+  except Exception:
+    st.warning(
+        "인트로 영상 파일을 찾을 수 없습니다. 스크립트와 같은 폴더에"
+        f" '{video_file_path}' 파일이 있는지 확인해주세요."
+    )
+
+  st.write("")
+  col1, col2, col3 = st.columns([1, 2, 1])
+  with col2:
+    if st.button("🚀 게임 시작하기 (인트로 스킵/입장)", use_container_width=True):
+      st.session_state.intro_played = True
+      st.rerun()
+
+  # 인트로 화면에서는 아래 메인 코드가 실행되지 않도록 여기서 멈춤
+  st.stop()
+
+
+# -----------------------------------------------------------------------------
+# 2. 유틸리티 함수 및 비용 설정
+# -----------------------------------------------------------------------------
+def format_gold(amount):
+  if amount == 0 or amount == float("inf"):
+    return "0원" if amount == 0 else "무한대(INF)"
+
+  units = ["", "만", "억", "조", "경", "해"]
+  result = []
+
+  unit_idx = 0
+  while amount > 0 and unit_idx < len(units):
+    remainder = int(amount % 10000)
+    if remainder > 0:
+      result.insert(0, f"{remainder:,}{units[unit_idx]}")
+    amount //= 10000
+    unit_idx += 1
+
+  return "".join(result) + "원"
+
+
+# ... (이후 기존의 유틸리티 함수, 데이터베이스, 강화 로직 및 UI 코드가 그대로 이어집니다)
+
+# -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
 
