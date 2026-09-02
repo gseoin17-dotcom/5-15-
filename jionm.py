@@ -911,14 +911,9 @@ with left_col:
         "</div>",
         unsafe_allow_html=True,
     )
-    b_col1, b_col2 = st.columns(2)
-    with b_col1:
-      if st.button("✨ 환생하기", use_container_width=True):
-        trigger_rebirth()
-        st.rerun()
-    with b_col2:
-      if st.button("🔒 아니오", use_container_width=True):
-        st.info("현재 단계를 유지합니다.")
+    if st.button("✨ 환생하기", use_container_width=True):
+      trigger_rebirth()
+      st.rerun()
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
