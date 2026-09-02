@@ -1254,8 +1254,10 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
-                opacity: 1;
-                transition: opacity 0.1s ease-in-out;
+                opacity: 0;
+                transition: opacity 0.7s ease-in-out;
+                filter: blur(10px);
+                transform: translateX(-50%) translateY(14px) scale(0.96);
             }}
 
             .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
@@ -1319,7 +1321,7 @@ with right_col:
             let glowIntensity = 12;
 
             if (isFinalSuccess) {{
-                statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
+                statusText.innerText = isRebirth ? "🌀 시즌 2 최종 강화 성공" : "🌌 시즌 1 최종 강화 성공";
                 statusColor = "#ffffff";
                 particleSize = 0.6;
                 particleSpeed = 2.5;
@@ -1693,33 +1695,26 @@ with right_col:
                     }}
                 }});
             }} else {{
-                const maxScale = isFinalSuccess ? 1.8 : 1.3;
-                tl.to(objectGroup.scale, {{
-                    x: maxScale, y: maxScale, z: maxScale,
-                    duration: 0.12,
-                    ease: "power1.inOut"
-                }})
-                .to(objectGroup.scale, {{
-                    x: 1.0, y: 1.0, z: 1.0,
-                    duration: 0.12,
-                    ease: "power1.out"
-                }});
+                // 일반 강화도 결과 UI를 잠깐 숨기고 3D 연출 후 공개
+                outerMesh.scale.set(0.72, 0.72, 0.72);
+                coreMesh.scale.set(0.55, 0.55, 0.55);
+                pointLight.intensity *= 0.35;
+
+                tl.to(coreMesh.scale, {{ duration: 0.45, x: 1.15, y: 1.15, z: 1.15, ease: "power2.inOut" }})
+                  .to(objectGroup.rotation, {{ duration: 0.75, x: Math.PI * 0.8, y: Math.PI * 1.4, z: Math.PI * 0.25, ease: "power2.inOut" }}, "<")
+                  .to(objectGroup.scale, {{ duration: 0.55, x: 1.45, y: 1.45, z: 1.45, ease: "back.out(2)" }}, "<0.1")
+                  .to(pointLight, {{ duration: 0.35, intensity: glowIntensity * 2.2, ease: "power3.out" }})
+                  .to(objectGroup.scale, {{ duration: 0.35, x: 1.0, y: 1.0, z: 1.0, ease: "power3.out" }})
+                  .to(coreMesh.scale, {{ duration: 0.35, x: 0.9, y: 0.9, z: 0.9, ease: "power2.out" }})
+                  .to(pointLight, {{ duration: 0.45, intensity: glowIntensity, ease: "power2.out" }})
+                  .call(revealUi);
 
                 const basePosY = -0.7;
-                tl.to(objectGroup.position, {{
-                    duration: 0.25,
-                    onUpdate: function() {{
-                        const p = this.progress();
-                        const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
-                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
-
-                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
-                    }}
-                }}, 0);
+                gsap.to(objectGroup.position, {{
+                    duration: 0.08, x: 0.18, y: basePosY + 0.12,
+                    yoyo: true, repeat: 7, ease: "power1.inOut",
+                    onComplete: () => {{ objectGroup.position.x = 0; objectGroup.position.y = basePosY; }}
+                }});
             }}
 
             const clock = new THREE.Clock();
@@ -1736,7 +1731,8 @@ with right_col:
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
                     if (isFinalSuccess) {{
-                        objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
+                        objectGroup.rotation.z = Math.sin(time * 3.2) * 0.18;
+                        objectGroup.rotation.x += Math.sin(time * 1.7) * 0.0008;
                     }}
                 }}
 
