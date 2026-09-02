@@ -668,6 +668,64 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
+# 업적 / 칭호 시스템
+# -----------------------------------------------------------------------------
+ACHIEVEMENTS = {
+    "first_enhance": {"name": "첫걸음", "desc": "처음으로 강화를 시도하세요.", "title": "초보 강화러", "reward": 5000},
+    "level_10": {"name": "10강 돌파", "desc": "시즌 1에서 10단계에 도달하세요.", "title": "냄새 수련생", "reward": 20000},
+    "level_20": {"name": "20강 돌파", "desc": "시즌 1에서 20단계에 도달하세요.", "title": "냄새 전문가", "reward": 100000},
+    "level_35": {"name": "궁극의 지온", "desc": "시즌 1 최종 35단계를 달성하세요.", "title": "디 오리지널 지온", "reward": 1000000},
+    "rebirth": {"name": "차원의 문", "desc": "시즌 2 환생을 시작하세요.", "title": "차원 여행자", "reward": 5000000},
+    "s2_level_10": {"name": "자이온 각성", "desc": "시즌 2에서 10단계에 도달하세요.", "title": "자이온", "reward": 10000000},
+    "s2_level_25": {"name": "진정한 환생", "desc": "시즌 2 최종 25단계를 달성하세요.", "title": "TRUE REBIRTH", "reward": 100000000},
+    "warp_1": {"name": "공간 이동", "desc": "워프권을 처음 사용하세요.", "title": "워프 개척자", "reward": 10000},
+    "critical": {"name": "대성공", "desc": "크리티컬 강화를 성공시키세요.", "title": "우주의 선택", "reward": 50000},
+    "seller": {"name": "냄새 장사꾼", "desc": "냄새를 판매해 돈을 획득하세요.", "title": "냄새 상인", "reward": 25000},
+}
+
+TITLE_DEFAULT = "칭호 없음"
+
+def init_progress():
+    if "achievements" not in st.session_state:
+        st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
+    if "unlocked_titles" not in st.session_state:
+        st.session_state.unlocked_titles = []
+    if "selected_title" not in st.session_state:
+        st.session_state.selected_title = TITLE_DEFAULT
+    if "enhance_attempts" not in st.session_state:
+        st.session_state.enhance_attempts = 0
+    if "warp_uses" not in st.session_state:
+        st.session_state.warp_uses = 0
+
+def unlock_achievement(key):
+    if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
+        st.session_state.achievements[key] = True
+        title = ACHIEVEMENTS[key]["title"]
+        if title not in st.session_state.unlocked_titles:
+            st.session_state.unlocked_titles.append(title)
+        st.session_state.money += ACHIEVEMENTS[key]["reward"]
+        st.toast(f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']}  |  +{format_gold(ACHIEVEMENTS[key]['reward'])}")
+
+def check_achievements():
+    level = st.session_state.level
+    if st.session_state.enhance_attempts >= 1:
+        unlock_achievement("first_enhance")
+    if not st.session_state.is_rebirth and level >= 10:
+        unlock_achievement("level_10")
+    if not st.session_state.is_rebirth and level >= 20:
+        unlock_achievement("level_20")
+    if not st.session_state.is_rebirth and level >= 35:
+        unlock_achievement("level_35")
+    if st.session_state.is_rebirth and level >= 10:
+        unlock_achievement("s2_level_10")
+    if st.session_state.is_rebirth and level >= 25:
+        unlock_achievement("s2_level_25")
+    if st.session_state.warp_uses >= 1:
+        unlock_achievement("warp_1")
+    if st.session_state.status == "CRITICAL":
+        unlock_achievement("critical")
+
+# -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "current_season" not in st.session_state:
@@ -705,6 +763,8 @@ if "season_data" not in st.session_state:
 
 if "rebirth_count" not in st.session_state:
   st.session_state.rebirth_count = 0
+
+init_progress()
 
 
 def sync_session_state(target_season):
@@ -848,6 +908,7 @@ def sell():
 
 
 def trigger_rebirth():
+  unlock_achievement("rebirth")
   save_current_season_state()
   sync_session_state(2)
   st.session_state.rebirth_count += 1
@@ -1097,16 +1158,16 @@ with left_col:
 
     if not st.session_state.is_rebirth:
       warp_prices = {
-          10: 10000000,
-          15: 50000000,
-          20: 200000000,
-          25: 1000000000,
-          30: 5000000000,
+          10: 15000000,
+          15: 75000000,
+          20: 300000000,
+          25: 1500000000,
+          30: 7500000000,
       }
       active_warps = warp_prices.items()
     else:
       season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 5)
+          w_level: int(SMELL_DB[True][w_level]["price"] / 4)
           for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
@@ -1144,6 +1205,7 @@ with left_col:
             st.error("보유 금액이 부족합니다!")
           else:
             st.session_state.money -= w_price
+            st.session_state.warp_uses += 1
             st.session_state.level = w_level
             if w_level > st.session_state.max_level:
               st.session_state.max_level = w_level
@@ -1181,9 +1243,26 @@ with left_col:
           if st.session_state.level >= w_lvl:
             st.session_state.unlocked_season2_warps[w_lvl] = True
 
+      check_achievements()
       save_current_season_state()
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
+
+
+  st.markdown("<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
+  with st.expander("🏆 업적 & 칭호", expanded=False):
+    achieved = sum(st.session_state.achievements.values())
+    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
+    for key, info in ACHIEVEMENTS.items():
+      done = st.session_state.achievements.get(key, False)
+      icon = "✅" if done else "🔒"
+      st.markdown(f"{icon} **{info['name']}** — {info['desc']}  \n칭호: `{info['title']}` · 보상: {format_gold(info['reward'])}")
+    options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
+    if st.session_state.selected_title not in options:
+      st.session_state.selected_title = TITLE_DEFAULT
+    selected = st.selectbox("현재 칭호", options, index=options.index(st.session_state.selected_title))
+    st.session_state.selected_title = selected
+    st.markdown(f"### 🏷️ {st.session_state.selected_title}")
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1206,7 +1285,10 @@ with left_col:
     if st.session_state.money < cost:
       st.error("강화 비용 부족!")
     else:
+      st.session_state.enhance_attempts += 1
       run_enhance()
+      check_achievements()
+      save_current_season_state()
       st.rerun()
 
   st.write("")
@@ -1216,6 +1298,7 @@ with left_col:
       disabled=(st.session_state.level == 0),
   ):
     sell()
+    unlock_achievement("seller")
     st.rerun()
 
 with right_col:
