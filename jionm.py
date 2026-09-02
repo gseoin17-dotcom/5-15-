@@ -12,63 +12,39 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 1-1. 인트로 영상 세션 상태 초기화
+# 1-1. 인트로 영상 세션 상태 초기화 및 인트로 화면
 # -----------------------------------------------------------------------------
 if "intro_played" not in st.session_state:
-  st.session_state.intro_played = (
-      False  # True로 바꾸면 인트로를 건너뛰고 바로 게임 시작 가능
-  )
+  st.session_state.intro_played = False
 
-# 인트로 영상 재생 구간 (아직 인트로를 안 봤다면)
 if not st.session_state.intro_played:
   st.markdown(
-      "<h1 style='text-align: center;'>🌌 지온냄새 강화하기 : 인트로 🌌</h1>",
+      "<h1 style='text-align: center; color: #fde68a;'>🌌 지온냄새 강화하기"
+      " : INTRO 🌌</h1>",
       unsafe_allow_html=True,
   )
+  st.write("")
 
-  # 같은 폴더에 위치한 비디오 파일 불러오기
+  # 인트로 영상 파일 경로 (파이썬 파일과 같은 폴더에 있어야 합니다)
   video_file_path = "VID_20260902_064627_681_bsl.mp4"
   try:
     st.video(video_file_path)
   except Exception:
     st.warning(
-        "인트로 영상 파일을 찾을 수 없습니다. 스크립트와 같은 폴더에"
-        f" '{video_file_path}' 파일이 있는지 확인해주세요."
+        f"'{video_file_path}' 파일을 찾을 수 없습니다. 스크립트와 같은"
+        " 폴더에 동영상 파일이 있는지 확인해주세요."
     )
 
   st.write("")
   col1, col2, col3 = st.columns([1, 2, 1])
   with col2:
-    if st.button("🚀 게임 시작하기 (인트로 스킵/입장)", use_container_width=True):
+    if st.button("🚀 게임 시작하기", use_container_width=True):
       st.session_state.intro_played = True
       st.rerun()
 
-  # 인트로 화면에서는 아래 메인 코드가 실행되지 않도록 여기서 멈춤
+  # 인트로가 끝나기 전에는 아래 게임 코드가 실행되지 않도록 중단
   st.stop()
 
-
-# -----------------------------------------------------------------------------
-# 2. 유틸리티 함수 및 비용 설정
-# -----------------------------------------------------------------------------
-def format_gold(amount):
-  if amount == 0 or amount == float("inf"):
-    return "0원" if amount == 0 else "무한대(INF)"
-
-  units = ["", "만", "억", "조", "경", "해"]
-  result = []
-
-  unit_idx = 0
-  while amount > 0 and unit_idx < len(units):
-    remainder = int(amount % 10000)
-    if remainder > 0:
-      result.insert(0, f"{remainder:,}{units[unit_idx]}")
-    amount //= 10000
-    unit_idx += 1
-
-  return "".join(result) + "원"
-
-
-# ... (이후 기존의 유틸리티 함수, 데이터베이스, 강화 로직 및 UI 코드가 그대로 이어집니다)
 
 # -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
@@ -172,7 +148,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
+# 3. 게임 데이터베이스 정의
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -725,7 +701,7 @@ PROB_TABLE = {
 }
 
 CRITICAL_RATE = 0.05
-PITY_MAX = 4
+PITY_MAX = 3
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -756,7 +732,7 @@ if "season_data" not in st.session_state:
           "max_level": 0,
           "money": 1000000000,
           "status": "READY",
-          "shield": 3,
+          "shield": 4,
           "tears": 50,
           "pity_count": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
@@ -1031,7 +1007,7 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 3개</div></div>",
+        " 4개</div></div>",
         unsafe_allow_html=True,
     )
     st.write("")
@@ -1097,13 +1073,13 @@ with left_col:
     else:
       st.markdown(
           f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
+          f"<b>보유한도:</b> 최대 4개<br><b>가격:</b> <span"
           f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
           f"{format_gold(current_shield_cost)}</span></div>",
           unsafe_allow_html=True,
       )
 
-    can_buy_shield = (st.session_state.shield < 3) and (
+    can_buy_shield = (st.session_state.shield < 4) and (
         st.session_state.level >= min_shield_level
     )
     if st.button(
@@ -1111,8 +1087,8 @@ with left_col:
     ):
       if st.session_state.level < min_shield_level:
         st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 3:
-        st.warning("최대 3개까지만 보유 가능합니다.")
+      elif st.session_state.shield >= 4:
+        st.warning("최대 4개까지만 보유 가능합니다.")
       elif st.session_state.money >= current_shield_cost:
         st.session_state.money -= current_shield_cost
         st.session_state.shield += 1
@@ -1255,6 +1231,13 @@ with left_col:
 
       save_current_season_state()
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
+
+    if st.button("💰 자금 충전 (+100경)", use_container_width=True):
+      if st.session_state.money != float("inf"):
+        st.session_state.money += 1000000000000000000
+      save_current_season_state()
+      st.success("자금이 충전되었습니다!")
       st.rerun()
 
   st.markdown(
