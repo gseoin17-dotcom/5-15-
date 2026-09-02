@@ -911,9 +911,14 @@ with left_col:
         "</div>",
         unsafe_allow_html=True,
     )
-    if st.button("✨ 환생하기", use_container_width=True):
-      trigger_rebirth()
-      st.rerun()
+    b_col1, b_col2 = st.columns(2)
+    with b_col1:
+      if st.button("✨ 환생하기", use_container_width=True):
+        trigger_rebirth()
+        st.rerun()
+    with b_col2:
+      if st.button("🔒 아니오", use_container_width=True):
+        st.info("현재 단계를 유지합니다.")
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
@@ -1264,11 +1269,6 @@ with right_col:
             .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
             .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
             .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
-            #finalFlash {{ position:fixed; inset:0; z-index:80; pointer-events:none; opacity:0; background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,215,0,.45) 22%,rgba(170,80,255,.18) 48%,transparent 72%); mix-blend-mode:screen; }}
-            #finalVignette {{ position:fixed; inset:0; z-index:79; pointer-events:none; opacity:0; box-shadow:inset 0 0 140px 45px rgba(255,215,0,.9); }}
-            .final-burst {{ position:fixed; left:50%; top:50%; width:18px; height:18px; border:3px solid rgba(255,255,255,.95); border-radius:50%; transform:translate(-50%,-50%) scale(.1); opacity:0; z-index:78; pointer-events:none; }}
-            .final-banner {{ position:fixed; left:50%; top:12%; transform:translate(-50%,-30px) scale(.7); z-index:120; opacity:0; pointer-events:none; text-align:center; font-size:30px; font-weight:900; letter-spacing:2px; color:#fff; text-shadow:0 0 12px #fff,0 0 30px #ffd700,0 0 60px #b266ff; white-space:nowrap; }}
-
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -1301,10 +1301,6 @@ with right_col:
             <div id="priceText" class="price-text">예상 가치: {card_price}</div>
             <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
         </div>
-        <div id="finalFlash"></div>
-        <div id="finalVignette"></div>
-        <div id="finalBanner" class="final-banner">ULTIMATE ZION — DIMENSION BREAK</div>
-        <div id="burst1" class="final-burst"></div><div id="burst2" class="final-burst"></div><div id="burst3" class="final-burst"></div>
 
         <script>
             const currentLevel = {current_level};
@@ -1394,7 +1390,7 @@ with right_col:
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
-            const starCount = isFinalSuccess ? 1800 : 1000;
+            const starCount = 1000;
             const starGeo = new THREE.BufferGeometry();
             const starPositions = new Float32Array(starCount * 3);
             for(let i=0; i<starCount; i++) {{
@@ -1413,7 +1409,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = isFinalSuccess ? 1800 : 500;
+            const particleCount = isFinalSuccess ? 1200 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1553,44 +1549,6 @@ with right_col:
 
             const tl = gsap.timeline();
 
-            // 최종 단계 전용 초대형 시네마틱: 시즌1 34→35 / 시즌2 24→25 성공 후 발동
-            if (isFinalSuccess) {{
-                const flash = document.getElementById('finalFlash');
-                const vignette = document.getElementById('finalVignette');
-                const banner = document.getElementById('finalBanner');
-                const bursts = [document.getElementById('burst1'), document.getElementById('burst2'), document.getElementById('burst3')];
-                const finalColor = isRebirth ? '#00eaff' : '#ffd700';
-
-                // 1단계: 에너지 압축
-                tl.set(flash, {{ opacity: 0 }})
-                  .set(vignette, {{ opacity: 0 }})
-                  .set(banner, {{ opacity: 0, y: -30, scale: 0.7 }})
-                  .to(objectGroup.scale, {{ x: 0.72, y: 0.72, z: 0.72, duration: 1.15, ease: 'power3.inOut' }})
-                  .to(objectGroup.rotation, {{ z: Math.PI * 2, duration: 1.0, ease: 'power2.in' }}, '<')
-                  .to(pointLight, {{ intensity: 95, duration: 1.0, ease: 'power2.in' }}, '<');
-
-                // 2단계: 차원 균열/충격파
-                bursts.forEach((b, idx) => {{
-                    b.style.borderColor = finalColor;
-                    tl.set(b, {{ opacity: 0.9, scale: 0.1 }}, idx * 0.12 + 1.0)
-                      .to(b, {{ scale: 8 + idx * 4, opacity: 0, duration: 1.7 + idx * 0.25, ease: 'expo.out' }}, idx * 0.12 + 1.0);
-                }});
-                tl.to(flash, {{ opacity: 0.95, duration: 0.08, ease: 'power4.in' }})
-                  .to(flash, {{ opacity: 0, duration: 0.75, ease: 'power3.out' }})
-                  .to(vignette, {{ opacity: 0.9, duration: 0.25 }}, '<')
-                  .to(vignette, {{ opacity: 0, duration: 2.0, ease: 'power2.out' }});
-
-                // 3단계: 최종 코어 폭발 + 타이틀 등장
-                tl.to(objectGroup.scale, {{ x: 2.55, y: 2.55, z: 2.55, duration: 0.42, ease: 'expo.out' }})
-                  .to(objectGroup.scale, {{ x: 1.15, y: 1.15, z: 1.15, duration: 0.75, ease: 'elastic.out(1,0.35)' }})
-                  .to(banner, {{ opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'back.out(1.7)' }}, '-=0.55')
-                  .to(pointLight, {{ intensity: 35, duration: 1.2, ease: 'power2.out' }}, '<')
-                  .to(objectGroup.rotation, {{ z: Math.PI * 4, duration: 3.0, ease: 'power1.inOut' }}, '-=1.0')
-                  .to(banner, {{ scale: 1.08, duration: 0.35, yoyo: true, repeat: 3, ease: 'sine.inOut' }}, '-=2.2')
-                  .to(objectGroup.scale, {{ x: 1.0, y: 1.0, z: 1.0, duration: 1.0, ease: 'power2.out' }})
-                  .to(banner, {{ opacity: 0, y: -18, duration: 1.0, ease: 'power2.in' }}, '-=0.5');
-            }}
-
             if (status === "DESTROYED") {{
                 outerMesh.visible = false;
                 coreMesh.visible = false;
@@ -1694,10 +1652,7 @@ with right_col:
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
                     if (isFinalSuccess) {{
-                        const cinematicShake = Math.sin(time * 9.0) * 0.018 + Math.sin(time * 17.0) * 0.009;
-                        camera.position.x = cinematicShake;
-                        camera.position.y = 0.6 + Math.sin(time * 11.0) * 0.012;
-                        objectGroup.rotation.z += Math.sin(time * 3.0) * 0.002;
+                        objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
                     }}
                 }}
 
