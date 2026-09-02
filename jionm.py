@@ -1,4 +1,5 @@
 import random
+import os
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -12,9 +13,55 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
+# 게임 시작 화면
+# -----------------------------------------------------------------------------
+if "game_started" not in st.session_state:
+    st.session_state.game_started = False
+
+if not st.session_state.game_started:
+    st.markdown("""
+    <style>
+    header {display:none;}
+    [data-testid="stToolbar"] {display:none;}
+    .block-container {padding-top:0 !important; max-width:1100px !important;}
+    .start-wrap {
+        min-height:82vh; display:flex; align-items:center; justify-content:center;
+        text-align:center; padding:30px 20px;
+    }
+    .start-card {
+        width:min(820px, 100%); padding:58px 45px 48px; border-radius:28px;
+        background:linear-gradient(145deg, rgba(18,25,48,.96), rgba(8,12,28,.98));
+        border:1px solid rgba(120,140,255,.28);
+        box-shadow:0 25px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .logo {font-size:72px; margin-bottom:8px;}
+    .title {font-size:42px; font-weight:900; letter-spacing:-2px; color:#fff; margin:0;}
+    .sub {font-size:17px; color:#9aa7c7; margin-top:12px; margin-bottom:38px;}
+    .line {height:1px; background:linear-gradient(90deg, transparent, rgba(120,140,255,.45), transparent); margin:0 auto 30px;}
+    .hint {font-size:14px; color:#6f7c9c; margin-top:16px;}
+    </style>
+    <div class="start-wrap">
+      <div class="start-card">
+        <div class="logo">🌌</div>
+        <div class="title">지온냄새 강화하기</div>
+        <div class="sub">SOLAR & BLACKHOLE EDITION</div>
+        <div class="line"></div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 버튼은 카드 아래에 배치해 Streamlit에서 확실하게 동작하도록 합니다.
+    _, center, _ = st.columns([1, 2, 1])
+    with center:
+        if st.button("🚀  게임 시작", use_container_width=True, type="primary"):
+            st.session_state.game_started = True
+            st.rerun()
+        st.markdown('<div class="hint" style="text-align:center;">버튼을 눌러 지온냄새 강화 게임을 시작하세요</div>', unsafe_allow_html=True)
+    st.stop()
+
+# -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
-
 
 def format_gold(amount):
   if amount == 0 or amount == float("inf"):
