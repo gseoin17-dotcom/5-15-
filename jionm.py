@@ -1439,6 +1439,81 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
+            let baseGeo;
+            const lvl = {current_level};
+
+            if (isRebirth) {{
+                if (lvl <= 3) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.3);
+                }} else if (lvl <= 6) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.2);
+                }} else if (lvl <= 9) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.3);
+                }} else if (lvl <= 12) {{
+                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
+                }} else if (lvl <= 15) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
+                }} else if (lvl <= 18) {{
+                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
+                }} else if (lvl <= 21) {{
+                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
+                }} else if (lvl <= 24) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
+                }} else {{
+                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
+                }}
+            }} else {{
+                if (lvl <= 2) {{
+                    baseGeo = new THREE.TetrahedronGeometry(2.3);
+                }} else if (lvl <= 5) {{
+                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+                }} else if (lvl <= 8) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+                }} else if (lvl <= 11) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+                }} else if (lvl <= 14) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+                }} else if (lvl <= 17) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+                }} else if (lvl == 18) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.5);
+                }} else if (lvl == 19) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.4);
+                }} else if (lvl == 20) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.4);
+                }} else if (lvl == 21) {{
+                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+                }} else if (lvl == 22) {{
+                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+                }} else if (lvl == 23) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+                }} else if (lvl == 24) {{
+                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+                }} else if (lvl == 25) {{
+                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+                }} else if (lvl == 26) {{
+                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+                }} else if (lvl == 27) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+                }} else if (lvl == 28) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                }} else if (lvl == 29) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+                }} else if (lvl == 30) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+                }} else if (lvl == 31) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
+                }} else if (lvl == 32) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
+                }} else if (lvl == 33) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
+                }} else if (lvl == 34) {{
+                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+                }} else {{
+                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                }}
+            }}
+
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
@@ -1450,109 +1525,8 @@ with right_col:
                 opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
             }});
-
-            // -----------------------------------------------------------------
-            // 단계별 3D 모델 - 모든 단계가 서로 다른 실루엣을 갖도록 구성
-            // -----------------------------------------------------------------
-            const modelMeshes = [];
-            let outerMesh = null;
-
-            function addModelMesh(geo, mat, pos=[0,0,0], rot=[0,0,0], scale=[1,1,1]) {{
-                const mesh = new THREE.Mesh(geo, mat);
-                mesh.position.set(pos[0], pos[1], pos[2]);
-                mesh.rotation.set(rot[0], rot[1], rot[2]);
-                mesh.scale.set(scale[0], scale[1], scale[2]);
-                objectGroup.add(mesh);
-                modelMeshes.push(mesh);
-                if (!outerMesh) outerMesh = mesh;
-                return mesh;
-            }}
-
-            function ring(radius, tube, y=0, rx=Math.PI/2, segments=48) {{
-                return addModelMesh(
-                    new THREE.TorusGeometry(radius, tube, 12, segments),
-                    outerMat,
-                    [0,y,0], [rx,0,0]
-                );
-            }}
-
-            const lvl = {current_level};
-            const shapeIndex = isRebirth ? (100 + lvl) : lvl;
-
-            // 각 단계별로 형태 자체가 다르게 보이도록 제작한다.
-            // 단순 색상 변경이 아니라 기본 실루엣 + 부속 구조 + 회전축을 단계마다 변경.
-            if (!isRebirth) {{
-                switch (lvl) {{
-                    case 1:  addModelMesh(new THREE.TetrahedronGeometry(2.15)); break;
-                    case 2:  addModelMesh(new THREE.BoxGeometry(2.65,1.65,2.0), outerMat, [0,0,0], [0.2,0.4,0.1]); ring(1.65,0.16,0.75); break;
-                    case 3:  addModelMesh(new THREE.ConeGeometry(1.9,3.3,3)); ring(1.35,0.13,-0.7,0); break;
-                    case 4:  addModelMesh(new THREE.CylinderGeometry(1.75,1.15,3.0,4), outerMat, [0,0,0], [0,0.2,0]); ring(1.45,0.18,0.85); break;
-                    case 5:  addModelMesh(new THREE.CylinderGeometry(1.8,1.8,2.6,5), outerMat, [0,0,0], [0.15,0,0.25]); ring(1.15,0.14,-0.75); break;
-                    case 6:  addModelMesh(new THREE.CylinderGeometry(1.65,1.9,2.8,6)); ring(1.55,0.12,0.9); break;
-                    case 7:  addModelMesh(new THREE.CylinderGeometry(1.95,1.3,3.1,7), outerMat, [0,0,0], [0.25,0.1,0]); ring(1.35,0.12,-0.8); break;
-                    case 8:  addModelMesh(new THREE.CylinderGeometry(1.35,1.95,3.2,8), outerMat, [0,0,0], [0,0.35,0.15]); ring(1.55,0.15,0.75); break;
-                    case 9:  addModelMesh(new THREE.CylinderGeometry(1.8,1.8,2.8,9), outerMat, [0,0,0], [0.35,0,0]); ring(1.15,0.18,0); ring(1.15,0.12,0,0); break;
-                    case 10: addModelMesh(new THREE.CylinderGeometry(1.9,1.35,3.4,10), outerMat, [0,0,0], [0.1,0.3,0.2]); ring(1.5,0.14,0.9); break;
-                    case 11: addModelMesh(new THREE.CylinderGeometry(1.45,2.0,3.0,11)); ring(1.3,0.16,-0.65); ring(1.3,0.10,0.65); break;
-                    case 12: addModelMesh(new THREE.CylinderGeometry(1.8,1.8,2.5,12)); ring(1.55,0.16,0.0); break;
-                    case 13: addModelMesh(new THREE.OctahedronGeometry(2.25), outerMat, [0,0,0], [0.2,0.3,0.1]); ring(1.55,0.12,0.0,Math.PI/2); break;
-                    case 14: addModelMesh(new THREE.DodecahedronGeometry(2.15), outerMat, [0,0,0], [0.25,0.15,0.4]); ring(1.7,0.13,0.0); break;
-                    case 15: addModelMesh(new THREE.IcosahedronGeometry(2.25), outerMat, [0,0,0], [0.1,0.45,0.2]); ring(1.65,0.13,0.0,Math.PI/2); break;
-                    case 16: addModelMesh(new THREE.TorusGeometry(1.65,0.52,14,28), outerMat, [0,0,0], [Math.PI/2,0.25,0]); addModelMesh(new THREE.SphereGeometry(1.15,20,12), outerMat, [0,0,0]); break;
-                    case 17: addModelMesh(new THREE.TorusGeometry(1.65,0.38,10,36), outerMat, [0,0,0], [0.4,0.2,0.8]); ring(0.95,0.12,0.0,0); break;
-                    case 18: addModelMesh(new THREE.TorusKnotGeometry(1.35,0.38,96,16,2,3), outerMat, [0,0,0], [0.2,0.4,0.1]); break;
-                    case 19: addModelMesh(new THREE.TorusKnotGeometry(1.4,0.32,96,14,3,2), outerMat, [0,0,0], [0.5,0.1,0.3]); ring(1.75,0.09,0.0); break;
-                    case 20: addModelMesh(new THREE.ConeGeometry(1.9,3.5,5), outerMat, [0,0,0], [0.1,0.2,0.4]); addModelMesh(new THREE.ConeGeometry(1.0,2.0,5), outerMat, [0,0.8,0], [Math.PI,0,0]); break;
-                    case 21: addModelMesh(new THREE.ConeGeometry(1.65,3.5,6), outerMat, [0,0,0], [0.25,0,0]); addModelMesh(new THREE.TorusGeometry(1.25,0.13,10,32), outerMat, [0,0.4,0]); break;
-                    case 22: addModelMesh(new THREE.ConeGeometry(2.1,2.8,8), outerMat, [0,0,0], [0,0.25,0.15]); ring(1.45,0.16,0.65); break;
-                    case 23: addModelMesh(new THREE.TorusKnotGeometry(1.35,0.48,100,18,2,5), outerMat, [0,0,0], [0.3,0.5,0]); addModelMesh(new THREE.SphereGeometry(0.55,16,16), outerMat, [0,0,0]); break;
-                    case 24: addModelMesh(new THREE.CylinderGeometry(0.65,2.2,3.2,12), outerMat, [0,0,0], [0.15,0.35,0]); ring(1.45,0.12,0.9); break;
-                    case 25: addModelMesh(new THREE.SphereGeometry(2.25,20,12), outerMat, [0,0,0], [0.1,0.3,0]); ring(1.65,0.13,0.0); ring(1.15,0.10,0.0,0); break;
-                    case 26: addModelMesh(new THREE.ConeGeometry(2.3,3.7,8), outerMat, [0,0,0], [0.25,0.4,0.15]); addModelMesh(new THREE.ConeGeometry(0.9,2.3,8), outerMat, [0,1.1,0]); break;
-                    case 27: addModelMesh(new THREE.TorusKnotGeometry(1.5,0.52,120,20,3,4), outerMat, [0,0,0], [0.25,0.4,0.25]); ring(1.9,0.10,0.0); break;
-                    case 28: addModelMesh(new THREE.IcosahedronGeometry(2.5,1), outerMat, [0,0,0], [0.3,0.1,0.5]); addModelMesh(new THREE.OctahedronGeometry(1.35), outerMat, [0,0,0], [0.1,0.5,0.2]); break;
-                    case 29: addModelMesh(new THREE.DodecahedronGeometry(2.45,1), outerMat, [0,0,0], [0.2,0.35,0.1]); ring(1.9,0.13,0.0,Math.PI/2); break;
-                    case 30: addModelMesh(new THREE.TorusKnotGeometry(1.55,0.55,128,24,2,5), outerMat, [0,0,0], [0.5,0.25,0.15]); addModelMesh(new THREE.SphereGeometry(0.7,16,16), outerMat); break;
-                    case 31: addModelMesh(new THREE.OctahedronGeometry(2.65,2), outerMat, [0,0,0], [0.2,0.5,0.25]); addModelMesh(new THREE.TorusGeometry(1.65,0.12,10,48), outerMat, [0,0,0], [Math.PI/2,0,0]); break;
-                    case 32: addModelMesh(new THREE.IcosahedronGeometry(2.65,2), outerMat, [0,0,0], [0.4,0.2,0.5]); ring(1.75,0.11,0.0); ring(1.25,0.09,0.0,0); break;
-                    case 33: addModelMesh(new THREE.TorusKnotGeometry(1.65,0.62,144,28,3,5), outerMat, [0,0,0], [0.15,0.5,0.2]); ring(2.0,0.10,0.0,Math.PI/2); break;
-                    case 34: addModelMesh(new THREE.SphereGeometry(2.65,24,16), outerMat, [0,0,0]); addModelMesh(new THREE.TorusGeometry(1.85,0.18,12,64), outerMat, [0,0,0], [Math.PI/2,0,0]); addModelMesh(new THREE.TorusGeometry(1.85,0.12,12,64), outerMat, [0,0,0], [0,0,0]); break;
-                    case 35: addModelMesh(new THREE.TorusKnotGeometry(1.8,0.68,180,36,5,8), outerMat, [0,0,0], [0.25,0.45,0.2]); addModelMesh(new THREE.IcosahedronGeometry(1.25,1), outerMat); ring(2.15,0.14,0.0,Math.PI/2); break;
-                }}
-            }} else {{
-                switch (lvl) {{
-                    case 1:  addModelMesh(new THREE.OctahedronGeometry(2.25), outerMat, [0,0,0], [0.2,0.5,0.1]); break;
-                    case 2:  addModelMesh(new THREE.DodecahedronGeometry(2.15), outerMat, [0,0,0], [0.4,0.1,0.3]); ring(1.55,0.12,0.0); break;
-                    case 3:  addModelMesh(new THREE.IcosahedronGeometry(2.25), outerMat, [0,0,0], [0.3,0.2,0.5]); addModelMesh(new THREE.SphereGeometry(0.75,16,16)); break;
-                    case 4:  addModelMesh(new THREE.TorusGeometry(1.75,0.55,14,30), outerMat, [0,0,0], [Math.PI/2,0.2,0]); break;
-                    case 5:  addModelMesh(new THREE.TorusKnotGeometry(1.35,0.43,96,18,2,5), outerMat, [0,0,0], [0.25,0.5,0.15]); break;
-                    case 6:  addModelMesh(new THREE.ConeGeometry(2.2,3.5,7), outerMat, [0,0,0], [0.15,0.4,0.2]); ring(1.45,0.12,0.7); break;
-                    case 7:  addModelMesh(new THREE.CylinderGeometry(1.5,2.3,3.2,10), outerMat, [0,0,0], [0.25,0.1,0.4]); ring(1.35,0.12,-0.7); break;
-                    case 8:  addModelMesh(new THREE.CylinderGeometry(1.9,1.0,3.4,9), outerMat, [0,0,0], [0.2,0.3,0]); addModelMesh(new THREE.TorusGeometry(1.2,0.12,10,32), outerMat, [0,0.6,0]); break;
-                    case 9:  addModelMesh(new THREE.TorusKnotGeometry(1.5,0.45,110,20,3,4), outerMat, [0,0,0], [0.4,0.2,0.1]); ring(1.9,0.10,0.0); break;
-                    case 10: addModelMesh(new THREE.SphereGeometry(2.35,12,8), outerMat, [0,0,0], [0.2,0.4,0]); addModelMesh(new THREE.OctahedronGeometry(1.2)); break;
-                    case 11: addModelMesh(new THREE.TetrahedronGeometry(2.55), outerMat, [0,0,0], [0.4,0.2,0.6]); ring(1.7,0.13,0.0,Math.PI/2); break;
-                    case 12: addModelMesh(new THREE.BoxGeometry(2.7,2.1,1.55), outerMat, [0,0,0], [0.3,0.5,0.2]); ring(1.55,0.14,0.0); break;
-                    case 13: addModelMesh(new THREE.ConeGeometry(2.0,3.8,9), outerMat, [0,0,0], [0.3,0.45,0]); addModelMesh(new THREE.SphereGeometry(0.65,16,16), outerMat, [0,1.0,0]); break;
-                    case 14: addModelMesh(new THREE.TorusGeometry(1.7,0.38,10,40), outerMat, [0,0,0], [0.6,0.2,0.4]); addModelMesh(new THREE.TorusGeometry(1.1,0.22,10,32), outerMat, [0,0,0], [Math.PI/2,0,0]); break;
-                    case 15: addModelMesh(new THREE.TorusKnotGeometry(1.45,0.55,128,24,4,5), outerMat, [0,0,0], [0.2,0.6,0.15]); addModelMesh(new THREE.SphereGeometry(0.55,16,16)); break;
-                    case 16: addModelMesh(new THREE.IcosahedronGeometry(2.65,1), outerMat, [0,0,0], [0.5,0.15,0.35]); ring(1.9,0.13,0.0); break;
-                    case 17: addModelMesh(new THREE.DodecahedronGeometry(2.55,1), outerMat, [0,0,0], [0.15,0.45,0.3]); addModelMesh(new THREE.TorusGeometry(1.35,0.13,10,48), outerMat, [0,0,0], [Math.PI/2,0,0]); break;
-                    case 18: addModelMesh(new THREE.OctahedronGeometry(2.75,2), outerMat, [0,0,0], [0.35,0.25,0.55]); addModelMesh(new THREE.TorusGeometry(1.75,0.11,10,48), outerMat); break;
-                    case 19: addModelMesh(new THREE.ConeGeometry(2.4,4.0,12), outerMat, [0,0,0], [0.2,0.3,0.45]); addModelMesh(new THREE.CylinderGeometry(0.65,1.2,2.2,12), outerMat, [0,1.1,0]); break;
-                    case 20: addModelMesh(new THREE.TorusKnotGeometry(1.7,0.62,144,28,2,7), outerMat, [0,0,0], [0.3,0.5,0.2]); ring(2.0,0.12,0.0); break;
-                    case 21: addModelMesh(new THREE.SphereGeometry(2.7,24,16), outerMat, [0,0,0]); addModelMesh(new THREE.TorusGeometry(1.9,0.18,12,64), outerMat, [0,0,0], [Math.PI/2,0.4,0]); addModelMesh(new THREE.TorusGeometry(1.4,0.11,10,48), outerMat, [0,0,0], [0.4,0,0]); break;
-                    case 22: addModelMesh(new THREE.IcosahedronGeometry(2.8,2), outerMat, [0,0,0], [0.2,0.55,0.35]); addModelMesh(new THREE.DodecahedronGeometry(1.15,1), outerMat); break;
-                    case 23: addModelMesh(new THREE.TorusKnotGeometry(1.8,0.7,180,32,5,6), outerMat, [0,0,0], [0.4,0.25,0.5]); addModelMesh(new THREE.OctahedronGeometry(0.9), outerMat); break;
-                    case 24: addModelMesh(new THREE.CylinderGeometry(1.0,2.5,4.2,14), outerMat, [0,0,0], [0.25,0.5,0.15]); ring(1.7,0.14,1.0); ring(1.1,0.10,-1.0,0); break;
-                    case 25: addModelMesh(new THREE.TorusKnotGeometry(2.0,0.78,200,40,6,9), outerMat, [0,0,0], [0.35,0.55,0.25]); addModelMesh(new THREE.IcosahedronGeometry(1.35,1)); addModelMesh(new THREE.TorusGeometry(2.25,0.13,12,64), outerMat, [0,0,0], [Math.PI/2,0,0]); break;
-                }}
-            }}
-
-            // 어떤 단계도 빠지지 않도록 기본 메시를 안전하게 보장
-            if (!outerMesh) {{
-                outerMesh = addModelMesh(new THREE.SphereGeometry(2.2, 24, 16));
-            }}
+            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
+            objectGroup.add(outerMesh);
 
             const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
@@ -1565,14 +1539,14 @@ with right_col:
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
-            modelMeshes.push(coreMesh);
 
             scene.add(objectGroup);
 
             const tl = gsap.timeline();
 
             if (status === "DESTROYED") {{
-                modelMeshes.forEach(m => m.visible = false);
+                outerMesh.visible = false;
+                coreMesh.visible = false;
 
                 pointLight.color.set("#ff0000");
                 pointLight.intensity = 80;
