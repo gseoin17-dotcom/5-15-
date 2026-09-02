@@ -1360,7 +1360,6 @@ def main_game_ui():
 
     max_lvl = 25 if st.session_state.is_rebirth else 35
 
-    st.markdown("### 🤖 자동 강화")
     auto_col1, auto_col2 = st.columns([1, 1])
     with auto_col1:
       auto_target = st.number_input(
@@ -1392,11 +1391,6 @@ def main_game_ui():
         if not ok:
           st.session_state.auto_enhancing = False
           st.error(f"⛔ 자동 강화 중단: {result}")
-        else:
-          st.markdown(
-            f"<div style='padding:10px;border-radius:10px;background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.45);font-weight:700;'>🤖 자동 강화 중 &nbsp; {st.session_state.level} / {target}단계 &nbsp; | &nbsp; 결과: {result}</div>",
-            unsafe_allow_html=True,
-          )
 
     if st.button(
         "🔥 냄새 강화 실행",
