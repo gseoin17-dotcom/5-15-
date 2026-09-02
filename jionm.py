@@ -857,10 +857,31 @@ def save_current_season_state():
 
 if "is_rebirth" not in st.session_state:
   sync_session_state(1)
+if "auto_enhancing" not in st.session_state:
+  st.session_state.auto_enhancing = False
+if "auto_target" not in st.session_state:
+  st.session_state.auto_target = 1
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
 # -----------------------------------------------------------------------------
+
+
+def run_auto_enhance(target_level):
+  """목표 단계까지 실제 강화 로직을 한 번씩 실행하는 자동 강화."""
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  target_level = max(0, min(int(target_level), max_lvl))
+  if st.session_state.level >= target_level:
+    return False, "이미 목표 단계 이상입니다."
+
+  if st.session_state.money < get_enhance_cost(st.session_state.level, st.session_state.is_rebirth):
+    return False, "강화 비용이 부족합니다."
+
+  st.session_state.enhance_attempts += 1
+  run_enhance()
+  check_achievements()
+  save_current_season_state()
+  return True, st.session_state.status
 
 
 def run_enhance():
@@ -1333,6 +1354,40 @@ with left_col:
   )
 
   max_lvl = 25 if st.session_state.is_rebirth else 35
+
+  st.markdown("### 🤖 자동 강화")
+  auto_col1, auto_col2 = st.columns([1, 1])
+  with auto_col1:
+    auto_target = st.number_input(
+        "목표 단계", min_value=st.session_state.level + 1,
+        max_value=max_lvl, value=min(st.session_state.level + 1, max_lvl), step=1,
+        key="auto_target_level"
+    )
+  with auto_col2:
+    auto_start = st.button("🤖 자동 강화 시작", use_container_width=True,
+                            disabled=(st.session_state.level >= max_lvl))
+
+  if auto_start:
+    st.session_state.auto_enhancing = True
+    st.session_state.auto_target = int(auto_target)
+    st.rerun()
+
+  if st.session_state.get("auto_enhancing", False):
+    target = min(int(st.session_state.get("auto_target", auto_target)), max_lvl)
+    if st.session_state.level >= target:
+      st.session_state.auto_enhancing = False
+      st.success(f"🎉 자동 강화 완료! {target}단계에 도달했습니다.")
+    else:
+      ok, result = run_auto_enhance(target)
+      if not ok:
+        st.session_state.auto_enhancing = False
+        st.error(f"⛔ 자동 강화 중단: {result}")
+      else:
+        st.info(f"🤖 자동 강화 중... {st.session_state.level} / {target}단계")
+        import time
+        time.sleep(0.7)
+        st.rerun()
+
   if st.button(
       "🔥 냄새 강화 실행",
       use_container_width=True,
