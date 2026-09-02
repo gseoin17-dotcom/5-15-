@@ -32,7 +32,7 @@ if not st.session_state.intro_finished:
 
     st.markdown(f"""
     <video id="jionm-intro" autoplay muted playsinline preload="auto"
-           style="width:100%;max-width:854px;display:block;margin:0 auto;border-radius:10px;">
+           style="width:100vw;height:100vh;object-fit:contain;display:block;margin:0;position:fixed;top:0;left:0;z-index:999999;background:#000;">
       <source src="data:video/mp4;base64,{_intro_b64}" type="video/mp4">
     </video>
     """, unsafe_allow_html=True)
