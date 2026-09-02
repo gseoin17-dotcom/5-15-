@@ -1061,8 +1061,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1158,16 +1158,16 @@ with left_col:
 
     if not st.session_state.is_rebirth:
       warp_prices = {
-          10: 15000000,
-          15: 75000000,
-          20: 300000000,
-          25: 1500000000,
-          30: 7500000000,
+          10: 20000000,
+          15: 100000000,
+          20: 400000000,
+          25: 2000000000,
+          30: 10000000000,
       }
       active_warps = warp_prices.items()
     else:
       season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 4)
+          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
           for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
@@ -1249,20 +1249,18 @@ with left_col:
       st.rerun()
 
 
-  st.markdown("<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
-  with st.expander("🏆 업적 & 칭호", expanded=False):
+  with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
     for key, info in ACHIEVEMENTS.items():
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      st.markdown(f"{icon} **{info['name']}** — {info['desc']}  \n칭호: `{info['title']}` · 보상: {format_gold(info['reward'])}")
+      st.markdown(f"{icon} **{info['name']}** — {info['desc']}  \n칭호: {info['title']} · 보상: {format_gold(info['reward'])}")
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
     selected = st.selectbox("현재 칭호", options, index=options.index(st.session_state.selected_title))
     st.session_state.selected_title = selected
-    st.markdown(f"### 🏷️ {st.session_state.selected_title}")
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1328,6 +1326,20 @@ with right_col:
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
+            .selected-title-ui {{
+                position: absolute;
+                top: 18px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 120;
+                pointer-events: none;
+                font-size: 22px;
+                font-weight: 900;
+                color: #fde68a;
+                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
+                white-space: nowrap;
+            }}
+
             .cinematic-ui {{
                 position: absolute;
                 bottom: 25px; 
@@ -1371,6 +1383,7 @@ with right_col:
     </head>
     <body>
         <div id="container"></div>
+        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
