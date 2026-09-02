@@ -12,41 +12,6 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 1-1. 인트로 영상 세션 상태 초기화 및 인트로 화면
-# -----------------------------------------------------------------------------
-if "intro_played" not in st.session_state:
-  st.session_state.intro_played = False
-
-if not st.session_state.intro_played:
-  st.markdown(
-      "<h1 style='text-align: center; color: #fde68a;'>🌌 지온냄새 강화하기"
-      " : INTRO 🌌</h1>",
-      unsafe_allow_html=True,
-  )
-  st.write("")
-
-  # 인트로 영상 파일 경로 (파이썬 파일과 같은 폴더에 있어야 합니다)
-  video_file_path = "VID_20260902_064627_681_bsl.mp4"
-  try:
-    st.video(video_file_path)
-  except Exception:
-    st.warning(
-        f"'{video_file_path}' 파일을 찾을 수 없습니다. 스크립트와 같은"
-        " 폴더에 동영상 파일이 있는지 확인해주세요."
-    )
-
-  st.write("")
-  col1, col2, col3 = st.columns([1, 2, 1])
-  with col2:
-    if st.button("🚀 게임 시작하기", use_container_width=True):
-      st.session_state.intro_played = True
-      st.rerun()
-
-  # 인트로가 끝나기 전에는 아래 게임 코드가 실행되지 않도록 중단
-  st.stop()
-
-
-# -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
 
@@ -148,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -1055,6 +1020,7 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
+    # 시즌 2의 방지권 금액을 예상 가치의 5분의 1로 설정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
