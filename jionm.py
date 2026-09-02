@@ -674,14 +674,21 @@ ACHIEVEMENTS = {
     "first_enhance": {"name": "첫걸음", "desc": "처음으로 강화를 시도하세요.", "title": "초보 강화러", "reward": 5000},
     "level_10": {"name": "10강 돌파", "desc": "시즌 1에서 10단계에 도달하세요.", "title": "냄새 수련생", "reward": 20000},
     "level_20": {"name": "20강 돌파", "desc": "시즌 1에서 20단계에 도달하세요.", "title": "냄새 전문가", "reward": 100000},
+    "level_30": {"name": "30강 돌파", "desc": "시즌 1에서 30단계에 도달하세요.", "title": "냄새 마스터", "reward": 500000},
     "level_35": {"name": "궁극의 지온", "desc": "시즌 1 최종 35단계를 달성하세요.", "title": "디 오리지널 지온", "reward": 1000000},
+    "drop_to_0": {"name": "끝없는 추락", "desc": "34단계에서 0단계로 돌아가세요.", "title": "추락의 전설", "reward": 3000000},
     "rebirth": {"name": "차원의 문", "desc": "시즌 2 환생을 시작하세요.", "title": "차원 여행자", "reward": 5000000},
     "s2_level_10": {"name": "자이온 각성", "desc": "시즌 2에서 10단계에 도달하세요.", "title": "자이온", "reward": 10000000},
+    "s2_level_20": {"name": "자이온 폭주", "desc": "시즌 2에서 20단계에 도달하세요.", "title": "폭주의 자이온", "reward": 30000000},
     "s2_level_25": {"name": "진정한 환생", "desc": "시즌 2 최종 25단계를 달성하세요.", "title": "TRUE REBIRTH", "reward": 100000000},
     "warp_1": {"name": "공간 이동", "desc": "워프권을 처음 사용하세요.", "title": "워프 개척자", "reward": 10000},
+    "warp_5": {"name": "워프 중독", "desc": "워프권을 5회 사용하세요.", "title": "워프 중독자", "reward": 100000},
     "critical": {"name": "대성공", "desc": "크리티컬 강화를 성공시키세요.", "title": "우주의 선택", "reward": 50000},
     "seller": {"name": "냄새 장사꾼", "desc": "냄새를 판매해 돈을 획득하세요.", "title": "냄새 상인", "reward": 25000},
+    "enhance_50": {"name": "강화광", "desc": "강화를 총 50회 시도하세요.", "title": "강화 중독자", "reward": 200000},
+    "enhance_100": {"name": "강화의 끝", "desc": "강화를 총 100회 시도하세요.", "title": "강화의 신", "reward": 1000000},
 }
+
 
 TITLE_DEFAULT = "칭호 없음"
 
@@ -710,6 +717,14 @@ def check_achievements():
     level = st.session_state.level
     if st.session_state.enhance_attempts >= 1:
         unlock_achievement("first_enhance")
+    if st.session_state.enhance_attempts >= 50:
+        unlock_achievement("enhance_50")
+    if st.session_state.enhance_attempts >= 100:
+        unlock_achievement("enhance_100")
+    if st.session_state.warp_uses >= 5:
+        unlock_achievement("warp_5")
+    if not st.session_state.is_rebirth and level == 0 and st.session_state.max_level >= 34:
+        unlock_achievement("drop_to_0")
     if not st.session_state.is_rebirth and level >= 10:
         unlock_achievement("level_10")
     if not st.session_state.is_rebirth and level >= 20:
@@ -718,6 +733,8 @@ def check_achievements():
         unlock_achievement("level_35")
     if st.session_state.is_rebirth and level >= 10:
         unlock_achievement("s2_level_10")
+    if st.session_state.is_rebirth and level >= 20:
+        unlock_achievement("s2_level_20")
     if st.session_state.is_rebirth and level >= 25:
         unlock_achievement("s2_level_25")
     if st.session_state.warp_uses >= 1:
@@ -1252,10 +1269,14 @@ with left_col:
   with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
-    for key, info in ACHIEVEMENTS.items():
+    achievement_items = list(ACHIEVEMENTS.items())
+    ach_col1, ach_col2 = st.columns(2)
+    for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      st.markdown(f"{icon} **{info['name']}** — {info['desc']}  \n칭호: {info['title']} · 보상: {format_gold(info['reward'])}")
+      target_col = ach_col1 if i % 2 == 0 else ach_col2
+      with target_col:
+        st.markdown(f"{icon} **{info['name']}** — {info['desc']}<br>칭호: {info['title']} · 보상: {format_gold(info['reward'])}", unsafe_allow_html=True)
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
