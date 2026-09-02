@@ -920,9 +920,9 @@ with left_col:
     )
 
   mode_title = (
-      "🌀 [시즌 2] 얼티밋 블랙홀"
+      "🌀 [시즌 2] 얼티밋 자이온의 시작"
       if st.session_state.is_rebirth
-      else "🌌 [시즌 1] 솔라 시스템"
+      else "🌌 [시즌 1] 지온의 탄생과 시초"
   )
   st.markdown(
       f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
