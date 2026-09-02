@@ -1278,10 +1278,10 @@ with right_col:
                 background:radial-gradient(circle, rgba(124,58,237,.12), rgba(0,0,0,.48) 55%, rgba(0,0,0,.82));
                 pointer-events:none;
             }}
-            #finalCinematic .fc-inner { transform:scale(.72); opacity:0; }
-            #finalCinematic .fc-kicker { font-size:13px; letter-spacing:7px; color:#c4b5fd; font-weight:900; text-shadow:0 0 20px #8b5cf6; }
-            #finalCinematic .fc-title { margin-top:18px; font-size:46px; font-weight:1000; color:white; text-shadow:0 0 12px #fff,0 0 45px #a855f7,0 0 90px #6366f1; }
-            #finalCinematic .fc-sub { margin-top:12px; font-size:19px; color:#e9d5ff; font-weight:800; }
+            #finalCinematic .fc-inner {{ transform:scale(.72); opacity:0; }}
+            #finalCinematic .fc-kicker {{ font-size:13px; letter-spacing:7px; color:#c4b5fd; font-weight:900; text-shadow:0 0 20px #8b5cf6; }}
+            #finalCinematic .fc-title {{ margin-top:18px; font-size:46px; font-weight:1000; color:white; text-shadow:0 0 12px #fff,0 0 45px #a855f7,0 0 90px #6366f1; }}
+            #finalCinematic .fc-sub {{ margin-top:12px; font-size:19px; color:#e9d5ff; font-weight:800; }}
             .cinematic-ui {{
                 position: absolute;
                 bottom: 25px; 
