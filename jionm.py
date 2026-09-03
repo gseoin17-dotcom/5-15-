@@ -1,7 +1,6 @@
 import random
 import streamlit as st
 import streamlit.components.v1 as components
-
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
@@ -113,7 +112,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -669,7 +668,7 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
-# 업적 / 칭호 시스템
+# 업적 / 칭호 시스템 (각각 다른 고유 칭호로 설정)
 # -----------------------------------------------------------------------------
 ACHIEVEMENTS = {
     "first_enhance": {
@@ -1110,6 +1109,11 @@ def trigger_rebirth():
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
 st.markdown(
+    f"""
+""",
+    unsafe_allow_html=True,
+)
+st.markdown(
     """
     <style>
     /* Apple-inspired Liquid Glass UI */
@@ -1516,27 +1520,6 @@ with right_col:
   )
   tier = curr_data["tier"]
   status = st.session_state.status
-  selected_title = st.session_state.selected_title
-
-  # 칭호 및 단계별 고유 UI 스타일 분기 처리
-  title_ui_class = "title-style-default"
-  title_glow_color = card_color
-
-  if selected_title != TITLE_DEFAULT:
-    if "초보" in selected_title or "킁킁이" in selected_title:
-      title_ui_class = "title-style-tier1"
-    elif "수련생" in selected_title or "수집가" in selected_title:
-      title_ui_class = "title-style-tier2"
-    elif "마스터" in selected_title or "지배자" in selected_title:
-      title_ui_class = "title-style-tier3"
-    elif "자이온" in selected_title or "차원" in selected_title:
-      title_ui_class = "title-style-tier4"
-    elif "신" in selected_title or "초월자" in selected_title:
-      title_ui_class = "title-style-tier5"
-    else:
-      title_ui_class = "title-style-legend"
-  else:
-    title_ui_class = f"title-tier-{tier}"
 
   three_js_code = f"""
     <!DOCTYPE html>
@@ -1551,88 +1534,18 @@ with right_col:
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
-            /* 칭호별로 완전히 독립적이고 개성 있는 UI 스타일 정의 */
             .selected-title-ui {{
                 position: absolute;
-                top: 15px;
+                top: 18px;
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 120;
                 pointer-events: none;
-                white-space: nowrap;
-                padding: 6px 18px;
-                border-radius: 20px;
-                letter-spacing: 1px;
-                transition: all 0.3s ease;
-            }}
-
-            .title-style-default {{
-                font-size: 16px;
-                font-weight: 600;
-                color: #94a3b8;
-                background: rgba(15, 23, 42, 0.6);
-                border: 1px solid rgba(148, 163, 184, 0.2);
-            }}
-
-            .title-style-tier1 {{
-                font-size: 20px;
-                font-weight: 800;
-                color: #38bdf8;
-                background: rgba(56, 189, 248, 0.12);
-                border: 1px solid rgba(56, 189, 248, 0.4);
-                box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-            }}
-
-            .title-style-tier2 {{
                 font-size: 22px;
-                font-weight: 800;
-                color: #facc15;
-                background: rgba(250, 204, 21, 0.12);
-                border: 2px dashed rgba(250, 204, 21, 0.5);
-                box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
-            }}
-
-            .title-style-tier3 {{
-                font-size: 24px;
                 font-weight: 900;
-                color: #f87171;
-                background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.4));
-                border: 2px solid #ef4444;
-                box-shadow: 0 0 22px rgba(239, 68, 68, 0.6);
-                text-transform: uppercase;
-            }}
-
-            .title-style-tier4 {{
-                font-size: 25px;
-                font-weight: 900;
-                color: #c084fc;
-                background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(79, 70, 229, 0.35));
-                border: 2px solid #c084fc;
-                box-shadow: 0 0 25px rgba(192, 132, 252, 0.7);
-            }}
-
-            .title-style-tier5 {{
-                font-size: 26px;
-                font-weight: 900;
-                background: linear-gradient(90deg, #ff7e5f, #feb47b, #ff007f);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-color: rgba(255, 126, 95, 0.15);
-                border: 2px solid #ff7e5f;
-                box-shadow: 0 0 30px rgba(255, 126, 95, 0.8);
-            }}
-
-            .title-style-legend {{
-                font-size: 28px;
-                font-weight: 900;
-                background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e);
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                animation: rainbow 1.5s linear infinite;
-                background-color: rgba(255, 255, 255, 0.1);
-                border: 2px solid #ffffff;
-                box-shadow: 0 0 35px rgba(255, 255, 255, 0.9);
+                color: #fde68a;
+                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
+                white-space: nowrap;
             }}
 
             .cinematic-ui {{
@@ -1644,14 +1557,16 @@ with right_col:
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
+                opacity: 1;
+                transition: opacity 0.1s ease-in-out;
             }}
 
-            .title-tier-1 {{ font-size: 26px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 30px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-            .title-tier-3 {{ font-size: 34px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-            .title-tier-4 {{ font-size: 38px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-            .title-tier-5 {{ font-size: 42px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-            .title-tier-6 {{ font-size: 46px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+            .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
+            .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
+            .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
+            .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
 
             @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
 
@@ -1667,18 +1582,18 @@ with right_col:
             }}
 
             .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 16px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
-            .price-text {{ font-size: 18px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 15px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
         <div id="container"></div>
-        <div class="selected-title-ui {title_ui_class}">🏷️ {selected_title}</div>
+        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
 
-        <div id="cinematicUi" class="cinematic-ui">
+        <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
             <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
             <div id="descText" class="desc-text">"{card_desc}"</div>
@@ -1832,69 +1747,223 @@ with right_col:
             const lvl = {current_level};
 
             if (isRebirth) {{
-                if (lvl <= 6) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.2);
-                }} else if (lvl <= 12) {{
+                if (lvl <= 3) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.3);
+                }} else if (lvl <= 6) {{
                     baseGeo = new THREE.DodecahedronGeometry(2.2);
-                }} else if (lvl <= 18) {{
+                }} else if (lvl <= 9) {{
                     baseGeo = new THREE.IcosahedronGeometry(2.3);
+                }} else if (lvl <= 12) {{
+                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
+                }} else if (lvl <= 15) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
+                }} else if (lvl <= 18) {{
+                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
+                }} else if (lvl <= 21) {{
+                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
+                }} else if (lvl <= 24) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
                 }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 32);
+                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
                 }}
             }} else {{
-                if (lvl <= 6) {{
-                    baseGeo = new THREE.SphereGeometry(2.0, 32, 32);
-                }} else if (lvl <= 12) {{
-                    baseGeo = new THREE.BoxGeometry(2.3, 2.3, 2.3);
-                }} else if (lvl <= 18) {{
-                    baseGeo = new THREE.ConeGeometry(2.0, 3.2, 32);
-                }} else if (lvl <= 25) {{
-                    baseGeo = new THREE.CylinderGeometry(1.5, 2.0, 3.0, 32);
+                if (lvl <= 2) {{
+                    baseGeo = new THREE.TetrahedronGeometry(2.3);
+                }} else if (lvl <= 5) {{
+                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+                }} else if (lvl <= 8) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+                }} else if (lvl <= 11) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+                }} else if (lvl <= 14) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+                }} else if (lvl <= 17) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+                }} else if (lvl == 18) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.5);
+                }} else if (lvl == 19) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.4);
+                }} else if (lvl == 20) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.4);
+                }} else if (lvl == 21) {{
+                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+                }} else if (lvl == 22) {{
+                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+                }} else if (lvl == 23) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+                }} else if (lvl == 24) {{
+                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+                }} else if (lvl == 25) {{
+                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+                }} else if (lvl == 26) {{
+                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+                }} else if (lvl == 27) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+                }} else if (lvl == 28) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                }} else if (lvl == 29) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+                }} else if (lvl == 30) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+                }} else if (lvl == 31) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
+                }} else if (lvl == 32) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
+                }} else if (lvl == 33) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
+                }} else if (lvl == 34) {{
+                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
                 }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 100, 32);
+                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
                 }}
             }}
 
-            const material = new THREE.MeshPhysicalMaterial({{
-                color: new THREE.Color(tierColor),
-                roughness: isFinalSuccess ? 0.1 : 0.3,
-                metalness: isFinalSuccess ? 0.9 : 0.5,
-                transmission: isRebirth ? 0.6 : 0.2,
-                thickness: 1.2,
-                wireframe: lvl === maxLvl,
-                emissive: new THREE.Color(tierColor),
-                emissiveIntensity: isFinalSuccess ? 0.8 : 0.3
+            const outerMat = new THREE.MeshPhysicalMaterial({{
+                color: tierColor,
+                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
+                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
+                metalness: 0.9,
+                roughness: 0.1,
+                transmission: 0.6,
+                transparent: true,
+                opacity: status === "FAILED" ? 0.5 : 0.95,
+                wireframe: false
             }});
+            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
+            objectGroup.add(outerMesh);
 
-            const mainMesh = new THREE.Mesh(baseGeo, material);
-            mainMesh.castShadow = true;
-            mainMesh.receiveShadow = true;
-            objectGroup.add(mainMesh);
-
-            const ringGeo = new THREE.TorusGeometry(3.2, 0.05, 16, 100);
-            const ringMat = new THREE.MeshBasicMaterial({{ color: new THREE.Color(tierColor), transparent: true, opacity: 0.5 }});
-            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-            ringMesh.rotation.x = Math.PI / 3;
-            objectGroup.add(ringMesh);
+            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
+            const coreMat = new THREE.MeshPhysicalMaterial({{
+                color: 0xffffff,
+                emissive: statusColor,
+                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
+                roughness: 0.02,
+                metalness: 0.95,
+                transmission: 0.8
+            }});
+            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            objectGroup.add(coreMesh);
 
             scene.add(objectGroup);
 
-            let clock = new THREE.Clock();
+            const tl = gsap.timeline();
+
+            if (status === "DESTROYED") {{
+                outerMesh.visible = false;
+                coreMesh.visible = false;
+
+                pointLight.color.set("#ff0000");
+                pointLight.intensity = 80;
+
+                const shardCount = 180;
+                const shards = [];
+                const shardGroup = new THREE.Group();
+                shardGroup.position.y = -0.7;
+
+                for(let i=0; i<shardCount; i++) {{
+                    const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
+                    const sMat = new THREE.MeshStandardMaterial({{
+                        color: tierColor,
+                        roughness: 0.1,
+                        metalness: 0.9,
+                        emissive: "#ff2200",
+                        emissiveIntensity: 2.5
+                    }});
+                    const shard = new THREE.Mesh(sGeo, sMat);
+                    shard.position.set(0, 0, 0);
+                    
+                    const u = Math.random();
+                    const v = Math.random();
+                    const theta = u * 2.0 * Math.PI;
+                    const phi = Math.acos(2.0 * v - 1.0);
+                    const speed = 4.0 + Math.random() * 8.0;
+                    
+                    shard.userData = {{
+                        vx: speed * Math.sin(phi) * Math.cos(theta),
+                        vy: speed * Math.sin(phi) * Math.sin(theta),
+                        vz: speed * Math.cos(phi),
+                        rx: (Math.random() - 0.5) * 30,
+                        ry: (Math.random() - 0.5) * 30
+                    }};
+
+                    shardGroup.add(shard);
+                    shards.push(shard);
+                }}
+                scene.add(shardGroup);
+
+                tl.to(shardGroup.position, {{
+                    duration: 0.5,
+                    ease: "power2.out",
+                    onUpdate: function() {{
+                        const progress = this.progress();
+                        shards.forEach(s => {{
+                            s.position.x += s.userData.vx * 0.02;
+                            s.position.y += s.userData.vy * 0.02 - 0.04;
+                            s.position.z += s.userData.vz * 0.02;
+                            s.rotation.x += s.userData.rx * 0.02;
+                            s.rotation.y += s.userData.ry * 0.02;
+                            s.material.opacity = 1.0 - progress;
+                            s.material.transparent = true;
+                        }});
+                    }}
+                }});
+            }} else {{
+                const maxScale = isFinalSuccess ? 1.8 : 1.3;
+                tl.to(objectGroup.scale, {{
+                    x: maxScale, y: maxScale, z: maxScale,
+                    duration: 0.12,
+                    ease: "power1.inOut"
+                }})
+                .to(objectGroup.scale, {{
+                    x: 1.0, y: 1.0, z: 1.0,
+                    duration: 0.12,
+                    ease: "power1.out"
+                }});
+
+                const basePosY = -0.7;
+                tl.to(objectGroup.position, {{
+                    duration: 0.25,
+                    onUpdate: function() {{
+                        const p = this.progress();
+                        const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
+                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
+
+                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
+                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
+                    }}
+                }}, 0);
+            }}
+
+            const clock = new THREE.Clock();
+
             function animate() {{
                 requestAnimationFrame(animate);
-                let elapsedTime = clock.getElapsedTime();
+                const time = clock.getElapsedTime();
 
-                objectGroup.rotation.y = elapsedTime * 0.6;
-                objectGroup.rotation.x = Math.sin(elapsedTime * 0.4) * 0.3;
-                
-                ringMesh.rotation.z = elapsedTime * -0.8;
+                if (status !== "DESTROYED") {{
+                    const rotSpeed = isFinalSuccess ? 1.8 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
+                    outerMesh.rotation.x += 0.005 * rotSpeed;
+                    outerMesh.rotation.y += 0.008 * rotSpeed;
+                    coreMesh.rotation.x -= 0.01 * rotSpeed;
+                    coreMesh.rotation.y -= 0.012 * rotSpeed;
+
+                    if (isFinalSuccess) {{
+                        objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
+                    }}
+                }}
+
+                starField.rotation.y = time * 0.01;
 
                 const positions = particleGeo.attributes.position.array;
-                for (let i = 0; i < particleCount; i++) {{
+                for(let i=0; i<particleCount; i++) {{
+                    positions[i*3] += particleVelocities[i].x;
                     positions[i*3 + 1] += particleVelocities[i].y;
-                    positions[i*3] += Math.sin(elapsedTime + i) * 0.005;
+                    positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if (positions[i*3 + 1] > 4.0) {{
+                    if(positions[i*3 + 1] > 2.5) {{
                         positions[i*3 + 1] = -4.0;
                         positions[i*3] = (Math.random() - 0.5) * 6.0;
                         positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
@@ -1904,6 +1973,7 @@ with right_col:
 
                 renderer.render(scene, camera);
             }}
+
             animate();
 
             window.addEventListener('resize', () => {{
@@ -1915,4 +1985,5 @@ with right_col:
     </body>
     </html>
     """
-  components.html(three_js_code, height=650)
+
+  components.html(three_js_code, height=580, scrolling=False)
