@@ -668,7 +668,7 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
-# 업적 / 칭호 시스템 (각각 다른 고유 칭호로 설정)
+# 업적 / 칭호 시스템 (각각 다른 고유 칭호 및 UI 스타일 부여)
 # -----------------------------------------------------------------------------
 ACHIEVEMENTS = {
     "first_enhance": {
@@ -676,156 +676,326 @@ ACHIEVEMENTS = {
         "desc": "처음으로 강화를 시도하세요.",
         "title": "꼬마 킁킁이",
         "reward": 5000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(74,222,128,0.2), rgba(34,197,94,0.05))"
+        ),
+        "badge_border": "rgba(74,222,128,0.5)",
+        "badge_color": "#4ade80",
+        "badge_icon": "🌿",
     },
     "level_10": {
         "name": "10강 돌파",
         "desc": "시즌 1에서 10단계에 도달하세요.",
         "title": "구린내 수련생",
         "reward": 20000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(56,189,248,0.2), rgba(14,165,233,0.05))"
+        ),
+        "badge_border": "rgba(56,189,248,0.5)",
+        "badge_color": "#38bdf8",
+        "badge_icon": "💧",
     },
     "level_20": {
         "name": "20강 돌파",
         "desc": "시즌 1에서 20단계에 도달하세요.",
         "title": "베테랑 후각러",
         "reward": 100000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(168,85,247,0.2), rgba(126,34,206,0.05))"
+        ),
+        "badge_border": "rgba(168,85,247,0.5)",
+        "badge_color": "#c084fc",
+        "badge_icon": "🔮",
     },
     "level_30": {
         "name": "30강 돌파",
         "desc": "시즌 1에서 30단계에 도달하세요.",
         "title": "악취 마스터",
         "reward": 500000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(239,68,68,0.2), rgba(185,28,28,0.05))"
+        ),
+        "badge_border": "rgba(239,68,68,0.5)",
+        "badge_color": "#f87171",
+        "badge_icon": "🔥",
     },
     "level_35": {
         "name": "궁극의 지온",
         "desc": "시즌 1 최종 35단계를 달성하세요.",
         "title": "디 오리지널 지온",
         "reward": 1000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(251,191,36,0.25),"
+            " rgba(217,119,6,0.08))"
+        ),
+        "badge_border": "rgba(251,191,36,0.7)",
+        "badge_color": "#fde68a",
+        "badge_icon": "👑",
     },
     "drop_to_0": {
         "name": "끝없는 추락",
         "desc": "34단계에서 0단계로 돌아가세요.",
         "title": "추락의 전설",
         "reward": 3000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(100,116,139,0.25),"
+            " rgba(51,65,85,0.08))"
+        ),
+        "badge_border": "rgba(148,163,184,0.5)",
+        "badge_color": "#94a3b8",
+        "badge_icon": "🪂",
     },
     "rebirth": {
         "name": "차원의 문",
         "desc": "시즌 2 환생을 시작하세요.",
         "title": "차원 여행자",
         "reward": 5000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(6,182,212,0.25),"
+            " rgba(14,116,144,0.08))"
+        ),
+        "badge_border": "rgba(6,182,212,0.6)",
+        "badge_color": "#22d3ee",
+        "badge_icon": "🌌",
     },
     "s2_level_10": {
         "name": "자이온 각성",
         "desc": "시즌 2에서 10단계에 도달하세요.",
         "title": "각성한 자이온",
         "reward": 10000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(59,130,246,0.25),"
+            " rgba(29,78,216,0.08))"
+        ),
+        "badge_border": "rgba(59,130,246,0.6)",
+        "badge_color": "#60a5fa",
+        "badge_icon": "⚡",
     },
     "s2_level_20": {
         "name": "자이온 폭주",
         "desc": "시즌 2에서 20단계에 도달하세요.",
         "title": "폭주의 자이온",
         "reward": 30000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(236,72,153,0.25),"
+            " rgba(190,24,93,0.08))"
+        ),
+        "badge_border": "rgba(236,72,153,0.6)",
+        "badge_color": "#f472b6",
+        "badge_icon": "💥",
     },
     "s2_level_25": {
         "name": "진정한 환생",
         "desc": "시즌 2 최종 25단계를 달성하세요.",
         "title": "TRUE REBIRTH",
         "reward": 100000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(255,255,255,0.3),"
+            " rgba(168,85,247,0.15))"
+        ),
+        "badge_border": "rgba(255,255,255,0.8)",
+        "badge_color": "#ffffff",
+        "badge_icon": "🌟",
     },
     "warp_1": {
         "name": "공간 이동",
         "desc": "워프권을 처음 사용하세요.",
         "title": "워프 개척자",
         "reward": 10000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(20,184,166,0.2), rgba(13,148,136,0.05))"
+        ),
+        "badge_border": "rgba(20,184,166,0.5)",
+        "badge_color": "#2dd4bf",
+        "badge_icon": "🚀",
     },
     "warp_5": {
         "name": "워프 중독",
         "desc": "워프권을 5회 사용하세요.",
         "title": "차원 도약자",
         "reward": 100000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(14,165,233,0.2), rgba(2,132,199,0.05))"
+        ),
+        "badge_border": "rgba(14,165,233,0.5)",
+        "badge_color": "#38bdf8",
+        "badge_icon": "🌀",
     },
     "critical": {
         "name": "대성공",
         "desc": "크리티컬 강화를 성공시키세요.",
         "title": "우주의 선택",
         "reward": 50000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(250,204,21,0.25),"
+            " rgba(202,138,4,0.08))"
+        ),
+        "badge_border": "rgba(250,204,21,0.6)",
+        "badge_color": "#facc15",
+        "badge_icon": "⚡",
     },
     "seller": {
         "name": "냄새 장사꾼",
         "desc": "냄새를 판매해 돈을 획득하세요.",
         "title": "냄새 상인",
         "reward": 25000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(249,115,22,0.2), rgba(194,65,12,0.05))"
+        ),
+        "badge_border": "rgba(249,115,22,0.5)",
+        "badge_color": "#fb923c",
+        "badge_icon": "💰",
     },
     "enhance_50": {
         "name": "강화광",
         "desc": "강화를 총 50회 시도하세요.",
         "title": "망치 중독자",
         "reward": 200000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(234,179,8,0.2), rgba(161,98,7,0.05))"
+        ),
+        "badge_border": "rgba(234,179,8,0.5)",
+        "badge_color": "#facc15",
+        "badge_icon": "🔨",
     },
     "enhance_100": {
         "name": "강화의 끝",
         "desc": "강화를 총 100회 시도하세요.",
         "title": "단련의 신",
         "reward": 1000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(217,70,239,0.2), rgba(162,28,175,0.05))"
+        ),
+        "badge_border": "rgba(217,70,239,0.5)",
+        "badge_color": "#e879f9",
+        "badge_icon": "⚒️",
     },
     "level_5": {
         "name": "첫 강화",
         "desc": "5단계에 도달하세요.",
         "title": "입문 코끝러",
         "reward": 5000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(52,211,153,0.2), rgba(5,150,105,0.05))"
+        ),
+        "badge_border": "rgba(52,211,153,0.5)",
+        "badge_color": "#34d399",
+        "badge_icon": "👃",
     },
     "level_15": {
         "name": "중급 냄새꾼",
         "desc": "15단계에 도달하세요.",
         "title": "향기 수집가",
         "reward": 50000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(37,99,235,0.05))"
+        ),
+        "badge_border": "rgba(96,165,250,0.5)",
+        "badge_color": "#60a5fa",
+        "badge_icon": "🌸",
     },
     "level_25": {
         "name": "고급 냄새꾼",
         "desc": "25단계에 도달하세요.",
         "title": "악취 지배자",
         "reward": 250000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(248,113,113,0.2), rgba(220,38,38,0.05))"
+        ),
+        "badge_border": "rgba(248,113,113,0.5)",
+        "badge_color": "#f87171",
+        "badge_icon": "☣️",
     },
     "s2_level_5": {
         "name": "자이온 입문",
         "desc": "시즌 2에서 5단계에 도달하세요.",
         "title": "자이온 견습생",
         "reward": 1000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(129,140,248,0.25),"
+            " rgba(79,70,229,0.08))"
+        ),
+        "badge_border": "rgba(129,140,248,0.6)",
+        "badge_color": "#818cf8",
+        "badge_icon": "🛸",
     },
     "s2_level_15": {
         "name": "자이온 숙련",
         "desc": "시즌 2에서 15단계에 도달하세요.",
         "title": "자이온 숙련자",
         "reward": 15000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(192,132,252,0.25),"
+            " rgba(147,51,234,0.08))"
+        ),
+        "badge_border": "rgba(192,132,252,0.6)",
+        "badge_color": "#c084fc",
+        "badge_icon": "🪐",
     },
     "warp_10": {
         "name": "워프 마스터",
         "desc": "워프권을 10회 사용하세요.",
         "title": "공간의 지배자",
         "reward": 500000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(45,212,191,0.25),"
+            " rgba(15,118,110,0.08))"
+        ),
+        "badge_border": "rgba(45,212,191,0.6)",
+        "badge_color": "#2dd4bf",
+        "badge_icon": "🌌",
     },
     "enhance_200": {
         "name": "강화는 계속된다",
         "desc": "강화를 총 200회 시도하세요.",
         "title": "강화의 초월자",
         "reward": 5000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(244,63,94,0.25),"
+            " rgba(190,18,60,0.08))"
+        ),
+        "badge_border": "rgba(244,63,94,0.6)",
+        "badge_color": "#fb7185",
+        "badge_icon": "💫",
     },
     "rich": {
         "name": "부자 냄새",
         "desc": "보유 금액 10억을 달성하세요.",
         "title": "지온 재벌",
         "reward": 1000000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(234,179,8,0.3),"
+            " rgba(202,138,4,0.1))"
+        ),
+        "badge_border": "rgba(234,179,8,0.7)",
+        "badge_color": "#facc15",
+        "badge_icon": "💵",
     },
     "seller_10": {
         "name": "장사의 신",
         "desc": "판매를 10회 성공하세요.",
         "title": "전설의 상인",
         "reward": 300000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(251,146,60,0.25),"
+            " rgba(234,88,12,0.08))"
+        ),
+        "badge_border": "rgba(251,146,60,0.6)",
+        "badge_color": "#fb923c",
+        "badge_icon": "📈",
     },
     "survivor": {
         "name": "기적의 생존",
         "desc": "20단계 이상에서 강화 실패 후 살아남으세요.",
         "title": "불굴의 지온",
         "reward": 300000,
+        "badge_bg": (
+            "linear-gradient(135deg, rgba(74,222,128,0.25),"
+            " rgba(22,163,74,0.08))"
+        ),
+        "badge_border": "rgba(74,222,128,0.6)",
+        "badge_color": "#4ade80",
+        "badge_icon": "🛡️",
     },
 }
 
@@ -1444,22 +1614,31 @@ with left_col:
     for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
-      border = (
-          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      bg = (
+          info["badge_bg"]
+          if done
+          else "linear-gradient(135deg, rgba(30,41,59,0.85),"
+          " rgba(15,23,42,0.9))"
       )
+      border = info["badge_border"] if done else "rgba(148,163,184,0.2)"
+      color = info["badge_color"] if done else "#64748b"
+      badge_symbol = info["badge_icon"] if done else "🔒"
+
       with ach_cols[i % 3]:
         st.markdown(
-            f"<div style='background:{bg}; border:1px solid {border};"
-            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
-            f" min-height:92px;'><div"
-            f" style='font-size:14px;font-weight:800'>{icon}"
-            f" {info['name']}</div><div"
-            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
-            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
-            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
+            f"""
+                <div style='background:{bg}; border:1px solid {border}; border-radius:14px; padding:12px; margin:0 0 10px 0; min-height:105px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);'>
+                    <div style='display: flex; align-items: center; gap: 6px; margin-bottom: 4px;'>
+                        <span style='font-size: 16px;'>{badge_symbol}</span>
+                        <span style='font-size: 13px; font-weight: 800; color: {color};'>{info['name']}</span>
+                    </div>
+                    <div style='font-size: 11px; color: #cbd5e1; margin-bottom: 6px; line-height: 1.3;'>{info['desc']}</div>
+                    <div style='font-size: 10px; color: #fde68a; font-weight: 700; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 6px; display: inline-block;'>🏷️ {info['title']}</div>
+                </div>
+                """,
             unsafe_allow_html=True,
         )
+
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
@@ -1541,11 +1720,29 @@ with right_col:
                 transform: translateX(-50%);
                 z-index: 120;
                 pointer-events: none;
-                font-size: 22px;
-                font-weight: 900;
-                color: #fde68a;
-                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: linear-gradient(135deg, rgba(20,24,39,0.85), rgba(10,14,26,0.9));
+                border: 1px solid rgba(253,230,138,0.4);
+                padding: 8px 18px;
+                border-radius: 30px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
+                backdrop-filter: blur(12px);
                 white-space: nowrap;
+            }}
+
+            .selected-title-ui .badge-icon {{
+                font-size: 16px;
+                filter: drop-shadow(0 0 6px rgba(253,230,138,0.6));
+            }}
+
+            .selected-title-ui .badge-text {{
+                font-size: 15px;
+                font-weight: 800;
+                color: #fde68a;
+                letter-spacing: 0.5px;
+                text-shadow: 0 0 10px rgba(253,230,138,0.6);
             }}
 
             .cinematic-ui {{
@@ -1591,7 +1788,10 @@ with right_col:
     </head>
     <body>
         <div id="container"></div>
-        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
+        <div class="selected-title-ui">
+            <span class="badge-icon">🏷️</span>
+            <span class="badge-text">{st.session_state.selected_title}</span>
+        </div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
@@ -1950,6 +2150,8 @@ with right_col:
                     coreMesh.rotation.x -= 0.01 * rotSpeed;
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
+                    if (isFinalString) {{ // safety fix
+                    }}
                     if (isFinalSuccess) {{
                         objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
                     }}
