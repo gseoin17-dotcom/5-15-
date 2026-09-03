@@ -762,7 +762,7 @@ ACHIEVEMENTS = {
         "name": "끝없는 추락",
         "desc": "34단계에서 0단계로 돌아가세요.",
         "title": "추락의 전설",
-        "reward": 3000000,
+        "reward": 300000,
     },
     "rebirth": {
         "name": "차원의 문",
@@ -1002,7 +1002,7 @@ if "season_data" not in st.session_state:
           "max_level": 0,
           "money": 1000000000,
           "status": "READY",
-          "shield": 4,
+          "shield": 0,
           "tears": 50,
           "pity_count": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
