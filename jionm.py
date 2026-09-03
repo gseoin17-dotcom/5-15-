@@ -668,111 +668,251 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
-# 업적 / 칭호 시스템
+# 업적 / 칭호 시스템 (각각 다른 고유 칭호로 설정)
 # -----------------------------------------------------------------------------
 ACHIEVEMENTS = {
-    "first_enhance": {"name": "첫걸음", "desc": "처음으로 강화를 시도하세요.", "title": "초보 강화러", "reward": 5000},
-    "level_10": {"name": "10강 돌파", "desc": "시즌 1에서 10단계에 도달하세요.", "title": "냄새 수련생", "reward": 20000},
-    "level_20": {"name": "20강 돌파", "desc": "시즌 1에서 20단계에 도달하세요.", "title": "냄새 전문가", "reward": 100000},
-    "level_30": {"name": "30강 돌파", "desc": "시즌 1에서 30단계에 도달하세요.", "title": "냄새 마스터", "reward": 500000},
-    "level_35": {"name": "궁극의 지온", "desc": "시즌 1 최종 35단계를 달성하세요.", "title": "디 오리지널 지온", "reward": 1000000},
-    "drop_to_0": {"name": "끝없는 추락", "desc": "34단계에서 0단계로 돌아가세요.", "title": "추락의 전설", "reward": 3000000},
-    "rebirth": {"name": "차원의 문", "desc": "시즌 2 환생을 시작하세요.", "title": "차원 여행자", "reward": 5000000},
-    "s2_level_10": {"name": "자이온 각성", "desc": "시즌 2에서 10단계에 도달하세요.", "title": "자이온", "reward": 10000000},
-    "s2_level_20": {"name": "자이온 폭주", "desc": "시즌 2에서 20단계에 도달하세요.", "title": "폭주의 자이온", "reward": 30000000},
-    "s2_level_25": {"name": "진정한 환생", "desc": "시즌 2 최종 25단계를 달성하세요.", "title": "TRUE REBIRTH", "reward": 100000000},
-    "warp_1": {"name": "공간 이동", "desc": "워프권을 처음 사용하세요.", "title": "워프 개척자", "reward": 10000},
-    "warp_5": {"name": "워프 중독", "desc": "워프권을 5회 사용하세요.", "title": "워프 중독자", "reward": 100000},
-    "critical": {"name": "대성공", "desc": "크리티컬 강화를 성공시키세요.", "title": "우주의 선택", "reward": 50000},
-    "seller": {"name": "냄새 장사꾼", "desc": "냄새를 판매해 돈을 획득하세요.", "title": "냄새 상인", "reward": 25000},
-    "enhance_50": {"name": "강화광", "desc": "강화를 총 50회 시도하세요.", "title": "강화 중독자", "reward": 200000},
-    "enhance_100": {"name": "강화의 끝", "desc": "강화를 총 100회 시도하세요.", "title": "강화의 신", "reward": 1000000},
-    "level_5": {"name": "첫 강화", "desc": "5단계에 도달하세요.", "title": "냄새 입문자", "reward": 5000},
-    "level_15": {"name": "중급 냄새꾼", "desc": "15단계에 도달하세요.", "title": "냄새 수집가", "reward": 50000},
-    "level_25": {"name": "고급 냄새꾼", "desc": "25단계에 도달하세요.", "title": "냄새 지배자", "reward": 250000},
-    "s2_level_5": {"name": "자이온 입문", "desc": "시즌 2에서 5단계에 도달하세요.", "title": "자이온 견습생", "reward": 1000000},
-    "s2_level_15": {"name": "자이온 숙련", "desc": "시즌 2에서 15단계에 도달하세요.", "title": "자이온 숙련자", "reward": 15000000},
-    "warp_10": {"name": "워프 마스터", "desc": "워프권을 10회 사용하세요.", "title": "공간의 지배자", "reward": 500000},
-    "enhance_200": {"name": "강화는 계속된다", "desc": "강화를 총 200회 시도하세요.", "title": "강화의 초월자", "reward": 5000000},
-    "rich": {"name": "부자 냄새", "desc": "보유 금액 10억을 달성하세요.", "title": "지온 재벌", "reward": 1000000},
-    "seller_10": {"name": "장사의 신", "desc": "판매를 10회 성공하세요.", "title": "전설의 상인", "reward": 300000},
-    "survivor": {"name": "기적의 생존", "desc": "20단계 이상에서 강화 실패 후 살아남으세요.", "title": "불굴의 지온", "reward": 300000},
+    "first_enhance": {
+        "name": "첫걸음",
+        "desc": "처음으로 강화를 시도하세요.",
+        "title": "꼬마 킁킁이",
+        "reward": 5000,
+    },
+    "level_10": {
+        "name": "10강 돌파",
+        "desc": "시즌 1에서 10단계에 도달하세요.",
+        "title": "구린내 수련생",
+        "reward": 20000,
+    },
+    "level_20": {
+        "name": "20강 돌파",
+        "desc": "시즌 1에서 20단계에 도달하세요.",
+        "title": "베테랑 후각러",
+        "reward": 100000,
+    },
+    "level_30": {
+        "name": "30강 돌파",
+        "desc": "시즌 1에서 30단계에 도달하세요.",
+        "title": "악취 마스터",
+        "reward": 500000,
+    },
+    "level_35": {
+        "name": "궁극의 지온",
+        "desc": "시즌 1 최종 35단계를 달성하세요.",
+        "title": "디 오리지널 지온",
+        "reward": 1000000,
+    },
+    "drop_to_0": {
+        "name": "끝없는 추락",
+        "desc": "34단계에서 0단계로 돌아가세요.",
+        "title": "추락의 전설",
+        "reward": 3000000,
+    },
+    "rebirth": {
+        "name": "차원의 문",
+        "desc": "시즌 2 환생을 시작하세요.",
+        "title": "차원 여행자",
+        "reward": 5000000,
+    },
+    "s2_level_10": {
+        "name": "자이온 각성",
+        "desc": "시즌 2에서 10단계에 도달하세요.",
+        "title": "각성한 자이온",
+        "reward": 10000000,
+    },
+    "s2_level_20": {
+        "name": "자이온 폭주",
+        "desc": "시즌 2에서 20단계에 도달하세요.",
+        "title": "폭주의 자이온",
+        "reward": 30000000,
+    },
+    "s2_level_25": {
+        "name": "진정한 환생",
+        "desc": "시즌 2 최종 25단계를 달성하세요.",
+        "title": "TRUE REBIRTH",
+        "reward": 100000000,
+    },
+    "warp_1": {
+        "name": "공간 이동",
+        "desc": "워프권을 처음 사용하세요.",
+        "title": "워프 개척자",
+        "reward": 10000,
+    },
+    "warp_5": {
+        "name": "워프 중독",
+        "desc": "워프권을 5회 사용하세요.",
+        "title": "차원 도약자",
+        "reward": 100000,
+    },
+    "critical": {
+        "name": "대성공",
+        "desc": "크리티컬 강화를 성공시키세요.",
+        "title": "우주의 선택",
+        "reward": 50000,
+    },
+    "seller": {
+        "name": "냄새 장사꾼",
+        "desc": "냄새를 판매해 돈을 획득하세요.",
+        "title": "냄새 상인",
+        "reward": 25000,
+    },
+    "enhance_50": {
+        "name": "강화광",
+        "desc": "강화를 총 50회 시도하세요.",
+        "title": "망치 중독자",
+        "reward": 200000,
+    },
+    "enhance_100": {
+        "name": "강화의 끝",
+        "desc": "강화를 총 100회 시도하세요.",
+        "title": "단련의 신",
+        "reward": 1000000,
+    },
+    "level_5": {
+        "name": "첫 강화",
+        "desc": "5단계에 도달하세요.",
+        "title": "입문 코끝러",
+        "reward": 5000,
+    },
+    "level_15": {
+        "name": "중급 냄새꾼",
+        "desc": "15단계에 도달하세요.",
+        "title": "향기 수집가",
+        "reward": 50000,
+    },
+    "level_25": {
+        "name": "고급 냄새꾼",
+        "desc": "25단계에 도달하세요.",
+        "title": "악취 지배자",
+        "reward": 250000,
+    },
+    "s2_level_5": {
+        "name": "자이온 입문",
+        "desc": "시즌 2에서 5단계에 도달하세요.",
+        "title": "자이온 견습생",
+        "reward": 1000000,
+    },
+    "s2_level_15": {
+        "name": "자이온 숙련",
+        "desc": "시즌 2에서 15단계에 도달하세요.",
+        "title": "자이온 숙련자",
+        "reward": 15000000,
+    },
+    "warp_10": {
+        "name": "워프 마스터",
+        "desc": "워프권을 10회 사용하세요.",
+        "title": "공간의 지배자",
+        "reward": 500000,
+    },
+    "enhance_200": {
+        "name": "강화는 계속된다",
+        "desc": "강화를 총 200회 시도하세요.",
+        "title": "강화의 초월자",
+        "reward": 5000000,
+    },
+    "rich": {
+        "name": "부자 냄새",
+        "desc": "보유 금액 10억을 달성하세요.",
+        "title": "지온 재벌",
+        "reward": 1000000,
+    },
+    "seller_10": {
+        "name": "장사의 신",
+        "desc": "판매를 10회 성공하세요.",
+        "title": "전설의 상인",
+        "reward": 300000,
+    },
+    "survivor": {
+        "name": "기적의 생존",
+        "desc": "20단계 이상에서 강화 실패 후 살아남으세요.",
+        "title": "불굴의 지온",
+        "reward": 300000,
+    },
 }
-
 
 TITLE_DEFAULT = "칭호 없음"
 
+
 def init_progress():
-    if "achievements" not in st.session_state:
-        st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
-    if "unlocked_titles" not in st.session_state:
-        st.session_state.unlocked_titles = []
-    if "selected_title" not in st.session_state:
-        st.session_state.selected_title = TITLE_DEFAULT
-    if "enhance_attempts" not in st.session_state:
-        st.session_state.enhance_attempts = 0
-    if "warp_uses" not in st.session_state:
-        st.session_state.warp_uses = 0
-    if "sell_count" not in st.session_state:
-        st.session_state.sell_count = 0
+  if "achievements" not in st.session_state:
+    st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
+  if "unlocked_titles" not in st.session_state:
+    st.session_state.unlocked_titles = []
+  if "selected_title" not in st.session_state:
+    st.session_state.selected_title = TITLE_DEFAULT
+  if "enhance_attempts" not in st.session_state:
+    st.session_state.enhance_attempts = 0
+  if "warp_uses" not in st.session_state:
+    st.session_state.warp_uses = 0
+  if "sell_count" not in st.session_state:
+    st.session_state.sell_count = 0
+
 
 def unlock_achievement(key):
-    if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
-        st.session_state.achievements[key] = True
-        title = ACHIEVEMENTS[key]["title"]
-        if title not in st.session_state.unlocked_titles:
-            st.session_state.unlocked_titles.append(title)
-        st.session_state.money += ACHIEVEMENTS[key]["reward"]
-        st.toast(f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']}  |  +{format_gold(ACHIEVEMENTS[key]['reward'])}")
+  if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
+    st.session_state.achievements[key] = True
+    title = ACHIEVEMENTS[key]["title"]
+    if title not in st.session_state.unlocked_titles:
+      st.session_state.unlocked_titles.append(title)
+    st.session_state.money += ACHIEVEMENTS[key]["reward"]
+    st.toast(
+        f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']} |"
+        f" +{format_gold(ACHIEVEMENTS[key]['reward'])}"
+    )
+
 
 def check_achievements():
-    level = st.session_state.level
-    if st.session_state.enhance_attempts >= 1:
-        unlock_achievement("first_enhance")
-    if st.session_state.enhance_attempts >= 50:
-        unlock_achievement("enhance_50")
-    if st.session_state.enhance_attempts >= 100:
-        unlock_achievement("enhance_100")
-    if st.session_state.enhance_attempts >= 200:
-        unlock_achievement("enhance_200")
-    if st.session_state.warp_uses >= 10:
-        unlock_achievement("warp_10")
-    if st.session_state.sell_count >= 10:
-        unlock_achievement("seller_10")
-    if st.session_state.money >= 1_000_000_000:
-        unlock_achievement("rich")
-    if not st.session_state.is_rebirth and level >= 5:
-        unlock_achievement("level_5")
-    if not st.session_state.is_rebirth and level >= 15:
-        unlock_achievement("level_15")
-    if not st.session_state.is_rebirth and level >= 25:
-        unlock_achievement("level_25")
-    if st.session_state.is_rebirth and level >= 5:
-        unlock_achievement("s2_level_5")
-    if st.session_state.is_rebirth and level >= 15:
-        unlock_achievement("s2_level_15")
-    if st.session_state.status == "FAIL" and level >= 20:
-        unlock_achievement("survivor")
-    if st.session_state.warp_uses >= 5:
-        unlock_achievement("warp_5")
-    if not st.session_state.is_rebirth and level == 0 and st.session_state.max_level >= 34:
-        unlock_achievement("drop_to_0")
-    if not st.session_state.is_rebirth and level >= 10:
-        unlock_achievement("level_10")
-    if not st.session_state.is_rebirth and level >= 20:
-        unlock_achievement("level_20")
-    if not st.session_state.is_rebirth and level >= 35:
-        unlock_achievement("level_35")
-    if st.session_state.is_rebirth and level >= 10:
-        unlock_achievement("s2_level_10")
-    if st.session_state.is_rebirth and level >= 20:
-        unlock_achievement("s2_level_20")
-    if st.session_state.is_rebirth and level >= 25:
-        unlock_achievement("s2_level_25")
-    if st.session_state.warp_uses >= 1:
-        unlock_achievement("warp_1")
-    if st.session_state.status == "CRITICAL":
-        unlock_achievement("critical")
+  level = st.session_state.level
+  if st.session_state.enhance_attempts >= 1:
+    unlock_achievement("first_enhance")
+  if st.session_state.enhance_attempts >= 50:
+    unlock_achievement("enhance_50")
+  if st.session_state.enhance_attempts >= 100:
+    unlock_achievement("enhance_100")
+  if st.session_state.enhance_attempts >= 200:
+    unlock_achievement("enhance_200")
+  if st.session_state.warp_uses >= 10:
+    unlock_achievement("warp_10")
+  if st.session_state.sell_count >= 10:
+    unlock_achievement("seller_10")
+  if st.session_state.money >= 1_000_000_000:
+    unlock_achievement("rich")
+  if not st.session_state.is_rebirth and level >= 5:
+    unlock_achievement("level_5")
+  if not st.session_state.is_rebirth and level >= 15:
+    unlock_achievement("level_15")
+  if not st.session_state.is_rebirth and level >= 25:
+    unlock_achievement("level_25")
+  if st.session_state.is_rebirth and level >= 5:
+    unlock_achievement("s2_level_5")
+  if st.session_state.is_rebirth and level >= 15:
+    unlock_achievement("s2_level_15")
+  if st.session_state.status == "FAIL" and level >= 20:
+    unlock_achievement("survivor")
+  if st.session_state.warp_uses >= 5:
+    unlock_achievement("warp_5")
+  if (
+      not st.session_state.is_rebirth
+      and level == 0
+      and st.session_state.max_level >= 34
+  ):
+    unlock_achievement("drop_to_0")
+  if not st.session_state.is_rebirth and level >= 10:
+    unlock_achievement("level_10")
+  if not st.session_state.is_rebirth and level >= 20:
+    unlock_achievement("level_20")
+  if not st.session_state.is_rebirth and level >= 35:
+    unlock_achievement("level_35")
+  if st.session_state.is_rebirth and level >= 10:
+    unlock_achievement("s2_level_10")
+  if st.session_state.is_rebirth and level >= 20:
+    unlock_achievement("s2_level_20")
+  if st.session_state.is_rebirth and level >= 25:
+    unlock_achievement("s2_level_25")
+  if st.session_state.warp_uses >= 1:
+    unlock_achievement("warp_1")
+  if st.session_state.status == "CRITICAL":
+    unlock_achievement("critical")
+
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -1001,7 +1141,8 @@ st.markdown(
     [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
     hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
-    """, unsafe_allow_html=True,
+    """,
+    unsafe_allow_html=True,
 )
 
 # -----------------------------------------------------------------------------
@@ -1095,13 +1236,12 @@ with left_col:
       unsafe_allow_html=True,
   )
   st.markdown(
-      f"<div style='font-size:12px; color:#cbd5e1; background:rgba(255,255,255,0.05);"
-      f" padding:8px; border-radius:6px;'>"
-      f"• 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>"
-      f"• 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>"
-      f"• 파괴 확률: <b style='color:#ef4444;'>{dp}%</b><br>"
-      f"• 유지 확률: <b style='color:#94a3b8;'>{hold_p}%</b>"
-      f"</div>",
+      f"<div style='font-size:12px; color:#cbd5e1;"
+      f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
+      f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
+      f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
+      f" style='color:#94a3b8;'>{hold_p}%</b></div>",
       unsafe_allow_html=True,
   )
 
@@ -1116,7 +1256,6 @@ with left_col:
 
   with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    # 시즌 2의 방지권 금액을 예상 가치의 5분의 1로 설정
     if st.session_state.is_rebirth:
       current_shield_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
@@ -1297,7 +1436,6 @@ with left_col:
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
 
-
   with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
@@ -1307,18 +1445,29 @@ with left_col:
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
       bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
-      border = "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      border = (
+          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      )
       with ach_cols[i % 3]:
         st.markdown(
-          f"<div style='background:{bg}; border:1px solid {border}; border-radius:12px; padding:10px; margin:0 0 10px 0; min-height:92px;'>"
-          f"<div style='font-size:14px;font-weight:800'>{icon} {info['name']}</div>"
-          f"<div style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div>"
-          f"<div style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️ {info['title']} · 💰 {format_gold(info['reward'])}</div>"
-          f"</div>", unsafe_allow_html=True)
+            f"<div style='background:{bg}; border:1px solid {border};"
+            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
+            f" min-height:92px;'><div"
+            f" style='font-size:14px;font-weight:800'>{icon}"
+            f" {info['name']}</div><div"
+            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
+            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
+            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
+            unsafe_allow_html=True,
+        )
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
-    selected = st.selectbox("현재 칭호", options, index=options.index(st.session_state.selected_title))
+    selected = st.selectbox(
+        "현재 칭호",
+        options,
+        index=options.index(st.session_state.selected_title),
+    )
     st.session_state.selected_title = selected
 
   st.markdown(
