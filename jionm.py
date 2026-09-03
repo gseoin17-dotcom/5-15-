@@ -1583,7 +1583,7 @@ with right_col:
   tier = curr_data["tier"]
   status = st.session_state.status
 
-  # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
+  # 마지막 강화 시도 여부 판별 (S1: 34->35 시도, S2: 24->25 시도)
   target_last_lvl = max_lvl - 1
   is_last_attempt = (
       prev_level == target_last_lvl
@@ -1710,6 +1710,7 @@ with right_col:
             let particleSpeed = 0.6;
             let glowIntensity = 12;
 
+            // 결과 보이기 함수 (마지막 단계 연출 종료 후 호출 또는 일반 시도 시 즉시 호출)
             function applyStatusText() {{
                 if (isFinalSuccess) {{
                     statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
@@ -1757,7 +1758,13 @@ with right_col:
                 statusText.style.color = statusColor;
             }}
 
-            applyStatusText();
+            // 마지막 단계 도전 중일 경우 연출이 끝날 때까지 결과를 숨기고 서스펜스 문구를 표출
+            if (isLastAttempt) {{
+                statusText.innerText = "⚡ [MAX LEVEL CHALLENGE] 초고밀도 에너지 응축 중... ⚡";
+                statusText.style.color = "#fde68a";
+            }} else {{
+                applyStatusText();
+            }}
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1943,9 +1950,6 @@ with right_col:
             const mainTl = gsap.timeline();
 
             if (isLastAttempt) {{
-                // UI 잠시 숨기기
-                cinematicUi.style.opacity = "0";
-
                 // 연출 초기화
                 objectGroup.scale.set(0.5, 0.5, 0.5);
                 pointLight.intensity = 5;
@@ -2000,16 +2004,16 @@ with right_col:
                     }}
                 }}, 0);
 
-                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
+                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion) 및 결과 최종 표출
                 mainTl.to(flashOverlay, {{
                     opacity: 1.0,
                     duration: 0.2,
                     ease: "power4.in",
                     onComplete: function() {{
-                        cinematicUi.style.opacity = "1";
                         camera.position.set(0, 0.6, 10.0);
                         
-                        // 결과 연출 (파괴 or 성공 or 실패)
+                        // 연출 완료 후 진짜 강화 결과 UI 및 효과 적용
+                        applyStatusText();
                         triggerResultAnimation();
                     }}
                 }}, 4.8);
