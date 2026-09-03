@@ -1,6 +1,7 @@
 import random
 import streamlit as st
 import streamlit.components.v1 as components
+
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
@@ -1106,72 +1107,40 @@ def trigger_rebirth():
 
 
 # -----------------------------------------------------------------------------
-# 6. 초고투명 애플 리퀴드 글래스 테마 CSS
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
+st.markdown(
+    f"""
+""",
+    unsafe_allow_html=True,
+)
 st.markdown(
     """
     <style>
-    /* Ultra-Clear Apple Liquid Glass UI */
-    :root { 
-        --glass: rgba(255, 255, 255, 0.03); 
-        --glass-hover: rgba(255, 255, 255, 0.08);
-        --stroke: rgba(255, 255, 255, 0.15); 
-        --stroke-bright: rgba(255, 255, 255, 0.35);
-    }
+    /* Apple-inspired Liquid Glass UI */
+    :root { --glass: rgba(255,255,255,.10); --glass-strong: rgba(255,255,255,.16); --stroke: rgba(255,255,255,.22); }
     .stApp {
-        background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.20), transparent 40%),
-                    radial-gradient(circle at 85% 75%, rgba(180,100,255,.15), transparent 45%),
-                    linear-gradient(135deg, #050811, #0b1120 55%, #04070e);
-        color: #f5f7fb; 
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.24), transparent 32%),
+                    radial-gradient(circle at 85% 75%, rgba(180,100,255,.20), transparent 34%),
+                    linear-gradient(135deg,#070b16,#101827 55%,#070a12);
+        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    .block-container { padding-top: 3.2rem !important; padding-bottom: 2rem !important; max-width: 94% !important; }
-    .element-container, .stMarkdown { background: transparent !important; }
-    
-    /* 버튼 글래스 스타일 */
+    .block-container { padding-top: 3.2rem !important; padding-bottom:2rem !important; max-width:94% !important; }
+    .element-container, .stMarkdown { background:transparent !important; }
     div.stButton > button {
-        border: 1px solid var(--stroke) !important; 
-        border-radius: 16px !important;
-        padding: 11px 16px !important; 
-        font-weight: 600 !important; 
-        color: #ffffff !important;
-        background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)) !important;
-        backdrop-filter: blur(32px) saturate(180%); 
-        -webkit-backdrop-filter: blur(32px) saturate(180%);
-        box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 12px 30px rgba(0,0,0,0.3) !important;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border:1px solid var(--stroke) !important; border-radius:16px !important;
+        padding:11px 16px !important; font-weight:650 !important; color:#fff !important;
+        background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.06)) !important;
+        backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
+        box-shadow:inset 0 1px rgba(255,255,255,.20),0 10px 30px rgba(0,0,0,.22) !important;
+        transition:transform .2s ease,background .2s ease,box-shadow .2s ease !important;
     }
-    div.stButton > button:hover { 
-        transform: translateY(-1px) scale(1.005); 
-        border-color: var(--stroke-bright) !important;
-        background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)) !important; 
-        box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 16px 36px rgba(0,0,0,0.4) !important; 
-    }
-    div.stButton > button:active { transform: scale(0.98); }
-    
-    /* 탭 스타일 */
-    [data-testid="stTabs"] button { 
-        border-radius: 14px !important; 
-        color: rgba(255,255,255,0.7) !important;
-        transition: all 0.2s ease !important;
-    }
-    [data-testid="stTabs"] [aria-selected="true"] { 
-        background: rgba(255,255,255,0.08) !important; 
-        color: #ffffff !important;
-        backdrop-filter: blur(20px); 
-        border: 1px solid var(--stroke) !important;
-    }
-    
-    /* 카드리키드 Glass 요소 */
-    [data-testid="stMetric"], [data-testid="stExpander"] { 
-        border: 1px solid var(--stroke); 
-        border-radius: 22px; 
-        background: var(--glass); 
-        backdrop-filter: blur(32px) saturate(180%); 
-        -webkit-backdrop-filter: blur(32px) saturate(180%);
-        box-shadow: inset 0 1px 1px rgba(255,255,255,0.18), 0 20px 40px rgba(0,0,0,0.25); 
-    }
-    hr { border-color: rgba(255,255,255,0.08) !important; }
+    div.stButton > button:hover { transform:translateY(-1px) scale(1.01); background:rgba(255,255,255,.20) !important; box-shadow:inset 0 1px rgba(255,255,255,.3),0 14px 35px rgba(0,0,0,.28) !important; }
+    div.stButton > button:active { transform:scale(.98); }
+    [data-testid="stTabs"] button { border-radius:14px !important; }
+    [data-testid="stTabs"] [aria-selected="true"] { background:rgba(255,255,255,.13) !important; backdrop-filter:blur(18px); }
+    [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
+    hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -1186,8 +1155,8 @@ with left_col:
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
         "<div"
-        " style='background:rgba(220,38,38,0.1);border:1px solid"
-        " rgba(239,68,68,0.4);padding:12px;border-radius:16px;text-align:center;margin-bottom:12px;backdrop-filter:blur(20px);'>"
+        " style='background:rgba(220,38,38,0.2);border:2px solid"
+        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
         "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
         "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
         " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
@@ -1198,7 +1167,7 @@ with left_col:
       trigger_rebirth()
       st.rerun()
     st.markdown(
-        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.08);'>",
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
     )
 
@@ -1214,7 +1183,7 @@ with left_col:
   )
 
   st.markdown(
-      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.08);'>",
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
@@ -1255,7 +1224,7 @@ with left_col:
     )
 
   st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.08);'>",
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
@@ -1269,18 +1238,16 @@ with left_col:
   )
   st.markdown(
       f"<div style='font-size:12px; color:#cbd5e1;"
-      f" background:rgba(255,255,255,0.03); border:1px solid"
-      " rgba(255,255,255,0.08); backdrop-filter:blur(16px); padding:10px;"
-      " border-radius:12px;'>• 성공 확률: <b style='color:#38bdf8;'>{sp}%</b>"
-      " (크리티컬 5%)[cite: 1]<br>• 하락 확률: <b"
-      " style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
-      " style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
-      " style='color:#94a3b8;'>{hold_p}%</b></div>",
+      f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>•"
+      f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
+      f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
+      f" style='color:#94a3b8;'>{hold_p}%</b></div>",
       unsafe_allow_html=True,
   )
 
   st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.08);'>",
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
@@ -1374,7 +1341,7 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
         unsafe_allow_html=True,
     )
 
@@ -1478,15 +1445,14 @@ with left_col:
     for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      bg = "rgba(255, 255, 255, 0.06)" if done else "rgba(255, 255, 255, 0.02)"
+      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
       border = (
-          "rgba(255, 255, 255, 0.25)" if done else "rgba(255, 255, 255, 0.08)"
+          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
       )
       with ach_cols[i % 3]:
         st.markdown(
             f"<div style='background:{bg}; border:1px solid {border};"
-            " border-radius:14px; padding:10px; margin:0 0 10px 0;"
-            " backdrop-filter:blur(16px);"
+            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
             f" min-height:92px;'><div"
             f" style='font-size:14px;font-weight:800'>{icon}"
             f" {info['name']}</div><div"
@@ -1506,7 +1472,7 @@ with left_col:
     st.session_state.selected_title = selected
 
   st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.08);'>",
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
@@ -1588,14 +1554,7 @@ with right_col:
                 bottom: 25px; 
                 left: 50%;
                 transform: translateX(-50%);
-                width: 88%;
-                padding: 16px 24px;
-                border-radius: 24px;
-                background: rgba(255, 255, 255, 0.03);
-                backdrop-filter: blur(32px) saturate(180%);
-                -webkit-backdrop-filter: blur(32px) saturate(180%);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 20px 40px rgba(0,0,0,0.3);
+                width: 100%;
                 text-align: center;
                 z-index: 100;
                 pointer-events: none;
@@ -1860,18 +1819,15 @@ with right_col:
                 }}
             }}
 
-            /* 고투명 유리 질감 메인 메시 적용 */
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
                 emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
-                metalness: 0.1,
-                roughness: 0.05,
-                transmission: 0.9,  /* 고투명 빛 투과 */
-                ior: 1.5,           /* 유리 굴절률 */
-                reflectivity: 0.9,
+                metalness: 0.9,
+                roughness: 0.1,
+                transmission: 0.6,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.35 : 0.75,
+                opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
@@ -1884,7 +1840,7 @@ with right_col:
                 emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
                 roughness: 0.02,
                 metalness: 0.95,
-                transmission: 0.85
+                transmission: 0.8
             }});
             const coreMesh = new THREE.Mesh(coreGeo, coreMat);
             objectGroup.add(coreMesh);
