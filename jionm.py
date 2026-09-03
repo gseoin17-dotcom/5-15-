@@ -113,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -126,7 +126,10 @@ SMELL_DB = {
         },
         1: {
             "name": "1단계 : 스쳐가는 지온냄새",
-            "desc": "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.",
+            "desc": (
+                "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운"
+                " 암내."
+            ),
             "price": 150,
             "color": "#718096",
             "tier": 1,
@@ -147,7 +150,9 @@ SMELL_DB = {
         },
         4: {
             "name": "4단계 : 진득한 지온냄새",
-            "desc": "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.",
+            "desc": (
+                "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새."
+            ),
             "price": 800,
             "color": "#319795",
             "tier": 1,
@@ -161,21 +166,27 @@ SMELL_DB = {
         },
         6: {
             "name": "6단계 : 풍부한 지온냄새",
-            "desc": "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.",
+            "desc": (
+                "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새."
+            ),
             "price": 3500,
             "color": "#3182ce",
             "tier": 2,
         },
         7: {
             "name": "7단계 : 압도적인 지온냄새",
-            "desc": "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.",
+            "desc": (
+                "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도."
+            ),
             "price": 6100,
             "color": "#2b6cb0",
             "tier": 2,
         },
         8: {
             "name": "8단계 : 폭발하는 지온냄새",
-            "desc": "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.",
+            "desc": (
+                "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄."
+            ),
             "price": 10000,
             "color": "#805ad5",
             "tier": 2,
@@ -436,35 +447,48 @@ SMELL_DB = {
         },
         3: {
             "name": "환생 3단계 : 쿼크 글루온 자이온 악취",
-            "desc": "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.",
+            "desc": (
+                "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급"
+                " 냄새."
+            ),
             "price": 15000000000,
             "color": "#ffaa00",
             "tier": 2,
         },
         4: {
             "name": "환생 4단계 : 차원왜곡 자이온 타임루프 찌든내 ",
-            "desc": "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.",
+            "desc": (
+                "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체."
+            ),
             "price": 35000000000,
             "color": "#9b2c2c",
             "tier": 2,
         },
         5: {
             "name": "환생 5단계 : 네메시스 자이온 다크매터",
-            "desc": "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.",
+            "desc": (
+                "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질."
+            ),
             "price": 80000000000,
             "color": "#38a169",
             "tier": 2,
         },
         6: {
             "name": "환생 6단계 : 메가 블랙홀 자이온 호라이즌",
-            "desc": "모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.",
+            "desc": (
+                "모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는"
+                " 경계선."
+            ),
             "price": 180000000000,
             "color": "#805ad5",
             "tier": 3,
         },
         7: {
             "name": "환생 7단계 : 감마선 버스트 자이온 플레어",
-            "desc": "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.",
+            "desc": (
+                "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적"
+                " 악취."
+            ),
             "price": 400000000000,
             "color": "#e53e3e",
             "tier": 3,
@@ -478,21 +502,29 @@ SMELL_DB = {
         },
         9: {
             "name": "환생 9단계 : 엘더블루 제네시스 자이온",
-            "desc": "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.",
+            "desc": (
+                "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源)"
+                " 냄새."
+            ),
             "price": 2000000000000,
             "color": "#0088ff",
             "tier": 4,
         },
         10: {
             "name": "환생 10단계 : 카이퍼 자이온 벨트 코스믹 더스트",
-            "desc": "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.",
+            "desc": (
+                "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취."
+            ),
             "price": 4500000000000,
             "color": "#cbd5e1",
             "tier": 4,
         },
         11: {
             "name": "환생 11단계 : 자이온오르트 클라우드 딥 프리즈",
-            "desc": "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.",
+            "desc": (
+                "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동"
+                " 체취."
+            ),
             "price": 10000000000000,
             "color": "#319795",
             "tier": 4,
@@ -506,49 +538,68 @@ SMELL_DB = {
         },
         13: {
             "name": "환생 13단계 : 마그네타 자이온자기장 폭풍",
-            "desc": "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.",
+            "desc": (
+                "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는"
+                " 자기장."
+            ),
             "price": 50000000000000,
             "color": "#7000ff",
             "tier": 5,
         },
         14: {
             "name": "환생 14단계 : 펄서 자이온로테이션 시그널",
-            "desc": "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.",
+            "desc": (
+                "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는"
+                " 중성자별."
+            ),
             "price": 120000000000000,
             "color": "#00ff66",
             "tier": 5,
         },
         15: {
             "name": "환생 15단계 : 웜홀 크로스오버 자이온 디멘션",
-            "desc": "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.",
+            "desc": (
+                "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다."
+            ),
             "price": 280000000000000,
             "color": "#ff00ea",
             "tier": 6,
         },
         16: {
             "name": "환생 16단계 : 스트링 시스코어 자이온 엠피리어",
-            "desc": "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.",
+            "desc": (
+                "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주"
+                " 진동음."
+            ),
             "price": 600000000000000,
             "color": "#ccff00",
             "tier": 6,
         },
         17: {
             "name": "환생 17단계 : 센타우루스 자이온 알파 코어",
-            "desc": "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.",
+            "desc": (
+                "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향."
+            ),
             "price": 1300000000000000,
             "color": "#ff6600",
             "tier": 6,
         },
         18: {
             "name": "환생 18단계 : 페가수스 자이온 별자리 네뷸라",
-            "desc": "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.",
+            "desc": (
+                "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운"
+                " 향."
+            ),
             "price": 3000000000000000,
             "color": "#00f0ff",
             "tier": 6,
         },
         19: {
             "name": "환생 19단계 : 자이온세인트 오메가 얼티밋 에센스",
-            "desc": "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.",
+            "desc": (
+                "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운"
+                " 냄새."
+            ),
             "price": 7000000000000000,
             "color": "#ffe600",
             "tier": 6,
@@ -562,14 +613,19 @@ SMELL_DB = {
         },
         21: {
             "name": "환생 21단계 : 자이온트랜스센던탈 앱솔루트 가디언",
-            "desc": "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.",
+            "desc": (
+                "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의"
+                " 경지."
+            ),
             "price": 35000000000000000,
             "color": "#ffffff",
             "tier": 6,
         },
         22: {
             "name": "환생 22단계 : 하이퍼 자이온 디바인 코어",
-            "desc": "자이온이라는 존재 자체가 우주의 신성한 법칙으로 등극한 상태.",
+            "desc": (
+                "자이온이라는 존재 자체가 우주의 신성한 법칙으로 등용한 상태."
+            ),
             "price": 80000000000000000,
             "color": "#7b00ff",
             "tier": 6,
@@ -669,7 +725,7 @@ CRITICAL_RATE = 0.05
 PITY_MAX = 4
 
 # -----------------------------------------------------------------------------
-# 업적 / 칭호 시스템 (각각 다른 고유 칭호로 설정)
+# 업적 / 칭호 시스템
 # -----------------------------------------------------------------------------
 ACHIEVEMENTS = {
     "first_enhance": {
@@ -925,6 +981,7 @@ if "season_data" not in st.session_state:
   st.session_state.season_data = {
       1: {
           "level": 0,
+          "prev_level": 0,
           "max_level": 0,
           "money": 1000000,
           "status": "READY",
@@ -941,6 +998,7 @@ if "season_data" not in st.session_state:
       },
       2: {
           "level": 0,
+          "prev_level": 0,
           "max_level": 0,
           "money": 1000000000,
           "status": "READY",
@@ -963,6 +1021,7 @@ def sync_session_state(target_season):
   data = st.session_state.season_data[target_season]
 
   st.session_state.level = data["level"]
+  st.session_state.prev_level = data.get("prev_level", data["level"])
   st.session_state.max_level = data["max_level"]
   st.session_state.money = data["money"]
   st.session_state.status = data["status"]
@@ -979,6 +1038,7 @@ def sync_session_state(target_season):
 def save_current_season_state():
   s = 2 if st.session_state.get("is_rebirth", False) else 1
   st.session_state.season_data[s]["level"] = st.session_state.level
+  st.session_state.season_data[s]["prev_level"] = st.session_state.prev_level
   st.session_state.season_data[s]["max_level"] = st.session_state.max_level
   st.session_state.season_data[s]["money"] = st.session_state.money
   st.session_state.season_data[s]["status"] = st.session_state.status
@@ -1019,6 +1079,7 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
+  st.session_state.prev_level = curr  # 이전 단계 저장
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -1092,6 +1153,7 @@ def sell():
     st.session_state.money = float("inf")
   else:
     st.session_state.money += price_val
+  st.session_state.prev_level = curr
   st.session_state.level = 0
   st.session_state.status = "READY"
   save_current_season_state()
@@ -1109,11 +1171,6 @@ def trigger_rebirth():
 # -----------------------------------------------------------------------------
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
-st.markdown(
-    f"""
-""",
-    unsafe_allow_html=True,
-)
 st.markdown(
     """
     <style>
@@ -1239,7 +1296,7 @@ with left_col:
   st.markdown(
       f"<div style='font-size:12px; color:#cbd5e1;"
       f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
-      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
       f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
       f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
       f" style='color:#94a3b8;'>{hold_p}%</b></div>",
@@ -1328,6 +1385,7 @@ with left_col:
       elif st.session_state.tears >= 20:
         st.session_state.tears -= 20
         add_lvl = random.choice([1, 2, 3])
+        st.session_state.prev_level = st.session_state.level
         st.session_state.level = min(
             max_lvl, st.session_state.level + add_lvl
         )
@@ -1341,7 +1399,7 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
         unsafe_allow_html=True,
     )
 
@@ -1395,6 +1453,7 @@ with left_col:
           else:
             st.session_state.money -= w_price
             st.session_state.warp_uses += 1
+            st.session_state.prev_level = st.session_state.level
             st.session_state.level = w_level
             if w_level > st.session_state.max_level:
               st.session_state.max_level = w_level
@@ -1418,6 +1477,7 @@ with left_col:
         use_container_width=True,
         disabled=(st.session_state.level >= max_lvl),
     ):
+      st.session_state.prev_level = st.session_state.level
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
       if st.session_state.level > st.session_state.max_level:
@@ -1510,6 +1570,7 @@ with left_col:
 
 with right_col:
   current_level = st.session_state.level
+  prev_level = getattr(st.session_state, "prev_level", current_level)
   max_lvl = 25 if st.session_state.is_rebirth else 35
   curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
   card_color = curr_data["color"]
@@ -1521,6 +1582,17 @@ with right_col:
   )
   tier = curr_data["tier"]
   status = st.session_state.status
+
+  # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
+  target_last_lvl = max_lvl - 1
+  is_last_attempt = (
+      prev_level == target_last_lvl
+      and status
+      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
+  ) or (
+      current_level == max_lvl
+      and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
+  )
 
   three_js_code = f"""
     <!DOCTYPE html>
@@ -1559,7 +1631,7 @@ with right_col:
                 z-index: 100;
                 pointer-events: none;
                 opacity: 1;
-                transition: opacity 0.1s ease-in-out;
+                transition: opacity 0.3s ease-in-out;
             }}
 
             .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
@@ -1586,12 +1658,42 @@ with right_col:
             .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
             .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
             .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+
+            /* 연출용 찰나의 화면 비치는 광원 덮개 */
+            #flashOverlay {{
+                position: absolute;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: white;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 200;
+                transition: opacity 0.1s ease-out;
+            }}
+
+            /* 마지막 연출 시 카운트다운/경고 배너 */
+            #chargeText {{
+                position: absolute;
+                top: 45%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 38px;
+                font-weight: 900;
+                color: #ff0055;
+                text-shadow: 0 0 25px #ff0055, 0 0 50px #ffffff;
+                letter-spacing: 4px;
+                z-index: 150;
+                pointer-events: none;
+                display: none;
+                text-align: center;
+            }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
         <div id="container"></div>
+        <div id="flashOverlay"></div>
+        <div id="chargeText">⚡ 시공간 특이점 응축 중... ⚡</div>
         <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
@@ -1607,6 +1709,7 @@ with right_col:
             const maxLvl = {max_lvl};
             const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
             const status = "{status}";
+            const isLastAttempt = {"true" if is_last_attempt else "false"};
             const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
 
             if (currentLevel >= 15 || isFinalSuccess) {{
@@ -1617,57 +1720,63 @@ with right_col:
             }}
 
             const statusText = document.getElementById('statusText');
+            const cinematicUi = document.getElementById('cinematicUi');
+            const chargeText = document.getElementById('chargeText');
+            const flashOverlay = document.getElementById('flashOverlay');
             const tierColor = "{card_color}";
             let statusColor = "#38bdf8";
             let particleSize = 0.25;
             let particleSpeed = 0.6;
             let glowIntensity = 12;
 
-            if (isFinalSuccess) {{
-                statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
-                statusColor = "#ffffff";
-                particleSize = 0.6;
-                particleSpeed = 2.5;
-                glowIntensity = 50;
-            }} else if (status === "CRITICAL") {{
-                statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
-                statusColor = "#ffffff"; 
-                particleSize = 0.35;
-                particleSpeed = 1.2;
-                glowIntensity = 22;
-            }} else if (status === "PITY_SUCCESS") {{
-                statusText.innerText = "✨ 지온이의 가오 발동! (천장 100% 성공) ✨";
-                statusColor = "#fde68a";
-                particleSize = 0.3;
-                particleSpeed = 1.0;
-                glowIntensity = 20;
-            }} else if (status === "SUCCESS") {{
-                statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
-                statusColor = tierColor;
-                particleSize = 0.28;
-                particleSpeed = 0.8;
-                glowIntensity = 16;
-            }} else if (status === "SHIELD_SAVED") {{
-                statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
-                statusColor = "#60a5fa";
-            }} else if (status === "DESTROYED") {{
-                statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
-                statusColor = "#ff0000";
-                particleSpeed = 2.0;
-            }} else if (status === "FAILED") {{
-                statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
-                statusColor = "#64748b";
-                particleSpeed = 0.3;
-                glowIntensity = 5;
-            }} else if (status === "HOLD") {{
-                statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
-                statusColor = "#94a3b8";
-                particleSpeed = 0.4;
-            }} else {{
-                statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
+            function applyStatusText() {{
+                if (isFinalSuccess) {{
+                    statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
+                    statusColor = "#ffffff";
+                    particleSize = 0.6;
+                    particleSpeed = 2.5;
+                    glowIntensity = 50;
+                }} else if (status === "CRITICAL") {{
+                    statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
+                    statusColor = "#ffffff"; 
+                    particleSize = 0.35;
+                    particleSpeed = 1.2;
+                    glowIntensity = 22;
+                }} else if (status === "PITY_SUCCESS") {{
+                    statusText.innerText = "✨ 지온이의 가오 발동! (천장 100% 성공) ✨";
+                    statusColor = "#fde68a";
+                    particleSize = 0.3;
+                    particleSpeed = 1.0;
+                    glowIntensity = 20;
+                }} else if (status === "SUCCESS") {{
+                    statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
+                    statusColor = tierColor;
+                    particleSize = 0.28;
+                    particleSpeed = 0.8;
+                    glowIntensity = 16;
+                }} else if (status === "SHIELD_SAVED") {{
+                    statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
+                    statusColor = "#60a5fa";
+                }} else if (status === "DESTROYED") {{
+                    statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
+                    statusColor = "#ff0000";
+                    particleSpeed = 2.0;
+                }} else if (status === "FAILED") {{
+                    statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
+                    statusColor = "#64748b";
+                    particleSpeed = 0.3;
+                    glowIntensity = 5;
+                }} else if (status === "HOLD") {{
+                    statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
+                    statusColor = "#94a3b8";
+                    particleSpeed = 0.4;
+                }} else {{
+                    statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
+                }}
+                statusText.style.color = statusColor;
             }}
-            
-            statusText.style.color = statusColor;
+
+            applyStatusText();
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1709,7 +1818,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = isFinalSuccess ? 1200 : 500;
+            const particleCount = isFinalSuccess ? 1500 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1847,95 +1956,179 @@ with right_col:
 
             scene.add(objectGroup);
 
-            const tl = gsap.timeline();
+            // -----------------------------------------------------------------
+            // 애니메이션 연출 로직 (마지막 단계 강화 시 3초 딜레이 모션 연출)
+            // -----------------------------------------------------------------
+            const mainTl = gsap.timeline();
 
-            if (status === "DESTROYED") {{
-                outerMesh.visible = false;
-                coreMesh.visible = false;
+            if (isLastAttempt) {{
+                // 1) UI 잠시 숨기기 & 충전 텍스트 표출
+                cinematicUi.style.opacity = "0";
+                chargeText.style.display = "block";
 
-                pointLight.color.set("#ff0000");
-                pointLight.intensity = 80;
+                // 코어 비주얼 초기화 (충전 준비)
+                objectGroup.scale.set(0.6, 0.6, 0.6);
+                pointLight.intensity = 5;
 
-                const shardCount = 180;
-                const shards = [];
-                const shardGroup = new THREE.Group();
-                shardGroup.position.y = -0.7;
-
-                for(let i=0; i<shardCount; i++) {{
-                    const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
-                    const sMat = new THREE.MeshStandardMaterial({{
-                        color: tierColor,
-                        roughness: 0.1,
-                        metalness: 0.9,
-                        emissive: "#ff2200",
-                        emissiveIntensity: 2.5
-                    }});
-                    const shard = new THREE.Mesh(sGeo, sMat);
-                    shard.position.set(0, 0, 0);
-                    
-                    const u = Math.random();
-                    const v = Math.random();
-                    const theta = u * 2.0 * Math.PI;
-                    const phi = Math.acos(2.0 * v - 1.0);
-                    const speed = 4.0 + Math.random() * 8.0;
-                    
-                    shard.userData = {{
-                        vx: speed * Math.sin(phi) * Math.cos(theta),
-                        vy: speed * Math.sin(phi) * Math.sin(theta),
-                        vz: speed * Math.cos(phi),
-                        rx: (Math.random() - 0.5) * 30,
-                        ry: (Math.random() - 0.5) * 30
-                    }};
-
-                    shardGroup.add(shard);
-                    shards.push(shard);
-                }}
-                scene.add(shardGroup);
-
-                tl.to(shardGroup.position, {{
+                // 2) 3초 동안 시공간 팽창 / 카메라 줌인 / 고속 회전 및 미친 진동
+                mainTl.to(chargeText, {{
                     duration: 0.5,
-                    ease: "power2.out",
-                    onUpdate: function() {{
-                        const progress = this.progress();
-                        shards.forEach(s => {{
-                            s.position.x += s.userData.vx * 0.02;
-                            s.position.y += s.userData.vy * 0.02 - 0.04;
-                            s.position.z += s.userData.vz * 0.02;
-                            s.rotation.x += s.userData.rx * 0.02;
-                            s.rotation.y += s.userData.ry * 0.02;
-                            s.material.opacity = 1.0 - progress;
-                            s.material.transparent = true;
-                        }});
-                    }}
-                }});
-            }} else {{
-                const maxScale = isFinalSuccess ? 1.8 : 1.3;
-                tl.to(objectGroup.scale, {{
-                    x: maxScale, y: maxScale, z: maxScale,
-                    duration: 0.12,
+                    repeat: 5,
+                    yoyo: true,
+                    opacity: 0.3,
                     ease: "power1.inOut"
-                }})
-                .to(objectGroup.scale, {{
-                    x: 1.0, y: 1.0, z: 1.0,
-                    duration: 0.12,
-                    ease: "power1.out"
-                }});
+                }}, 0);
 
+                mainTl.to(camera.position, {{
+                    z: 5.5,
+                    duration: 2.8,
+                    ease: "power2.in"
+                }}, 0);
+
+                mainTl.to(objectGroup.scale, {{
+                    x: 2.2, y: 2.2, z: 2.2,
+                    duration: 2.8,
+                    ease: "power3.in"
+                }}, 0);
+
+                mainTl.to(pointLight, {{
+                    intensity: 100,
+                    duration: 2.8,
+                    ease: "power3.in"
+                }}, 0);
+
+                // 카메라 & 코어 격렬한 진동
                 const basePosY = -0.7;
-                tl.to(objectGroup.position, {{
-                    duration: 0.25,
+                mainTl.to(objectGroup.position, {{
+                    duration: 2.8,
                     onUpdate: function() {{
                         const p = this.progress();
-                        const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
-                        objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
-
-                        objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
-                        objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
+                        const shake = p * 0.45; // 시간이 지날수록 격렬해짐
+                        objectGroup.position.x = (Math.random() - 0.5) * shake;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
+                        objectGroup.position.z = (Math.random() - 0.5) * shake;
+                        objectGroup.rotation.x += shake * 0.3;
+                        objectGroup.rotation.y += shake * 0.5;
                     }}
                 }}, 0);
+
+                // 3) 2.8초 시점에 극적인 섬광 효과 (Flash explosion)
+                mainTl.to(flashOverlay, {{
+                    opacity: 1.0,
+                    duration: 0.15,
+                    ease: "power4.in",
+                    onComplete: function() {{
+                        chargeText.style.display = "none";
+                        cinematicUi.style.opacity = "1";
+                        camera.position.set(0, 0.6, 10.0);
+                        
+                        // 결과 연출 시작 (파괴 or 성공 or 실패)
+                        triggerResultAnimation();
+                    }}
+                }}, 2.8);
+
+                mainTl.to(flashOverlay, {{
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out"
+                }}, 2.95);
+
+            }} else {{
+                // 일반 단계 시도 시 즉시 결과 연출
+                triggerResultAnimation();
+            }}
+
+            function triggerResultAnimation() {{
+                const resultTl = gsap.timeline();
+
+                if (status === "DESTROYED") {{
+                    outerMesh.visible = false;
+                    coreMesh.visible = false;
+
+                    pointLight.color.set("#ff0000");
+                    pointLight.intensity = 100;
+
+                    const shardCount = 250;
+                    const shards = [];
+                    const shardGroup = new THREE.Group();
+                    shardGroup.position.y = -0.7;
+
+                    for(let i=0; i<shardCount; i++) {{
+                        const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
+                        const sMat = new THREE.MeshStandardMaterial({{
+                            color: tierColor,
+                            roughness: 0.1,
+                            metalness: 0.9,
+                            emissive: "#ff2200",
+                            emissiveIntensity: 3.5
+                        }});
+                        const shard = new THREE.Mesh(sGeo, sMat);
+                        shard.position.set(0, 0, 0);
+                        
+                        const u = Math.random();
+                        const v = Math.random();
+                        const theta = u * 2.0 * Math.PI;
+                        const phi = Math.acos(2.0 * v - 1.0);
+                        const speed = 6.0 + Math.random() * 12.0;
+                        
+                        shard.userData = {{
+                            vx: speed * Math.sin(phi) * Math.cos(theta),
+                            vy: speed * Math.sin(phi) * Math.sin(theta),
+                            vz: speed * Math.cos(phi),
+                            rx: (Math.random() - 0.5) * 40,
+                            ry: (Math.random() - 0.5) * 40
+                        }};
+
+                        shardGroup.add(shard);
+                        shards.push(shard);
+                    }}
+                    scene.add(shardGroup);
+
+                    resultTl.to(shardGroup.position, {{
+                        duration: 0.8,
+                        ease: "power2.out",
+                        onUpdate: function() {{
+                            const progress = this.progress();
+                            shards.forEach(s => {{
+                                s.position.x += s.userData.vx * 0.02;
+                                s.position.y += s.userData.vy * 0.02 - 0.03;
+                                s.position.z += s.userData.vz * 0.02;
+                                s.rotation.x += s.userData.rx * 0.02;
+                                s.rotation.y += s.userData.ry * 0.02;
+                                s.material.opacity = 1.0 - progress;
+                                s.material.transparent = true;
+                            }});
+                        }}
+                    }});
+                }} else {{
+                    const maxScale = isFinalSuccess ? 2.0 : 1.3;
+                    resultTl.to(objectGroup.scale, {{
+                        x: maxScale, y: maxScale, z: maxScale,
+                        duration: 0.2,
+                        ease: "back.out(2)"
+                    }})
+                    .to(objectGroup.scale, {{
+                        x: 1.0, y: 1.0, z: 1.0,
+                        duration: 0.25,
+                        ease: "power2.out"
+                    }});
+
+                    const basePosY = -0.7;
+                    resultTl.to(objectGroup.position, {{
+                        duration: 0.35,
+                        onUpdate: function() {{
+                            const p = this.progress();
+                            const shakeIntensity = (isFinalSuccess ? 0.45 : 0.12) * Math.sin(p * Math.PI);
+                            objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
+                            objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
+                            objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
+
+                            objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
+                            objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
+                            objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
+                        }}
+                    }}, 0);
+                }}
             }}
 
             const clock = new THREE.Clock();
@@ -1945,14 +2138,14 @@ with right_col:
                 const time = clock.getElapsedTime();
 
                 if (status !== "DESTROYED") {{
-                    const rotSpeed = isFinalSuccess ? 1.8 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
+                    const rotSpeed = isFinalSuccess ? 2.2 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
                     outerMesh.rotation.x += 0.005 * rotSpeed;
                     outerMesh.rotation.y += 0.008 * rotSpeed;
                     coreMesh.rotation.x -= 0.01 * rotSpeed;
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
                     if (isFinalSuccess) {{
-                        objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
+                        objectGroup.rotation.z = Math.sin(time * 2.5) * 0.2;
                     }}
                 }}
 
