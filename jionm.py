@@ -1667,24 +1667,7 @@ with right_col:
                 opacity: 0;
                 pointer-events: none;
                 z-index: 200;
-                transition: opacity 0.1s ease-out;
-            }}
-
-            /* 마지막 연출 시 카운트다운/경고 배너 */
-            #chargeText {{
-                position: absolute;
-                top: 45%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 38px;
-                font-weight: 900;
-                color: #ff0055;
-                text-shadow: 0 0 25px #ff0055, 0 0 50px #ffffff;
-                letter-spacing: 4px;
-                z-index: 150;
-                pointer-events: none;
-                display: none;
-                text-align: center;
+                transition: opacity 0.15s ease-out;
             }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1693,7 +1676,6 @@ with right_col:
     <body>
         <div id="container"></div>
         <div id="flashOverlay"></div>
-        <div id="chargeText">⚡ 시공간 특이점 응축 중... ⚡</div>
         <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
@@ -1721,7 +1703,6 @@ with right_col:
 
             const statusText = document.getElementById('statusText');
             const cinematicUi = document.getElementById('cinematicUi');
-            const chargeText = document.getElementById('chargeText');
             const flashOverlay = document.getElementById('flashOverlay');
             const tierColor = "{card_color}";
             let statusColor = "#38bdf8";
@@ -1818,7 +1799,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = isFinalSuccess ? 1500 : 500;
+            const particleCount = isFinalSuccess ? 2000 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1957,81 +1938,87 @@ with right_col:
             scene.add(objectGroup);
 
             // -----------------------------------------------------------------
-            // 애니메이션 연출 로직 (마지막 단계 강화 시 3초 딜레이 모션 연출)
+            // 애니메이션 연출 로직 (마지막 단계 강화 시 5초간 길고 화려한 시네마틱)
             // -----------------------------------------------------------------
             const mainTl = gsap.timeline();
 
             if (isLastAttempt) {{
-                // 1) UI 잠시 숨기기 & 충전 텍스트 표출
+                // UI 잠시 숨기기
                 cinematicUi.style.opacity = "0";
-                chargeText.style.display = "block";
 
-                // 코어 비주얼 초기화 (충전 준비)
-                objectGroup.scale.set(0.6, 0.6, 0.6);
+                // 연출 초기화
+                objectGroup.scale.set(0.5, 0.5, 0.5);
                 pointLight.intensity = 5;
 
-                // 2) 3초 동안 시공간 팽창 / 카메라 줌인 / 고속 회전 및 미친 진동
-                mainTl.to(chargeText, {{
-                    duration: 0.5,
-                    repeat: 5,
-                    yoyo: true,
-                    opacity: 0.3,
-                    ease: "power1.inOut"
-                }}, 0);
-
+                // 5초간 화려한 진동, 카메라 서서히 줌인, 오브젝트 수퍼 스케일업 & 초고속 회전 연출
                 mainTl.to(camera.position, {{
-                    z: 5.5,
-                    duration: 2.8,
-                    ease: "power2.in"
+                    z: 4.2,
+                    duration: 4.8,
+                    ease: "power3.in"
                 }}, 0);
 
                 mainTl.to(objectGroup.scale, {{
-                    x: 2.2, y: 2.2, z: 2.2,
-                    duration: 2.8,
+                    x: 3.5, y: 3.5, z: 3.5,
+                    duration: 4.8,
                     ease: "power3.in"
                 }}, 0);
 
                 mainTl.to(pointLight, {{
-                    intensity: 100,
-                    duration: 2.8,
-                    ease: "power3.in"
+                    intensity: 200,
+                    duration: 4.8,
+                    ease: "power4.in"
                 }}, 0);
 
-                // 카메라 & 코어 격렬한 진동
+                // 빛의 서라운드 라이트 컬러 왜곡 (무지개빛 색상 트랜지션)
+                const colors = ["#ff0055", "#00ffff", "#ffaa00", "#7000ff", "#ffffff"];
+                colors.forEach((col, idx) => {{
+                    mainTl.to(pointLight.color, {{
+                        r: new THREE.Color(col).r,
+                        g: new THREE.Color(col).g,
+                        b: new THREE.Color(col).b,
+                        duration: 0.9,
+                        ease: "linear"
+                    }}, idx * 0.9);
+                }});
+
+                // 카메라 & 코어 가속 및 극적인 시공간 시각적 왜곡 진동
                 const basePosY = -0.7;
                 mainTl.to(objectGroup.position, {{
-                    duration: 2.8,
+                    duration: 4.8,
                     onUpdate: function() {{
-                        const p = this.progress();
-                        const shake = p * 0.45; // 시간이 지날수록 격렬해짐
+                        const p = this.progress(); // 0 ~ 1
+                        const shake = Math.pow(p, 2) * 0.8; // 진행될수록 가속되는 진동 폭
                         objectGroup.position.x = (Math.random() - 0.5) * shake;
                         objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
                         objectGroup.position.z = (Math.random() - 0.5) * shake;
-                        objectGroup.rotation.x += shake * 0.3;
-                        objectGroup.rotation.y += shake * 0.5;
+
+                        // 회전 가속 연출
+                        const speedMult = 1 + p * 15;
+                        objectGroup.rotation.x += 0.05 * speedMult;
+                        objectGroup.rotation.y += 0.08 * speedMult;
+                        objectGroup.rotation.z += 0.03 * speedMult;
                     }}
                 }}, 0);
 
-                // 3) 2.8초 시점에 극적인 섬광 효과 (Flash explosion)
+                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
                 mainTl.to(flashOverlay, {{
                     opacity: 1.0,
-                    duration: 0.15,
+                    duration: 0.2,
                     ease: "power4.in",
                     onComplete: function() {{
-                        chargeText.style.display = "none";
                         cinematicUi.style.opacity = "1";
                         camera.position.set(0, 0.6, 10.0);
                         
-                        // 결과 연출 시작 (파괴 or 성공 or 실패)
+                        // 결과 연출 (파괴 or 성공 or 실패)
                         triggerResultAnimation();
                     }}
-                }}, 2.8);
+                }}, 4.8);
 
                 mainTl.to(flashOverlay, {{
                     opacity: 0,
-                    duration: 0.8,
+                    duration: 1.0,
                     ease: "power2.out"
-                }}, 2.95);
+                }}, 5.0);
 
             }} else {{
                 // 일반 단계 시도 시 즉시 결과 연출
