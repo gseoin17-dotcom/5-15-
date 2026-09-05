@@ -1195,6 +1195,64 @@ st.markdown(
     .game-kicker { font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#67e8f9;font-weight:900; }
     .game-title { font-size:30px;font-weight:950;letter-spacing:-1px;margin:2px 0 3px;text-shadow:0 4px 18px rgba(0,0,0,.55); }
     .game-sub { font-size:12px;color:#94a3b8;font-weight:650; }
+    .core-status-row{
+        margin-top:16px;
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px;
+        max-width:820px;
+    }
+    .core-status-card{
+        position:relative;
+        min-height:72px;
+        padding:13px 16px;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:18px;
+        background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025)),rgba(8,12,24,.68);
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 28px rgba(0,0,0,.24),0 0 24px rgba(80,120,255,.06);
+        transform:translateZ(0);
+        overflow:hidden;
+    }
+    .core-status-card::before{
+        content:"";
+        position:absolute;
+        inset:-40% -20%;
+        background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);
+        transform:translateX(-65%);
+        animation:statusSweep 5.5s ease-in-out infinite;
+        pointer-events:none;
+    }
+    .core-status-label{
+        display:block;
+        font-size:10px;
+        letter-spacing:.16em;
+        color:rgba(210,220,245,.55);
+        font-weight:800;
+    }
+    .core-status-value{
+        display:inline-block;
+        margin-top:5px;
+        font-size:22px;
+        line-height:1;
+        font-weight:950;
+        letter-spacing:-.03em;
+        text-shadow:0 0 18px rgba(130,170,255,.24);
+    }
+    .core-status-unit{
+        margin-left:5px;
+        font-size:10px;
+        color:rgba(190,205,235,.48);
+        font-weight:800;
+        letter-spacing:.12em;
+    }
+    @keyframes statusSweep{
+        0%,55%{transform:translateX(-65%)}
+        75%,100%{transform:translateX(65%)}
+    }
+    @media (max-width:760px){
+        .core-status-row{grid-template-columns:1fr;}
+    }
+
     .hud-chip { display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:800;color:#cbd5e1;box-shadow:inset 0 1px rgba(255,255,255,.10);animation:uiFloat 3.2s ease-in-out infinite; }
     @keyframes uiFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)} }
     </style>
@@ -1202,7 +1260,23 @@ st.markdown(
 )
 
 st.markdown(
-    f"""<div class=\"game-header\"><div class=\"game-kicker\">ZION // ENHANCEMENT CORE</div><div class=\"game-title\">지온냄새 강화 시스템</div><div class=\"game-sub\">입체 코어 · 탄성 모션 · 시즌 기반 강화 인터페이스</div><div style=\"margin-top:11px;display:flex;gap:7px;flex-wrap:wrap\"><span class=\"hud-chip\">⚡ {st.session_state.level}단계</span><span class=\"hud-chip\">🏷️ {st.session_state.selected_title}</span><span class=\"hud-chip\">{'🌀 시즌 2' if st.session_state.is_rebirth else '🌌 시즌 1'}</span></div></div>""",unsafe_allow_html=True,
+    f"""<div class=\"game-header\"><div class=\"game-kicker\">ZION // ENHANCEMENT CORE</div><div class=\"game-title\">지온냄새 강화 시스템</div><div class=\"game-sub\">입체 코어 · 탄성 모션 · 시즌 기반 강화 인터페이스</div><div class="core-status-row">
+    <div class="core-status-card">
+        <span class="core-status-label">CURRENT POWER</span>
+        <span class="core-status-value">{st.session_state.level}</span>
+        <span class="core-status-unit">LV</span>
+    </div>
+    <div class="core-status-card">
+        <span class="core-status-label">SUCCESS RATE</span>
+        <span class="core-status-value">{int(PROB_TABLE.get(st.session_state.level, {}).get("success", 0) * 100)}%</span>
+        <span class="core-status-unit">CHANCE</span>
+    </div>
+    <div class="core-status-card">
+        <span class="core-status-label">CORE STATE</span>
+        <span class="core-status-value">{'AWAKENED' if st.session_state.is_rebirth else 'ONLINE'}</span>
+        <span class="core-status-unit">{'S2' if st.session_state.is_rebirth else 'S1'}</span>
+    </div>
+</div></div>""",unsafe_allow_html=True,
 )
 
 
