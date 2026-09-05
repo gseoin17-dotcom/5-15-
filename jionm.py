@@ -886,26 +886,6 @@ ACHIEVEMENTS = {
     },
 }
 
-TITLE_THEMES = {
-    "꼬마 킁킁이": ("#22d3ee", "#0e7490", "#083344", "🫧"), "구린내 수련생": ("#a3e635", "#4d7c0f", "#1a2e05", "🌿"),
-    "베테랑 후각러": ("#60a5fa", "#1d4ed8", "#172554", "🎯"), "악취 마스터": ("#f97316", "#c2410c", "#431407", "🔥"),
-    "디 오리지널 지온": ("#facc15", "#a16207", "#422006", "👑"), "추락의 전설": ("#94a3b8", "#475569", "#0f172a", "☄️"),
-    "차원 여행자": ("#c084fc", "#7e22ce", "#2e1065", "🌀"), "각성한 자이온": ("#2dd4bf", "#0f766e", "#042f2e", "⚡"),
-    "폭주의 자이온": ("#fb7185", "#be123c", "#4c0519", "💢"), "TRUE REBIRTH": ("#f0abfc", "#c026d3", "#4a044e", "♾️"),
-    "워프 개척자": ("#38bdf8", "#0369a1", "#082f49", "🚀"), "차원 도약자": ("#818cf8", "#4338ca", "#1e1b4b", "🌌"),
-    "우주의 선택": ("#fde047", "#ca8a04", "#422006", "✦"), "냄새 상인": ("#34d399", "#047857", "#022c22", "💰"),
-    "망치 중독자": ("#fbbf24", "#d97706", "#451a03", "🔨"), "단련의 신": ("#f8fafc", "#64748b", "#111827", "⚔️"),
-    "입문 코끝러": ("#67e8f9", "#0891b2", "#083344", "👃"), "향기 수집가": ("#86efac", "#16a34a", "#052e16", "🍃"),
-    "악취 지배자": ("#f472b6", "#db2777", "#500724", "☠️"), "자이온 견습생": ("#93c5fd", "#2563eb", "#172554", "🔷"),
-    "자이온 숙련자": ("#a78bfa", "#6d28d9", "#2e1065", "💠"), "공간의 지배자": ("#e879f9", "#a21caf", "#4a044e", "🛸"),
-    "강화의 초월자": ("#fef08a", "#ea580c", "#431407", "🌠"), "지온 재벌": ("#fcd34d", "#b45309", "#451a03", "💎"),
-    "전설의 상인": ("#5eead4", "#0f766e", "#042f2e", "🏪"), "불굴의 지온": ("#f87171", "#991b1b", "#450a0a", "🛡️"),
-}
-
-def get_title_theme(title):
-    return TITLE_THEMES.get(title, ("#a78bfa", "#6d28d9", "#111827", "🏷️"))
-
-
 TITLE_DEFAULT = "칭호 없음"
 
 
@@ -1525,21 +1505,20 @@ with left_col:
     for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      accent, accent2, deep, title_icon = get_title_theme(info["title"])
-      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
-            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
-      border = accent if done else "rgba(148,163,184,.22)"
+      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
+      border = (
+          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      )
       with ach_cols[i % 3]:
         st.markdown(
-            f"<div style='background:{bg};border:1px solid {border};"
-            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
-            f"margin:0 0 10px 0;min-height:116px;'>"
-            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
-            f"{'UNLOCKED' if done else 'LOCKED'}</div>"
-            f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{title_icon} {info['name']}</div>"
-            f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
-            f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
-            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
+            f"<div style='background:{bg}; border:1px solid {border};"
+            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
+            f" min-height:92px;'><div"
+            f" style='font-size:14px;font-weight:800'>{icon}"
+            f" {info['name']}</div><div"
+            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
+            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
+            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
             unsafe_allow_html=True,
         )
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
@@ -1551,15 +1530,6 @@ with left_col:
         index=options.index(st.session_state.selected_title),
     )
     st.session_state.selected_title = selected
-    t_accent, t_accent2, t_deep, t_icon = get_title_theme(selected)
-    st.markdown(
-        f"<div style='margin-top:10px;padding:14px 16px;border-radius:16px;"
-        f"background:linear-gradient(135deg,{t_deep},{t_accent2}55,#020617);"
-        f"border:1px solid {t_accent};box-shadow:0 0 24px {t_accent}25;'>"
-        f"<div style='font-size:10px;letter-spacing:2px;color:#94a3b8'>EQUIPPED TITLE</div>"
-        f"<div style='font-size:20px;font-weight:900;color:{t_accent};margin-top:4px'>{t_icon} {selected}</div></div>",
-        unsafe_allow_html=True,
-    )
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1573,25 +1543,30 @@ with left_col:
   )
 
   max_lvl = 25 if st.session_state.is_rebirth else 35
-  action_enhance, action_sell = st.columns(2, gap="small")
-  with action_enhance:
-    if st.button("🔥 강화하기", use_container_width=True, disabled=(st.session_state.level >= max_lvl)):
-      cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
-      if st.session_state.money < cost:
-        st.error("강화 비용 부족!")
-      else:
-        st.session_state.enhance_attempts += 1
-        run_enhance()
-        check_achievements()
-        save_current_season_state()
-        st.rerun()
-  with action_sell:
-    sell_price = SMELL_DB[st.session_state.is_rebirth][st.session_state.level]["price"]
-    if st.button(f"💰 판매하기  +{format_gold(sell_price)}", use_container_width=True, disabled=(st.session_state.level == 0)):
-      sell()
-      unlock_achievement("seller")
+  if st.button(
+      "🔥 냄새 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= max_lvl),
+  ):
+    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+    if st.session_state.money < cost:
+      st.error("강화 비용 부족!")
+    else:
+      st.session_state.enhance_attempts += 1
+      run_enhance()
       check_achievements()
+      save_current_season_state()
       st.rerun()
+
+  st.write("")
+  if st.button(
+      "💰 현재 냄새 판매",
+      use_container_width=True,
+      disabled=(st.session_state.level == 0),
+  ):
+    sell()
+    unlock_achievement("seller")
+    st.rerun()
 
 with right_col:
   current_level = st.session_state.level
