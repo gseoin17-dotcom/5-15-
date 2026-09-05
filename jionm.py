@@ -1174,34 +1174,37 @@ def trigger_rebirth():
 st.markdown(
     """
     <style>
-    /* Apple-inspired Liquid Glass UI */
-    :root { --glass: rgba(255,255,255,.10); --glass-strong: rgba(255,255,255,.16); --stroke: rgba(255,255,255,.22); }
-    .stApp {
-        background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.24), transparent 32%),
-                    radial-gradient(circle at 85% 75%, rgba(180,100,255,.20), transparent 34%),
-                    linear-gradient(135deg,#070b16,#101827 55%,#070a12);
-        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    }
-    .block-container { padding-top: 3.2rem !important; padding-bottom:2rem !important; max-width:94% !important; }
-    .element-container, .stMarkdown { background:transparent !important; }
-    div.stButton > button {
-        border:1px solid var(--stroke) !important; border-radius:16px !important;
-        padding:11px 16px !important; font-weight:650 !important; color:#fff !important;
-        background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.06)) !important;
-        backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
-        box-shadow:inset 0 1px rgba(255,255,255,.20),0 10px 30px rgba(0,0,0,.22) !important;
-        transition:transform .2s ease,background .2s ease,box-shadow .2s ease !important;
-    }
-    div.stButton > button:hover { transform:translateY(-1px) scale(1.01); background:rgba(255,255,255,.20) !important; box-shadow:inset 0 1px rgba(255,255,255,.3),0 14px 35px rgba(0,0,0,.28) !important; }
-    div.stButton > button:active { transform:scale(.98); }
-    [data-testid="stTabs"] button { border-radius:14px !important; }
-    [data-testid="stTabs"] [aria-selected="true"] { background:rgba(255,255,255,.13) !important; backdrop-filter:blur(18px); }
-    [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
-    hr { border-color:rgba(255,255,255,.10) !important; }
+    :root { --line:rgba(255,255,255,.14); }
+    .stApp { background:radial-gradient(circle at 8% 8%,rgba(56,189,248,.16),transparent 25%),radial-gradient(circle at 92% 12%,rgba(168,85,247,.16),transparent 28%),radial-gradient(circle at 50% 100%,rgba(245,158,11,.09),transparent 34%),linear-gradient(145deg,#03050b 0%,#0a1020 48%,#050811 100%); color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .stApp:before { content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 82%); }
+    .block-container { padding-top:1.4rem !important;padding-bottom:2rem !important;max-width:96% !important;position:relative;z-index:1; }
+    .element-container,.stMarkdown { background:transparent !important; }
+    div.stButton > button { position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.17) !important;border-radius:17px !important;padding:12px 16px !important;font-weight:800 !important;color:#fff !important;background:linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.045)) !important;box-shadow:inset 0 1px rgba(255,255,255,.22),inset 0 -8px 18px rgba(0,0,0,.12),0 12px 28px rgba(0,0,0,.30) !important;backdrop-filter:blur(22px) saturate(150%);transform:translateY(0);transition:transform .18s cubic-bezier(.2,.9,.25,1.35),box-shadow .18s ease,background .18s ease !important; }
+    div.stButton > button:before { content:"";position:absolute;top:-70%;left:-30%;width:55%;height:220%;transform:rotate(25deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transition:left .55s ease;pointer-events:none; }
+    div.stButton > button:hover { transform:translateY(-3px) scale(1.012);background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.065)) !important;box-shadow:inset 0 1px rgba(255,255,255,.28),0 18px 36px rgba(0,0,0,.36),0 0 22px rgba(103,232,249,.08) !important; }
+    div.stButton > button:hover:before { left:125%; }
+    div.stButton > button:active { transform:translateY(2px) scale(.965) !important;box-shadow:inset 0 4px 12px rgba(0,0,0,.28),0 5px 12px rgba(0,0,0,.25) !important; }
+    [data-testid="stTabs"] { background:rgba(2,6,23,.32);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:5px;box-shadow:inset 0 1px rgba(255,255,255,.06),0 14px 30px rgba(0,0,0,.18); }
+    [data-testid="stTabs"] button { border-radius:14px !important;font-weight:750 !important;transition:all .2s cubic-bezier(.2,.8,.2,1.2) !important; }
+    [data-testid="stTabs"] [aria-selected="true"] { background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.055)) !important;box-shadow:inset 0 1px rgba(255,255,255,.2),0 8px 20px rgba(0,0,0,.2); }
+    [data-testid="stMetric"],[data-testid="stExpander"] { border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));backdrop-filter:blur(24px) saturate(150%);box-shadow:inset 0 1px rgba(255,255,255,.13),inset 0 -18px 30px rgba(0,0,0,.08),0 20px 45px rgba(0,0,0,.22); }
+    [data-testid="stSelectbox"] > div > div { border-radius:16px !important;background:rgba(15,23,42,.72) !important;border:1px solid rgba(255,255,255,.14) !important;box-shadow:inset 0 1px rgba(255,255,255,.12),0 10px 25px rgba(0,0,0,.2) !important; }
+    hr { border-color:rgba(255,255,255,.08) !important; }
+    .game-header { position:relative;overflow:hidden;margin:0 0 18px;padding:18px 22px;border-radius:24px;background:linear-gradient(135deg,rgba(17,24,39,.88),rgba(15,23,42,.55));border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px rgba(255,255,255,.18),0 24px 55px rgba(0,0,0,.28);transform:perspective(900px) rotateX(.8deg); }
+    .game-header:after { content:"";position:absolute;width:280px;height:280px;right:-90px;top:-170px;border-radius:50%;background:radial-gradient(circle,rgba(103,232,249,.18),transparent 68%);pointer-events:none; }
+    .game-kicker { font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#67e8f9;font-weight:900; }
+    .game-title { font-size:30px;font-weight:950;letter-spacing:-1px;margin:2px 0 3px;text-shadow:0 4px 18px rgba(0,0,0,.55); }
+    .game-sub { font-size:12px;color:#94a3b8;font-weight:650; }
+    .hud-chip { display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:800;color:#cbd5e1;box-shadow:inset 0 1px rgba(255,255,255,.10);animation:uiFloat 3.2s ease-in-out infinite; }
+    @keyframes uiFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)} }
     </style>
-    """,
-    unsafe_allow_html=True,
+    """,unsafe_allow_html=True,
 )
+
+st.markdown(
+    f"""<div class=\"game-header\"><div class=\"game-kicker\">ZION // ENHANCEMENT CORE</div><div class=\"game-title\">지온냄새 강화 시스템</div><div class=\"game-sub\">입체 코어 · 탄성 모션 · 시즌 기반 강화 인터페이스</div><div style=\"margin-top:11px;display:flex;gap:7px;flex-wrap:wrap\"><span class=\"hud-chip\">⚡ {st.session_state.level}단계</span><span class=\"hud-chip\">🏷️ {st.session_state.selected_title}</span><span class=\"hud-chip\">{'🌀 시즌 2' if st.session_state.is_rebirth else '🌌 시즌 1'}</span></div></div>""",unsafe_allow_html=True,
+)
+
 
 # -----------------------------------------------------------------------------
 # 7. 메인 레이아웃
@@ -1606,6 +1609,14 @@ with right_col:
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             }}
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+            body::before {{ content:""; position:absolute; inset:0; z-index:2; pointer-events:none; background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.035),transparent 30%); }}
+            #container {{ filter:saturate(1.08) contrast(1.03); }}
+            .core-frame {{ position:absolute; inset:12px; z-index:8; pointer-events:none; border:1px solid rgba(255,255,255,.10); border-radius:28px; box-shadow:inset 0 1px rgba(255,255,255,.10),inset 0 -40px 80px rgba(0,0,0,.14),0 18px 50px rgba(0,0,0,.22); }}
+            .core-frame::before {{ content:""; position:absolute; inset:0; border-radius:28px; background:linear-gradient(120deg,rgba(255,255,255,.06),transparent 28%,transparent 72%,rgba(103,232,249,.05)); }}
+            .level-orb {{ position:absolute; top:26px; left:28px; z-index:30; padding:8px 12px; border-radius:14px; background:rgba(2,6,23,.48); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(16px); box-shadow:inset 0 1px rgba(255,255,255,.13),0 10px 28px rgba(0,0,0,.24); font-weight:900; color:#fff; }}
+            .level-orb small {{ display:block; font-size:9px; letter-spacing:2px; color:#94a3b8; margin-bottom:2px; }}
+            .core-vignette {{ position:absolute; inset:0; z-index:20; pointer-events:none; background:radial-gradient(circle at center,transparent 34%,rgba(0,0,0,.10) 65%,rgba(0,0,0,.48) 100%); }}
+
 
             .selected-title-ui {{
                 position: absolute;
@@ -1675,6 +1686,9 @@ with right_col:
     </head>
     <body>
         <div id="container"></div>
+        <div class="core-frame"></div>
+        <div class="core-vignette"></div>
+        <div class="level-orb"><small>CORE LEVEL</small>+{current_level} / {max_lvl}</div>
         <div id="flashOverlay"></div>
         <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
 
