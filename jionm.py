@@ -1,6 +1,7 @@
 import random
 import streamlit as st
 import streamlit.components.v1 as components
+
 # -----------------------------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------------------------
@@ -112,7 +113,7 @@ def get_shield_cost(level, is_rebirth):
 
 
 # -----------------------------------------------------------------------------
-# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계 - 지온/자이온 테마 적용)
+# 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
 # -----------------------------------------------------------------------------
 SMELL_DB = {
     False: {
@@ -125,7 +126,10 @@ SMELL_DB = {
         },
         1: {
             "name": "1단계 : 스쳐가는 지온냄새",
-            "desc": "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.",
+            "desc": (
+                "버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운"
+                " 암내."
+            ),
             "price": 150,
             "color": "#718096",
             "tier": 1,
@@ -146,7 +150,9 @@ SMELL_DB = {
         },
         4: {
             "name": "4단계 : 진득한 지온냄새",
-            "desc": "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.",
+            "desc": (
+                "여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새."
+            ),
             "price": 800,
             "color": "#319795",
             "tier": 1,
@@ -160,21 +166,27 @@ SMELL_DB = {
         },
         6: {
             "name": "6단계 : 풍부한 지온냄새",
-            "desc": "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.",
+            "desc": (
+                "신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새."
+            ),
             "price": 3500,
             "color": "#3182ce",
             "tier": 2,
         },
         7: {
             "name": "7단계 : 압도적인 지온냄새",
-            "desc": "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.",
+            "desc": (
+                "지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도."
+            ),
             "price": 6100,
             "color": "#2b6cb0",
             "tier": 2,
         },
         8: {
             "name": "8단계 : 폭발하는 지온냄새",
-            "desc": "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.",
+            "desc": (
+                "일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄."
+            ),
             "price": 10000,
             "color": "#805ad5",
             "tier": 2,
@@ -435,35 +447,48 @@ SMELL_DB = {
         },
         3: {
             "name": "환생 3단계 : 쿼크 글루온 자이온 악취",
-            "desc": "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.",
+            "desc": (
+                "소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급"
+                " 냄새."
+            ),
             "price": 15000000000,
             "color": "#ffaa00",
             "tier": 2,
         },
         4: {
             "name": "환생 4단계 : 차원왜곡 자이온 타임루프 찌든내 ",
-            "desc": "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.",
+            "desc": (
+                "시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체."
+            ),
             "price": 35000000000,
             "color": "#9b2c2c",
             "tier": 2,
         },
         5: {
             "name": "환생 5단계 : 네메시스 자이온 다크매터",
-            "desc": "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.",
+            "desc": (
+                "빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질."
+            ),
             "price": 80000000000,
             "color": "#38a169",
             "tier": 2,
         },
         6: {
             "name": "환생 6단계 : 메가 블랙홀 자이온 호라이즌",
-            "desc": "모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.",
+            "desc": (
+                "모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는"
+                " 경계선."
+            ),
             "price": 180000000000,
             "color": "#805ad5",
             "tier": 3,
         },
         7: {
             "name": "환생 7단계 : 감마선 버스트 자이온 플레어",
-            "desc": "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.",
+            "desc": (
+                "우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적"
+                " 악취."
+            ),
             "price": 400000000000,
             "color": "#e53e3e",
             "tier": 3,
@@ -477,21 +502,29 @@ SMELL_DB = {
         },
         9: {
             "name": "환생 9단계 : 엘더블루 제네시스 자이온",
-            "desc": "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.",
+            "desc": (
+                "태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源)"
+                " 냄새."
+            ),
             "price": 2000000000000,
             "color": "#0088ff",
             "tier": 4,
         },
         10: {
             "name": "환생 10단계 : 카이퍼 자이온 벨트 코스믹 더스트",
-            "desc": "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.",
+            "desc": (
+                "태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취."
+            ),
             "price": 4500000000000,
             "color": "#cbd5e1",
             "tier": 4,
         },
         11: {
             "name": "환생 11단계 : 자이온오르트 클라우드 딥 프리즈",
-            "desc": "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.",
+            "desc": (
+                "영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동"
+                " 체취."
+            ),
             "price": 10000000000000,
             "color": "#319795",
             "tier": 4,
@@ -505,49 +538,68 @@ SMELL_DB = {
         },
         13: {
             "name": "환생 13단계 : 마그네타 자이온자기장 폭풍",
-            "desc": "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.",
+            "desc": (
+                "지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는"
+                " 자기장."
+            ),
             "price": 50000000000000,
             "color": "#7000ff",
             "tier": 5,
         },
         14: {
             "name": "환생 14단계 : 펄서 자이온로테이션 시그널",
-            "desc": "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.",
+            "desc": (
+                "일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는"
+                " 중성자별."
+            ),
             "price": 120000000000000,
             "color": "#00ff66",
             "tier": 5,
         },
         15: {
             "name": "환생 15단계 : 웜홀 크로스오버 자이온 디멘션",
-            "desc": "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.",
+            "desc": (
+                "시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다."
+            ),
             "price": 280000000000000,
             "color": "#ff00ea",
             "tier": 6,
         },
         16: {
             "name": "환생 16단계 : 스트링 시스코어 자이온 엠피리어",
-            "desc": "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.",
+            "desc": (
+                "초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주"
+                " 진동음."
+            ),
             "price": 600000000000000,
             "color": "#ccff00",
             "tier": 6,
         },
         17: {
             "name": "환생 17단계 : 센타우루스 자이온 알파 코어",
-            "desc": "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.",
+            "desc": (
+                "가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향."
+            ),
             "price": 1300000000000000,
             "color": "#ff6600",
             "tier": 6,
         },
         18: {
             "name": "환생 18단계 : 페가수스 자이온 별자리 네뷸라",
-            "desc": "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.",
+            "desc": (
+                "신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운"
+                " 향."
+            ),
             "price": 3000000000000000,
             "color": "#00f0ff",
             "tier": 6,
         },
         19: {
             "name": "환생 19단계 : 자이온세인트 오메가 얼티밋 에센스",
-            "desc": "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.",
+            "desc": (
+                "우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운"
+                " 냄새."
+            ),
             "price": 7000000000000000,
             "color": "#ffe600",
             "tier": 6,
@@ -561,14 +613,19 @@ SMELL_DB = {
         },
         21: {
             "name": "환생 21단계 : 자이온트랜스센던탈 앱솔루트 가디언",
-            "desc": "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.",
+            "desc": (
+                "차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의"
+                " 경지."
+            ),
             "price": 35000000000000000,
             "color": "#ffffff",
             "tier": 6,
         },
         22: {
             "name": "환생 22단계 : 하이퍼 자이온 디바인 코어",
-            "desc": "자이온이라는 존재 자체가 우주의 신성한 법칙으로 등극한 상태.",
+            "desc": (
+                "자이온이라는 존재 자체가 우주의 신성한 법칙으로 등용한 상태."
+            ),
             "price": 80000000000000000,
             "color": "#7b00ff",
             "tier": 6,
@@ -671,108 +728,268 @@ PITY_MAX = 4
 # 업적 / 칭호 시스템
 # -----------------------------------------------------------------------------
 ACHIEVEMENTS = {
-    "first_enhance": {"name": "첫걸음", "desc": "처음으로 강화를 시도하세요.", "title": "초보 강화러", "reward": 5000},
-    "level_10": {"name": "10강 돌파", "desc": "시즌 1에서 10단계에 도달하세요.", "title": "냄새 수련생", "reward": 20000},
-    "level_20": {"name": "20강 돌파", "desc": "시즌 1에서 20단계에 도달하세요.", "title": "냄새 전문가", "reward": 100000},
-    "level_30": {"name": "30강 돌파", "desc": "시즌 1에서 30단계에 도달하세요.", "title": "냄새 마스터", "reward": 500000},
-    "level_35": {"name": "궁극의 지온", "desc": "시즌 1 최종 35단계를 달성하세요.", "title": "디 오리지널 지온", "reward": 1000000},
-    "drop_to_0": {"name": "끝없는 추락", "desc": "34단계에서 0단계로 돌아가세요.", "title": "추락의 전설", "reward": 3000000},
-    "rebirth": {"name": "차원의 문", "desc": "시즌 2 환생을 시작하세요.", "title": "차원 여행자", "reward": 5000000},
-    "s2_level_10": {"name": "자이온 각성", "desc": "시즌 2에서 10단계에 도달하세요.", "title": "자이온", "reward": 10000000},
-    "s2_level_20": {"name": "자이온 폭주", "desc": "시즌 2에서 20단계에 도달하세요.", "title": "폭주의 자이온", "reward": 30000000},
-    "s2_level_25": {"name": "진정한 환생", "desc": "시즌 2 최종 25단계를 달성하세요.", "title": "TRUE REBIRTH", "reward": 100000000},
-    "warp_1": {"name": "공간 이동", "desc": "워프권을 처음 사용하세요.", "title": "워프 개척자", "reward": 10000},
-    "warp_5": {"name": "워프 중독", "desc": "워프권을 5회 사용하세요.", "title": "워프 중독자", "reward": 100000},
-    "critical": {"name": "대성공", "desc": "크리티컬 강화를 성공시키세요.", "title": "우주의 선택", "reward": 50000},
-    "seller": {"name": "냄새 장사꾼", "desc": "냄새를 판매해 돈을 획득하세요.", "title": "냄새 상인", "reward": 25000},
-    "enhance_50": {"name": "강화광", "desc": "강화를 총 50회 시도하세요.", "title": "강화 중독자", "reward": 200000},
-    "enhance_100": {"name": "강화의 끝", "desc": "강화를 총 100회 시도하세요.", "title": "강화의 신", "reward": 1000000},
-    "level_5": {"name": "첫 강화", "desc": "5단계에 도달하세요.", "title": "냄새 입문자", "reward": 5000},
-    "level_15": {"name": "중급 냄새꾼", "desc": "15단계에 도달하세요.", "title": "냄새 수집가", "reward": 50000},
-    "level_25": {"name": "고급 냄새꾼", "desc": "25단계에 도달하세요.", "title": "냄새 지배자", "reward": 250000},
-    "s2_level_5": {"name": "자이온 입문", "desc": "시즌 2에서 5단계에 도달하세요.", "title": "자이온 견습생", "reward": 1000000},
-    "s2_level_15": {"name": "자이온 숙련", "desc": "시즌 2에서 15단계에 도달하세요.", "title": "자이온 숙련자", "reward": 15000000},
-    "warp_10": {"name": "워프 마스터", "desc": "워프권을 10회 사용하세요.", "title": "공간의 지배자", "reward": 500000},
-    "enhance_200": {"name": "강화는 계속된다", "desc": "강화를 총 200회 시도하세요.", "title": "강화의 초월자", "reward": 5000000},
-    "rich": {"name": "부자 냄새", "desc": "보유 금액 10억을 달성하세요.", "title": "지온 재벌", "reward": 1000000},
-    "seller_10": {"name": "장사의 신", "desc": "판매를 10회 성공하세요.", "title": "전설의 상인", "reward": 300000},
-    "survivor": {"name": "기적의 생존", "desc": "20단계 이상에서 강화 실패 후 살아남으세요.", "title": "불굴의 지온", "reward": 300000},
+    "first_enhance": {
+        "name": "첫걸음",
+        "desc": "처음으로 강화를 시도하세요.",
+        "title": "꼬마 킁킁이",
+        "reward": 5000,
+    },
+    "level_10": {
+        "name": "10강 돌파",
+        "desc": "시즌 1에서 10단계에 도달하세요.",
+        "title": "구린내 수련생",
+        "reward": 20000,
+    },
+    "level_20": {
+        "name": "20강 돌파",
+        "desc": "시즌 1에서 20단계에 도달하세요.",
+        "title": "베테랑 후각러",
+        "reward": 100000,
+    },
+    "level_30": {
+        "name": "30강 돌파",
+        "desc": "시즌 1에서 30단계에 도달하세요.",
+        "title": "악취 마스터",
+        "reward": 500000,
+    },
+    "level_35": {
+        "name": "궁극의 지온",
+        "desc": "시즌 1 최종 35단계를 달성하세요.",
+        "title": "디 오리지널 지온",
+        "reward": 1000000,
+    },
+    "drop_to_0": {
+        "name": "끝없는 추락",
+        "desc": "34단계에서 0단계로 돌아가세요.",
+        "title": "추락의 전설",
+        "reward": 300000,
+    },
+    "rebirth": {
+        "name": "차원의 문",
+        "desc": "시즌 2 환생을 시작하세요.",
+        "title": "차원 여행자",
+        "reward": 5000000,
+    },
+    "s2_level_10": {
+        "name": "자이온 각성",
+        "desc": "시즌 2에서 10단계에 도달하세요.",
+        "title": "각성한 자이온",
+        "reward": 10000000,
+    },
+    "s2_level_20": {
+        "name": "자이온 폭주",
+        "desc": "시즌 2에서 20단계에 도달하세요.",
+        "title": "폭주의 자이온",
+        "reward": 30000000,
+    },
+    "s2_level_25": {
+        "name": "진정한 환생",
+        "desc": "시즌 2 최종 25단계를 달성하세요.",
+        "title": "TRUE REBIRTH",
+        "reward": 100000000,
+    },
+    "warp_1": {
+        "name": "공간 이동",
+        "desc": "워프권을 처음 사용하세요.",
+        "title": "워프 개척자",
+        "reward": 10000,
+    },
+    "warp_5": {
+        "name": "워프 중독",
+        "desc": "워프권을 5회 사용하세요.",
+        "title": "차원 도약자",
+        "reward": 100000,
+    },
+    "critical": {
+        "name": "대성공",
+        "desc": "크리티컬 강화를 성공시키세요.",
+        "title": "우주의 선택",
+        "reward": 50000,
+    },
+    "seller": {
+        "name": "냄새 장사꾼",
+        "desc": "냄새를 판매해 돈을 획득하세요.",
+        "title": "냄새 상인",
+        "reward": 25000,
+    },
+    "enhance_50": {
+        "name": "강화광",
+        "desc": "강화를 총 50회 시도하세요.",
+        "title": "망치 중독자",
+        "reward": 200000,
+    },
+    "enhance_100": {
+        "name": "강화의 끝",
+        "desc": "강화를 총 100회 시도하세요.",
+        "title": "단련의 신",
+        "reward": 1000000,
+    },
+    "level_5": {
+        "name": "첫 강화",
+        "desc": "5단계에 도달하세요.",
+        "title": "입문 코끝러",
+        "reward": 5000,
+    },
+    "level_15": {
+        "name": "중급 냄새꾼",
+        "desc": "15단계에 도달하세요.",
+        "title": "향기 수집가",
+        "reward": 50000,
+    },
+    "level_25": {
+        "name": "고급 냄새꾼",
+        "desc": "25단계에 도달하세요.",
+        "title": "악취 지배자",
+        "reward": 250000,
+    },
+    "s2_level_5": {
+        "name": "자이온 입문",
+        "desc": "시즌 2에서 5단계에 도달하세요.",
+        "title": "자이온 견습생",
+        "reward": 1000000,
+    },
+    "s2_level_15": {
+        "name": "자이온 숙련",
+        "desc": "시즌 2에서 15단계에 도달하세요.",
+        "title": "자이온 숙련자",
+        "reward": 15000000,
+    },
+    "warp_10": {
+        "name": "워프 마스터",
+        "desc": "워프권을 10회 사용하세요.",
+        "title": "공간의 지배자",
+        "reward": 500000,
+    },
+    "enhance_200": {
+        "name": "강화는 계속된다",
+        "desc": "강화를 총 200회 시도하세요.",
+        "title": "강화의 초월자",
+        "reward": 5000000,
+    },
+    "rich": {
+        "name": "부자 냄새",
+        "desc": "보유 금액 10억을 달성하세요.",
+        "title": "지온 재벌",
+        "reward": 1000000,
+    },
+    "seller_10": {
+        "name": "장사의 신",
+        "desc": "판매를 10회 성공하세요.",
+        "title": "전설의 상인",
+        "reward": 300000,
+    },
+    "survivor": {
+        "name": "기적의 생존",
+        "desc": "20단계 이상에서 강화 실패 후 살아남으세요.",
+        "title": "불굴의 지온",
+        "reward": 300000,
+    },
 }
+
+TITLE_THEMES = {
+    "꼬마 킁킁이": ("#22d3ee", "#0e7490", "#083344", "🫧"), "구린내 수련생": ("#a3e635", "#4d7c0f", "#1a2e05", "🌿"),
+    "베테랑 후각러": ("#60a5fa", "#1d4ed8", "#172554", "🎯"), "악취 마스터": ("#f97316", "#c2410c", "#431407", "🔥"),
+    "디 오리지널 지온": ("#facc15", "#a16207", "#422006", "👑"), "추락의 전설": ("#94a3b8", "#475569", "#0f172a", "☄️"),
+    "차원 여행자": ("#c084fc", "#7e22ce", "#2e1065", "🌀"), "각성한 자이온": ("#2dd4bf", "#0f766e", "#042f2e", "⚡"),
+    "폭주의 자이온": ("#fb7185", "#be123c", "#4c0519", "💢"), "TRUE REBIRTH": ("#f0abfc", "#c026d3", "#4a044e", "♾️"),
+    "워프 개척자": ("#38bdf8", "#0369a1", "#082f49", "🚀"), "차원 도약자": ("#818cf8", "#4338ca", "#1e1b4b", "🌌"),
+    "우주의 선택": ("#fde047", "#ca8a04", "#422006", "✦"), "냄새 상인": ("#34d399", "#047857", "#022c22", "💰"),
+    "망치 중독자": ("#fbbf24", "#d97706", "#451a03", "🔨"), "단련의 신": ("#f8fafc", "#64748b", "#111827", "⚔️"),
+    "입문 코끝러": ("#67e8f9", "#0891b2", "#083344", "👃"), "향기 수집가": ("#86efac", "#16a34a", "#052e16", "🍃"),
+    "악취 지배자": ("#f472b6", "#db2777", "#500724", "☠️"), "자이온 견습생": ("#93c5fd", "#2563eb", "#172554", "🔷"),
+    "자이온 숙련자": ("#a78bfa", "#6d28d9", "#2e1065", "💠"), "공간의 지배자": ("#e879f9", "#a21caf", "#4a044e", "🛸"),
+    "강화의 초월자": ("#fef08a", "#ea580c", "#431407", "🌠"), "지온 재벌": ("#fcd34d", "#b45309", "#451a03", "💎"),
+    "전설의 상인": ("#5eead4", "#0f766e", "#042f2e", "🏪"), "불굴의 지온": ("#f87171", "#991b1b", "#450a0a", "🛡️"),
+}
+
+def get_title_theme(title):
+    return TITLE_THEMES.get(title, ("#a78bfa", "#6d28d9", "#111827", "🏷️"))
 
 
 TITLE_DEFAULT = "칭호 없음"
 
+
 def init_progress():
-    if "achievements" not in st.session_state:
-        st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
-    if "unlocked_titles" not in st.session_state:
-        st.session_state.unlocked_titles = []
-    if "selected_title" not in st.session_state:
-        st.session_state.selected_title = TITLE_DEFAULT
-    if "enhance_attempts" not in st.session_state:
-        st.session_state.enhance_attempts = 0
-    if "warp_uses" not in st.session_state:
-        st.session_state.warp_uses = 0
-    if "sell_count" not in st.session_state:
-        st.session_state.sell_count = 0
+  if "achievements" not in st.session_state:
+    st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
+  if "unlocked_titles" not in st.session_state:
+    st.session_state.unlocked_titles = []
+  if "selected_title" not in st.session_state:
+    st.session_state.selected_title = TITLE_DEFAULT
+  if "enhance_attempts" not in st.session_state:
+    st.session_state.enhance_attempts = 0
+  if "warp_uses" not in st.session_state:
+    st.session_state.warp_uses = 0
+  if "sell_count" not in st.session_state:
+    st.session_state.sell_count = 0
+
 
 def unlock_achievement(key):
-    if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
-        st.session_state.achievements[key] = True
-        title = ACHIEVEMENTS[key]["title"]
-        if title not in st.session_state.unlocked_titles:
-            st.session_state.unlocked_titles.append(title)
-        st.session_state.money += ACHIEVEMENTS[key]["reward"]
-        st.toast(f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']}  |  +{format_gold(ACHIEVEMENTS[key]['reward'])}")
+  if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
+    st.session_state.achievements[key] = True
+    title = ACHIEVEMENTS[key]["title"]
+    if title not in st.session_state.unlocked_titles:
+      st.session_state.unlocked_titles.append(title)
+    st.session_state.money += ACHIEVEMENTS[key]["reward"]
+    st.toast(
+        f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']} |"
+        f" +{format_gold(ACHIEVEMENTS[key]['reward'])}"
+    )
+
 
 def check_achievements():
-    level = st.session_state.level
-    if st.session_state.enhance_attempts >= 1:
-        unlock_achievement("first_enhance")
-    if st.session_state.enhance_attempts >= 50:
-        unlock_achievement("enhance_50")
-    if st.session_state.enhance_attempts >= 100:
-        unlock_achievement("enhance_100")
-    if st.session_state.enhance_attempts >= 200:
-        unlock_achievement("enhance_200")
-    if st.session_state.warp_uses >= 10:
-        unlock_achievement("warp_10")
-    if st.session_state.sell_count >= 10:
-        unlock_achievement("seller_10")
-    if st.session_state.money >= 1_000_000_000:
-        unlock_achievement("rich")
-    if not st.session_state.is_rebirth and level >= 5:
-        unlock_achievement("level_5")
-    if not st.session_state.is_rebirth and level >= 15:
-        unlock_achievement("level_15")
-    if not st.session_state.is_rebirth and level >= 25:
-        unlock_achievement("level_25")
-    if st.session_state.is_rebirth and level >= 5:
-        unlock_achievement("s2_level_5")
-    if st.session_state.is_rebirth and level >= 15:
-        unlock_achievement("s2_level_15")
-    if st.session_state.status == "FAIL" and level >= 20:
-        unlock_achievement("survivor")
-    if st.session_state.warp_uses >= 5:
-        unlock_achievement("warp_5")
-    if not st.session_state.is_rebirth and level == 0 and st.session_state.max_level >= 34:
-        unlock_achievement("drop_to_0")
-    if not st.session_state.is_rebirth and level >= 10:
-        unlock_achievement("level_10")
-    if not st.session_state.is_rebirth and level >= 20:
-        unlock_achievement("level_20")
-    if not st.session_state.is_rebirth and level >= 35:
-        unlock_achievement("level_35")
-    if st.session_state.is_rebirth and level >= 10:
-        unlock_achievement("s2_level_10")
-    if st.session_state.is_rebirth and level >= 20:
-        unlock_achievement("s2_level_20")
-    if st.session_state.is_rebirth and level >= 25:
-        unlock_achievement("s2_level_25")
-    if st.session_state.warp_uses >= 1:
-        unlock_achievement("warp_1")
-    if st.session_state.status == "CRITICAL":
-        unlock_achievement("critical")
+  level = st.session_state.level
+  if st.session_state.enhance_attempts >= 1:
+    unlock_achievement("first_enhance")
+  if st.session_state.enhance_attempts >= 50:
+    unlock_achievement("enhance_50")
+  if st.session_state.enhance_attempts >= 100:
+    unlock_achievement("enhance_100")
+  if st.session_state.enhance_attempts >= 200:
+    unlock_achievement("enhance_200")
+  if st.session_state.warp_uses >= 10:
+    unlock_achievement("warp_10")
+  if st.session_state.sell_count >= 10:
+    unlock_achievement("seller_10")
+  if st.session_state.money >= 1_000_000_000:
+    unlock_achievement("rich")
+  if not st.session_state.is_rebirth and level >= 5:
+    unlock_achievement("level_5")
+  if not st.session_state.is_rebirth and level >= 15:
+    unlock_achievement("level_15")
+  if not st.session_state.is_rebirth and level >= 25:
+    unlock_achievement("level_25")
+  if st.session_state.is_rebirth and level >= 5:
+    unlock_achievement("s2_level_5")
+  if st.session_state.is_rebirth and level >= 15:
+    unlock_achievement("s2_level_15")
+  if st.session_state.status == "FAIL" and level >= 20:
+    unlock_achievement("survivor")
+  if st.session_state.warp_uses >= 5:
+    unlock_achievement("warp_5")
+  if (
+      not st.session_state.is_rebirth
+      and level == 0
+      and st.session_state.max_level >= 34
+  ):
+    unlock_achievement("drop_to_0")
+  if not st.session_state.is_rebirth and level >= 10:
+    unlock_achievement("level_10")
+  if not st.session_state.is_rebirth and level >= 20:
+    unlock_achievement("level_20")
+  if not st.session_state.is_rebirth and level >= 35:
+    unlock_achievement("level_35")
+  if st.session_state.is_rebirth and level >= 10:
+    unlock_achievement("s2_level_10")
+  if st.session_state.is_rebirth and level >= 20:
+    unlock_achievement("s2_level_20")
+  if st.session_state.is_rebirth and level >= 25:
+    unlock_achievement("s2_level_25")
+  if st.session_state.warp_uses >= 1:
+    unlock_achievement("warp_1")
+  if st.session_state.status == "CRITICAL":
+    unlock_achievement("critical")
+
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
@@ -784,6 +1001,7 @@ if "season_data" not in st.session_state:
   st.session_state.season_data = {
       1: {
           "level": 0,
+          "prev_level": 0,
           "max_level": 0,
           "money": 1000000,
           "status": "READY",
@@ -800,10 +1018,11 @@ if "season_data" not in st.session_state:
       },
       2: {
           "level": 0,
+          "prev_level": 0,
           "max_level": 0,
           "money": 1000000000,
           "status": "READY",
-          "shield": 4,
+          "shield": 0,
           "tears": 50,
           "pity_count": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
@@ -822,6 +1041,7 @@ def sync_session_state(target_season):
   data = st.session_state.season_data[target_season]
 
   st.session_state.level = data["level"]
+  st.session_state.prev_level = data.get("prev_level", data["level"])
   st.session_state.max_level = data["max_level"]
   st.session_state.money = data["money"]
   st.session_state.status = data["status"]
@@ -838,6 +1058,7 @@ def sync_session_state(target_season):
 def save_current_season_state():
   s = 2 if st.session_state.get("is_rebirth", False) else 1
   st.session_state.season_data[s]["level"] = st.session_state.level
+  st.session_state.season_data[s]["prev_level"] = st.session_state.prev_level
   st.session_state.season_data[s]["max_level"] = st.session_state.max_level
   st.session_state.season_data[s]["money"] = st.session_state.money
   st.session_state.season_data[s]["status"] = st.session_state.status
@@ -878,6 +1099,7 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
+  st.session_state.prev_level = curr  # 이전 단계 저장
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -898,7 +1120,7 @@ def run_enhance():
 
   if r < success_limit:
     st.session_state.pity_count = 0
-    if random.random() < min(0.50, CRITICAL_RATE + st.session_state.get("crit_boost", 0.0)) and curr + 2 <= max_lvl:
+    if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
     else:
@@ -951,6 +1173,7 @@ def sell():
     st.session_state.money = float("inf")
   else:
     st.session_state.money += price_val
+  st.session_state.prev_level = curr
   st.session_state.level = 0
   st.session_state.status = "READY"
   save_current_season_state()
@@ -968,11 +1191,6 @@ def trigger_rebirth():
 # -----------------------------------------------------------------------------
 # 6. 테마 CSS
 # -----------------------------------------------------------------------------
-st.markdown(
-    f"""
-""",
-    unsafe_allow_html=True,
-)
 st.markdown(
     """
     <style>
@@ -1001,266 +1219,523 @@ st.markdown(
     [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
     hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
-    """, unsafe_allow_html=True,
+    """,
+    unsafe_allow_html=True,
 )
 
 # -----------------------------------------------------------------------------
-# 7. 대규모 업데이트 UI / ZION ENHANCEMENT CORE
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
-import time
+left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
-if "enhance_history" not in st.session_state:
-    st.session_state.enhance_history = []
-if "auto_enhancing" not in st.session_state:
-    st.session_state.auto_enhancing = False
-if "auto_target" not in st.session_state:
-    st.session_state.auto_target = 1
-if "points" not in st.session_state:
-    st.session_state.points = 0
-if "crit_boost" not in st.session_state:
-    st.session_state.crit_boost = 0.0
-if "daily_claimed" not in st.session_state:
-    st.session_state.daily_claimed = False
+with left_col:
+  if not st.session_state.is_rebirth and st.session_state.level >= 35:
+    st.markdown(
+        "<div"
+        " style='background:rgba(220,38,38,0.2);border:2px solid"
+        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
+        "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
+        "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
+        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("✨ 환생하기", use_container_width=True):
+      trigger_rebirth()
+      st.rerun()
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
 
+  mode_title = (
+      "🌀 [시즌 2] 얼티밋 자이온의 시작"
+      if st.session_state.is_rebirth
+      else "🌌 [시즌 1] 지온의 탄생과 시초"
+  )
+  st.markdown(
+      f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
+      f" color:#fde68a;'>{mode_title}</h4>",
+      unsafe_allow_html=True,
+  )
 
-def record_history(before, after, status):
-    st.session_state.enhance_history.insert(0, {
-        "time": time.strftime("%H:%M:%S"),
-        "before": before,
-        "after": after,
-        "status": status,
-    })
-    st.session_state.enhance_history = st.session_state.enhance_history[:12]
+  st.markdown(
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
 
+  s_col1, s_col2 = st.columns(2)
 
-def do_enhance_once():
-    before = st.session_state.level
-    cost = get_enhance_cost(before, st.session_state.is_rebirth)
-    if st.session_state.money < cost:
-        st.session_state.status = "NOT_ENOUGH_MONEY"
-        return False
-    st.session_state.enhance_attempts += 1
-    run_enhance()
-    check_achievements()
-    record_history(before, st.session_state.level, st.session_state.status)
-    st.session_state.points += 10
-    save_current_season_state()
-    return True
+  with s_col1:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
+        f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
+        " 80개</div></div>",
+        unsafe_allow_html=True,
+    )
 
+  with s_col2:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
+        " 3개</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
 
-def buy_crit_boost():
-    cost = 150
-    if st.session_state.points >= cost:
-        st.session_state.points -= cost
-        st.session_state.crit_boost += 0.10
-        st.toast("⚡ 크리티컬 확률 +10% 부스트가 활성화되었습니다!")
-        return True
-    st.error("포인트가 부족합니다.")
-    return False
+    pity_left = PITY_MAX - st.session_state.pity_count
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
+        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+        unsafe_allow_html=True,
+    )
 
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
 
-def claim_daily_reward():
-    if st.session_state.daily_claimed:
-        st.info("오늘의 보상은 이미 받았습니다.")
-        return
-    st.session_state.daily_claimed = True
-    st.session_state.money += 100000
-    st.session_state.tears = min(80, st.session_state.tears + 5)
-    st.session_state.points += 100
-    save_current_season_state()
-    st.toast("🎁 출석 보상: 100,000원 + 눈물 5개 + 100P")
+  curr_lvl = st.session_state.level
+  current_prob = PROB_TABLE[st.session_state.is_rebirth]
+  sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
+  st.markdown(
+      f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
+      f" 강화 확률 ({curr_lvl}단계)</h4>",
+      unsafe_allow_html=True,
+  )
+  st.markdown(
+      f"<div style='font-size:12px; color:#cbd5e1;"
+      f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
+      f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
+      f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
+      f" style='color:#94a3b8;'>{hold_p}%</b></div>",
+      unsafe_allow_html=True,
+  )
 
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
 
-# 실제 강화 로직에 크리티컬 부스트를 적용합니다.
-# 원본 함수 내부의 CRITICAL_RATE 비교식을 런타임 부스트까지 포함하도록 패치합니다.
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
+  )
 
-st.markdown("""
-<style>
-:root { --line:rgba(83,153,255,.28); --cyan:#32e6ff; --violet:#a855f7; --gold:#ffd35a; }
-.stApp {
-  background:radial-gradient(circle at 50% 18%,rgba(75,70,255,.18),transparent 32%),radial-gradient(circle at 8% 80%,rgba(0,204,255,.10),transparent 28%),linear-gradient(145deg,#02040a 0%,#07101d 48%,#03060d 100%);
-  color:#eef6ff;
-}
-.block-container {max-width:1480px!important;padding-top:1.1rem!important;padding-bottom:1.4rem!important}
-section[data-testid="stVerticalBlock"] {gap:.55rem}
-div.stButton > button {min-height:44px!important;border:1px solid rgba(75,145,255,.38)!important;border-radius:12px!important;background:linear-gradient(180deg,rgba(22,44,78,.92),rgba(7,17,32,.95))!important;color:#eaf6ff!important;font-weight:800!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 8px 24px rgba(0,0,0,.28)!important}
-div.stButton > button:hover {border-color:rgba(50,230,255,.75)!important;transform:translateY(-1px)}
-div.stButton > button[kind="primary"] {background:linear-gradient(135deg,#7434d9,#2e73ff)!important;border-color:#a855f7!important;box-shadow:0 0 30px rgba(139,92,246,.30)!important}
-[data-testid="stMetric"] {background:linear-gradient(145deg,rgba(14,27,49,.94),rgba(5,11,22,.95));border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:inset 0 1px rgba(255,255,255,.06),0 12px 30px rgba(0,0,0,.28)}
-[data-testid="stMetricLabel"] {color:#8ca1bc!important;font-size:11px!important;font-weight:900!important;letter-spacing:1.2px!important}
-[data-testid="stMetricValue"] {color:#f6fbff!important;font-size:26px!important;font-weight:900!important}
-[data-testid="stTabs"] button {font-weight:850!important;color:#91a4bd!important}
-[data-testid="stTabs"] [aria-selected="true"] {color:#fff!important;background:linear-gradient(180deg,rgba(130,61,220,.30),rgba(31,51,94,.18))!important;border-bottom:2px solid #a855f7!important}
-hr {border-color:rgba(83,153,255,.16)!important}
-</style>
-""", unsafe_allow_html=True)
-
-@st.fragment(run_every="0.8s")
-def main_game_ui():
-    max_lvl = 25 if st.session_state.is_rebirth else 35
-    curr = st.session_state.level
-    data = SMELL_DB[st.session_state.is_rebirth][curr]
-    prob = PROB_TABLE[st.session_state.is_rebirth].get(curr, (5.0,40.0,50.0,5.0))
-    sp, down_p, destroy_p, hold_p = prob
-    cost = get_enhance_cost(curr, st.session_state.is_rebirth)
-    pity_left = max(0, PITY_MAX - st.session_state.pity_count)
-
-    if st.session_state.auto_enhancing:
-        target = min(int(st.session_state.auto_target), max_lvl)
-        if curr >= target:
-            st.session_state.auto_enhancing = False
-        elif not do_enhance_once():
-            st.session_state.auto_enhancing = False
-            st.error("자동 강화가 금액 부족으로 중단되었습니다.")
-
-    season_label = "SEASON 02 // REBIRTH" if st.session_state.is_rebirth else "SEASON 01 // ORIGIN"
-    st.markdown(f"""
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin:4px 4px 14px">
-      <div><div style="font-size:11px;letter-spacing:4px;color:#32e6ff;font-weight:900">ZION // ENHANCEMENT CORE</div>
-      <div style="font-size:31px;font-weight:950;letter-spacing:-1.2px">지온냄새 강화 시스템 <span style="font-size:12px;color:#64748b">ULTIMATE DASHBOARD</span></div>
-      <div style="font-size:12px;color:#7186a2">입체 코어 · 탄성 모션 · 실시간 강화 · 시즌 진행도 · 성장 기록</div></div>
-      <div style="text-align:right"><div style="font-size:11px;color:#6f86a4;letter-spacing:2px">CORE STATE</div><div style="font-size:18px;font-weight:900;color:#67e8f9">● ONLINE</div><div style="font-size:11px;color:#7789a4">{season_label}</div></div>
-    </div>""", unsafe_allow_html=True)
-
-    m1,m2,m3,m4 = st.columns(4)
-    with m1: st.metric("CURRENT POWER", f"{curr} LV", f"최고 {st.session_state.max_level} LV")
-    with m2: st.metric("SUCCESS RATE", f"{sp:.1f}%", f"CRITICAL {5 + int(st.session_state.crit_boost*100)}%")
-    with m3: st.metric("NEXT COST", format_gold(cost), "강화 비용")
-    with m4: st.metric("PITY CORE", f"{pity_left}회", f"눈물 {st.session_state.tears}/80 · 방지권 {st.session_state.shield}/3")
-
-    left_col, center_col, right_col = st.columns([2.25,5.5,2.25], gap="medium")
-    with left_col:
-        st.markdown("<div style='padding:15px;border:1px solid rgba(50,230,255,.25);border-radius:16px;background:linear-gradient(145deg,rgba(9,23,39,.96),rgba(3,9,18,.96))'><div style='font-size:11px;color:#32e6ff;letter-spacing:2px;font-weight:900'>CURRENT CORE</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='font-size:42px;font-weight:950;line-height:1;margin:9px 0'>{curr}<span style='font-size:16px;color:#6f86a4'> / {max_lvl}</span></div>", unsafe_allow_html=True)
-        st.progress(min(1.0,curr/max_lvl), text=f"진행도 {curr/max_lvl*100:.1f}%")
-        st.markdown(f"<div style='font-size:16px;font-weight:900;color:{data['color']}'>{data['name']}</div><div style='font-size:11px;color:#90a2b9;line-height:1.6;margin-top:5px'>{data['desc']}</div></div>", unsafe_allow_html=True)
-        st.markdown("<div style='font-size:11px;color:#32e6ff;letter-spacing:2px;font-weight:900;margin-top:8px'>PROBABILITY MATRIX</div>", unsafe_allow_html=True)
-        for label,val,cls in [("SUCCESS",sp,"#32e6ff"),("DOWN",down_p,"#ffd35a"),("DESTROY",destroy_p,"#fb7185"),("HOLD",hold_p,"#94a3b8")]:
-            st.markdown(f"<div style='display:flex;justify-content:space-between;margin:6px 0;font-size:11px'><span style='color:#8296af'>{label}</span><b style='color:{cls}'>{val:.1f}%</b></div><div style='height:5px;background:#111c2d;border-radius:99px;overflow:hidden'><div style='width:{min(100,val)}%;height:100%;background:{cls};box-shadow:0 0 10px {cls}'></div></div>", unsafe_allow_html=True)
-        a,b=st.columns(2)
-        with a: st.metric("GOLD",format_gold(st.session_state.money))
-        with b: st.metric("POINT",f"{st.session_state.points:,} P")
-        if st.button("🎁 오늘의 출석 보상",use_container_width=True,disabled=st.session_state.daily_claimed,key="daily_reward"):
-            claim_daily_reward(); st.rerun()
-        if not st.session_state.is_rebirth and curr>=35:
-            if st.button("🌀 시즌 2 환생",use_container_width=True,type="primary",key="rebirth_btn"):
-                trigger_rebirth(); st.rerun()
-
-    with center_col:
-      current_level = st.session_state.level
-      max_lvl = 25 if st.session_state.is_rebirth else 35
-      curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
-      card_color = curr_data["color"]
-      card_title = curr_data["name"]
-      card_desc = curr_data["desc"]
-      card_price = format_gold(curr_data["price"])
-      current_cost = format_gold(
-          get_enhance_cost(current_level, st.session_state.is_rebirth)
+  with tab_shop1:
+    min_shield_level = 16 if st.session_state.is_rebirth else 20
+    if st.session_state.is_rebirth:
+      current_shield_cost = int(
+          SMELL_DB[True][st.session_state.level]["price"] / 5
       )
-      tier = curr_data["tier"]
-      status = st.session_state.status
+    else:
+      current_shield_cost = get_shield_cost(
+          st.session_state.level, st.session_state.is_rebirth
+      )
 
-      three_js_code = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-                body {{ 
-                    margin: 0; 
-                    overflow: hidden; 
-                    background: transparent; 
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-                }}
-                #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+    if st.session_state.level < min_shield_level:
+      st.markdown(
+          f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
+          f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
+          unsafe_allow_html=True,
+      )
 
-                .selected-title-ui {{
-                    position: absolute;
-                    top: 18px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    z-index: 120;
-                    pointer-events: none;
-                    font-size: 22px;
-                    font-weight: 900;
-                    color: #fde68a;
-                    text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
-                    white-space: nowrap;
-                }}
+    can_buy_shield = (st.session_state.shield < 3) and (
+        st.session_state.level >= min_shield_level
+    )
+    if st.button(
+        "방지권 구매", use_container_width=True, disabled=not can_buy_shield
+    ):
+      if st.session_state.level < min_shield_level:
+        st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
+      elif st.session_state.money >= current_shield_cost:
+        st.session_state.money -= current_shield_cost
+        st.session_state.shield += 1
+        save_current_season_state()
+        st.success("파괴 방지권 구매 완료!")
+        st.rerun()
+      else:
+        st.error("금액이 부족합니다.")
 
-                .cinematic-ui {{
-                    position: absolute;
-                    bottom: 25px; 
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 100%;
-                    text-align: center;
-                    z-index: 100;
-                    pointer-events: none;
-                    opacity: 1;
-                    transition: opacity 0.1s ease-in-out;
-                }}
+  with tab_shop2:
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    limit_lvl = 18 if st.session_state.is_rebirth else 32
+    if st.session_state.level >= limit_lvl:
+      st.markdown(
+          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
+          " 없습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1;"
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
+          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
+          unsafe_allow_html=True,
+      )
 
-                .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-                .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-                .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-                .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-                .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-                .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+    can_use_tears = st.session_state.level < limit_lvl
+    if st.button(
+        "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
+    ):
+      if st.session_state.level >= limit_lvl:
+        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
+      elif st.session_state.tears >= 20:
+        st.session_state.tears -= 20
+        add_lvl = random.choice([1, 2, 3])
+        st.session_state.prev_level = st.session_state.level
+        st.session_state.level = min(
+            max_lvl, st.session_state.level + add_lvl
+        )
+        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+        save_current_season_state()
+        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
+        st.rerun()
+      else:
+        st.error("눈물 20개가 필요합니다.")
 
-                @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+  with tab_warp:
+    st.markdown(
+        "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        unsafe_allow_html=True,
+    )
 
-                .shaking-text {{
-                    animation: textVibe 0.18s infinite alternate ease-in-out;
-                }}
-                @keyframes textVibe {{
-                    0% {{ transform: translate(0px, 0px) rotate(0deg); }}
-                    25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
-                    50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
-                    75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
-                    100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
-                }}
+    if not st.session_state.is_rebirth:
+      warp_prices = {
+          10: 20000000,
+          15: 100000000,
+          20: 400000000,
+          25: 2000000000,
+          30: 10000000000,
+      }
+      active_warps = warp_prices.items()
+    else:
+      season2_warp_prices = {
+          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+          for w_level in [5, 10, 15, 20]
+      }
+      active_warps = season2_warp_prices.items()
 
-                .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-                .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
-                .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-                .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
-            </style>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-        </head>
-        <body>
-            <div id="container"></div>
-            <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
+    for w_level, w_price in active_warps:
+      if not st.session_state.is_rebirth:
+        is_unlocked = (
+            st.session_state.unlocked_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
+      else:
+        is_unlocked = (
+            st.session_state.unlocked_season2_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
 
-            <div id="cinematicUi" class="cinematic-ui visible">
-                <div id="statusText" class="status-header">READY</div>
-                <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-                <div id="descText" class="desc-text">"{card_desc}"</div>
-                <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-                <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
-            </div>
+      c1, c2 = st.columns([1.2, 1])
+      with c1:
+        st.markdown(
+            f"<div style='font-size:13px; font-weight:bold;"
+            f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
+            f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+            unsafe_allow_html=True,
+        )
+      with c2:
+        if st.button(
+            "이동",
+            key=f"warp_{st.session_state.is_rebirth}_{w_level}",
+            disabled=not is_unlocked
+            or (st.session_state.level >= w_level),
+        ):
+          if not is_unlocked:
+            st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
+          elif st.session_state.money < w_price:
+            st.error("보유 금액이 부족합니다!")
+          else:
+            st.session_state.money -= w_price
+            st.session_state.warp_uses += 1
+            st.session_state.prev_level = st.session_state.level
+            st.session_state.level = w_level
+            if w_level > st.session_state.max_level:
+              st.session_state.max_level = w_level
+            st.session_state.status = "SUCCESS"
+            save_current_season_state()
+            st.success(f"🚀 {w_level}단계로 워프 성공!")
+            st.rerun()
 
-            <script>
-                const currentLevel = {current_level};
-                const maxLvl = {max_lvl};
-                const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
-                const status = "{status}";
-                const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
+  with tab_dev:
+    st.markdown(
+        "<div style='font-size:12px; color:#f87171; font-weight:700;"
+        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
+        " 성공합니다</div>",
+        unsafe_allow_html=True,
+    )
 
-                if (currentLevel >= 15 || isFinalSuccess) {{
-                    document.getElementById('mainTitle').classList.add('shaking-text');
-                    document.getElementById('descText').classList.add('shaking-text');
-                    document.getElementById('priceText').classList.add('shaking-text');
-                    document.getElementById('costText').classList.add('shaking-text');
-                }}
+    max_lvl = 25 if st.session_state.is_rebirth else 35
 
-                const statusText = document.getElementById('statusText');
-                const tierColor = "{card_color}";
-                let statusColor = "#38bdf8";
-                let particleSize = 0.25;
-                let particleSpeed = 0.6;
-                let glowIntensity = 12;
+    if st.button(
+        "✨ 강제 성공 (+1)",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl),
+    ):
+      st.session_state.prev_level = st.session_state.level
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
 
+      if not st.session_state.is_rebirth:
+        for w_lvl in [10, 15, 20, 25, 30]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_warps[w_lvl] = True
+      else:
+        for w_lvl in [5, 10, 15, 20]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_season2_warps[w_lvl] = True
+
+      check_achievements()
+      save_current_season_state()
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
+
+  with tab_ach:
+    achieved = sum(st.session_state.achievements.values())
+    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
+    achievement_items = list(ACHIEVEMENTS.items())
+    ach_cols = st.columns(3)
+    for i, (key, info) in enumerate(achievement_items):
+      done = st.session_state.achievements.get(key, False)
+      icon = "✅" if done else "🔒"
+      accent, accent2, deep, title_icon = get_title_theme(info["title"])
+      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
+            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
+      border = accent if done else "rgba(148,163,184,.22)"
+      with ach_cols[i % 3]:
+        st.markdown(
+            f"<div style='background:{bg};border:1px solid {border};"
+            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
+            f"margin:0 0 10px 0;min-height:116px;'>"
+            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
+            f"{'UNLOCKED' if done else 'LOCKED'}</div>"
+            f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{title_icon} {info['name']}</div>"
+            f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
+            f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
+            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
+            unsafe_allow_html=True,
+        )
+    options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
+    if st.session_state.selected_title not in options:
+      st.session_state.selected_title = TITLE_DEFAULT
+    selected = st.selectbox(
+        "현재 칭호",
+        options,
+        index=options.index(st.session_state.selected_title),
+    )
+    st.session_state.selected_title = selected
+    t_accent, t_accent2, t_deep, t_icon = get_title_theme(selected)
+    st.markdown(
+        f"<div style='margin-top:10px;padding:14px 16px;border-radius:16px;"
+        f"background:linear-gradient(135deg,{t_deep},{t_accent2}55,#020617);"
+        f"border:1px solid {t_accent};box-shadow:0 0 24px {t_accent}25;'>"
+        f"<div style='font-size:10px;letter-spacing:2px;color:#94a3b8'>EQUIPPED TITLE</div>"
+        f"<div style='font-size:20px;font-weight:900;color:{t_accent};margin-top:4px'>{t_icon} {selected}</div></div>",
+        unsafe_allow_html=True,
+    )
+
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
+  st.markdown(
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 지온"
+      " 강화 제어</h4>",
+      unsafe_allow_html=True,
+  )
+
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  action_enhance, action_sell = st.columns(2, gap="small")
+  with action_enhance:
+    if st.button("🔥 강화하기", use_container_width=True, disabled=(st.session_state.level >= max_lvl)):
+      cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+      if st.session_state.money < cost:
+        st.error("강화 비용 부족!")
+      else:
+        st.session_state.enhance_attempts += 1
+        run_enhance()
+        check_achievements()
+        save_current_season_state()
+        st.rerun()
+  with action_sell:
+    sell_price = SMELL_DB[st.session_state.is_rebirth][st.session_state.level]["price"]
+    if st.button(f"💰 판매하기  +{format_gold(sell_price)}", use_container_width=True, disabled=(st.session_state.level == 0)):
+      sell()
+      unlock_achievement("seller")
+      check_achievements()
+      st.rerun()
+
+with right_col:
+  current_level = st.session_state.level
+  prev_level = getattr(st.session_state, "prev_level", current_level)
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
+  card_color = curr_data["color"]
+  card_title = curr_data["name"]
+  card_desc = curr_data["desc"]
+  card_price = format_gold(curr_data["price"])
+  current_cost = format_gold(
+      get_enhance_cost(current_level, st.session_state.is_rebirth)
+  )
+  tier = curr_data["tier"]
+  status = st.session_state.status
+
+  # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
+  target_last_lvl = max_lvl - 1
+  is_last_attempt = (
+      prev_level == target_last_lvl
+      and status
+      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
+  ) or (
+      current_level == max_lvl
+      and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
+  )
+
+  three_js_code = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ 
+                margin: 0; 
+                overflow: hidden; 
+                background: transparent; 
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            }}
+            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
+
+            .selected-title-ui {{
+                position: absolute;
+                top: 18px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 120;
+                pointer-events: none;
+                font-size: 22px;
+                font-weight: 900;
+                color: #fde68a;
+                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
+                white-space: nowrap;
+            }}
+
+            .cinematic-ui {{
+                position: absolute;
+                bottom: 25px; 
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                text-align: center;
+                z-index: 100;
+                pointer-events: none;
+                opacity: 1;
+                transition: opacity 0.3s ease-in-out;
+            }}
+
+            .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
+            .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
+            .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
+            .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
+            .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
+            .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
+
+            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
+
+            .shaking-text {{
+                animation: textVibe 0.18s infinite alternate ease-in-out;
+            }}
+            @keyframes textVibe {{
+                0% {{ transform: translate(0px, 0px) rotate(0deg); }}
+                25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
+                50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
+                75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
+                100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
+            }}
+
+            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
+            .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
+            .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
+
+            /* 연출용 찰나의 화면 비치는 광원 덮개 */
+            #flashOverlay {{
+                position: absolute;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: white;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 200;
+                transition: opacity 0.15s ease-out;
+            }}
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    </head>
+    <body>
+        <div id="container"></div>
+        <div id="flashOverlay"></div>
+        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
+
+        <div id="cinematicUi" class="cinematic-ui visible">
+            <div id="statusText" class="status-header">READY</div>
+            <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
+            <div id="descText" class="desc-text">"{card_desc}"</div>
+            <div id="priceText" class="price-text">예상 가치: {card_price}</div>
+            <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
+        </div>
+
+        <script>
+            const currentLevel = {current_level};
+            const maxLvl = {max_lvl};
+            const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
+            const status = "{status}";
+            const isLastAttempt = {"true" if is_last_attempt else "false"};
+            const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
+
+            if (currentLevel >= 15 || isFinalSuccess) {{
+                document.getElementById('mainTitle').classList.add('shaking-text');
+                document.getElementById('descText').classList.add('shaking-text');
+                document.getElementById('priceText').classList.add('shaking-text');
+                document.getElementById('costText').classList.add('shaking-text');
+            }}
+
+            const statusText = document.getElementById('statusText');
+            const cinematicUi = document.getElementById('cinematicUi');
+            const flashOverlay = document.getElementById('flashOverlay');
+            const tierColor = "{card_color}";
+            let statusColor = "#38bdf8";
+            let particleSize = 0.25;
+            let particleSpeed = 0.6;
+            let glowIntensity = 12;
+
+            function applyStatusText() {{
                 if (isFinalSuccess) {{
                     statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
                     statusColor = "#ffffff";
@@ -1304,197 +1779,288 @@ def main_game_ui():
                 }} else {{
                     statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
                 }}
-            
                 statusText.style.color = statusColor;
+            }}
 
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 0.6, 10.0);
+            applyStatusText();
 
-                const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.shadowMap.enabled = true;
-                document.getElementById('container').appendChild(renderer.domElement);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0.6, 10.0);
 
-                const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
-                scene.add(ambientLight);
+            const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            document.getElementById('container').appendChild(renderer.domElement);
 
-                const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
-                mainLight.position.set(5, 8, 5);
-                scene.add(mainLight);
+            const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
+            scene.add(ambientLight);
 
-                const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
-                pointLight.position.set(0, 0, 3);
-                scene.add(pointLight);
+            const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
+            mainLight.position.set(5, 8, 5);
+            scene.add(mainLight);
 
-                const starCount = 1000;
-                const starGeo = new THREE.BufferGeometry();
-                const starPositions = new Float32Array(starCount * 3);
-                for(let i=0; i<starCount; i++) {{
-                    starPositions[i*3] = (Math.random() - 0.5) * 40;
-                    starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
-                    starPositions[i*3 + 2] = (Math.random() - 0.5) * 40 - 10;
-                }}
-                starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-                const starMat = new THREE.PointsMaterial({{
-                    color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
-                    size: isFinalSuccess ? 0.12 : 0.07,
-                    transparent: true,
-                    opacity: 0.7,
-                    blending: THREE.AdditiveBlending
-                }});
-                const starField = new THREE.Points(starGeo, starMat);
-                scene.add(starField);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
+            pointLight.position.set(0, 0, 3);
+            scene.add(pointLight);
 
-                const particleCount = isFinalSuccess ? 1200 : 500;
-                const particleGeo = new THREE.BufferGeometry();
-                const particlePositions = new Float32Array(particleCount * 3);
-                const particleVelocities = [];
+            const starCount = 1000;
+            const starGeo = new THREE.BufferGeometry();
+            const starPositions = new Float32Array(starCount * 3);
+            for(let i=0; i<starCount; i++) {{
+                starPositions[i*3] = (Math.random() - 0.5) * 40;
+                starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
+                starPositions[i*3 + 2] = (Math.random() - 0.5) * 40 - 10;
+            }}
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            const starMat = new THREE.PointsMaterial({{
+                color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
+                size: isFinalSuccess ? 0.12 : 0.07,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            }});
+            const starField = new THREE.Points(starGeo, starMat);
+            scene.add(starField);
 
-                for(let i=0; i<particleCount; i++) {{
-                    particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
-                    particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
-                    particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+            const particleCount = isFinalSuccess ? 2000 : 500;
+            const particleGeo = new THREE.BufferGeometry();
+            const particlePositions = new Float32Array(particleCount * 3);
+            const particleVelocities = [];
+
+            for(let i=0; i<particleCount; i++) {{
+                particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
+                particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
+                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                 
-                    let spd = particleSpeed;
-                    if (status === "FAILED") spd = 0.2;
+                let spd = particleSpeed;
+                if (status === "FAILED") spd = 0.2;
 
-                    particleVelocities.push({{
-                        x: (Math.random() - 0.5) * 0.01 * spd,
-                        y: (0.008 + Math.random() * 0.025) * spd,
-                        z: (Math.random() - 0.5) * 0.01 * spd,
-                    }});
-                }}
-                particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+                particleVelocities.push({{
+                    x: (Math.random() - 0.5) * 0.01 * spd,
+                    y: (0.008 + Math.random() * 0.025) * spd,
+                    z: (Math.random() - 0.5) * 0.01 * spd,
+                }});
+            }}
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
             
-                const particleMat = new THREE.PointsMaterial({{
-                    color: new THREE.Color(statusColor),
-                    size: particleSize,
-                    transparent: true,
-                    opacity: status === "FAILED" ? 0.2 : 0.8,
-                    blending: THREE.AdditiveBlending,
-                    depthWrite: false
-                }});
-                const particleSystem = new THREE.Points(particleGeo, particleMat);
-                scene.add(particleSystem);
+            const particleMat = new THREE.PointsMaterial({{
+                color: new THREE.Color(statusColor),
+                size: particleSize,
+                transparent: true,
+                opacity: status === "FAILED" ? 0.2 : 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            }});
+            const particleSystem = new THREE.Points(particleGeo, particleMat);
+            scene.add(particleSystem);
 
-                const objectGroup = new THREE.Group();
-                objectGroup.position.y = -0.7;
+            const objectGroup = new THREE.Group();
+            objectGroup.position.y = -0.7;
 
-                let baseGeo;
-                const lvl = {current_level};
+            let baseGeo;
+            const lvl = {current_level};
 
-                if (isRebirth) {{
-                    if (lvl <= 3) {{
-                        baseGeo = new THREE.OctahedronGeometry(2.3);
-                    }} else if (lvl <= 6) {{
-                        baseGeo = new THREE.DodecahedronGeometry(2.2);
-                    }} else if (lvl <= 9) {{
-                        baseGeo = new THREE.IcosahedronGeometry(2.3);
-                    }} else if (lvl <= 12) {{
-                        baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                    }} else if (lvl <= 15) {{
-                        baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
-                    }} else if (lvl <= 18) {{
-                        baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
-                    }} else if (lvl <= 21) {{
-                        baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
-                    }} else if (lvl <= 24) {{
-                        baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
-                    }} else {{
-                        baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
-                    }}
+            if (isRebirth) {{
+                if (lvl <= 3) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.3);
+                }} else if (lvl <= 6) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.2);
+                }} else if (lvl <= 9) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.3);
+                }} else if (lvl <= 12) {{
+                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
+                }} else if (lvl <= 15) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
+                }} else if (lvl <= 18) {{
+                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
+                }} else if (lvl <= 21) {{
+                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
+                }} else if (lvl <= 24) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
                 }} else {{
-                    if (lvl <= 2) {{
-                        baseGeo = new THREE.TetrahedronGeometry(2.3);
-                    }} else if (lvl <= 5) {{
-                        baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-                    }} else if (lvl <= 8) {{
-                        baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-                    }} else if (lvl <= 11) {{
-                        baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-                    }} else if (lvl <= 14) {{
-                        baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-                    }} else if (lvl <= 17) {{
-                        baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-                    }} else if (lvl == 18) {{
-                        baseGeo = new THREE.OctahedronGeometry(2.5);
-                    }} else if (lvl == 19) {{
-                        baseGeo = new THREE.DodecahedronGeometry(2.4);
-                    }} else if (lvl == 20) {{
-                        baseGeo = new THREE.IcosahedronGeometry(2.4);
-                    }} else if (lvl == 21) {{
-                        baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-                    }} else if (lvl == 22) {{
-                        baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-                    }} else if (lvl == 23) {{
-                        baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-                    }} else if (lvl == 24) {{
-                        baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-                    }} else if (lvl == 25) {{
-                        baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-                    }} else if (lvl == 26) {{
-                        baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-                    }} else if (lvl == 27) {{
-                        baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-                    }} else if (lvl == 28) {{
-                        baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-                    }} else if (lvl == 29) {{
-                        baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-                    }} else if (lvl == 30) {{
-                        baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-                    }} else if (lvl == 31) {{
-                        baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-                    }} else if (lvl == 32) {{
-                        baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-                    }} else if (lvl == 33) {{
-                        baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-                    }} else if (lvl == 34) {{
-                        baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
-                    }} else {{
-                        baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
-                    }}
+                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
                 }}
+            }} else {{
+                if (lvl <= 2) {{
+                    baseGeo = new THREE.TetrahedronGeometry(2.3);
+                }} else if (lvl <= 5) {{
+                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+                }} else if (lvl <= 8) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
+                }} else if (lvl <= 11) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
+                }} else if (lvl <= 14) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
+                }} else if (lvl <= 17) {{
+                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
+                }} else if (lvl == 18) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.5);
+                }} else if (lvl == 19) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.4);
+                }} else if (lvl == 20) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.4);
+                }} else if (lvl == 21) {{
+                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
+                }} else if (lvl == 22) {{
+                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
+                }} else if (lvl == 23) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
+                }} else if (lvl == 24) {{
+                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
+                }} else if (lvl == 25) {{
+                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
+                }} else if (lvl == 26) {{
+                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
+                }} else if (lvl == 27) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
+                }} else if (lvl == 28) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                }} else if (lvl == 29) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
+                }} else if (lvl == 30) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
+                }} else if (lvl == 31) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
+                }} else if (lvl == 32) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
+                }} else if (lvl == 33) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
+                }} else if (lvl == 34) {{
+                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+                }} else {{
+                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                }}
+            }}
 
-                const outerMat = new THREE.MeshPhysicalMaterial({{
-                    color: tierColor,
-                    emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
-                    emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
-                    metalness: 0.9,
-                    roughness: 0.1,
-                    transmission: 0.6,
-                    transparent: true,
-                    opacity: status === "FAILED" ? 0.5 : 0.95,
-                    wireframe: false
+            const outerMat = new THREE.MeshPhysicalMaterial({{
+                color: tierColor,
+                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
+                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
+                metalness: 0.9,
+                roughness: 0.1,
+                transmission: 0.6,
+                transparent: true,
+                opacity: status === "FAILED" ? 0.5 : 0.95,
+                wireframe: false
+            }});
+            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
+            objectGroup.add(outerMesh);
+
+            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
+            const coreMat = new THREE.MeshPhysicalMaterial({{
+                color: 0xffffff,
+                emissive: statusColor,
+                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
+                roughness: 0.02,
+                metalness: 0.95,
+                transmission: 0.8
+            }});
+            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            objectGroup.add(coreMesh);
+
+            scene.add(objectGroup);
+
+            // -----------------------------------------------------------------
+            // 애니메이션 연출 로직 (마지막 단계 강화 시 5초간 길고 화려한 시네마틱)
+            // -----------------------------------------------------------------
+            const mainTl = gsap.timeline();
+
+            if (isLastAttempt) {{
+                // UI 잠시 숨기기
+                cinematicUi.style.opacity = "0";
+
+                // 연출 초기화
+                objectGroup.scale.set(0.5, 0.5, 0.5);
+                pointLight.intensity = 5;
+
+                // 5초간 화려한 진동, 카메라 서서히 줌인, 오브젝트 수퍼 스케일업 & 초고속 회전 연출
+                mainTl.to(camera.position, {{
+                    z: 4.2,
+                    duration: 4.8,
+                    ease: "power3.in"
+                }}, 0);
+
+                mainTl.to(objectGroup.scale, {{
+                    x: 3.5, y: 3.5, z: 3.5,
+                    duration: 4.8,
+                    ease: "power3.in"
+                }}, 0);
+
+                mainTl.to(pointLight, {{
+                    intensity: 200,
+                    duration: 4.8,
+                    ease: "power4.in"
+                }}, 0);
+
+                // 빛의 서라운드 라이트 컬러 왜곡 (무지개빛 색상 트랜지션)
+                const colors = ["#ff0055", "#00ffff", "#ffaa00", "#7000ff", "#ffffff"];
+                colors.forEach((col, idx) => {{
+                    mainTl.to(pointLight.color, {{
+                        r: new THREE.Color(col).r,
+                        g: new THREE.Color(col).g,
+                        b: new THREE.Color(col).b,
+                        duration: 0.9,
+                        ease: "linear"
+                    }}, idx * 0.9);
                 }});
-                const outerMesh = new THREE.Mesh(baseGeo, outerMat);
-                objectGroup.add(outerMesh);
 
-                const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
-                const coreMat = new THREE.MeshPhysicalMaterial({{
-                    color: 0xffffff,
-                    emissive: statusColor,
-                    emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
-                    roughness: 0.02,
-                    metalness: 0.95,
-                    transmission: 0.8
-                }});
-                const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-                objectGroup.add(coreMesh);
+                // 카메라 & 코어 가속 및 극적인 시공간 시각적 왜곡 진동
+                const basePosY = -0.7;
+                mainTl.to(objectGroup.position, {{
+                    duration: 4.8,
+                    onUpdate: function() {{
+                        const p = this.progress(); // 0 ~ 1
+                        const shake = Math.pow(p, 2) * 0.8; // 진행될수록 가속되는 진동 폭
+                        objectGroup.position.x = (Math.random() - 0.5) * shake;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
+                        objectGroup.position.z = (Math.random() - 0.5) * shake;
 
-                scene.add(objectGroup);
+                        // 회전 가속 연출
+                        const speedMult = 1 + p * 15;
+                        objectGroup.rotation.x += 0.05 * speedMult;
+                        objectGroup.rotation.y += 0.08 * speedMult;
+                        objectGroup.rotation.z += 0.03 * speedMult;
+                    }}
+                }}, 0);
 
-                const tl = gsap.timeline();
+                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
+                mainTl.to(flashOverlay, {{
+                    opacity: 1.0,
+                    duration: 0.2,
+                    ease: "power4.in",
+                    onComplete: function() {{
+                        cinematicUi.style.opacity = "1";
+                        camera.position.set(0, 0.6, 10.0);
+                        
+                        // 결과 연출 (파괴 or 성공 or 실패)
+                        triggerResultAnimation();
+                    }}
+                }}, 4.8);
+
+                mainTl.to(flashOverlay, {{
+                    opacity: 0,
+                    duration: 1.0,
+                    ease: "power2.out"
+                }}, 5.0);
+
+            }} else {{
+                // 일반 단계 시도 시 즉시 결과 연출
+                triggerResultAnimation();
+            }}
+
+            function triggerResultAnimation() {{
+                const resultTl = gsap.timeline();
 
                 if (status === "DESTROYED") {{
                     outerMesh.visible = false;
                     coreMesh.visible = false;
 
                     pointLight.color.set("#ff0000");
-                    pointLight.intensity = 80;
+                    pointLight.intensity = 100;
 
-                    const shardCount = 180;
+                    const shardCount = 250;
                     const shards = [];
                     const shardGroup = new THREE.Group();
                     shardGroup.position.y = -0.7;
@@ -1506,23 +2072,23 @@ def main_game_ui():
                             roughness: 0.1,
                             metalness: 0.9,
                             emissive: "#ff2200",
-                            emissiveIntensity: 2.5
+                            emissiveIntensity: 3.5
                         }});
                         const shard = new THREE.Mesh(sGeo, sMat);
                         shard.position.set(0, 0, 0);
-                    
+                        
                         const u = Math.random();
                         const v = Math.random();
                         const theta = u * 2.0 * Math.PI;
                         const phi = Math.acos(2.0 * v - 1.0);
-                        const speed = 4.0 + Math.random() * 8.0;
-                    
+                        const speed = 6.0 + Math.random() * 12.0;
+                        
                         shard.userData = {{
                             vx: speed * Math.sin(phi) * Math.cos(theta),
                             vy: speed * Math.sin(phi) * Math.sin(theta),
                             vz: speed * Math.cos(phi),
-                            rx: (Math.random() - 0.5) * 30,
-                            ry: (Math.random() - 0.5) * 30
+                            rx: (Math.random() - 0.5) * 40,
+                            ry: (Math.random() - 0.5) * 40
                         }};
 
                         shardGroup.add(shard);
@@ -1530,14 +2096,14 @@ def main_game_ui():
                     }}
                     scene.add(shardGroup);
 
-                    tl.to(shardGroup.position, {{
-                        duration: 0.5,
+                    resultTl.to(shardGroup.position, {{
+                        duration: 0.8,
                         ease: "power2.out",
                         onUpdate: function() {{
                             const progress = this.progress();
                             shards.forEach(s => {{
                                 s.position.x += s.userData.vx * 0.02;
-                                s.position.y += s.userData.vy * 0.02 - 0.04;
+                                s.position.y += s.userData.vy * 0.02 - 0.03;
                                 s.position.z += s.userData.vz * 0.02;
                                 s.rotation.x += s.userData.rx * 0.02;
                                 s.rotation.y += s.userData.ry * 0.02;
@@ -1547,24 +2113,24 @@ def main_game_ui():
                         }}
                     }});
                 }} else {{
-                    const maxScale = isFinalSuccess ? 1.8 : 1.3;
-                    tl.to(objectGroup.scale, {{
+                    const maxScale = isFinalSuccess ? 2.0 : 1.3;
+                    resultTl.to(objectGroup.scale, {{
                         x: maxScale, y: maxScale, z: maxScale,
-                        duration: 0.12,
-                        ease: "power1.inOut"
+                        duration: 0.2,
+                        ease: "back.out(2)"
                     }})
                     .to(objectGroup.scale, {{
                         x: 1.0, y: 1.0, z: 1.0,
-                        duration: 0.12,
-                        ease: "power1.out"
+                        duration: 0.25,
+                        ease: "power2.out"
                     }});
 
                     const basePosY = -0.7;
-                    tl.to(objectGroup.position, {{
-                        duration: 0.25,
+                    resultTl.to(objectGroup.position, {{
+                        duration: 0.35,
                         onUpdate: function() {{
                             const p = this.progress();
-                            const shakeIntensity = (isFinalSuccess ? 0.35 : 0.12) * Math.sin(p * Math.PI);
+                            const shakeIntensity = (isFinalSuccess ? 0.45 : 0.12) * Math.sin(p * Math.PI);
                             objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
                             objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
                             objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
@@ -1575,118 +2141,55 @@ def main_game_ui():
                         }}
                     }}, 0);
                 }}
+            }}
 
-                const clock = new THREE.Clock();
+            const clock = new THREE.Clock();
 
-                function animate() {{
-                    requestAnimationFrame(animate);
-                    const time = clock.getElapsedTime();
+            function animate() {{
+                requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
 
-                    if (status !== "DESTROYED") {{
-                        const rotSpeed = isFinalSuccess ? 1.8 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
-                        outerMesh.rotation.x += 0.005 * rotSpeed;
-                        outerMesh.rotation.y += 0.008 * rotSpeed;
-                        coreMesh.rotation.x -= 0.01 * rotSpeed;
-                        coreMesh.rotation.y -= 0.012 * rotSpeed;
+                if (status !== "DESTROYED") {{
+                    const rotSpeed = isFinalSuccess ? 2.2 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
+                    outerMesh.rotation.x += 0.005 * rotSpeed;
+                    outerMesh.rotation.y += 0.008 * rotSpeed;
+                    coreMesh.rotation.x -= 0.01 * rotSpeed;
+                    coreMesh.rotation.y -= 0.012 * rotSpeed;
 
-                        if (isFinalSuccess) {{
-                            objectGroup.rotation.z = Math.sin(time * 2.0) * 0.15;
-                        }}
+                    if (isFinalSuccess) {{
+                        objectGroup.rotation.z = Math.sin(time * 2.5) * 0.2;
                     }}
-
-                    starField.rotation.y = time * 0.01;
-
-                    const positions = particleGeo.attributes.position.array;
-                    for(let i=0; i<particleCount; i++) {{
-                        positions[i*3] += particleVelocities[i].x;
-                        positions[i*3 + 1] += particleVelocities[i].y;
-                        positions[i*3 + 2] += particleVelocities[i].z;
-
-                        if(positions[i*3 + 1] > 2.5) {{
-                            positions[i*3 + 1] = -4.0;
-                            positions[i*3] = (Math.random() - 0.5) * 6.0;
-                            positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
-                        }}
-                    }}
-                    particleGeo.attributes.position.needsUpdate = true;
-
-                    renderer.render(scene, camera);
                 }}
 
-                animate();
+                starField.rotation.y = time * 0.01;
 
-                window.addEventListener('resize', () => {{
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                }});
-            </script>
-        </body>
-        </html>
-        """
+                const positions = particleGeo.attributes.position.array;
+                for(let i=0; i<particleCount; i++) {{
+                    positions[i*3] += particleVelocities[i].x;
+                    positions[i*3 + 1] += particleVelocities[i].y;
+                    positions[i*3 + 2] += particleVelocities[i].z;
 
-      components.html(three_js_code, height=580, scrolling=False)
+                    if(positions[i*3 + 1] > 2.5) {{
+                        positions[i*3 + 1] = -4.0;
+                        positions[i*3] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+                    }}
+                }}
+                particleGeo.attributes.position.needsUpdate = true;
 
+                renderer.render(scene, camera);
+            }}
 
-    with right_col:
-        st.markdown("<div style='font-size:12px;color:#32e6ff;letter-spacing:2px;font-weight:900;margin-bottom:7px'>COMMAND CENTER</div>",unsafe_allow_html=True)
-        tab_ach,tab_title,tab_shop,tab_history=st.tabs(["🏆 업적","🏷️ 칭호","🛒 상점","📜 기록"])
-        with tab_ach:
-            achieved=sum(st.session_state.achievements.values())
-            st.progress(achieved/max(1,len(ACHIEVEMENTS)),text=f"업적 {achieved} / {len(ACHIEVEMENTS)}")
-            for key,info in list(ACHIEVEMENTS.items())[:8]:
-                done=st.session_state.achievements.get(key,False)
-                st.markdown(f"<div style='padding:8px 9px;margin:5px 0;border:1px solid {'rgba(50,230,255,.35)' if done else 'rgba(100,116,139,.18)'};border-radius:10px;background:{'rgba(30,90,120,.16)' if done else 'rgba(10,18,31,.55)'}'><b>{'✓' if done else '○'} {info['name']}</b><div style='font-size:10px;color:#8194ac'>{info['desc']}</div></div>",unsafe_allow_html=True)
-        with tab_title:
-            options=[TITLE_DEFAULT]+st.session_state.unlocked_titles
-            if st.session_state.selected_title not in options: st.session_state.selected_title=TITLE_DEFAULT
-            selected=st.selectbox("현재 장착 칭호",options,index=options.index(st.session_state.selected_title),key="title_select_new")
-            st.session_state.selected_title=selected
-            st.markdown(f"<div style='margin-top:10px;padding:18px 10px;text-align:center;border:1px solid rgba(168,85,247,.45);border-radius:14px;background:radial-gradient(circle,rgba(168,85,247,.22),rgba(8,13,25,.8))'><div style='font-size:10px;color:#a78bfa;letter-spacing:2px'>EQUIPPED TITLE</div><div style='font-size:19px;font-weight:950;margin-top:7px;color:#f5d0fe'>{selected}</div></div>",unsafe_allow_html=True)
-        with tab_shop:
-            st.markdown(f"<div style='font-size:11px;color:#7e92ad;margin-bottom:8px'>보유 포인트 <b style='color:#ffd35a'>{st.session_state.points:,} P</b></div>",unsafe_allow_html=True)
-            if st.button("⚡ 크리티컬 +10% · 150P",use_container_width=True,key="buy_crit"):
-                if buy_crit_boost(): st.rerun()
-            if st.button("🛡️ 방지권 +1 · 200P",use_container_width=True,key="buy_shield_new",disabled=st.session_state.shield>=3):
-                if st.session_state.points>=200:
-                    st.session_state.points-=200; st.session_state.shield+=1; save_current_season_state(); st.rerun()
-                else: st.error("200P가 필요합니다.")
-            if st.button("💧 눈물 +10 · 100P",use_container_width=True,key="buy_tears_new",disabled=st.session_state.tears>=80):
-                if st.session_state.points>=100:
-                    st.session_state.points-=100; st.session_state.tears=min(80,st.session_state.tears+10); save_current_season_state(); st.rerun()
-                else: st.error("100P가 필요합니다.")
-            st.caption(f"추가 크리티컬 +{int(st.session_state.crit_boost*100)}%")
-        with tab_history:
-            if not st.session_state.enhance_history: st.caption("아직 강화 기록이 없습니다.")
-            for h in st.session_state.enhance_history[:8]:
-                icon={"SUCCESS":"🟦","CRITICAL":"⚡","PITY_SUCCESS":"✨","FAILED":"🔻","DESTROYED":"💥","SHIELD_SAVED":"🛡️","HOLD":"⏸️"}.get(h['status'],"•")
-                st.markdown(f"<div style='display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(100,116,139,.12);font-size:11px'><span>{icon} {h['before']} → <b>{h['after']}</b></span><span style='color:#71849c'>{h['time']}</span></div>",unsafe_allow_html=True)
+            animate();
 
-    st.markdown("<div style='height:8px'></div><div style='padding:12px 15px 5px;border-top:1px solid rgba(50,230,255,.16);font-size:11px;color:#32e6ff;letter-spacing:2px;font-weight:900'>ENHANCEMENT CONTROL DECK</div>",unsafe_allow_html=True)
-    c1,c2,c3,c4,c5=st.columns([1,1,2.4,1.8,1.8])
-    with c1:
-        if st.button("− 1",use_container_width=True,key="minus_lvl"):
-            st.session_state.level=max(0,st.session_state.level-1); st.session_state.status="HOLD"; save_current_season_state(); st.rerun()
-    with c2:
-        if st.button("+ 1",use_container_width=True,key="plus_lvl",disabled=curr>=max_lvl):
-            st.session_state.level=min(max_lvl,curr+1); st.session_state.max_level=max(st.session_state.max_level,st.session_state.level); st.session_state.status="SUCCESS"; check_achievements(); save_current_season_state(); st.rerun()
-    with c3:
-        if st.button(f"⚡ 강화하기 · {format_gold(cost)}",use_container_width=True,type="primary",disabled=curr>=max_lvl,key="enhance_main"):
-            if do_enhance_once(): st.rerun()
-    with c4:
-        target=st.number_input("목표 단계",min_value=min(max_lvl,curr+1),max_value=max_lvl,value=min(max_lvl,curr+5),step=1,key="auto_target_new")
-    with c5:
-        label="⏹ 자동 강화 중지" if st.session_state.auto_enhancing else "▶ 자동 강화 시작"
-        if st.button(label,use_container_width=True,disabled=curr>=max_lvl,key="auto_toggle"):
-            st.session_state.auto_enhancing=not st.session_state.auto_enhancing
-            st.session_state.auto_target=int(target)
-            st.rerun()
+            window.addEventListener('resize', () => {{
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }});
+        </script>
+    </body>
+    </html>
+    """
 
-    st.markdown("<div style='font-size:11px;color:#32e6ff;letter-spacing:2px;font-weight:900;margin:13px 0 6px'>FEATURE SHOP</div>",unsafe_allow_html=True)
-    s1,s2,s3,s4,s5=st.columns(5)
-    cards=[(s1,"⚡","CRITICAL CORE","150 P","크리티컬 +10%"),(s2,"🛡️","SHIELD MODULE","200 P","파괴 방지권 +1"),(s3,"💧","TEAR MODULE","100 P","눈물 +10"),(s4,"🎁","DAILY SUPPLY","FREE","오늘의 보상"),(s5,"🚀","WARP ACCESS","POINT","워프 시스템")]
-    for col,icon,title,price,desc in cards:
-        with col:
-            st.markdown(f"<div style='min-height:118px;padding:12px;border:1px solid rgba(83,153,255,.22);border-radius:13px;background:linear-gradient(145deg,rgba(12,25,45,.9),rgba(4,10,19,.92))'><div style='font-size:22px'>{icon}</div><div style='font-size:11px;color:#6f86a4;letter-spacing:1px'>{title}</div><div style='font-size:15px;font-weight:950;color:#ffd35a;margin-top:3px'>{price}</div><div style='font-size:10px;color:#8ca0b8;margin-top:2px'>{desc}</div></div>",unsafe_allow_html=True)
-
-main_game_ui()
+  components.html(three_js_code, height=580, scrolling=False)
