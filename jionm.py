@@ -943,7 +943,7 @@ def check_achievements():
     unlock_achievement("s2_level_5")
   if st.session_state.is_rebirth and level >= 15:
     unlock_achievement("s2_level_15")
-  if st.session_state.status == "FAIL" and level >= 20:
+  if st.session_state.status in ["FAILED", "DESTROYED"] and level >= 20:
     unlock_achievement("survivor")
   if st.session_state.warp_uses >= 5:
     unlock_achievement("warp_5")
@@ -1079,7 +1079,8 @@ def run_enhance():
     return
 
   st.session_state.money -= cost
-  st.session_state.prev_level = curr  # 이전 단계 저장
+  st.session_state.prev_level = curr
+  st.session_state.enhance_attempts += 1
 
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
@@ -1087,6 +1088,7 @@ def run_enhance():
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
+    check_achievements()
     save_current_season_state()
     return
 
@@ -1140,6 +1142,7 @@ def run_enhance():
       if st.session_state.level >= w_lvl:
         st.session_state.unlocked_season2_warps[w_lvl] = True
 
+  check_achievements()
   save_current_season_state()
 
 
@@ -1156,6 +1159,9 @@ def sell():
   st.session_state.prev_level = curr
   st.session_state.level = 0
   st.session_state.status = "READY"
+  st.session_state.sell_count += 1
+  unlock_achievement("seller")
+  check_achievements()
   save_current_season_state()
 
 
@@ -1165,6 +1171,7 @@ def trigger_rebirth():
   sync_session_state(2)
   st.session_state.rebirth_count += 1
   st.session_state.status = "READY"
+  check_achievements()
   save_current_season_state()
 
 
@@ -1234,5 +1241,305 @@ with left_col:
       else "🌌 [시즌 1] 성지온의 탄생과 시초"
   )
   st.markdown(
-      f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
-      f" color:#fde6
+      f"<h4 style='margin:0 0 8px 0; font-size: 15px; color:#fde68a;'>{mode_title}</h4>",
+      unsafe_allow_html=True,
+  )
+
+  # 칭호 선택
+  titles = [TITLE_DEFAULT] + st.session_state.unlocked_titles
+  sel_t = st.selectbox(
+      "🏷️ 착용할 칭호",
+      titles,
+      index=titles.index(st.session_state.selected_title)
+      if st.session_state.selected_title in titles
+      else 0,
+  )
+  st.session_state.selected_title = sel_t
+
+  st.metric(
+      "💰 보유 자산",
+      format_gold(st.session_state.money),
+  )
+
+  # 강화 관련 아이템 제어 버튼들
+  cur_lvl = st.session_state.level
+  max_l = 25 if st.session_state.is_rebirth else 35
+  enh_cost = get_enhance_cost(cur_lvl, st.session_state.is_rebirth)
+  shd_cost = get_shield_cost(cur_lvl, st.session_state.is_rebirth)
+
+  st.markdown("### 🔨 강화 제어판")
+  if cur_lvl < max_l:
+    if st.button(
+        f"🔥 강화 시도 ({format_gold(enh_cost)})", use_container_width=True
+    ):
+      run_enhance()
+      st.rerun()
+  else:
+    st.button("👑 최고 단계 도달", disabled=True, use_container_width=True)
+
+  if cur_lvl > 0:
+    cur_p = SMELL_DB[st.session_state.is_rebirth][cur_lvl]["price"]
+    if st.button(
+        f"💵 현재 단계 판매 ({format_gold(cur_p)})", use_container_width=True
+    ):
+      sell()
+      st.rerun()
+
+  # 아이템 & 기능 탭
+  t1, t2, t3, t4 = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🌀 워프", "🏆 업적"]
+  )
+
+  with t1:
+    st.write(f"현재 보유 방지권: **{st.session_state.shield}개**")
+    if st.button(
+        f"🛡️ 강화 방지권 구매 ({format_gold(shd_cost)})",
+        use_container_width=True,
+    ):
+      if st.session_state.money >= shd_cost:
+        st.session_state.money -= shd_cost
+        st.session_state.shield += 1
+        st.toast("🛡️ 방지권을 1개 구입했습니다!")
+        save_current_season_state()
+        st.rerun()
+      else:
+        st.error("돈이 부족합니다.")
+
+  with t2:
+    st.write(f"현재 보유 눈물: **{st.session_state.tears}개**")
+    st.caption("눈물 20개로 천장 스택 1개를 채울 수 있습니다.")
+    if st.button("💧 눈물 20개로 천장 정제", use_container_width=True):
+      if st.session_state.tears >= 20:
+        st.session_state.tears -= 20
+        st.session_state.pity_count = min(
+            PITY_MAX, st.session_state.pity_count + 1
+        )
+        st.toast("💧 눈물을 정제하여 천장 스택을 쌓았습니다!")
+        save_current_season_state()
+        st.rerun()
+      else:
+        st.error("눈물이 부족합니다.")
+
+  with t3:
+    st.caption("해금된 순간 이동 지점으로 바로 워프합니다.")
+    warps = (
+        st.session_state.unlocked_season2_warps
+        if st.session_state.is_rebirth
+        else st.session_state.unlocked_warps
+    )
+    for target_lvl, unlocked in warps.items():
+      if unlocked:
+        if st.button(
+            f"🚀 {target_lvl}단계로 워프",
+            key=f"warp_{target_lvl}",
+            use_container_width=True,
+        ):
+          st.session_state.prev_level = st.session_state.level
+          st.session_state.level = target_lvl
+          st.session_state.status = "WARP"
+          st.session_state.warp_uses += 1
+          check_achievements()
+          save_current_season_state()
+          st.rerun()
+      else:
+        st.button(
+            f"🔒 {target_lvl}단계 (미해금)",
+            disabled=True,
+            key=f"warp_dis_{target_lvl}",
+            use_container_width=True,
+        )
+
+  with t4:
+    achieved_cnt = sum(1 for v in st.session_state.achievements.values() if v)
+    st.write(f"달성한 업적: **{achieved_cnt} / {len(ACHIEVEMENTS)}**")
+    for k, v in ACHIEVEMENTS.items():
+      done = st.session_state.achievements.get(k, False)
+      mark = "✅" if done else "🔒"
+      st.markdown(
+          f"<div style='font-size:12px; margin-bottom:4px; opacity:{1.0 if done else 0.5};'>"
+          f"<b>{mark} {v['name']}</b>: {v['desc']} <span style='color:#fde68a;'>[{v['title']}]</span>"
+          "</div>",
+          unsafe_allow_html=True,
+      )
+
+# -----------------------------------------------------------------------------
+# 8. 우측 Visual 3D View (Three.js 기반 시네마틱 뷰어)
+# -----------------------------------------------------------------------------
+with right_col:
+  item_info = SMELL_DB[st.session_state.is_rebirth][st.session_state.level]
+  item_color = item_info["color"]
+  item_name = item_info["name"]
+  item_desc = item_info["desc"]
+
+  # 상태 타이틀 & 칭호 연출
+  selected_title = st.session_state.selected_title
+  title_html = (
+      f"<div style='color:#38bdf8; font-weight:bold; font-size:14px;"
+      f" margin-bottom:2px;'>✨ [{selected_title}]</div>"
+      if selected_title != TITLE_DEFAULT
+      else ""
+  )
+
+  status = st.session_state.status
+  status_msg = "시작 준비 완료"
+  status_color = "#94a3b8"
+
+  if status == "SUCCESS":
+    status_msg = "🔥 강화 성공!"
+    status_color = "#4ade80"
+  elif status == "CRITICAL":
+    status_msg = "💥 대성공! (2단계 상승)"
+    status_color = "#facc15"
+  elif status == "PITY_SUCCESS":
+    status_msg = "🌟 천장 확정 성공!"
+    status_color = "#38bdf8"
+  elif status == "FAILED":
+    status_msg = "📉 강화 실패 (단계 하락)"
+    status_color = "#fb923c"
+  elif status == "SHIELD_SAVED":
+    status_msg = "🛡️ 파괴 방지권 발동! (단계 보존)"
+    status_color = "#a78bfa"
+  elif status == "DESTROYED":
+    status_msg = "☠️ 아이템 파괴! (0단계 초기화)"
+    status_color = "#f87171"
+  elif status == "HOLD":
+    status_msg = "🔒 강화 유지"
+    status_color = "#cbd5e1"
+  elif status == "NOT_ENOUGH_MONEY":
+    status_msg = "❌ 골드가 부족합니다"
+    status_color = "#ef4444"
+  elif status == "WARP":
+    status_msg = "🚀 시공간 워프 성공!"
+    status_color = "#c084fc"
+
+  st.markdown(
+      f"""
+    <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); border-radius: 20px; padding: 18px 24px; margin-bottom: 16px;">
+        {title_html}
+        <h2 style="margin: 0; color: {item_color}; text-shadow: 0 0 12px {item_color}66; font-size: 26px;">{item_name}</h2>
+        <p style="margin: 6px 0 0 0; color: #cbd5e1; font-size: 14px;">{item_desc}</p>
+        <div style="margin-top: 10px; font-weight: bold; color: {status_color}; font-size: 15px;">{status_msg}</div>
+    </div>
+    """,
+      unsafe_allow_html=True,
+  )
+
+  # 3D 오브젝트 그래픽스 (Three.js 렌더링)
+  max_l = 25 if st.session_state.is_rebirth else 35
+  is_max = st.session_state.level == max_l
+
+  three_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ margin: 0; overflow: hidden; background: transparent; }}
+            canvas {{ width: 100vw; height: 500px; display: block; border-radius: 20px; }}
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / 500, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
+            renderer.setSize(window.innerWidth, 500);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            // 빛 설정
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight("{item_color}", 2, 50);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            const pointLight2 = new THREE.PointLight(0xffffff, 1, 50);
+            pointLight2.position.set(-5, -5, -5);
+            scene.add(pointLight2);
+
+            // 오브젝트 생성 (단계에 따른 시각적 차별화)
+            const level = {st.session_state.level};
+            const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
+            
+            let geometry;
+            if (isRebirth) {{
+                geometry = new THREE.IcosahedronGeometry(2.2, 2);
+            }} else if (level < 10) {{
+                geometry = new THREE.DodecahedronGeometry(2, 0);
+            }} else if (level < 20) {{
+                geometry = new THREE.OctahedronGeometry(2.2, 0);
+            }} else if (level < 30) {{
+                geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 100, 16);
+            }} else {{
+                geometry = new THREE.IcosahedronGeometry(2.2, 1);
+            }}
+
+            const material = new THREE.MeshStandardMaterial({{
+                color: "{item_color}",
+                metalness: 0.6,
+                roughness: 0.2,
+                wireframe: false,
+                emissive: "{item_color}",
+                emissiveIntensity: {0.8 if is_max else 0.3}
+            }});
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // 외각 파티클 Ring 연출
+            const particleGeo = new THREE.BufferGeometry();
+            const count = 300;
+            const posArray = new Float32Array(count * 3);
+            for(let i=0; i<count*3; i+=3) {{
+                posArray[i] = (Math.random() - 0.5) * 8;
+                posArray[i+1] = (Math.random() - 0.5) * 8;
+                posArray[i+2] = (Math.random() - 0.5) * 8;
+            }}
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particleMat = new THREE.PointsMaterial({{
+                size: 0.05,
+                color: "{item_color}"
+            }});
+            const particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            camera.position.z = 6;
+
+            // 애니메이션 루프
+            const isCinematic = {"true" if is_max else "false"};
+            let startTime = Date.now();
+
+            function animate() {{
+                requestAnimationFrame(animate);
+                
+                const elapsedTime = (Date.now() - startTime) * 0.001;
+
+                if (isCinematic) {{
+                    mesh.rotation.x += 0.04;
+                    mesh.rotation.y += 0.05;
+                    mesh.position.y = Math.sin(elapsedTime * 4) * 0.3;
+                    particles.rotation.y -= 0.02;
+                }} else {{
+                    mesh.rotation.x += 0.01;
+                    mesh.rotation.y += 0.015;
+                    mesh.position.y = Math.sin(elapsedTime * 2) * 0.15;
+                    particles.rotation.y -= 0.005;
+                }}
+
+                renderer.render(scene, camera);
+            }}
+            animate();
+
+            window.addEventListener('resize', () => {{
+                camera.aspect = window.innerWidth / 500;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, 500);
+            }});
+        </script>
+    </body>
+    </html>
+    """
+
+  components.html(three_html, height=510)
