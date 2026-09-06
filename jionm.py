@@ -1308,8 +1308,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
   )
 
   with tab_shop1:
@@ -1461,41 +1461,6 @@ with left_col:
             save_current_season_state()
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
-
-  with tab_dev:
-    st.markdown(
-        "<div style='font-size:12px; color:#f87171; font-weight:700;"
-        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
-        " 성공합니다</div>",
-        unsafe_allow_html=True,
-    )
-
-    max_lvl = 25 if st.session_state.is_rebirth else 35
-
-    if st.button(
-        "✨ 강제 성공 (+1)",
-        use_container_width=True,
-        disabled=(st.session_state.level >= max_lvl),
-    ):
-      st.session_state.prev_level = st.session_state.level
-      st.session_state.level += 1
-      st.session_state.status = "SUCCESS"
-      if st.session_state.level > st.session_state.max_level:
-        st.session_state.max_level = st.session_state.level
-
-      if not st.session_state.is_rebirth:
-        for w_lvl in [10, 15, 20, 25, 30]:
-          if st.session_state.level >= w_lvl:
-            st.session_state.unlocked_warps[w_lvl] = True
-      else:
-        for w_lvl in [5, 10, 15, 20]:
-          if st.session_state.level >= w_lvl:
-            st.session_state.unlocked_season2_warps[w_lvl] = True
-
-      check_achievements()
-      save_current_season_state()
-      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
-      st.rerun()
 
   with tab_ach:
     achieved = sum(st.session_state.achievements.values())
