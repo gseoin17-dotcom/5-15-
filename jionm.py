@@ -1197,30 +1197,38 @@ st.markdown(
 
     .stApp {
         background:
-          radial-gradient(circle at 50% 32%, rgba(0,132,255,.16), transparent 30%),
-          radial-gradient(circle at 85% 70%, rgba(109,50,255,.13), transparent 28%),
-          linear-gradient(180deg,#030816 0%,#061326 52%,#030815 100%);
-        color:#eef6ff;
+          radial-gradient(circle at 50% 28%, rgba(0,157,255,.20), transparent 25%),
+          radial-gradient(circle at 8% 65%, rgba(28,93,255,.13), transparent 26%),
+          radial-gradient(circle at 92% 75%, rgba(163,48,255,.15), transparent 28%),
+          linear-gradient(180deg,#020713 0%,#061326 48%,#020611 100%);
+        color:#eef6ff; position:relative;
     }
+    .stApp::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+        background-image:radial-gradient(circle,rgba(130,210,255,.72) 0 1px,transparent 1.5px);
+        background-size:72px 72px; opacity:.10; animation:starDrift 28s linear infinite; }
+    .stApp::after { content:""; position:fixed; left:-10%; right:-10%; top:7%; height:1px; pointer-events:none;
+        background:linear-gradient(90deg,transparent,rgba(43,190,255,.42),transparent);
+        box-shadow:0 0 28px rgba(31,170,255,.22); opacity:.7; animation:scanline 9s ease-in-out infinite; }
+    @keyframes starDrift { from{transform:translate3d(0,0,0)} to{transform:translate3d(72px,72px,0)} }
+    @keyframes scanline { 0%,100%{transform:translateY(0);opacity:.15} 50%{transform:translateY(55vh);opacity:.75} }
     .block-container {
         padding: 1.0rem 1.1rem 1.5rem !important;
         max-width: 100% !important;
     }
     header[data-testid="stHeader"] { background:transparent !important; }
-    div.stButton > button {
-        border:1px solid rgba(90,180,255,.34) !important;
-        border-radius:12px !important;
-        background:linear-gradient(180deg,rgba(20,54,96,.92),rgba(7,24,48,.92)) !important;
-        color:#edf7ff !important;
-        font-weight:800 !important;
-        min-height:38px;
-        box-shadow:0 0 18px rgba(0,125,255,.08), inset 0 1px rgba(255,255,255,.08);
-    }
-    div.stButton > button:hover {
-        border-color:rgba(74,210,255,.8) !important;
-        box-shadow:0 0 24px rgba(0,180,255,.20);
-        transform:translateY(-1px);
-    }
+    div.stButton > button { position:relative; overflow:hidden;
+        border:1px solid rgba(77,181,255,.38) !important; border-radius:13px !important;
+        background:linear-gradient(180deg,rgba(19,58,103,.96),rgba(5,21,45,.96)) !important;
+        color:#edf7ff !important; font-weight:850 !important; min-height:40px;
+        box-shadow:0 0 18px rgba(0,125,255,.10), inset 0 1px rgba(255,255,255,.10), inset 0 -1px rgba(0,0,0,.45);
+        transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease !important; }
+    div.stButton > button::before { content:""; position:absolute; top:0; left:-120%; width:70%; height:100%;
+        background:linear-gradient(105deg,transparent,rgba(255,255,255,.18),transparent); transform:skewX(-20deg); transition:left .55s ease; pointer-events:none; }
+    div.stButton > button:hover { border-color:rgba(74,220,255,.92) !important;
+        box-shadow:0 0 26px rgba(0,180,255,.26), inset 0 1px rgba(255,255,255,.16) !important;
+        transform:translateY(-2px); filter:brightness(1.10); }
+    div.stButton > button:hover::before { left:145%; }
+    div.stButton > button:active { transform:translateY(0) scale(.985) !important; }
     [data-testid="stSidebar"] {
         background:linear-gradient(180deg,#061224,#030a16) !important;
         border-right:1px solid rgba(68,151,255,.22);
@@ -1262,20 +1270,28 @@ st.markdown(
 
     .section-title { font-size:16px; font-weight:950; letter-spacing:.2px; }
     .section-sub { font-size:11px; color:#8198ba; margin-top:3px; }
-    .glass {
-        border:1px solid var(--line);
-        border-radius:18px;
+    .glass { position:relative; overflow:hidden; border:1px solid var(--line); border-radius:18px;
         background:linear-gradient(145deg,rgba(10,31,61,.86),rgba(4,15,31,.88));
-        box-shadow:0 14px 40px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.05);
-        padding:15px;
-    }
-    .profile-card {
-        background:
-          radial-gradient(circle at 90% 0%,rgba(0,203,255,.14),transparent 38%),
-          linear-gradient(145deg,rgba(10,35,68,.94),rgba(4,15,30,.94));
-        border:1px solid rgba(68,176,255,.35);
-        border-radius:18px; padding:16px;
-    }
+        box-shadow:0 14px 40px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.05), 0 0 0 1px rgba(30,120,255,.025);
+        padding:15px; transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
+    .glass::before { content:""; position:absolute; left:14px; right:14px; top:0; height:1px;
+        background:linear-gradient(90deg,transparent,rgba(104,211,255,.65),transparent); opacity:.65; }
+    .glass:hover { transform:translateY(-2px); border-color:rgba(73,180,255,.45);
+        box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 24px rgba(0,135,255,.07),inset 0 1px rgba(255,255,255,.07); }
+    .profile-card::after,.event-banner::after,.hero::after { content:""; position:absolute; inset:0; pointer-events:none;
+        background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.035) 48%,transparent 72%);
+        transform:translateX(-120%); animation:panelSweep 7s ease-in-out infinite; }
+    @keyframes panelSweep { 0%,55%{transform:translateX(-120%)} 75%,100%{transform:translateX(120%)} }
+    .corner-label { display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:7px;
+        font-size:9px;font-weight:950;letter-spacing:1px;color:#75ddff; background:rgba(0,180,255,.08);border:1px solid rgba(78,205,255,.20); }
+    .live-dot { display:inline-block;width:6px;height:6px;border-radius:50%;background:#39f7a5;box-shadow:0 0 10px #39f7a5;animation:livePulse 1.3s ease-in-out infinite; }
+    @keyframes livePulse { 50%{transform:scale(1.45);opacity:.55} }
+    .profile-card { position:relative; overflow:hidden; background:
+          radial-gradient(circle at 90% 0%,rgba(0,203,255,.18),transparent 38%),
+          radial-gradient(circle at 10% 100%,rgba(69,70,255,.12),transparent 36%),
+          linear-gradient(145deg,rgba(10,35,68,.96),rgba(4,15,30,.96));
+        border:1px solid rgba(68,176,255,.38); border-radius:18px; padding:16px;
+        box-shadow:inset 0 1px rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.22); }
     .rank-badge {
         display:inline-block; padding:5px 9px; border-radius:999px;
         color:#7ce9ff; background:rgba(0,177,255,.10);
@@ -1307,8 +1323,7 @@ st.markdown(
     .news-time { color:#6e88aa; margin-right:8px; }
     .tag { color:#4bdcff; font-weight:900; margin-right:6px; }
 
-    .event-banner {
-        min-height:92px; display:flex; align-items:center; justify-content:space-between;
+    .event-banner { position:relative; overflow:hidden; min-height:92px; display:flex; align-items:center; justify-content:space-between;
         border-radius:16px; padding:16px 18px;
         border:1px solid rgba(236,91,255,.38);
         background:
@@ -1319,15 +1334,15 @@ st.markdown(
     .event-kicker { color:#ff8ef7; font-size:10px; font-weight:900; }
     .event-title { font-size:18px; font-weight:950; margin-top:3px; }
     .event-desc { color:#b8a9d4; font-size:10px; margin-top:4px; }
-    .event-gift { font-size:44px; filter:drop-shadow(0 0 15px rgba(255,80,230,.55)); }
+    .event-gift { font-size:44px; filter:drop-shadow(0 0 15px rgba(255,80,230,.55)); animation:giftFloat 2.2s ease-in-out infinite; }
+    @keyframes giftFloat { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-7px) rotate(3deg)} }
 
-    .hero {
-        border:1px solid rgba(59,167,255,.24); border-radius:22px;
-        background:
-          radial-gradient(circle at 50% 40%,rgba(0,154,255,.09),transparent 34%),
+    .hero { position:relative; overflow:hidden; border:1px solid rgba(59,167,255,.30); border-radius:22px;
+        background:radial-gradient(circle at 50% 40%,rgba(0,154,255,.09),transparent 34%),
           linear-gradient(180deg,rgba(2,13,29,.45),rgba(1,8,19,.20));
-        overflow:hidden; position:relative;
-    }
+        box-shadow:0 0 0 1px rgba(42,150,255,.04),0 20px 55px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06);
+        animation:heroGlow 4s ease-in-out infinite; }
+    @keyframes heroGlow { 50%{box-shadow:0 0 0 1px rgba(42,150,255,.08),0 22px 65px rgba(0,70,160,.18),inset 0 1px rgba(255,255,255,.08)} }
     .hero-head { text-align:center; padding:14px 10px 0; }
     .hero-head .small { color:#6f91bb; font-size:10px; font-weight:800; letter-spacing:1.5px; }
     .hero-head .big { color:#eaf7ff; font-size:25px; font-weight:950; margin-top:3px; text-shadow:0 0 18px rgba(57,192,255,.22); }
@@ -1337,10 +1352,9 @@ st.markdown(
     .mini-stat b { display:block; font-size:14px; color:#f4f9ff; }
     .mini-stat span { font-size:9px; color:#7892b5; }
 
-    .bottom-nav {
-        margin-top:12px; padding:8px; border-radius:18px;
-        border:1px solid rgba(65,153,235,.23); background:rgba(3,15,31,.82);
-    }
+    .bottom-nav { margin-top:12px; padding:8px; border-radius:18px; border:1px solid rgba(65,153,235,.23); background:rgba(3,15,31,.82);
+        box-shadow:0 12px 35px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.05); }
+    .quick-caption { text-align:center; color:#7894b9; font-size:8px; letter-spacing:1.1px; margin-top:5px; }
     .footer-note { text-align:center; color:#627c9e; font-size:9px; padding-top:9px; }
 
     @media (max-width: 1100px) {
@@ -1358,8 +1372,8 @@ with st.sidebar:
   st.markdown(
       """
       <div style="padding:6px 8px 18px;">
-        <div style="font-size:18px;font-weight:950;">🌌 지온의 시초</div>
-        <div style="font-size:10px;color:#7692b6;margin-top:4px;">대규모 업데이트 2.0</div>
+        <div style="font-size:18px;font-weight:950;letter-spacing:.3px;">✦ 지온의 시초</div>
+        <div style="font-size:10px;color:#7692b6;margin-top:4px;"><span class="live-dot"></span> 대규모 업데이트 2.0</div>
       </div>
       """,
       unsafe_allow_html=True,
@@ -1421,16 +1435,17 @@ is_last_attempt = (
 st.markdown(
     f"""
     <div class="topbar">
-      <div style="font-size:33px;">✦</div>
+      <div style="font-size:33px;filter:drop-shadow(0 0 12px rgba(54,204,255,.7));">✦</div>
       <div>
         <div class="brand">서로의 지배로 탄생한 시초</div>
-        <div class="brand-sub">함께 만드는 새로운 세계 · UPDATE 2.0</div>
+        <div class="brand-sub"><span class="live-dot"></span> 함께 만드는 새로운 세계 · UPDATE 2.0 LIVE</div>
       </div>
       <div class="spacer"></div>
       <div class="currency">💎 <b>{format_gold(st.session_state.money)}</b><small>보유 금액</small></div>
       <div class="currency">💧 <b>{st.session_state.tears}</b><small>눈물</small></div>
       <div class="currency">🛡️ <b>{st.session_state.shield}</b><small>방지권</small></div>
-      <div style="font-size:20px;">🎁</div>
+      <div class="corner-label">● ONLINE</div>
+      <div style="font-size:20px;filter:drop-shadow(0 0 8px rgba(255,215,106,.45));">🎁</div>
       <div style="font-size:20px;">⚙️</div>
     </div>
     """,
@@ -1652,6 +1667,12 @@ with center_col:
   )
 
   # 기존 3D 강화 연출을 그대로 유지하고, 새로운 대시보드 중앙에 배치
+  st.markdown(
+      f'<div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px 7px;">'
+      f'<span class="corner-label">✦ ORIGIN CORE</span>'
+      f'<span style="font-size:9px;color:#6f8fb6;letter-spacing:1.2px;">SEASON {2 if st.session_state.is_rebirth else 1} · {current_level:02d}/{max_lvl:02d}</span>'
+      f'</div>', unsafe_allow_html=True
+  )
 
   three_js_code = f"""
     <!DOCTYPE html>
@@ -2317,8 +2338,8 @@ with right_col:
 # 11. 하단 빠른 메뉴
 # -----------------------------------------------------------------------------
 st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-nav_cols = st.columns(6)
-quick = [("🎒","가방"),("⚔️","강화"),("📖","스킬"),("🏷️","칭호"),("🗺️","지도"),("🛒","상점")]
+nav_cols = st.columns(7)
+quick = [("🎒","가방"),("⚔️","강화"),("📖","스킬"),("🏷️","칭호"),("🗺️","지도"),("🎁","이벤트"),("🛒","상점")]
 for i, (icon, label) in enumerate(quick):
   with nav_cols[i]:
     if st.button(f"{icon}\n{label}", key=f"quick_{label}", use_container_width=True):
@@ -2339,8 +2360,12 @@ for i, (icon, label) in enumerate(quick):
       elif label == "상점":
         st.session_state.active_page = "상점"
         st.rerun()
+      elif label == "이벤트":
+        st.session_state.active_page = "이벤트"
+        st.rerun()
       else:
         st.toast(f"{label} 메뉴는 업데이트 준비중입니다.")
+    st.markdown(f'<div class="quick-caption">{label.upper()}</div>', unsafe_allow_html=True)
 
 st.markdown(
     '<div class="footer-note">TIP · 일일 퀘스트를 완료하고 다양한 보상을 받아보세요!</div>',
