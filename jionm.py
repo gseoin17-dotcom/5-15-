@@ -12,6 +12,47 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
+# [New] Shift + Delete 키 감지 및 관리자 모드 토글 스크립트 (조용한 토글)
+# -----------------------------------------------------------------------------
+# Query param 'admin'을 통해 세션 상태로 넘겨받도록 연동
+if "admin_mode" not in st.session_state:
+  st.session_state.admin_mode = False
+
+# URL Query parameter 확인
+query_params = st.query_params
+if "admin" in query_params:
+  new_admin_val = query_params["admin"] == "true"
+  if st.session_state.admin_mode != new_admin_val:
+    st.session_state.admin_mode = new_admin_val
+    if new_admin_val:
+      st.toast("⚡ Admin Mode Activated", icon="🤫")
+    else:
+      st.toast("🛡️ Admin Mode Deactivated", icon="🔒")
+
+# Shift + Delete 키보드 단축키 감지 JS
+components.html(
+    """
+    <script>
+    const parentDoc = window.parent.document;
+    if (!parentDoc.dataset.adminShortcutAdded) {
+        parentDoc.dataset.adminShortcutAdded = "true";
+        parentDoc.addEventListener('keydown', function(e) {
+            if (e.shiftKey && (e.key === 'Delete' || e.code === 'Delete')) {
+                e.preventDefault();
+                const url = new URL(window.parent.location.href);
+                const currentAdmin = url.searchParams.get('admin') === 'true';
+                url.searchParams.set('admin', !currentAdmin);
+                window.parent.location.href = url.toString();
+            }
+        });
+    }
+    </script>
+""",
+    height=0,
+    width=0,
+)
+
+# -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
 # -----------------------------------------------------------------------------
 
@@ -1081,6 +1122,27 @@ def run_enhance():
   st.session_state.money -= cost
   st.session_state.prev_level = curr  # 이전 단계 저장
 
+  # [수정] 관리자 모드가 활성화된 경우: 무조건 성공 (100% 성공 처리)
+  if st.session_state.get("admin_mode", False):
+    st.session_state.pity_count = 0
+    st.session_state.level += 1
+    st.session_state.status = "SUCCESS"
+    if st.session_state.level > st.session_state.max_level:
+      st.session_state.max_level = st.session_state.level
+
+    if not st.session_state.is_rebirth:
+      for w_lvl in [10, 15, 20, 25, 30]:
+        if st.session_state.level >= w_lvl:
+          st.session_state.unlocked_warps[w_lvl] = True
+    else:
+      for w_lvl in [5, 10, 15, 20]:
+        if st.session_state.level >= w_lvl:
+          st.session_state.unlocked_season2_warps[w_lvl] = True
+
+    save_current_season_state()
+    return
+
+  # 정상 일반 강화 로직
   if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
@@ -2096,12 +2158,10 @@ with right_col:
                     coreMesh.rotation.x -= 0.01 * rotSpeed;
                     coreMesh.rotation.y -= 0.012 * rotSpeed;
 
-                    if (isFinalSuccess) {{
-                        objectGroup.rotation.z = Math.sin(time * 2.5) * 0.2;
-                    }}
+                    const floatHeight = isFinalSuccess ? 0.25 : 0.15;
+                    const basePosY = -0.7;
+                    objectGroup.position.y = basePosY + Math.sin(time * (isFinalSuccess ? 3.0 : 1.8)) * floatHeight;
                 }}
-
-                starField.rotation.y = time * 0.01;
 
                 const positions = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
@@ -2109,13 +2169,15 @@ with right_col:
                     positions[i*3 + 1] += particleVelocities[i].y;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
-                    if(positions[i*3 + 1] > 2.5) {{
-                        positions[i*3 + 1] = -4.0;
+                    if (positions[i*3 + 1] > 4.0) {{
                         positions[i*3] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3 + 1] = -4.0;
                         positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
+
+                starField.rotation.y = time * 0.02;
 
                 renderer.render(scene, camera);
             }}
@@ -2131,5 +2193,4 @@ with right_col:
     </body>
     </html>
     """
-
-  components.html(three_js_code, height=580, scrolling=False)
+  components.html(three_js_code, height=720)
