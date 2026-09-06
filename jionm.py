@@ -1360,49 +1360,6 @@ st.markdown(
     @media (max-width: 1100px) {
         .currency:nth-of-type(n+3) { display:none; }
     }
-
-    /* ===== SAFE GAME LAUNCHER POLISH ===== */
-    .topbar {
-        position:relative;
-        border-radius:0 0 16px 16px !important;
-        border-top:0 !important;
-        background:linear-gradient(90deg,rgba(2,13,29,.98),rgba(4,25,52,.94) 48%,rgba(2,11,25,.98)) !important;
-        box-shadow:0 10px 34px rgba(0,0,0,.30),inset 0 -1px rgba(45,170,255,.18) !important;
-    }
-    .topbar::before { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
-        background:linear-gradient(90deg,transparent,#159fff,#59e8ff,#159fff,transparent); opacity:.55; }
-    .brand-logo { width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-        border:1px solid rgba(72,192,255,.35);background:radial-gradient(circle,#0b5c9e,#07203f 65%,#041020);
-        box-shadow:inset 0 0 20px rgba(34,190,255,.18),0 0 20px rgba(23,155,255,.16);font-size:28px; }
-    .top-chip { display:flex;align-items:center;gap:7px;padding:8px 12px;min-width:108px;
-        border:1px solid rgba(68,167,255,.30);border-radius:11px;
-        background:linear-gradient(180deg,rgba(8,37,73,.92),rgba(4,18,38,.92));
-        box-shadow:inset 0 1px rgba(255,255,255,.06),0 0 14px rgba(0,111,255,.07); }
-    .top-chip .ico{font-size:18px;}.top-chip .val{font-size:13px;font-weight:950;color:#f3f8ff;}
-    .top-chip .lbl{font-size:8px;color:#7190b6;display:block;margin-top:1px;letter-spacing:.6px;}
-    .top-icon{font-size:20px;opacity:.88;filter:drop-shadow(0 0 7px rgba(150,220,255,.22));}
-    .glass,.profile-card,.event-banner,.hero { position:relative; }
-    .glass::after,.profile-card::before,.event-banner::before {
-        content:"";position:absolute;width:16px;height:16px;top:-1px;left:-1px;
-        border-top:2px solid rgba(92,210,255,.72);border-left:2px solid rgba(92,210,255,.72);
-        border-radius:5px 0 0 0;opacity:.9;pointer-events:none;
-    }
-    .hero::before { content:"";position:absolute;width:70px;height:2px;top:-1px;left:28px;
-        background:#54dcff;box-shadow:0 0 15px rgba(64,211,255,.75);pointer-events:none; }
-    .event-banner::before { border-color:rgba(255,109,246,.78); }
-    .glass::after,.profile-card::after,.event-banner::after {
-        content:"";position:absolute;width:16px;height:16px;right:-1px;bottom:-1px;
-        border-right:2px solid rgba(92,210,255,.55);border-bottom:2px solid rgba(92,210,255,.55);
-        border-radius:0 0 5px 0;opacity:.8;pointer-events:none;
-    }
-    .hero::after { content:"";position:absolute;width:70px;height:2px;right:28px;bottom:-1px;
-        background:#54dcff;box-shadow:0 0 15px rgba(64,211,255,.55);pointer-events:none; }
-    .hero { min-height:620px; }
-    .hero-head .big { text-shadow:0 0 18px rgba(57,192,255,.28); }
-    .day.now { animation:dayPulse 1.7s ease-in-out infinite; }
-    @keyframes dayPulse { 50%{box-shadow:0 0 18px rgba(43,193,255,.17);transform:translateY(-1px)} }
-    .quest { transition:transform .18s ease,border-color .18s ease,background .18s ease; }
-    .quest:hover { transform:translateX(3px);border-color:rgba(72,194,255,.38);background:rgba(8,30,58,.70); }
     </style>
     """,
     unsafe_allow_html=True,
@@ -1478,17 +1435,18 @@ is_last_attempt = (
 st.markdown(
     f"""
     <div class="topbar">
-      <div class="brand-logo">✦</div>
+      <div style="font-size:33px;filter:drop-shadow(0 0 12px rgba(54,204,255,.7));">✦</div>
       <div>
         <div class="brand">서로의 지배로 탄생한 시초</div>
-        <div class="brand-sub"><span class="live-dot"></span> 함께 만드는 새로운 세계 · <b style="color:#48dfff">UPDATE 2.0 LIVE</b></div>
+        <div class="brand-sub"><span class="live-dot"></span> 함께 만드는 새로운 세계 · UPDATE 2.0 LIVE</div>
       </div>
       <div class="spacer"></div>
-      <div class="top-chip"><span class="ico">💎</span><div><span class="val">{format_gold(st.session_state.money)}</span><span class="lbl">보유 금액</span></div></div>
-      <div class="top-chip"><span class="ico">💧</span><div><span class="val">{st.session_state.tears}</span><span class="lbl">눈물</span></div></div>
-      <div class="top-chip"><span class="ico">🛡️</span><div><span class="val">{st.session_state.shield}</span><span class="lbl">방지권</span></div></div>
+      <div class="currency">💎 <b>{format_gold(st.session_state.money)}</b><small>보유 금액</small></div>
+      <div class="currency">💧 <b>{st.session_state.tears}</b><small>눈물</small></div>
+      <div class="currency">🛡️ <b>{st.session_state.shield}</b><small>방지권</small></div>
       <div class="corner-label">● ONLINE</div>
-      <div class="top-icon">🎁</div><div class="top-icon">✉️</div><div class="top-icon">⚙️</div>
+      <div style="font-size:20px;filter:drop-shadow(0 0 8px rgba(255,215,106,.45));">🎁</div>
+      <div style="font-size:20px;">⚙️</div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -1713,10 +1671,6 @@ with center_col:
       f'<div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px 7px;">'
       f'<span class="corner-label">✦ ORIGIN CORE</span>'
       f'<span style="font-size:9px;color:#6f8fb6;letter-spacing:1.2px;">SEASON {2 if st.session_state.is_rebirth else 1} · {current_level:02d}/{max_lvl:02d}</span>'
-      f'</div>'
-      f'<div style="display:flex;justify-content:space-between;padding:0 14px;position:relative;z-index:2;">'
-      f'<span style="font-size:8px;color:#3f668f;letter-spacing:1.6px;">SYSTEM // CORE SYNCHRONIZED</span>'
-      f'<span style="font-size:8px;color:#3f668f;letter-spacing:1.6px;">NODE 07 · STABLE</span>'
       f'</div>', unsafe_allow_html=True
   )
 
