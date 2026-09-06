@@ -1168,569 +1168,430 @@ def trigger_rebirth():
   save_current_season_state()
 
 
-
 # -----------------------------------------------------------------------------
-# 6. 대규모 업데이트 UI
+# 6. 테마 CSS
 # -----------------------------------------------------------------------------
-if "active_page" not in st.session_state:
-  st.session_state.active_page = "홈"
-
-if "daily_claimed" not in st.session_state:
-  st.session_state.daily_claimed = [True, True, False, False, False]
-
-if "quest_bonus" not in st.session_state:
-  st.session_state.quest_bonus = 0
-
 st.markdown(
     """
     <style>
-    :root {
-        --bg:#050b18;
-        --panel:rgba(7,18,38,.82);
-        --panel2:rgba(10,27,55,.72);
-        --line:rgba(62,155,255,.28);
-        --blue:#22b8ff;
-        --cyan:#4de7ff;
-        --gold:#ffd76a;
-        --muted:#8ea5c6;
-    }
-
+    /* Apple-inspired Liquid Glass UI */
+    :root { --glass: rgba(255,255,255,.10); --glass-strong: rgba(255,255,255,.16); --stroke: rgba(255,255,255,.22); }
     .stApp {
-        background:
-          radial-gradient(circle at 50% 28%, rgba(0,157,255,.20), transparent 25%),
-          radial-gradient(circle at 8% 65%, rgba(28,93,255,.13), transparent 26%),
-          radial-gradient(circle at 92% 75%, rgba(163,48,255,.15), transparent 28%),
-          linear-gradient(180deg,#020713 0%,#061326 48%,#020611 100%);
-        color:#eef6ff; position:relative;
+        background: radial-gradient(circle at 15% 15%, rgba(90,120,255,.24), transparent 32%),
+                    radial-gradient(circle at 85% 75%, rgba(180,100,255,.20), transparent 34%),
+                    linear-gradient(135deg,#070b16,#101827 55%,#070a12);
+        color:#f5f7fb; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    /* 배경 장식은 pseudo-element로 화면 전체를 덮지 않도록 background에 직접 적용 */
-    .stApp {
-        background-image:
-          radial-gradient(circle,rgba(130,210,255,.72) 0 1px,transparent 1.5px),
-          radial-gradient(circle at 50% 28%, rgba(0,157,255,.20), transparent 25%),
-          radial-gradient(circle at 8% 65%, rgba(28,93,255,.13), transparent 26%),
-          radial-gradient(circle at 92% 75%, rgba(163,48,255,.15), transparent 28%),
-          linear-gradient(180deg,#020713 0%,#061326 48%,#020611 100%);
-        background-size:72px 72px, auto, auto, auto, auto;
+    .block-container { padding-top: 3.2rem !important; padding-bottom:2rem !important; max-width:94% !important; }
+    .element-container, .stMarkdown { background:transparent !important; }
+    div.stButton > button {
+        border:1px solid var(--stroke) !important; border-radius:16px !important;
+        padding:11px 16px !important; font-weight:650 !important; color:#fff !important;
+        background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.06)) !important;
+        backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
+        box-shadow:inset 0 1px rgba(255,255,255,.20),0 10px 30px rgba(0,0,0,.22) !important;
+        transition:transform .2s ease,background .2s ease,box-shadow .2s ease !important;
     }
-    /* Streamlit 실제 콘텐츠를 배경보다 확실히 위로 올림 */
-    [data-testid="stAppViewContainer"],
-    [data-testid="stHeader"],
-    [data-testid="stSidebar"],
-    [data-testid="stSidebarContent"],
-    section.main {
-        position:relative !important;
-        z-index:2 !important;
-    }
-    [data-testid="stHeader"] { background:transparent !important; }
-    @keyframes starDrift { from{transform:translate3d(0,0,0)} to{transform:translate3d(72px,72px,0)} }
-    @keyframes scanline { 0%,100%{transform:translateY(0);opacity:.15} 50%{transform:translateY(55vh);opacity:.75} }
-    .block-container {
-        padding: 1.0rem 1.1rem 1.5rem !important;
-        max-width: 100% !important;
-    }
-    div.stButton > button { position:relative; overflow:hidden;
-        border:1px solid rgba(77,181,255,.38) !important; border-radius:13px !important;
-        background:linear-gradient(180deg,rgba(19,58,103,.96),rgba(5,21,45,.96)) !important;
-        color:#edf7ff !important; font-weight:850 !important; min-height:40px;
-        box-shadow:0 0 18px rgba(0,125,255,.10), inset 0 1px rgba(255,255,255,.10), inset 0 -1px rgba(0,0,0,.45);
-        transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease !important; }
-    div.stButton > button::before { content:""; position:absolute; top:0; left:-120%; width:70%; height:100%;
-        background:linear-gradient(105deg,transparent,rgba(255,255,255,.18),transparent); transform:skewX(-20deg); transition:left .55s ease; pointer-events:none; }
-    div.stButton > button:hover { border-color:rgba(74,220,255,.92) !important;
-        box-shadow:0 0 26px rgba(0,180,255,.26), inset 0 1px rgba(255,255,255,.16) !important;
-        transform:translateY(-2px); filter:brightness(1.10); }
-    div.stButton > button:hover::before { left:145%; }
-    div.stButton > button:active { transform:translateY(0) scale(.985) !important; }
-    [data-testid="stSidebar"] {
-        background:linear-gradient(180deg,#061224,#030a16) !important;
-        border-right:1px solid rgba(68,151,255,.22);
-    }
-    [data-testid="stSidebar"] > div { padding-top:1rem; }
-    [data-testid="stSidebar"] .stButton > button {
-        text-align:left !important;
-        justify-content:flex-start !important;
-        background:transparent !important;
-        border:1px solid transparent !important;
-        box-shadow:none !important;
-        margin:2px 0;
-    }
-    [data-testid="stSidebar"] .stButton > button:hover {
-        background:rgba(33,122,230,.12) !important;
-        border-color:rgba(65,174,255,.22) !important;
-    }
-    .topbar {
-        height:66px;
-        display:flex;
-        align-items:center;
-        gap:18px;
-        padding:8px 18px;
-        border:1px solid rgba(67,160,255,.25);
-        border-radius:18px;
-        background:linear-gradient(90deg,rgba(4,18,38,.94),rgba(6,28,58,.82),rgba(4,15,32,.94));
-        box-shadow:0 12px 40px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.06);
-        margin-bottom:12px;
-    }
-    .brand { font-size:19px; font-weight:950; white-space:nowrap; }
-    .brand-sub { color:#86a9d5; font-size:11px; margin-top:2px; }
-    .currency {
-        display:flex; align-items:center; gap:8px; padding:8px 14px;
-        border-radius:13px; border:1px solid rgba(63,172,255,.32);
-        background:rgba(9,39,77,.65); font-weight:900; white-space:nowrap;
-    }
-    .currency small { color:#8fa9ca; font-weight:700; }
-    .spacer { flex:1; }
-
-    .section-title { font-size:16px; font-weight:950; letter-spacing:.2px; }
-    .section-sub { font-size:11px; color:#8198ba; margin-top:3px; }
-    .glass { position:relative; overflow:hidden; border:1px solid var(--line); border-radius:18px;
-        background:linear-gradient(145deg,rgba(10,31,61,.86),rgba(4,15,31,.88));
-        box-shadow:0 14px 40px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.05), 0 0 0 1px rgba(30,120,255,.025);
-        padding:15px; transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
-    .glass::before { content:""; position:absolute; left:14px; right:14px; top:0; height:1px;
-        background:linear-gradient(90deg,transparent,rgba(104,211,255,.65),transparent); opacity:.65; }
-    .glass:hover { transform:translateY(-2px); border-color:rgba(73,180,255,.45);
-        box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 24px rgba(0,135,255,.07),inset 0 1px rgba(255,255,255,.07); }
-    .profile-card::after,.event-banner::after,.hero::after { content:""; position:absolute; inset:0; pointer-events:none;
-        background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.035) 48%,transparent 72%);
-        transform:translateX(-120%); animation:panelSweep 7s ease-in-out infinite; }
-    @keyframes panelSweep { 0%,55%{transform:translateX(-120%)} 75%,100%{transform:translateX(120%)} }
-    .corner-label { display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:7px;
-        font-size:9px;font-weight:950;letter-spacing:1px;color:#75ddff; background:rgba(0,180,255,.08);border:1px solid rgba(78,205,255,.20); }
-    .live-dot { display:inline-block;width:6px;height:6px;border-radius:50%;background:#39f7a5;box-shadow:0 0 10px #39f7a5;animation:livePulse 1.3s ease-in-out infinite; }
-    @keyframes livePulse { 50%{transform:scale(1.45);opacity:.55} }
-    .profile-card { position:relative; overflow:hidden; background:
-          radial-gradient(circle at 90% 0%,rgba(0,203,255,.18),transparent 38%),
-          radial-gradient(circle at 10% 100%,rgba(69,70,255,.12),transparent 36%),
-          linear-gradient(145deg,rgba(10,35,68,.96),rgba(4,15,30,.96));
-        border:1px solid rgba(68,176,255,.38); border-radius:18px; padding:16px;
-        box-shadow:inset 0 1px rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.22); }
-    .rank-badge {
-        display:inline-block; padding:5px 9px; border-radius:999px;
-        color:#7ce9ff; background:rgba(0,177,255,.10);
-        border:1px solid rgba(69,206,255,.26); font-size:10px; font-weight:900;
-    }
-    .progress-wrap { height:8px; border-radius:99px; background:#0d203a; overflow:hidden; margin-top:8px; }
-    .progress-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#16a9ff,#4ee8ff); box-shadow:0 0 14px rgba(40,206,255,.6); }
-    .day-row { display:flex; gap:7px; margin-top:11px; }
-    .day {
-        flex:1; min-width:0; text-align:center; padding:9px 4px; border-radius:11px;
-        border:1px solid rgba(95,150,210,.20); background:rgba(4,16,34,.7);
-    }
-    .day.done { border-color:rgba(53,220,171,.38); background:rgba(17,78,67,.24); }
-    .day.now { border-color:rgba(79,186,255,.55); background:rgba(21,74,120,.32); }
-    .day .n { font-size:10px; color:#89a2c2; }
-    .day .ico { font-size:22px; margin:4px 0; }
-    .day .s { font-size:10px; font-weight:900; color:#c9dcf5; }
-
-    .quest {
-        padding:11px; margin-top:8px; border-radius:12px;
-        border:1px solid rgba(71,151,225,.18); background:rgba(2,13,28,.55);
-    }
-    .quest-head { display:flex; gap:8px; align-items:center; font-size:12px; font-weight:900; }
-    .quest-desc { font-size:10px; color:#8fa6c6; margin-top:4px; }
-    .quest-bar { height:5px; background:#10233d; border-radius:99px; margin-top:7px; overflow:hidden; }
-    .quest-fill { height:100%; background:#20b8ff; border-radius:99px; }
-    .news-line { padding:8px 0; border-bottom:1px solid rgba(100,150,210,.11); font-size:11px; }
-    .news-line:last-child { border-bottom:0; }
-    .news-time { color:#6e88aa; margin-right:8px; }
-    .tag { color:#4bdcff; font-weight:900; margin-right:6px; }
-
-    .event-banner { position:relative; overflow:hidden; min-height:92px; display:flex; align-items:center; justify-content:space-between;
-        border-radius:16px; padding:16px 18px;
-        border:1px solid rgba(236,91,255,.38);
-        background:
-          radial-gradient(circle at 85% 50%,rgba(255,67,226,.22),transparent 34%),
-          linear-gradient(100deg,rgba(75,19,91,.85),rgba(26,13,65,.88));
-        box-shadow:0 0 28px rgba(194,44,255,.10);
-    }
-    .event-kicker { color:#ff8ef7; font-size:10px; font-weight:900; }
-    .event-title { font-size:18px; font-weight:950; margin-top:3px; }
-    .event-desc { color:#b8a9d4; font-size:10px; margin-top:4px; }
-    .event-gift { font-size:44px; filter:drop-shadow(0 0 15px rgba(255,80,230,.55)); animation:giftFloat 2.2s ease-in-out infinite; }
-    @keyframes giftFloat { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-7px) rotate(3deg)} }
-
-    .hero { position:relative; overflow:hidden; border:1px solid rgba(59,167,255,.30); border-radius:22px;
-        background:radial-gradient(circle at 50% 40%,rgba(0,154,255,.09),transparent 34%),
-          linear-gradient(180deg,rgba(2,13,29,.45),rgba(1,8,19,.20));
-        box-shadow:0 0 0 1px rgba(42,150,255,.04),0 20px 55px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06);
-        animation:heroGlow 4s ease-in-out infinite; }
-    @keyframes heroGlow { 50%{box-shadow:0 0 0 1px rgba(42,150,255,.08),0 22px 65px rgba(0,70,160,.18),inset 0 1px rgba(255,255,255,.08)} }
-    .hero-head { text-align:center; padding:14px 10px 0; }
-    .hero-head .small { color:#6f91bb; font-size:10px; font-weight:800; letter-spacing:1.5px; }
-    .hero-head .big { color:#eaf7ff; font-size:25px; font-weight:950; margin-top:3px; text-shadow:0 0 18px rgba(57,192,255,.22); }
-    .hero-head .desc { color:#8199b9; font-size:11px; margin-top:4px; }
-    .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 12px 12px; }
-    .mini-stat { text-align:center; padding:10px; border-radius:12px; background:rgba(4,19,39,.75); border:1px solid rgba(77,160,235,.16); }
-    .mini-stat b { display:block; font-size:14px; color:#f4f9ff; }
-    .mini-stat span { font-size:9px; color:#7892b5; }
-
-    .bottom-nav { margin-top:12px; padding:8px; border-radius:18px; border:1px solid rgba(65,153,235,.23); background:rgba(3,15,31,.82);
-        box-shadow:0 12px 35px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.05); }
-    .quick-caption { text-align:center; color:#7894b9; font-size:8px; letter-spacing:1.1px; margin-top:5px; }
-    .footer-note { text-align:center; color:#627c9e; font-size:9px; padding-top:9px; }
-
-    @media (max-width: 1100px) {
-        .currency:nth-of-type(n+3) { display:none; }
-    }
-
-    /* ===== SAFE GAME LAUNCHER POLISH ===== */
-    .topbar {
-        position:relative;
-        border-radius:0 0 16px 16px !important;
-        border-top:0 !important;
-        background:linear-gradient(90deg,rgba(2,13,29,.98),rgba(4,25,52,.94) 48%,rgba(2,11,25,.98)) !important;
-        box-shadow:0 10px 34px rgba(0,0,0,.30),inset 0 -1px rgba(45,170,255,.18) !important;
-    }
-    .topbar::before { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
-        background:linear-gradient(90deg,transparent,#159fff,#59e8ff,#159fff,transparent); opacity:.55; pointer-events:none; }
-    .brand-logo { width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-        border:1px solid rgba(72,192,255,.35);background:radial-gradient(circle,#0b5c9e,#07203f 65%,#041020);
-        box-shadow:inset 0 0 20px rgba(34,190,255,.18),0 0 20px rgba(23,155,255,.16);font-size:28px; }
-    .top-chip { display:flex;align-items:center;gap:7px;padding:8px 12px;min-width:108px;
-        border:1px solid rgba(68,167,255,.30);border-radius:11px;
-        background:linear-gradient(180deg,rgba(8,37,73,.92),rgba(4,18,38,.92));
-        box-shadow:inset 0 1px rgba(255,255,255,.06),0 0 14px rgba(0,111,255,.07); }
-    .top-chip .ico{font-size:18px;}.top-chip .val{font-size:13px;font-weight:950;color:#f3f8ff;}
-    .top-chip .lbl{font-size:8px;color:#7190b6;display:block;margin-top:1px;letter-spacing:.6px;}
-    .top-icon{font-size:20px;opacity:.88;filter:drop-shadow(0 0 7px rgba(150,220,255,.22));}
-    .glass,.profile-card,.event-banner,.hero { position:relative; }
-    .glass::after,.profile-card::before,.event-banner::before {
-        content:"";position:absolute;width:16px;height:16px;top:-1px;left:-1px;
-        border-top:2px solid rgba(92,210,255,.72);border-left:2px solid rgba(92,210,255,.72);
-        border-radius:5px 0 0 0;opacity:.9;pointer-events:none;
-    }
-    .hero::before { content:"";position:absolute;width:70px;height:2px;top:-1px;left:28px;
-        background:#54dcff;box-shadow:0 0 15px rgba(64,211,255,.75);pointer-events:none; }
-    .event-banner::before { border-color:rgba(255,109,246,.78); }
-    .glass::after,.profile-card::after,.event-banner::after {
-        content:"";position:absolute;width:16px;height:16px;right:-1px;bottom:-1px;
-        border-right:2px solid rgba(92,210,255,.55);border-bottom:2px solid rgba(92,210,255,.55);
-        border-radius:0 0 5px 0;opacity:.8;pointer-events:none;
-    }
-    .hero::after { content:"";position:absolute;width:70px;height:2px;right:28px;bottom:-1px;
-        background:#54dcff;box-shadow:0 0 15px rgba(64,211,255,.55);pointer-events:none; }
-    .hero { min-height:620px; }
-    .hero-head .big { text-shadow:0 0 18px rgba(57,192,255,.28); }
-    .day.now { animation:dayPulse 1.7s ease-in-out infinite; }
-    @keyframes dayPulse { 50%{box-shadow:0 0 18px rgba(43,193,255,.17);transform:translateY(-1px)} }
-    .quest { transition:transform .18s ease,border-color .18s ease,background .18s ease; }
-    .quest:hover { transform:translateX(3px);border-color:rgba(72,194,255,.38);background:rgba(8,30,58,.70); }
+    div.stButton > button:hover { transform:translateY(-1px) scale(1.01); background:rgba(255,255,255,.20) !important; box-shadow:inset 0 1px rgba(255,255,255,.3),0 14px 35px rgba(0,0,0,.28) !important; }
+    div.stButton > button:active { transform:scale(.98); }
+    [data-testid="stTabs"] button { border-radius:14px !important; }
+    [data-testid="stTabs"] [aria-selected="true"] { background:rgba(255,255,255,.13) !important; backdrop-filter:blur(18px); }
+    [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
+    hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # -----------------------------------------------------------------------------
-# 7. 사이드바
+# 7. 메인 레이아웃
 # -----------------------------------------------------------------------------
-with st.sidebar:
-  st.markdown(
-      """
-      <div style="padding:6px 8px 18px;">
-        <div style="font-size:18px;font-weight:950;letter-spacing:.3px;">✦ 지온의 시초</div>
-        <div style="font-size:10px;color:#7692b6;margin-top:4px;"><span class="live-dot"></span> 대규모 업데이트 2.0 · FIXED</div>
-      </div>
-      """,
-      unsafe_allow_html=True,
-  )
+left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
-  side_items = [
-      ("⌂", "홈"),
-      ("♙", "내 정보"),
-      ("▣", "퀘스트"),
-      ("◈", "상점"),
-      ("★", "칭호"),
-      ("◇", "이벤트"),
-      ("⚙", "설정"),
-  ]
-  for icon, label in side_items:
-    if st.button(f"{icon}   {label}", key=f"side_{label}", use_container_width=True):
-      st.session_state.active_page = label
-      st.rerun()
-
-  st.markdown(
-      """
-      <div style="margin-top:18px;padding:12px;border-radius:14px;
-      border:1px solid rgba(62,150,235,.20);background:rgba(5,21,43,.65);">
-        <div style="font-size:10px;color:#7592b8;">현재 시즌</div>
-        <div style="font-size:13px;font-weight:900;margin-top:4px;">
-          시즌 2 · ULTIMATE REBIRTH
-        </div>
-        <div style="font-size:9px;color:#5c789c;margin-top:5px;">
-          환생 횟수 {st.session_state.rebirth_count}
-        </div>
-      </div>
-      """,
-      unsafe_allow_html=True,
-  )
-
-# -----------------------------------------------------------------------------
-# 8. 상단 바
-# -----------------------------------------------------------------------------
-current_level = st.session_state.level
-max_lvl = 25 if st.session_state.is_rebirth else 35
-curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
-card_color = curr_data["color"]
-card_title = curr_data["name"]
-card_desc = curr_data["desc"]
-card_price = format_gold(curr_data["price"])
-current_cost = format_gold(get_enhance_cost(current_level, st.session_state.is_rebirth))
-tier = curr_data["tier"]
-status = st.session_state.status
-prev_level = getattr(st.session_state, "prev_level", current_level)
-target_last_lvl = max_lvl - 1
-is_last_attempt = (
-    prev_level == target_last_lvl
-    and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
-) or (
-    current_level == max_lvl
-    and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
-)
-
-st.markdown(
-    f"""
-    <div class="topbar">
-      <div class="brand-logo">✦</div>
-      <div>
-        <div class="brand">서로의 지배로 탄생한 시초</div>
-        <div class="brand-sub"><span class="live-dot"></span> 함께 만드는 새로운 세계 · <b style="color:#48dfff">UPDATE 2.0 LIVE · FIXED</b></div>
-      </div>
-      <div class="spacer"></div>
-      <div class="top-chip"><span class="ico">💎</span><div><span class="val">{format_gold(st.session_state.money)}</span><span class="lbl">보유 금액</span></div></div>
-      <div class="top-chip"><span class="ico">💧</span><div><span class="val">{st.session_state.tears}</span><span class="lbl">눈물</span></div></div>
-      <div class="top-chip"><span class="ico">🛡️</span><div><span class="val">{st.session_state.shield}</span><span class="lbl">방지권</span></div></div>
-      <div class="corner-label">● ONLINE</div>
-      <div class="top-icon">🎁</div><div class="top-icon">✉️</div><div class="top-icon">⚙️</div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-# -----------------------------------------------------------------------------
-# 9. 메뉴별 보조 화면
-# -----------------------------------------------------------------------------
-if st.session_state.active_page != "홈":
-  page = st.session_state.active_page
-  st.markdown(
-      f'<div class="glass"><div class="section-title">{page}</div>'
-      f'<div class="section-sub">대규모 업데이트 UI에서 {page} 메뉴를 관리합니다.</div></div>',
-      unsafe_allow_html=True,
-  )
-
-  if page == "내 정보":
-    a, b, c = st.columns(3)
-    with a:
-      st.metric("현재 단계", f"{current_level} / {max_lvl}")
-    with b:
-      st.metric("최고 단계", f"{st.session_state.max_level}")
-    with c:
-      st.metric("강화 시도", f"{st.session_state.enhance_attempts}회")
+with left_col:
+  if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
-        f'<div class="profile-card" style="margin-top:12px;">'
-        f'<span class="rank-badge">CURRENT TITLE</span>'
-        f'<div style="font-size:25px;font-weight:950;margin-top:10px;">🏷️ {st.session_state.selected_title}</div>'
-        f'<div style="font-size:12px;color:#8ca4c4;margin-top:5px;">{card_title}</div>'
-        f'</div>',
+        "<div"
+        " style='background:rgba(220,38,38,0.2);border:2px solid"
+        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
+        "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
+        "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
+        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("✨ 환생하기", use_container_width=True):
+      trigger_rebirth()
+      st.rerun()
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
     )
 
-  elif page == "퀘스트":
-    st.markdown('<div class="glass" style="margin-top:12px;">', unsafe_allow_html=True)
-    quest_data = [
-        ("🔷", "발전한 자들의 흔적", "강화 50회 시도하기", min(50, st.session_state.enhance_attempts), 50),
-        ("⭐", "시초의 영웅이 되어라", "최고 단계 20 이상 달성", min(20, st.session_state.max_level), 20),
-        ("💰", "거대한 부의 시작", "보유 금액 1억 달성", min(100_000_000, int(st.session_state.money) if st.session_state.money != float("inf") else 100_000_000), 100_000_000),
-      ]
-    for icon, name, desc, value, goal in quest_data:
-      pct = int(value / goal * 100) if goal else 100
+  mode_title = (
+      "🌀 [시즌 2] 얼티밋 자이온의 시작"
+      if st.session_state.is_rebirth
+      else "🌌 [시즌 1] 지온의 탄생과 시초"
+  )
+  st.markdown(
+      f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
+      f" color:#fde68a;'>{mode_title}</h4>",
+      unsafe_allow_html=True,
+  )
+
+  st.markdown(
+      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
+  s_col1, s_col2 = st.columns(2)
+
+  with s_col1:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
+        f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
+        " 80개</div></div>",
+        unsafe_allow_html=True,
+    )
+
+  with s_col2:
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
+        " 3개</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+
+    pity_left = PITY_MAX - st.session_state.pity_count
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
+        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+        unsafe_allow_html=True,
+    )
+
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
+  curr_lvl = st.session_state.level
+  current_prob = PROB_TABLE[st.session_state.is_rebirth]
+  sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
+  st.markdown(
+      f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
+      f" 강화 확률 ({curr_lvl}단계)</h4>",
+      unsafe_allow_html=True,
+  )
+  st.markdown(
+      f"<div style='font-size:12px; color:#cbd5e1;"
+      f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
+      f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
+      f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
+      f" style='color:#94a3b8;'>{hold_p}%</b></div>",
+      unsafe_allow_html=True,
+  )
+
+  st.markdown(
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+      unsafe_allow_html=True,
+  )
+
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
+  )
+
+  with tab_shop1:
+    min_shield_level = 16 if st.session_state.is_rebirth else 20
+    if st.session_state.is_rebirth:
+      current_shield_cost = int(
+          SMELL_DB[True][st.session_state.level]["price"] / 5
+      )
+    else:
+      current_shield_cost = get_shield_cost(
+          st.session_state.level, st.session_state.is_rebirth
+      )
+
+    if st.session_state.level < min_shield_level:
       st.markdown(
-          f'<div class="quest"><div class="quest-head">{icon} {name}'
-          f'<span style="margin-left:auto;color:#6fbfff;">{value:,} / {goal:,}</span></div>'
-          f'<div class="quest-desc">{desc}</div>'
-          f'<div class="quest-bar"><div class="quest-fill" style="width:{pct}%"></div></div></div>',
+          f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
           unsafe_allow_html=True,
       )
-    st.markdown('</div>', unsafe_allow_html=True)
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
+          f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
+          unsafe_allow_html=True,
+      )
 
-  elif page == "상점":
-    st.markdown('<div class="glass" style="margin-top:12px;">', unsafe_allow_html=True)
-    st.markdown("### 🛒 성장 상점")
-    s1, s2, s3 = st.columns(3)
-    with s1:
-      st.markdown("**🛡️ 파괴 방지권**")
-      st.caption("강화 파괴를 1회 방지합니다.")
-      min_level = 16 if st.session_state.is_rebirth else 20
-      shield_cost = int(SMELL_DB[True][current_level]["price"] / 5) if st.session_state.is_rebirth else get_shield_cost(current_level, False)
-      if st.button("방지권 구매", key="shop_shield_new", use_container_width=True, disabled=st.session_state.shield >= 3 or current_level < min_level):
-        if st.session_state.money >= shield_cost:
-          st.session_state.money -= shield_cost
-          st.session_state.shield += 1
-          save_current_season_state()
-          st.rerun()
-        else:
-          st.error("보유 금액이 부족합니다.")
-    with s2:
-      st.markdown("**💧 눈물 기적**")
-      st.caption("눈물 20개로 1~3단계 상승합니다.")
-      if st.button("눈물 사용", key="shop_tears_new", use_container_width=True, disabled=st.session_state.tears < 20 or current_level >= (18 if st.session_state.is_rebirth else 32)):
-        st.session_state.tears -= 20
-        st.session_state.prev_level = current_level
-        st.session_state.level = min(max_lvl, current_level + random.choice([1,2,3]))
-        st.session_state.status = "SUCCESS"
+    can_buy_shield = (st.session_state.shield < 3) and (
+        st.session_state.level >= min_shield_level
+    )
+    if st.button(
+        "방지권 구매", use_container_width=True, disabled=not can_buy_shield
+    ):
+      if st.session_state.level < min_shield_level:
+        st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
+      elif st.session_state.money >= current_shield_cost:
+        st.session_state.money -= current_shield_cost
+        st.session_state.shield += 1
         save_current_season_state()
+        st.success("파괴 방지권 구매 완료!")
         st.rerun()
-    with s3:
-      st.markdown("**🚀 워프권**")
-      st.caption("도달했던 단계로 즉시 이동합니다.")
-      warp_levels = [5,10,15,20] if st.session_state.is_rebirth else [10,15,20,25,30]
-      for wl in warp_levels:
-        if st.button(f"{wl}단계 워프", key=f"new_warp_{wl}", use_container_width=True,
-                     disabled=st.session_state.max_level < wl or current_level >= wl):
-          prices = {10:20_000_000,15:100_000_000,20:400_000_000,25:2_000_000_000,30:10_000_000_000}
-          price = int(SMELL_DB[True][wl]["price"]/2) if st.session_state.is_rebirth else prices[wl]
-          if st.session_state.money >= price:
-            st.session_state.money -= price
+      else:
+        st.error("금액이 부족합니다.")
+
+  with tab_shop2:
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    limit_lvl = 18 if st.session_state.is_rebirth else 32
+    if st.session_state.level >= limit_lvl:
+      st.markdown(
+          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
+          " 없습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1;"
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
+          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
+          unsafe_allow_html=True,
+      )
+
+    can_use_tears = st.session_state.level < limit_lvl
+    if st.button(
+        "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
+    ):
+      if st.session_state.level >= limit_lvl:
+        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
+      elif st.session_state.tears >= 20:
+        st.session_state.tears -= 20
+        add_lvl = random.choice([1, 2, 3])
+        st.session_state.prev_level = st.session_state.level
+        st.session_state.level = min(
+            max_lvl, st.session_state.level + add_lvl
+        )
+        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+        save_current_season_state()
+        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
+        st.rerun()
+      else:
+        st.error("눈물 20개가 필요합니다.")
+
+  with tab_warp:
+    st.markdown(
+        "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        unsafe_allow_html=True,
+    )
+
+    if not st.session_state.is_rebirth:
+      warp_prices = {
+          10: 20000000,
+          15: 100000000,
+          20: 400000000,
+          25: 2000000000,
+          30: 10000000000,
+      }
+      active_warps = warp_prices.items()
+    else:
+      season2_warp_prices = {
+          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+          for w_level in [5, 10, 15, 20]
+      }
+      active_warps = season2_warp_prices.items()
+
+    for w_level, w_price in active_warps:
+      if not st.session_state.is_rebirth:
+        is_unlocked = (
+            st.session_state.unlocked_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
+      else:
+        is_unlocked = (
+            st.session_state.unlocked_season2_warps.get(w_level, False)
+            or st.session_state.max_level >= w_level
+        )
+
+      c1, c2 = st.columns([1.2, 1])
+      with c1:
+        st.markdown(
+            f"<div style='font-size:13px; font-weight:bold;"
+            f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
+            f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+            unsafe_allow_html=True,
+        )
+      with c2:
+        if st.button(
+            "이동",
+            key=f"warp_{st.session_state.is_rebirth}_{w_level}",
+            disabled=not is_unlocked
+            or (st.session_state.level >= w_level),
+        ):
+          if not is_unlocked:
+            st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
+          elif st.session_state.money < w_price:
+            st.error("보유 금액이 부족합니다!")
+          else:
+            st.session_state.money -= w_price
             st.session_state.warp_uses += 1
-            st.session_state.prev_level = current_level
-            st.session_state.level = wl
+            st.session_state.prev_level = st.session_state.level
+            st.session_state.level = w_level
+            if w_level > st.session_state.max_level:
+              st.session_state.max_level = w_level
             st.session_state.status = "SUCCESS"
             save_current_season_state()
+            st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
-  elif page == "칭호":
-    st.markdown('<div class="glass" style="margin-top:12px;">', unsafe_allow_html=True)
-    st.markdown("### 🏷️ 칭호 컬렉션")
+  with tab_dev:
+    st.markdown(
+        "<div style='font-size:12px; color:#f87171; font-weight:700;"
+        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
+        " 성공합니다</div>",
+        unsafe_allow_html=True,
+    )
+
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+
+    if st.button(
+        "✨ 강제 성공 (+1)",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl),
+    ):
+      st.session_state.prev_level = st.session_state.level
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
+
+      if not st.session_state.is_rebirth:
+        for w_lvl in [10, 15, 20, 25, 30]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_warps[w_lvl] = True
+      else:
+        for w_lvl in [5, 10, 15, 20]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_season2_warps[w_lvl] = True
+
+      check_achievements()
+      save_current_season_state()
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
+
+  with tab_ach:
+    achieved = sum(st.session_state.achievements.values())
+    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
+    achievement_items = list(ACHIEVEMENTS.items())
+    ach_cols = st.columns(3)
+    for i, (key, info) in enumerate(achievement_items):
+      done = st.session_state.achievements.get(key, False)
+      icon = "✅" if done else "🔒"
+      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
+      border = (
+          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+      )
+      with ach_cols[i % 3]:
+        st.markdown(
+            f"<div style='background:{bg}; border:1px solid {border};"
+            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
+            f" min-height:92px;'><div"
+            f" style='font-size:14px;font-weight:800'>{icon}"
+            f" {info['name']}</div><div"
+            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
+            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
+            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
+            unsafe_allow_html=True,
+        )
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
-    st.session_state.selected_title = st.selectbox(
-        "현재 장착 칭호", options, index=options.index(st.session_state.selected_title)
+    selected = st.selectbox(
+        "현재 칭호",
+        options,
+        index=options.index(st.session_state.selected_title),
     )
-    st.markdown(
-        f'<div class="profile-card" style="margin-top:12px;text-align:center;">'
-        f'<div style="font-size:12px;color:#7e9cc1;">EQUIPPED TITLE</div>'
-        f'<div style="font-size:28px;font-weight:950;color:#ffe58a;margin-top:8px;">🏷️ {st.session_state.selected_title}</div>'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.session_state.selected_title = selected
 
-  elif page == "이벤트":
-    st.markdown(
-        '<div class="event-banner" style="margin-top:12px;">'
-        '<div><div class="event-kicker">LIMITED EVENT</div>'
-        '<div class="event-title">접속만 해도 특별한 보상을 드려요!</div>'
-        '<div class="event-desc">대규모 업데이트 기념 이벤트 · 오늘부터 시작</div></div>'
-        '<div class="event-gift">🎁</div></div>',
-        unsafe_allow_html=True,
-    )
-    st.info("이벤트 보상 시스템은 현재 대시보드와 연동되어 있습니다.")
-
-  elif page == "설정":
-    st.markdown('<div class="glass" style="margin-top:12px;">', unsafe_allow_html=True)
-    st.markdown("### ⚙️ 설정")
-    st.checkbox("화려한 3D 연출 사용", value=True)
-    st.checkbox("강화 결과 자동 표시", value=True)
-    st.selectbox("화면 밀도", ["기본", "컴팩트", "넓게"])
-    st.markdown('</div>', unsafe_allow_html=True)
-
-  st.stop()
-
-# -----------------------------------------------------------------------------
-# 10. 홈 대시보드
-# -----------------------------------------------------------------------------
-left_col, center_col, right_col = st.columns([2.15, 5.1, 2.15], gap="medium")
-
-with left_col:
   st.markdown(
-      f"""
-      <div class="profile-card">
-        <span class="rank-badge">SEASON {2 if st.session_state.is_rebirth else 1} · CURRENT</span>
-        <div style="font-size:18px;font-weight:950;margin-top:9px;">
-          {'🌀 얼티밋 자이온의 시작' if st.session_state.is_rebirth else '🌌 지온의 탄생과 시초'}
-        </div>
-        <div style="font-size:11px;color:#8199bb;margin-top:4px;">
-          {card_title}
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:15px;font-size:11px;">
-          <span>현재 진행도</span><b>{current_level} / {max_lvl}</b>
-        </div>
-        <div class="progress-wrap"><div class="progress-fill" style="width:{current_level/max_lvl*100:.1f}%"></div></div>
-        <div style="font-size:10px;color:#6f88a9;margin-top:6px;">최고 기록 {st.session_state.max_level}단계</div>
-      </div>
-      """,
+      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
 
-  st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
   st.markdown(
-      '<div class="glass"><div class="section-title">🎁 일일 / 주간 접속 보상</div>'
-      '<div class="section-sub">매일 접속하고 보상을 획득하세요.</div>',
+      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 지온"
+      " 강화 제어</h4>",
       unsafe_allow_html=True,
   )
 
-  rewards = [("1일차","🧰","완료"),("2일차","💎","완료"),("3일차","🪙","진행중"),("4일차","⭐","미달성"),("5일차","👾","미달성")]
-  day_cols = st.columns(5)
-  for i, (day, ico, state) in enumerate(rewards):
-    with day_cols[i]:
-      cls = "done" if i < 2 else ("now" if i == 2 else "")
-      st.markdown(
-          f'<div class="day {cls}"><div class="n">{day}</div><div class="ico">{ico}</div>'
-          f'<div class="s">{state}</div></div>',
-          unsafe_allow_html=True,
-      )
-  if st.button("🎁 오늘의 보상 받기", key="claim_daily", use_container_width=True):
-    if not st.session_state.daily_claimed[2]:
-      st.session_state.daily_claimed[2] = True
-      st.session_state.money += 5_000
-      st.toast("오늘의 접속 보상 +5,000원!")
-      st.rerun()
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  if st.button(
+      "🔥 냄새 강화 실행",
+      use_container_width=True,
+      disabled=(st.session_state.level >= max_lvl),
+  ):
+    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+    if st.session_state.money < cost:
+      st.error("강화 비용 부족!")
     else:
-      st.info("오늘의 보상은 이미 받았습니다.")
-  st.markdown("</div>", unsafe_allow_html=True)
+      st.session_state.enhance_attempts += 1
+      run_enhance()
+      check_achievements()
+      save_current_season_state()
+      st.rerun()
 
-  st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-  st.markdown(
-      '<div class="glass"><div class="section-title">📜 진행 중 퀘스트</div>'
-      '<div class="section-sub">업적과 별개로 빠르게 보상을 획득하세요.</div>',
-      unsafe_allow_html=True,
+  st.write("")
+  if st.button(
+      "💰 현재 냄새 판매",
+      use_container_width=True,
+      disabled=(st.session_state.level == 0),
+  ):
+    sell()
+    unlock_achievement("seller")
+    st.rerun()
+
+with right_col:
+  current_level = st.session_state.level
+  prev_level = getattr(st.session_state, "prev_level", current_level)
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
+  card_color = curr_data["color"]
+  card_title = curr_data["name"]
+  card_desc = curr_data["desc"]
+  card_price = format_gold(curr_data["price"])
+  current_cost = format_gold(
+      get_enhance_cost(current_level, st.session_state.is_rebirth)
   )
-  quests = [
-      ("🔷","발전한 자들의 흔적","강화 50회 시도하기",min(st.session_state.enhance_attempts,50),50,"5,000원"),
-      ("⭐","시초의 영웅이 되어라","최고 단계 20 달성하기",min(st.session_state.max_level,20),20,"10 포인트"),
-  ]
-  for icon, name, desc, val, goal, reward in quests:
-    pct = val / goal * 100
-    st.markdown(
-        f'<div class="quest"><div class="quest-head">{icon} {name}'
-        f'<span style="margin-left:auto;color:#c6d9f0;font-size:10px;">{val}/{goal}</span></div>'
-        f'<div class="quest-desc">{desc} · 보상 {reward}</div>'
-        f'<div class="quest-bar"><div class="quest-fill" style="width:{pct:.1f}%"></div></div></div>',
-        unsafe_allow_html=True,
-    )
-  st.markdown("</div>", unsafe_allow_html=True)
+  tier = curr_data["tier"]
+  status = st.session_state.status
 
-with center_col:
-  st.markdown(
-      f'<div class="hero"><div class="hero-head">'
-      f'<div class="small">✦ ORIGIN CORE · UPDATE 2.0 ✦</div>'
-      f'<div class="big">{card_title}</div>'
-      f'<div class="desc">{card_desc}</div></div>',
-      unsafe_allow_html=True,
-  )
-
-  # 기존 3D 강화 연출을 그대로 유지하고, 새로운 대시보드 중앙에 배치
-  st.markdown(
-      f'<div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px 7px;">'
-      f'<span class="corner-label">✦ ORIGIN CORE</span>'
-      f'<span style="font-size:9px;color:#6f8fb6;letter-spacing:1.2px;">SEASON {2 if st.session_state.is_rebirth else 1} · {current_level:02d}/{max_lvl:02d}</span>'
-      f'</div>'
-      f'<div style="display:flex;justify-content:space-between;padding:0 14px;position:relative;z-index:2;">'
-      f'<span style="font-size:8px;color:#3f668f;letter-spacing:1.6px;">SYSTEM // CORE SYNCHRONIZED</span>'
-      f'<span style="font-size:8px;color:#3f668f;letter-spacing:1.6px;">NODE 07 · STABLE</span>'
-      f'</div>', unsafe_allow_html=True
+  # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
+  target_last_lvl = max_lvl - 1
+  is_last_attempt = (
+      prev_level == target_last_lvl
+      and status
+      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
+  ) or (
+      current_level == max_lvl
+      and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
   )
 
   three_js_code = f"""
@@ -1947,7 +1808,7 @@ with center_col:
                 particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
                 particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
-
+                
                 let spd = particleSpeed;
                 if (status === "FAILED") spd = 0.2;
 
@@ -1958,7 +1819,7 @@ with center_col:
                 }});
             }}
             particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-
+            
             const particleMat = new THREE.PointsMaterial({{
                 color: new THREE.Color(statusColor),
                 size: particleSize,
@@ -2147,7 +2008,7 @@ with center_col:
                     onComplete: function() {{
                         cinematicUi.style.opacity = "1";
                         camera.position.set(0, 0.6, 10.0);
-
+                        
                         // 결과 연출 (파괴 or 성공 or 실패)
                         triggerResultAnimation();
                     }}
@@ -2190,13 +2051,13 @@ with center_col:
                         }});
                         const shard = new THREE.Mesh(sGeo, sMat);
                         shard.position.set(0, 0, 0);
-
+                        
                         const u = Math.random();
                         const v = Math.random();
                         const theta = u * 2.0 * Math.PI;
                         const phi = Math.acos(2.0 * v - 1.0);
                         const speed = 6.0 + Math.random() * 12.0;
-
+                        
                         shard.userData = {{
                             vx: speed * Math.sin(phi) * Math.cos(theta),
                             vy: speed * Math.sin(phi) * Math.sin(theta),
@@ -2307,126 +2168,3 @@ with center_col:
     """
 
   components.html(three_js_code, height=580, scrolling=False)
-  st.markdown(
-      f'<div class="stat-grid">'
-      f'<div class="mini-stat"><b>{format_gold(st.session_state.money)}</b><span>현재 보유 금액</span></div>'
-      f'<div class="mini-stat"><b>{current_level}단계</b><span>현재 단계</span></div>'
-      f'<div class="mini-stat"><b>{st.session_state.pity_count}/{PITY_MAX}</b><span>천장 진행</span></div>'
-      f'</div></div>',
-      unsafe_allow_html=True,
-  )
-
-  st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-  action1, action2 = st.columns(2)
-  with action1:
-    if st.button(
-        f"🔥 냄새 강화 실행 · {current_cost}",
-        key="main_enhance_update",
-        use_container_width=True,
-        disabled=(current_level >= max_lvl),
-    ):
-      cost = get_enhance_cost(current_level, st.session_state.is_rebirth)
-      if st.session_state.money < cost:
-        st.error("강화 비용 부족!")
-      else:
-        st.session_state.enhance_attempts += 1
-        run_enhance()
-        check_achievements()
-        save_current_season_state()
-        st.rerun()
-  with action2:
-    if st.button(
-        "💰 현재 냄새 판매",
-        key="main_sell_update",
-        use_container_width=True,
-        disabled=(current_level == 0),
-    ):
-      sell()
-      unlock_achievement("seller")
-      st.rerun()
-
-with right_col:
-  st.markdown(
-      '<div class="event-banner"><div><div class="event-kicker">SPECIAL EVENT</div>'
-      '<div class="event-title">지금 접속하면<br>특별한 보상을 드려요!</div>'
-      '<div class="event-desc">업데이트 기념 선물 · 한정 이벤트 진행중</div></div>'
-      '<div class="event-gift">🎁</div></div>',
-      unsafe_allow_html=True,
-  )
-
-  st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-  st.markdown(
-      '<div class="glass"><div class="section-title">📢 이벤트 & 공지</div>'
-      '<div class="section-sub">새로운 소식을 확인하세요.</div>',
-      unsafe_allow_html=True,
-  )
-  news = [
-      ("22:34","[이벤트]","오늘은 경험치 2배! 이벤트가 시작되었습니다!"),
-      ("21:17","[공지]","대규모 업데이트 2.0이 적용되었습니다."),
-      ("20:03","[알림]","새로운 칭호가 추가되었습니다."),
-      ("19:45","[이벤트]","접속 보상으로 특별 선물을 획득했습니다!"),
-  ]
-  for tm, tag, text in news:
-    st.markdown(
-        f'<div class="news-line"><span class="news-time">{tm}</span>'
-        f'<span class="tag">{tag}</span>{text}</div>',
-        unsafe_allow_html=True,
-    )
-  st.markdown("</div>", unsafe_allow_html=True)
-
-  st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-  st.markdown(
-      '<div class="glass"><div class="section-title">📰 최근 소식</div>',
-      unsafe_allow_html=True,
-  )
-  recent = [
-      "신규 칭호 5종 추가",
-      "환생 시즌 보상 개편",
-      "워프권 UI 개선",
-      "강화 연출 최적화",
-      "업적 보상 표시 개선",
-  ]
-  for idx, item in enumerate(recent):
-    st.markdown(
-        f'<div class="news-line"><span class="news-time">{idx+1:02d}</span>{item}</div>',
-        unsafe_allow_html=True,
-    )
-  st.markdown("</div>", unsafe_allow_html=True)
-
-# -----------------------------------------------------------------------------
-# 11. 하단 빠른 메뉴
-# -----------------------------------------------------------------------------
-st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-nav_cols = st.columns(7)
-quick = [("🎒","가방"),("⚔️","강화"),("📖","스킬"),("🏷️","칭호"),("🗺️","지도"),("🎁","이벤트"),("🛒","상점")]
-for i, (icon, label) in enumerate(quick):
-  with nav_cols[i]:
-    if st.button(f"{icon}\n{label}", key=f"quick_{label}", use_container_width=True):
-      if label == "강화":
-        if current_level < max_lvl:
-          cost = get_enhance_cost(current_level, st.session_state.is_rebirth)
-          if st.session_state.money >= cost:
-            st.session_state.enhance_attempts += 1
-            run_enhance()
-            check_achievements()
-            save_current_season_state()
-            st.rerun()
-          else:
-            st.error("강화 비용 부족!")
-      elif label == "칭호":
-        st.session_state.active_page = "칭호"
-        st.rerun()
-      elif label == "상점":
-        st.session_state.active_page = "상점"
-        st.rerun()
-      elif label == "이벤트":
-        st.session_state.active_page = "이벤트"
-        st.rerun()
-      else:
-        st.toast(f"{label} 메뉴는 업데이트 준비중입니다.")
-    st.markdown(f'<div class="quick-caption">{label.upper()}</div>', unsafe_allow_html=True)
-
-st.markdown(
-    '<div class="footer-note">TIP · 일일 퀘스트를 완료하고 다양한 보상을 받아보세요!</div>',
-    unsafe_allow_html=True,
-)
