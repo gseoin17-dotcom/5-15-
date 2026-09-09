@@ -844,7 +844,7 @@ ACHIEVEMENTS = {
         "name": "고급 냄새꾼",
         "desc": "25단계에 도달하세요.",
         "title": "악취 지배자",
-        "reward": 25000,
+        "reward": 250000,
     },
     "s2_level_5": {
         "name": "자이온 입문",
@@ -1585,346 +1585,95 @@ with right_col:
     tier = curr_data["tier"]
     status = st.session_state.status
 
-    # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
-    target_last_lvl = max_lvl - 1
-    is_last_attempt = (
-        prev_level == target_last_lvl
-        and status
-        in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
-    ) or (
-        current_level == max_lvl
-        and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
-    )
-
     three_js_code = f"""
     <!DOCTYPE html>
     <html>
     <head>
         <style>
-            body {{ 
-                margin: 0; 
-                overflow: hidden; 
-                background: transparent; 
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            body {{ margin: 0; overflow: hidden; background: transparent; font-family: sans-serif; }}
+            #info {{
+                position: absolute; top: 20px; left: 20px; color: white;
+                background: rgba(0,0,0,0.6); padding: 15px; border-radius: 12px;
+                backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
             }}
-            #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
-
-            .selected-title-ui {{
-                position: absolute;
-                top: 18px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 120;
-                pointer-events: none;
-                font-size: 22px;
-                font-weight: 900;
-                color: #fde68a;
-                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
-                white-space: nowrap;
-            }}
-
-            .cinematic-ui {{
-                position: absolute;
-                bottom: 25px; 
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                text-align: center;
-                z-index: 100;
-                pointer-events: none;
-                opacity: 1;
-                transition: opacity 0.3s ease-in-out;
-            }}
-
-            .title-tier-1 {{ font-size: 28px; font-weight: 800; color: #fde68a; text-shadow: 0 0 20px #fde68a; }}
-            .title-tier-2 {{ font-size: 32px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 22px #f59e0b; }}
-            .title-tier-3 {{ font-size: 36px; font-weight: 800; color: #ef4444; text-shadow: 0 0 25px #ef4444; }}
-            .title-tier-4 {{ font-size: 40px; font-weight: 800; color: #c084fc; text-shadow: 0 0 28px #c084fc; }}
-            .title-tier-5 {{ font-size: 44px; font-weight: 800; background: linear-gradient(90deg, #ff7e5f, #feb47b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 12px rgba(255,126,95,0.6)); }}
-            .title-tier-6 {{ font-size: 48px; font-weight: 800; background: linear-gradient(90deg, #ffffff, #fde68a, #c084fc, #f43f5e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 1.5s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }}
-
-            @keyframes rainbow {{ 0% {{ background-position: 0% center; }} 100% {{ background-position: 200% center; }} }}
-
-            .shaking-text {{
-                animation: textVibe 0.18s infinite alternate ease-in-out;
-            }}
-            @keyframes textVibe {{
-                0% {{ transform: translate(0px, 0px) rotate(0deg); }}
-                25% {{ transform: translate(-1.5px, 1px) rotate(-0.5deg); }}
-                50% {{ transform: translate(1.5px, -1.5px) rotate(0.8deg); }}
-                75% {{ transform: translate(-1px, -1px) rotate(-0.3deg); }}
-                100% {{ transform: translate(1px, 1.5px) rotate(0.5deg); }}
-            }}
-
-            .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
-            .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
-            .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
-            .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
-
-            /* 연출용 찰나의 화면 비치는 광원 덮개 */
-            #flashOverlay {{
-                position: absolute;
-                top: 0; left: 0; width: 100vw; height: 100vh;
-                background: white;
-                opacity: 0;
-                pointer-events: none;
-                z-index: 200;
-                transition: opacity 0.15s ease-out;
-            }}
+            .status-text {{ font-size: 18px; font-weight: bold; margin-bottom: 5px; }}
+            .price-text {{ font-size: 14px; color: #fde68a; }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     </head>
     <body>
-        <div id="container"></div>
-        <div id="flashOverlay"></div>
-        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
-
-        <div id="cinematicUi" class="cinematic-ui visible">
-            <div id="statusText" class="status-header">READY</div>
-            <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
-            <div id="descText" class="desc-text">"{card_desc}"</div>
+        <div id="info">
+            <div id="statusText" class="status-text">강화 대기 중</div>
             <div id="priceText" class="price-text">예상 가치: {card_price}</div>
-            <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
         </div>
-
         <script>
-            const currentLevel = {current_level};
-            const maxLvl = {max_lvl};
-            const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
-            const status = "{status}";
-            const isLastAttempt = {"true" if is_last_attempt else "false"};
-            const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
-
-            if (currentLevel >= 15 || isFinalSuccess) {{
-                document.getElementById('mainTitle').classList.add('shaking-text');
-                document.getElementById('descText').classList.add('shaking-text');
-                document.getElementById('priceText').classList.add('shaking-text');
-                document.getElementById('costText').classList.add('shaking-text');
-            }}
-
-            const statusText = document.getElementById('statusText');
-            const cinematicUi = document.getElementById('cinematicUi');
-            const flashOverlay = document.getElementById('flashOverlay');
-            const tierColor = "{card_color}";
-            let statusColor = "#38bdf8";
-            let particleSize = 0.25;
-            let particleSpeed = 0.6;
-            let glowIntensity = 12;
-
-            function applyStatusText() {{
-                if (isFinalSuccess) {{
-                    statusText.innerText = isRebirth ? "🌀👑 [ULTIMATE TRUE REBIRTH ZION] 시즌 2 최종 성공!! 👑🌀" : "🌌👑 [ULTIMATE GOD ABSOLUTE ZION] 시즌 1 최종 강화 성공!! 👑🌌";
-                    statusColor = "#ffffff";
-                    particleSize = 0.6;
-                    particleSpeed = 2.5;
-                    glowIntensity = 50;
-                }} else if (status === "CRITICAL") {{
-                    statusText.innerText = "⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡";
-                    statusColor = "#ffffff"; 
-                    particleSize = 0.35;
-                    particleSpeed = 1.2;
-                    glowIntensity = 22;
-                }} else if (status === "PITY_SUCCESS") {{
-                    statusText.innerText = "✨ 지온이의 가오 발동! (천장 100% 성공) ✨";
-                    statusColor = "#fde68a";
-                    particleSize = 0.3;
-                    particleSpeed = 1.0;
-                    glowIntensity = 20;
-                }} else if (status === "SUCCESS") {{
-                    statusText.innerText = "✨ COSMIC SUCCESS (강화 성공) ✨";
-                    statusColor = tierColor;
-                    particleSize = 0.28;
-                    particleSpeed = 0.8;
-                    glowIntensity = 16;
-                }} else if (status === "SHIELD_SAVED") {{
-                    statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
-                    statusColor = "#60a5fa";
-                }} else if (status === "DESTROYED") {{
-                    statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
-                    statusColor = "#ff0000";
-                    particleSpeed = 2.0;
-                }} else if (status === "FAILED") {{
-                    statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
-                    statusColor = "#64748b";
-                    particleSpeed = 0.3;
-                    glowIntensity = 5;
-                }} else if (status === "HOLD") {{
-                    statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
-                    statusColor = "#94a3b8";
-                    particleSpeed = 0.4;
-                }} else {{
-                    statusText.innerText = isRebirth ? "REBIRTH READY - 블랙홀 차원 에너지가 집결합니다" : "READY - 우주 에너지가 차분히 집중됩니다";
-                }}
-                statusText.style.color = statusColor;
-            }}
-
-            applyStatusText();
-
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0.6, 10.0);
-
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({{ antialias: true, alpha: true }});
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.shadowMap.enabled = true;
-            document.getElementById('container').appendChild(renderer.domElement);
+            document.body.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
-            scene.add(ambientLight);
+            const cardColor = "{card_color}";
+            const status = "{status}";
+            const isRebirth = {str(st.session_state.is_rebirth).lower()};
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
-            mainLight.position.set(5, 8, 5);
-            scene.add(mainLight);
+            const statusText = document.getElementById("statusText");
+            let statusColor = "#ffffff";
+            let particleSpeed = 0.02;
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
-            pointLight.position.set(0, 0, 3);
-            scene.add(pointLight);
-
-            const starCount = 1000;
-            const starGeo = new THREE.BufferGeometry();
-            const starPositions = new Float32Array(starCount * 3);
-            for(let i=0; i<starCount; i++) {{
-                starPositions[i*3] = (Math.random() - 0.5) * 40;
-                starPositions[i*3 + 1] = (Math.random() - 0.5) * 40;
-                starPositions[i*3 + 2] = (Math.random() - 0.5) * 40 - 10;
-            }}
-            starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-            const starMat = new THREE.PointsMaterial({{
-                color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
-                size: isFinalSuccess ? 0.12 : 0.07,
-                transparent: true,
-                opacity: 0.7,
-                blending: THREE.AdditiveBlending
-            }});
-            const starField = new THREE.Points(starGeo, starMat);
-            scene.add(starField);
-
-            const particleCount = isFinalSuccess ? 2000 : 500;
-            const particleGeo = new THREE.BufferGeometry();
-            const particlePositions = new Float32Array(particleCount * 3);
-            const particleVelocities = [];
-
-            for(let i=0; i<particleCount; i++) {{
-                particlePositions[i*3] = (Math.random() - 0.5) * 6.0;
-                particlePositions[i*3 + 1] = -4.0 + Math.random() * 2.0;
-                particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
-                
-                let spd = particleSpeed;
-                if (status === "FAILED") spd = 0.2;
-
-                particleVelocities.push({{
-                    x: (Math.random() - 0.5) * 0.01 * spd,
-                    y: (0.008 + Math.random() * 0.025) * spd,
-                    z: (Math.random() - 0.5) * 0.01 * spd,
-                }});
-            }}
-            particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-            
-            const particleMat = new THREE.PointsMaterial({{
-                color: new THREE.Color(statusColor),
-                size: particleSize,
-                transparent: true,
-                opacity: status === "FAILED" ? 0.2 : 0.8,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            }});
-            const particleSystem = new THREE.Points(particleGeo, particleMat);
-            scene.add(particleSystem);
-
-            const objectGroup = new THREE.Group();
-            objectGroup.position.y = -0.7;
-
-            let baseGeo;
-            const lvl = {current_level};
-
-            if (isRebirth) {{
-                if (lvl <= 3) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.3);
-                }} else if (lvl <= 6) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.2);
-                }} else if (lvl <= 9) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.3);
-                }} else if (lvl <= 12) {{
-                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                }} else if (lvl <= 15) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
-                }} else if (lvl <= 18) {{
-                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
-                }} else if (lvl <= 21) {{
-                    baseGeo = new THREE.SphereGeometry(2.3, 32, 32);
-                }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.5, 128, 32, 2, 3);
-                }}
+            if (status === "SUCCESS") {{
+                statusText.innerText = "✨ 강화 성공! ✨";
+                statusColor = "#38bdf8";
+                particleSpeed = 0.08;
+            }} else if (status === "CRITICAL") {{
+                statusText.innerText = "🔥 대성공!! +2단계 상승 🔥";
+                statusColor = "#ff00ea";
+                particleSpeed = 0.15;
+            }} else if (status === "PITY_SUCCESS") {{
+                statusText.innerText = "✨ 가오 천장 성공! ✨";
+                statusColor = "#facc15";
+            }} else if (status === "FAILED") {{
+                statusText.innerText = "💥 강화 실패.. 단계 하락 💥";
+                statusColor = "#facc15";
+            }} else if (status === "DESTROYED") {{
+                statusText.innerText = "☠️ 악취 폭발! 0단계 초기화 ☠️";
+                statusColor = "#ef4444";
+                particleSpeed = 0.2;
+            }} else if (status === "SHIELD_SAVED") {{
+                statusText.innerText = "🛡️ 방지권으로 파괴 모면! 🛡️";
+                statusColor = "#34d399";
+            }} else if (status === "HOLD") {{
+                statusText.innerText = "🔒 HOLD (에너지 동결) 🔒";
+                statusColor = "#94a3b8";
+                particleSpeed = 0.04;
             }} else {{
-                if (lvl <= 5) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.2, 0);
-                }} else if (lvl <= 10) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.3, 0);
-                }} else if (lvl <= 15) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.2, 0);
-                }} else if (lvl <= 20) {{
-                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 100);
-                }} else if (lvl <= 25) {{
-                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 8);
-                }} else if (lvl <= 30) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 100, 16);
-                }} else {{
-                    baseGeo = new THREE.SphereGeometry(2.3, 32, 32);
-                }}
+                statusText.innerText = isRebirth ? "REBIRTH READY - 차원 에너지가 감돎" : "READY - 냄새 수련 대기 중";
             }}
+            statusText.style.color = statusColor;
 
-            const mainMat = new THREE.MeshStandardMaterial({{
-                color: new THREE.Color(tierColor),
-                metalness: 0.85,
-                roughness: 0.15,
-                wireframe: lvl > 0 && lvl % 2 === 1,
-                emissive: new THREE.Color(tierColor),
-                emissiveIntensity: isFinalSuccess ? 1.5 : (lvl / maxLvl) * 0.8
+            const baseGeo = new THREE.TorusKnotGeometry(1.4, 0.4, 128, 32);
+            const baseMat = new THREE.MeshStandardMaterial({{
+                color: new THREE.Color(cardColor),
+                roughness: 0.3,
+                metalness: 0.8,
+                wireframe: false
             }});
+            const mesh = new THREE.Mesh(baseGeo, baseMat);
+            scene.add(mesh);
 
-            const mainMesh = new THREE.Mesh(baseGeo, mainMat);
-            objectGroup.add(mainMesh);
+            const light = new THREE.PointLight(0xffffff, 2, 100);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040, 1.5));
 
-            const ringGeo = new THREE.TorusGeometry(3.1, 0.05, 16, 100);
-            const ringMat = new THREE.MeshBasicMaterial({{
-                color: new THREE.Color(tierColor),
-                wireframe: true,
-                transparent: true,
-                opacity: 0.6
-            }});
-            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-            ringMesh.rotation.x = Math.PI / 2;
-            objectGroup.add(ringMesh);
-
-            scene.add(objectGroup);
+            camera.position.z = 5;
 
             function animate() {{
                 requestAnimationFrame(animate);
-
-                const rotSpeed = isFinalSuccess ? 0.05 : 0.008 + (lvl / maxLvl) * 0.02;
-                objectGroup.rotation.y += rotSpeed;
-                objectGroup.rotation.x += rotSpeed * 0.5;
-                ringMesh.rotation.z -= rotSpeed * 1.5;
-
-                const positions = particleSystem.geometry.attributes.position.array;
-                for(let i=0; i<particleCount; i++) {{
-                    positions[i*3 + 1] += particleVelocities[i].y;
-                    positions[i*3] += particleVelocities[i].x;
-                    positions[i*3 + 2] += particleVelocities[i].z;
-
-                    if (positions[i*3 + 1] > 4.0) {{
-                        positions[i*3 + 1] = -4.0;
-                        positions[i*3] = (Math.random() - 0.5) * 6.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
-                    }}
-                }}
-                particleSystem.geometry.attributes.position.needsUpdate = true;
-
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.01;
                 renderer.render(scene, camera);
             }}
-
             animate();
 
             window.addEventListener('resize', () => {{
@@ -1936,5 +1685,4 @@ with right_col:
     </body>
     </html>
     """
-
-    components.html(three_js_code, height=650)
+    components.html(three_js_code, height=600)
