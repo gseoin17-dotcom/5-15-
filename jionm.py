@@ -1467,16 +1467,16 @@ with left_col:
 
     if not st.session_state.is_rebirth:
       warp_prices = {
-          10: 20000000,
-          15: 100000000,
-          20: 400000000,
-          25: 2000000000,
-          30: 10000000000,
+          10: 40000000,
+          15: 200000000,
+          20: 800000000,
+          25: 4000000000,
+          30: 20000000000,
       }
       active_warps = warp_prices.items()
     else:
       season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+          w_level: int(SMELL_DB[True][w_level]["price"] * 2)
           for w_level in [5, 10, 15, 20]
       }
       active_warps = season2_warp_prices.items()
