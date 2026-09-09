@@ -11,56 +11,9 @@ st.set_page_config(
     layout="wide",
 )
 
-# -----------------------------------------------------------------------------
-# [수정됨] Shift + Delete 키 감지 및 관리자 모드 토글 스크립트 (안정화 적용)
-# -----------------------------------------------------------------------------
+# 세션 상태 초기화 (관리자 모드)
 if "admin_mode" not in st.session_state:
     st.session_state.admin_mode = False
-
-# URL Query parameter 확인 및 적용
-query_params = st.query_params
-if "admin" in query_params:
-    new_admin_val = query_params["admin"].lower() == "true"
-    if st.session_state.admin_mode != new_admin_val:
-        st.session_state.admin_mode = new_admin_val
-        if new_admin_val:
-            st.toast("⚡ Admin Mode Activated", icon="🤫")
-        else:
-            st.toast("🛡️ Admin Mode Deactivated", icon="🔒")
-
-# Shift + Delete 키보드 단축키 감지 JS (Iframe -> Parent 연동 안정화)
-components.html(
-    """
-    <script>
-    (function() {
-        try {
-            const parentDoc = window.parent.document;
-            const parentWindow = window.parent;
-            
-            if (!parentDoc.dataset.adminShortcutAdded) {
-                parentDoc.dataset.adminShortcutAdded = "true";
-                parentDoc.addEventListener('keydown', function(e) {
-                    if (e.shiftKey && (e.key === 'Delete' || e.code === 'Delete')) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const url = new URL(parentWindow.location.href);
-                        const currentAdmin = url.searchParams.get('admin') === 'true';
-                        
-                        url.searchParams.set('admin', (!currentAdmin).toString());
-                        parentWindow.location.href = url.toString();
-                    }
-                }, true);
-            }
-        } catch (err) {
-            console.error("Admin shortcut listener error:", err);
-        }
-    })();
-    </script>
-""",
-    height=0,
-    width=0,
-)
 
 # -----------------------------------------------------------------------------
 # 2. 유틸리티 함수 및 비용 설정
@@ -1281,6 +1234,21 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
+    # 관리자 모드 ON / OFF 버튼
+    admin_btn_label = "⚡ 관리자 모드: ON (100% 성공)" if st.session_state.admin_mode else "🛡️ 관리자 모드: OFF"
+    if st.button(admin_btn_label, use_container_width=True):
+        st.session_state.admin_mode = not st.session_state.admin_mode
+        if st.session_state.admin_mode:
+            st.toast("⚡ 관리자 모드가 활성화되었습니다. (강화 100% 성공)", icon="🤫")
+        else:
+            st.toast("🛡️ 관리자 모드가 비활성화되었습니다.", icon="🔒")
+        st.rerun()
+
+    st.markdown(
+        "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
     if not st.session_state.is_rebirth and st.session_state.level >= 35:
         st.markdown(
             "<div"
@@ -2122,6 +2090,11 @@ with right_col:
                             }});
                         }}
                     }});
+                }} else if (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS") {{
+                    resultTl.fromTo(objectGroup.scale, 
+                        {{ x: 0.2, y: 0.2, z: 0.2 }},
+                        {{ x: 1.0, y: 1.0, z: 1.0, duration: 0.8, ease: "back.out(1.7)" }}
+                    );
                 }}
             }}
 
@@ -2129,23 +2102,25 @@ with right_col:
                 requestAnimationFrame(animate);
 
                 if (!isLastAttempt) {{
-                    objectGroup.rotation.y += 0.01;
-                    objectGroup.rotation.x += 0.005;
+                    objectGroup.rotation.y += 0.008;
+                    objectGroup.rotation.x += 0.003;
                 }}
 
-                const pos = particleGeo.attributes.position.array;
-                for(let i=0; i<particleCount; i++) {{
-                    pos[i*3] += particleVelocities[i].x;
-                    pos[i*3 + 1] += particleVelocities[i].y;
-                    pos[i*3 + 2] += particleVelocities[i].z;
+                starField.rotation.y += 0.0003;
 
-                    if (pos[i*3 + 1] > 4.0) {{
-                        pos[i*3 + 1] = -4.0;
-                        pos[i*3] = (Math.random() - 0.5) * 6.0;
-                        pos[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+                const positions = particleSystem.geometry.attributes.position.array;
+                for(let i=0; i<particleCount; i++) {{
+                    positions[i*3] += particleVelocities[i].x;
+                    positions[i*3 + 1] += particleVelocities[i].y;
+                    positions[i*3 + 2] += particleVelocities[i].z;
+
+                    if (positions[i*3 + 1] > 4.0) {{
+                        positions[i*3 + 1] = -4.0;
+                        positions[i*3] = (Math.random() - 0.5) * 6.0;
+                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                     }}
                 }}
-                particleGeo.attributes.position.needsUpdate = true;
+                particleSystem.geometry.attributes.position.needsUpdate = true;
 
                 renderer.render(scene, camera);
             }}
@@ -2162,4 +2137,4 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=620, scrolling=False)
+    components.html(three_js_code, height=720, scrolling=False)
