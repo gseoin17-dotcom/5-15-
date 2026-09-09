@@ -902,6 +902,8 @@ def init_progress():
     st.session_state.warp_uses = 0
   if "sell_count" not in st.session_state:
     st.session_state.sell_count = 0
+  if "developer_mode" not in st.session_state:
+    st.session_state.developer_mode = False
 
 
 def unlock_achievement(key):
@@ -1081,7 +1083,13 @@ def run_enhance():
   st.session_state.money -= cost
   st.session_state.prev_level = curr  # 이전 단계 저장
 
-  if st.session_state.pity_count >= PITY_MAX - 1:
+  # 개발자 모드: 무조건 +1 성공
+  if st.session_state.get("developer_mode", False):
+    st.session_state.level += 1
+    st.session_state.status = "SUCCESS"
+    st.session_state.pity_count = 0
+
+  elif st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
     st.session_state.pity_count = 0
@@ -1090,44 +1098,44 @@ def run_enhance():
     save_current_season_state()
     return
 
-  current_prob = PROB_TABLE[st.session_state.is_rebirth]
-  sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
-  r = random.uniform(0, 100)
-
-  success_limit = sp
-  down_limit = success_limit + down_p
-  destroy_limit = down_limit + dp
-
-  if r < success_limit:
-    st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
-      st.session_state.level += 2
-      st.session_state.status = "CRITICAL"
-    else:
-      st.session_state.level += 1
-      st.session_state.status = "SUCCESS"
-  elif r < down_limit:
-    st.session_state.pity_count += 1
-    if curr > 0:
-      st.session_state.level -= 1
-    st.session_state.status = "FAILED"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
-  elif r < destroy_limit:
-    if st.session_state.shield > 0:
-      st.session_state.shield -= 1
-      st.session_state.pity_count += 1
-      st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(80, st.session_state.tears + 1)
-    else:
-      st.session_state.pity_count += 1
-      st.session_state.level = 0
-      st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(80, st.session_state.tears + 2)
   else:
-    st.session_state.pity_count += 1
-    st.session_state.status = "HOLD"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
+    current_prob = PROB_TABLE[st.session_state.is_rebirth]
+    sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
+    r = random.uniform(0, 100)
 
+    success_limit = sp
+    down_limit = success_limit + down_p
+    destroy_limit = down_limit + dp
+
+    if r < success_limit:
+      st.session_state.pity_count = 0
+      if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
+        st.session_state.level += 2
+        st.session_state.status = "CRITICAL"
+      else:
+        st.session_state.level += 1
+        st.session_state.status = "SUCCESS"
+    elif r < down_limit:
+      st.session_state.pity_count += 1
+      if curr > 0:
+        st.session_state.level -= 1
+      st.session_state.status = "FAILED"
+      st.session_state.tears = min(80, st.session_state.tears + 1)
+    elif r < destroy_limit:
+      if st.session_state.shield > 0:
+        st.session_state.shield -= 1
+        st.session_state.pity_count += 1
+        st.session_state.status = "SHIELD_SAVED"
+        st.session_state.tears = min(80, st.session_state.tears + 1)
+      else:
+        st.session_state.pity_count += 1
+        st.session_state.level = 0
+        st.session_state.status = "DESTROYED"
+        st.session_state.tears = min(80, st.session_state.tears + 2)
+    else:
+      st.session_state.pity_count += 1
+      st.session_state.status = "HOLD"
+      st.session_state.tears = min(80, st.session_state.tears + 1)
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
@@ -1403,21 +1411,17 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    if not st.session_state.is_rebirth:
-      warp_prices = {
-          10: 20000000,
-          15: 100000000,
-          20: 400000000,
-          25: 2000000000,
-          30: 10000000000,
-      }
-      active_warps = warp_prices.items()
-    else:
-      season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
-          for w_level in [5, 10, 15, 20]
-      }
-      active_warps = season2_warp_prices.items()
+    # 워프권 가격 = 해당 워프 단계 가격의 2배
+    warp_levels = (
+        [10, 15, 20, 25, 30]
+        if not st.session_state.is_rebirth
+        else [5, 10, 15, 20]
+    )
+    warp_prices = {
+        w_level: SMELL_DB[st.session_state.is_rebirth][w_level]["price"] * 2
+        for w_level in warp_levels
+    }
+    active_warps = warp_prices.items()
 
     for w_level, w_price in active_warps:
       if not st.session_state.is_rebirth:
@@ -1508,6 +1512,37 @@ with left_col:
   )
 
   max_lvl = 25 if st.session_state.is_rebirth else 35
+
+  dev_mode_text = (
+      "🟢 개발자 모드 ON · 강화 100%"
+      if st.session_state.developer_mode
+      else "⚪ 개발자 모드 OFF"
+  )
+  if st.button(dev_mode_text, use_container_width=True):
+    st.session_state.developer_mode = not st.session_state.developer_mode
+    st.rerun()
+
+  if st.session_state.developer_mode:
+    st.markdown(
+        """
+        <div style="
+            background:rgba(34,197,94,0.15);
+            border:1px solid rgba(74,222,128,0.7);
+            border-radius:10px;
+            padding:8px;
+            margin-bottom:10px;
+            text-align:center;
+            color:#86efac;
+            font-weight:800;
+            font-size:12px;
+        ">
+        🛠️ 개발자 모드 활성화<br>
+        모든 강화가 무조건 성공합니다.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
   if st.button(
       "🔥 냄새 강화 실행",
       use_container_width=True,
