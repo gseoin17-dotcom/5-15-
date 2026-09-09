@@ -844,7 +844,7 @@ ACHIEVEMENTS = {
         "name": "고급 냄새꾼",
         "desc": "25단계에 도달하세요.",
         "title": "악취 지배자",
-        "reward": 250000,
+        "reward": 25000,
     },
     "s2_level_5": {
         "name": "자이온 입문",
@@ -1445,16 +1445,13 @@ with left_col:
 
         if not st.session_state.is_rebirth:
             warp_prices = {
-                10: 20000000,
-                15: 100000000,
-                20: 400000000,
-                25: 2000000000,
-                30: 10000000000,
+                w_level: int(SMELL_DB[False][w_level]["price"] * 2)
+                for w_level in [10, 15, 20, 25, 30]
             }
             active_warps = warp_prices.items()
         else:
             season2_warp_prices = {
-                w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+                w_level: int(SMELL_DB[True][w_level]["price"] * 2)
                 for w_level in [5, 10, 15, 20]
             }
             active_warps = season2_warp_prices.items()
@@ -1856,262 +1853,65 @@ with right_col:
                 }} else if (lvl <= 18) {{
                     baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
                 }} else if (lvl <= 21) {{
-                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
-                }} else if (lvl <= 24) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
+                    baseGeo = new THREE.SphereGeometry(2.3, 32, 32);
                 }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
+                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.5, 128, 32, 2, 3);
                 }}
             }} else {{
-                if (lvl <= 2) {{
-                    baseGeo = new THREE.TetrahedronGeometry(2.3);
-                }} else if (lvl <= 5) {{
-                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-                }} else if (lvl <= 8) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-                }} else if (lvl <= 11) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-                }} else if (lvl <= 14) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-                }} else if (lvl <= 17) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-                }} else if (lvl == 18) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.5);
-                }} else if (lvl == 19) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.4);
-                }} else if (lvl == 20) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.4);
-                }} else if (lvl == 21) {{
-                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-                }} else if (lvl == 22) {{
-                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-                }} else if (lvl == 23) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-                }} else if (lvl == 24) {{
-                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-                }} else if (lvl == 25) {{
-                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-                }} else if (lvl == 26) {{
-                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-                }} else if (lvl == 27) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-                }} else if (lvl == 28) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-                }} else if (lvl == 29) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-                }} else if (lvl == 30) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-                }} else if (lvl == 31) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-                }} else if (lvl == 32) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-                }} else if (lvl == 33) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-                }} else if (lvl == 34) {{
-                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
+                if (lvl <= 5) {{
+                    baseGeo = new THREE.IcosahedronGeometry(2.2, 0);
+                }} else if (lvl <= 10) {{
+                    baseGeo = new THREE.OctahedronGeometry(2.3, 0);
+                }} else if (lvl <= 15) {{
+                    baseGeo = new THREE.DodecahedronGeometry(2.2, 0);
+                }} else if (lvl <= 20) {{
+                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 100);
+                }} else if (lvl <= 25) {{
+                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 8);
+                }} else if (lvl <= 30) {{
+                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 100, 16);
                 }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                    baseGeo = new THREE.SphereGeometry(2.3, 32, 32);
                 }}
             }}
 
-            const outerMat = new THREE.MeshPhysicalMaterial({{
-                color: tierColor,
-                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
-                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
-                metalness: 0.9,
-                roughness: 0.1,
-                transmission: 0.6,
-                transparent: true,
-                opacity: status === "FAILED" ? 0.5 : 0.95,
-                wireframe: false
+            const mainMat = new THREE.MeshStandardMaterial({{
+                color: new THREE.Color(tierColor),
+                metalness: 0.85,
+                roughness: 0.15,
+                wireframe: lvl > 0 && lvl % 2 === 1,
+                emissive: new THREE.Color(tierColor),
+                emissiveIntensity: isFinalSuccess ? 1.5 : (lvl / maxLvl) * 0.8
             }});
-            const outerMesh = new THREE.Mesh(baseGeo, outerMat);
-            objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
-            const coreMat = new THREE.MeshPhysicalMaterial({{
-                color: 0xffffff,
-                emissive: statusColor,
-                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
-                roughness: 0.02,
-                metalness: 0.95,
-                transmission: 0.8
+            const mainMesh = new THREE.Mesh(baseGeo, mainMat);
+            objectGroup.add(mainMesh);
+
+            const ringGeo = new THREE.TorusGeometry(3.1, 0.05, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({{
+                color: new THREE.Color(tierColor),
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6
             }});
-            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-            objectGroup.add(coreMesh);
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.rotation.x = Math.PI / 2;
+            objectGroup.add(ringMesh);
 
             scene.add(objectGroup);
-
-            // -----------------------------------------------------------------
-            // 애니메이션 연출 로직 (마지막 단계 강화 시 5초간 길고 화려한 시네마틱)
-            // -----------------------------------------------------------------
-            const mainTl = gsap.timeline();
-
-            if (isLastAttempt) {{
-                // UI 잠시 숨기기
-                cinematicUi.style.opacity = "0";
-
-                // 연출 초기화
-                objectGroup.scale.set(0.5, 0.5, 0.5);
-                pointLight.intensity = 5;
-
-                // 5초간 화려한 진동, 카메라 서서히 줌인, 오브젝트 수퍼 스케일업 & 초고속 회전 연출
-                mainTl.to(camera.position, {{
-                    z: 4.2,
-                    duration: 4.8,
-                    ease: "power3.in"
-                }}, 0);
-
-                mainTl.to(objectGroup.scale, {{
-                    x: 3.5, y: 3.5, z: 3.5,
-                    duration: 4.8,
-                    ease: "power3.in"
-                }}, 0);
-
-                mainTl.to(pointLight, {{
-                    intensity: 200,
-                    duration: 4.8,
-                    ease: "power4.in"
-                }}, 0);
-
-                // 빛의 서라운드 라이트 컬러 왜곡 (무지개빛 색상 트랜지션)
-                const colors = ["#ff0055", "#00ffff", "#ffaa00", "#7000ff", "#ffffff"];
-                colors.forEach((col, idx) => {{
-                    mainTl.to(pointLight.color, {{
-                        r: new THREE.Color(col).r,
-                        g: new THREE.Color(col).g,
-                        b: new THREE.Color(col).b,
-                        duration: 0.9,
-                        ease: "linear"
-                    }}, idx * 0.9);
-                }});
-
-                // 카메라 & 코어 가속 및 극적인 시공간 시각적 왜곡 진동
-                const basePosY = -0.7;
-                mainTl.to(objectGroup.position, {{
-                    duration: 4.8,
-                    onUpdate: function() {{
-                        const p = this.progress(); // 0 ~ 1
-                        const shake = Math.pow(p, 2) * 0.8; // 진행될수록 가속되는 진동 폭
-                        objectGroup.position.x = (Math.random() - 0.5) * shake;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
-                        objectGroup.position.z = (Math.random() - 0.5) * shake;
-
-                        // 회전 가속 연출
-                        const speedMult = 1 + p * 15;
-                        objectGroup.rotation.x += 0.05 * speedMult;
-                        objectGroup.rotation.y += 0.08 * speedMult;
-                        objectGroup.rotation.z += 0.03 * speedMult;
-                    }}
-                }}, 0);
-
-                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
-                mainTl.to(flashOverlay, {{
-                    opacity: 1.0,
-                    duration: 0.2,
-                    ease: "power4.in",
-                    onComplete: function() {{
-                        cinematicUi.style.opacity = "1";
-                        camera.position.set(0, 0.6, 10.0);
-                        
-                        // 결과 연출 (파괴 or 성공 or 실패)
-                        triggerResultAnimation();
-                    }}
-                }}, 4.8);
-
-                mainTl.to(flashOverlay, {{
-                    opacity: 0,
-                    duration: 1.0,
-                    ease: "power2.out"
-                }}, 5.0);
-
-            }} else {{
-                // 일반 단계 시도 시 즉시 결과 연출
-                triggerResultAnimation();
-            }}
-
-            function triggerResultAnimation() {{
-                const resultTl = gsap.timeline();
-
-                if (status === "DESTROYED") {{
-                    outerMesh.visible = false;
-                    coreMesh.visible = false;
-
-                    pointLight.color.set("#ff0000");
-                    pointLight.intensity = 100;
-
-                    const shardCount = 250;
-                    const shards = [];
-                    const shardGroup = new THREE.Group();
-                    shardGroup.position.y = -0.7;
-
-                    for(let i=0; i<shardCount; i++) {{
-                        const sGeo = new THREE.BoxGeometry(0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4, 0.2 + Math.random()*0.4);
-                        const sMat = new THREE.MeshStandardMaterial({{
-                            color: tierColor,
-                            roughness: 0.1,
-                            metalness: 0.9,
-                            emissive: "#ff2200",
-                            emissiveIntensity: 3.5
-                        }});
-                        const shard = new THREE.Mesh(sGeo, sMat);
-                        shard.position.set(0, 0, 0);
-                        
-                        const u = Math.random();
-                        const v = Math.random();
-                        const theta = u * 2.0 * Math.PI;
-                        const phi = Math.acos(2.0 * v - 1.0);
-                        const speed = 6.0 + Math.random() * 12.0;
-                        
-                        shard.userData = {{
-                            vx: speed * Math.sin(phi) * Math.cos(theta),
-                            vy: speed * Math.sin(phi) * Math.sin(theta),
-                            vz: speed * Math.cos(phi),
-                            rx: (Math.random() - 0.5) * 40,
-                            ry: (Math.random() - 0.5) * 40
-                        }};
-
-                        shardGroup.add(shard);
-                        shards.push(shard);
-                    }}
-                    scene.add(shardGroup);
-
-                    resultTl.to(shardGroup.position, {{
-                        duration: 0.8,
-                        ease: "power2.out",
-                        onUpdate: function() {{
-                            const progress = this.progress();
-                            shards.forEach(s => {{
-                                s.position.x += s.userData.vx * 0.016;
-                                s.position.y += s.userData.vy * 0.016;
-                                s.position.z += s.userData.vz * 0.016;
-                                s.rotation.x += s.userData.rx * 0.016;
-                                s.rotation.y += s.userData.ry * 0.016;
-                            }});
-                        }}
-                    }});
-                }} else if (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS") {{
-                    resultTl.fromTo(objectGroup.scale, 
-                        {{ x: 0.2, y: 0.2, z: 0.2 }},
-                        {{ x: 1.0, y: 1.0, z: 1.0, duration: 0.8, ease: "back.out(1.7)" }}
-                    );
-                }}
-            }}
 
             function animate() {{
                 requestAnimationFrame(animate);
 
-                if (!isLastAttempt) {{
-                    objectGroup.rotation.y += 0.008;
-                    objectGroup.rotation.x += 0.003;
-                }}
-
-                starField.rotation.y += 0.0003;
+                const rotSpeed = isFinalSuccess ? 0.05 : 0.008 + (lvl / maxLvl) * 0.02;
+                objectGroup.rotation.y += rotSpeed;
+                objectGroup.rotation.x += rotSpeed * 0.5;
+                ringMesh.rotation.z -= rotSpeed * 1.5;
 
                 const positions = particleSystem.geometry.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
-                    positions[i*3] += particleVelocities[i].x;
                     positions[i*3 + 1] += particleVelocities[i].y;
+                    positions[i*3] += particleVelocities[i].x;
                     positions[i*3 + 2] += particleVelocities[i].z;
 
                     if (positions[i*3 + 1] > 4.0) {{
@@ -2137,4 +1937,4 @@ with right_col:
     </html>
     """
 
-    components.html(three_js_code, height=720, scrolling=False)
+    components.html(three_js_code, height=650)
