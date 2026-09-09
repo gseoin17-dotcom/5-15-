@@ -16,18 +16,18 @@ st.set_page_config(
 # -----------------------------------------------------------------------------
 # Query param 'admin'을 통해 세션 상태로 넘겨받도록 연동
 if "admin_mode" not in st.session_state:
-  st.session_state.admin_mode = False
+    st.session_state.admin_mode = False
 
 # URL Query parameter 확인
 query_params = st.query_params
 if "admin" in query_params:
-  new_admin_val = query_params["admin"] == "true"
-  if st.session_state.admin_mode != new_admin_val:
-    st.session_state.admin_mode = new_admin_val
-    if new_admin_val:
-      st.toast("⚡ Admin Mode Activated", icon="🤫")
-    else:
-      st.toast("🛡️ Admin Mode Deactivated", icon="🔒")
+    new_admin_val = query_params["admin"] == "true"
+    if st.session_state.admin_mode != new_admin_val:
+        st.session_state.admin_mode = new_admin_val
+        if new_admin_val:
+            st.toast("⚡ Admin Mode Activated", icon="🤫")
+        else:
+            st.toast("🛡️ Admin Mode Deactivated", icon="🔒")
 
 # Shift + Delete 키보드 단축키 감지 JS
 components.html(
@@ -58,99 +58,99 @@ components.html(
 
 
 def format_gold(amount):
-  if amount == 0 or amount == float("inf"):
-    return "0원" if amount == 0 else "무한대(INF)"
+    if amount == 0 or amount == float("inf"):
+        return "0원" if amount == 0 else "무한대(INF)"
 
-  units = ["", "만", "억", "조", "경", "해"]
-  result = []
+    units = ["", "만", "억", "조", "경", "해"]
+    result = []
 
-  unit_idx = 0
-  while amount > 0 and unit_idx < len(units):
-    remainder = int(amount % 10000)
-    if remainder > 0:
-      result.insert(0, f"{remainder:,}{units[unit_idx]}")
-    amount //= 10000
-    unit_idx += 1
+    unit_idx = 0
+    while amount > 0 and unit_idx < len(units):
+        remainder = int(amount % 10000)
+        if remainder > 0:
+            result.insert(0, f"{remainder:,}{units[unit_idx]}")
+        amount //= 10000
+        unit_idx += 1
 
-  return "".join(result) + "원"
+    return "".join(result) + "원"
 
 
 def get_enhance_cost(level, is_rebirth):
-  if is_rebirth:
-    cost_table = {
-        0: 1000000,
-        1: 2500000,
-        2: 5000000,
-        3: 10000000,
-        4: 20000000,
-        5: 40000000,
-        6: 80000000,
-        7: 150000000,
-        8: 300000000,
-        9: 600000000,
-        10: 1200000000,
-        11: 2500000000,
-        12: 5000000000,
-        13: 10000000000,
-        14: 20000000000,
-        15: 40000000000,
-        16: 80000000000,
-        17: 150000000000,
-        18: 300000000000,
-        19: 600000000000,
-        20: 1200000000000,
-        21: 2500000000000,
-        22: 5000000000000,
-        23: 10000000000000,
-        24: 25000000000000,
-        25: 100000000000000,
-    }
-    return cost_table.get(level, 100000000000000)
-  else:
-    cost_table = {
-        0: 300,
-        1: 300,
-        2: 500,
-        3: 500,
-        4: 1000,
-        5: 1500,
-        6: 2000,
-        7: 2000,
-        8: 3000,
-        9: 5000,
-        10: 10900,
-        11: 20000,
-        12: 35000,
-        13: 55000,
-        14: 100000,
-        15: 180000,
-        16: 300000,
-        17: 300000,
-        18: 500000,
-        19: 800000,
-        20: 1500000,
-        21: 2500000,
-        22: 4000000,
-        23: 6500000,
-        24: 10000000,
-        25: 16000000,
-        26: 25000000,
-        27: 40000000,
-        28: 65000000,
-        29: 100000000,
-        30: 150000000,
-        31: 250000000,
-        32: 400000000,
-        33: 700000000,
-        34: 1200000000,
-        35: 2000000000,
-    }
-    return cost_table.get(level, 2000000000)
+    if is_rebirth:
+        cost_table = {
+            0: 1000000,
+            1: 2500000,
+            2: 5000000,
+            3: 10000000,
+            4: 20000000,
+            5: 40000000,
+            6: 80000000,
+            7: 150000000,
+            8: 300000000,
+            9: 600000000,
+            10: 1200000000,
+            11: 2500000000,
+            12: 5000000000,
+            13: 10000000000,
+            14: 20000000000,
+            15: 40000000000,
+            16: 80000000000,
+            17: 150000000000,
+            18: 300000000000,
+            19: 600000000000,
+            20: 1200000000000,
+            21: 2500000000000,
+            22: 5000000000000,
+            23: 10000000000000,
+            24: 25000000000000,
+            25: 100000000000000,
+        }
+        return cost_table.get(level, 100000000000000)
+    else:
+        cost_table = {
+            0: 300,
+            1: 300,
+            2: 500,
+            3: 500,
+            4: 1000,
+            5: 1500,
+            6: 2000,
+            7: 2000,
+            8: 3000,
+            9: 5000,
+            10: 10900,
+            11: 20000,
+            12: 35000,
+            13: 55000,
+            14: 100000,
+            15: 180000,
+            16: 300000,
+            17: 300000,
+            18: 500000,
+            19: 800000,
+            20: 1500000,
+            21: 2500000,
+            22: 4000000,
+            23: 6500000,
+            24: 10000000,
+            25: 16000000,
+            26: 25000000,
+            27: 40000000,
+            28: 65000000,
+            29: 100000000,
+            30: 150000000,
+            31: 250000000,
+            32: 400000000,
+            33: 700000000,
+            34: 1200000000,
+            35: 2000000000,
+        }
+        return cost_table.get(level, 2000000000)
 
 
 def get_shield_cost(level, is_rebirth):
-  base_cost = get_enhance_cost(level, is_rebirth)
-  return max(50000, base_cost * 15)
+    base_cost = get_enhance_cost(level, is_rebirth)
+    return max(50000, base_cost * 15)
 
 
 # -----------------------------------------------------------------------------
@@ -931,174 +931,174 @@ TITLE_DEFAULT = "칭호 없음"
 
 
 def init_progress():
-  if "achievements" not in st.session_state:
-    st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
-  if "unlocked_titles" not in st.session_state:
-    st.session_state.unlocked_titles = []
-  if "selected_title" not in st.session_state:
-    st.session_state.selected_title = TITLE_DEFAULT
-  if "enhance_attempts" not in st.session_state:
-    st.session_state.enhance_attempts = 0
-  if "warp_uses" not in st.session_state:
-    st.session_state.warp_uses = 0
-  if "sell_count" not in st.session_state:
-    st.session_state.sell_count = 0
+    if "achievements" not in st.session_state:
+        st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
+    if "unlocked_titles" not in st.session_state:
+        st.session_state.unlocked_titles = []
+    if "selected_title" not in st.session_state:
+        st.session_state.selected_title = TITLE_DEFAULT
+    if "enhance_attempts" not in st.session_state:
+        st.session_state.enhance_attempts = 0
+    if "warp_uses" not in st.session_state:
+        st.session_state.warp_uses = 0
+    if "sell_count" not in st.session_state:
+        st.session_state.sell_count = 0
 
 
 def unlock_achievement(key):
-  if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
-    st.session_state.achievements[key] = True
-    title = ACHIEVEMENTS[key]["title"]
-    if title not in st.session_state.unlocked_titles:
-      st.session_state.unlocked_titles.append(title)
-    st.session_state.money += ACHIEVEMENTS[key]["reward"]
-    st.toast(
-        f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']} |"
-        f" +{format_gold(ACHIEVEMENTS[key]['reward'])}"
-    )
+    if key in ACHIEVEMENTS and not st.session_state.achievements.get(key, False):
+        st.session_state.achievements[key] = True
+        title = ACHIEVEMENTS[key]["title"]
+        if title not in st.session_state.unlocked_titles:
+            st.session_state.unlocked_titles.append(title)
+        st.session_state.money += ACHIEVEMENTS[key]["reward"]
+        st.toast(
+            f"🏆 업적 달성: {ACHIEVEMENTS[key]['name']} |"
+            f" +{format_gold(ACHIEVEMENTS[key]['reward'])}"
+        )
 
 
 def check_achievements():
-  level = st.session_state.level
-  if st.session_state.enhance_attempts >= 1:
-    unlock_achievement("first_enhance")
-  if st.session_state.enhance_attempts >= 50:
-    unlock_achievement("enhance_50")
-  if st.session_state.enhance_attempts >= 100:
-    unlock_achievement("enhance_100")
-  if st.session_state.enhance_attempts >= 200:
-    unlock_achievement("enhance_200")
-  if st.session_state.warp_uses >= 10:
-    unlock_achievement("warp_10")
-  if st.session_state.sell_count >= 10:
-    unlock_achievement("seller_10")
-  if st.session_state.money >= 1_000_000_000:
-    unlock_achievement("rich")
-  if not st.session_state.is_rebirth and level >= 5:
-    unlock_achievement("level_5")
-  if not st.session_state.is_rebirth and level >= 15:
-    unlock_achievement("level_15")
-  if not st.session_state.is_rebirth and level >= 25:
-    unlock_achievement("level_25")
-  if st.session_state.is_rebirth and level >= 5:
-    unlock_achievement("s2_level_5")
-  if st.session_state.is_rebirth and level >= 15:
-    unlock_achievement("s2_level_15")
-  if st.session_state.status == "FAIL" and level >= 20:
-    unlock_achievement("survivor")
-  if st.session_state.warp_uses >= 5:
-    unlock_achievement("warp_5")
-  if (
-      not st.session_state.is_rebirth
-      and level == 0
-      and st.session_state.max_level >= 34
-  ):
-    unlock_achievement("drop_to_0")
-  if not st.session_state.is_rebirth and level >= 10:
-    unlock_achievement("level_10")
-  if not st.session_state.is_rebirth and level >= 20:
-    unlock_achievement("level_20")
-  if not st.session_state.is_rebirth and level >= 35:
-    unlock_achievement("level_35")
-  if st.session_state.is_rebirth and level >= 10:
-    unlock_achievement("s2_level_10")
-  if st.session_state.is_rebirth and level >= 20:
-    unlock_achievement("s2_level_20")
-  if st.session_state.is_rebirth and level >= 25:
-    unlock_achievement("s2_level_25")
-  if st.session_state.warp_uses >= 1:
-    unlock_achievement("warp_1")
-  if st.session_state.status == "CRITICAL":
-    unlock_achievement("critical")
+    level = st.session_state.level
+    if st.session_state.enhance_attempts >= 1:
+        unlock_achievement("first_enhance")
+    if st.session_state.enhance_attempts >= 50:
+        unlock_achievement("enhance_50")
+    if st.session_state.enhance_attempts >= 100:
+        unlock_achievement("enhance_100")
+    if st.session_state.enhance_attempts >= 200:
+        unlock_achievement("enhance_200")
+    if st.session_state.warp_uses >= 10:
+        unlock_achievement("warp_10")
+    if st.session_state.sell_count >= 10:
+        unlock_achievement("seller_10")
+    if st.session_state.money >= 1_000_000_000:
+        unlock_achievement("rich")
+    if not st.session_state.is_rebirth and level >= 5:
+        unlock_achievement("level_5")
+    if not st.session_state.is_rebirth and level >= 15:
+        unlock_achievement("level_15")
+    if not st.session_state.is_rebirth and level >= 25:
+        unlock_achievement("level_25")
+    if st.session_state.is_rebirth and level >= 5:
+        unlock_achievement("s2_level_5")
+    if st.session_state.is_rebirth and level >= 15:
+        unlock_achievement("s2_level_15")
+    if st.session_state.status == "FAIL" and level >= 20:
+        unlock_achievement("survivor")
+    if st.session_state.warp_uses >= 5:
+        unlock_achievement("warp_5")
+    if (
+        not st.session_state.is_rebirth
+        and level == 0
+        and st.session_state.max_level >= 34
+    ):
+        unlock_achievement("drop_to_0")
+    if not st.session_state.is_rebirth and level >= 10:
+        unlock_achievement("level_10")
+    if not st.session_state.is_rebirth and level >= 20:
+        unlock_achievement("level_20")
+    if not st.session_state.is_rebirth and level >= 35:
+        unlock_achievement("level_35")
+    if st.session_state.is_rebirth and level >= 10:
+        unlock_achievement("s2_level_10")
+    if st.session_state.is_rebirth and level >= 20:
+        unlock_achievement("s2_level_20")
+    if st.session_state.is_rebirth and level >= 25:
+        unlock_achievement("s2_level_25")
+    if st.session_state.warp_uses >= 1:
+        unlock_achievement("warp_1")
+    if st.session_state.status == "CRITICAL":
+        unlock_achievement("critical")
 
 
 # -----------------------------------------------------------------------------
 # 4. 세션 상태 초기화
 # -----------------------------------------------------------------------------
 if "current_season" not in st.session_state:
-  st.session_state.current_season = 1
+    st.session_state.current_season = 1
 
 if "season_data" not in st.session_state:
-  st.session_state.season_data = {
-      1: {
-          "level": 0,
-          "prev_level": 0,
-          "max_level": 0,
-          "money": 1000000,
-          "status": "READY",
-          "shield": 0,
-          "tears": 0,
-          "pity_count": 0,
-          "unlocked_warps": {
-              10: False,
-              15: False,
-              20: False,
-              25: False,
-              30: False,
-          },
-      },
-      2: {
-          "level": 0,
-          "prev_level": 0,
-          "max_level": 0,
-          "money": 1000000000,
-          "status": "READY",
-          "shield": 0,
-          "tears": 50,
-          "pity_count": 0,
-          "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
-      },
-  }
+    st.session_state.season_data = {
+        1: {
+            "level": 0,
+            "prev_level": 0,
+            "max_level": 0,
+            "money": 1000000,
+            "status": "READY",
+            "shield": 0,
+            "tears": 0,
+            "pity_count": 0,
+            "unlocked_warps": {
+                10: False,
+                15: False,
+                20: False,
+                25: False,
+                30: False,
+            },
+        },
+        2: {
+            "level": 0,
+            "prev_level": 0,
+            "max_level": 0,
+            "money": 1000000000,
+            "status": "READY",
+            "shield": 0,
+            "tears": 50,
+            "pity_count": 0,
+            "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
+        },
+    }
 
 if "rebirth_count" not in st.session_state:
-  st.session_state.rebirth_count = 0
+    st.session_state.rebirth_count = 0
 
 init_progress()
 
 
 def sync_session_state(target_season):
-  st.session_state.current_season = target_season
-  st.session_state.is_rebirth = target_season == 2
-  data = st.session_state.season_data[target_season]
+    st.session_state.current_season = target_season
+    st.session_state.is_rebirth = target_season == 2
+    data = st.session_state.season_data[target_season]
 
-  st.session_state.level = data["level"]
-  st.session_state.prev_level = data.get("prev_level", data["level"])
-  st.session_state.max_level = data["max_level"]
-  st.session_state.money = data["money"]
-  st.session_state.status = data["status"]
-  st.session_state.shield = data["shield"]
-  st.session_state.tears = data["tears"]
-  st.session_state.pity_count = data["pity_count"]
+    st.session_state.level = data["level"]
+    st.session_state.prev_level = data.get("prev_level", data["level"])
+    st.session_state.max_level = data["max_level"]
+    st.session_state.money = data["money"]
+    st.session_state.status = data["status"]
+    st.session_state.shield = data["shield"]
+    st.session_state.tears = data["tears"]
+    st.session_state.pity_count = data["pity_count"]
 
-  if target_season == 1:
-    st.session_state.unlocked_warps = data["unlocked_warps"]
-  else:
-    st.session_state.unlocked_season2_warps = data["unlocked_season2_warps"]
+    if target_season == 1:
+        st.session_state.unlocked_warps = data["unlocked_warps"]
+    else:
+        st.session_state.unlocked_season2_warps = data["unlocked_season2_warps"]
 
 
 def save_current_season_state():
-  s = 2 if st.session_state.get("is_rebirth", False) else 1
-  st.session_state.season_data[s]["level"] = st.session_state.level
-  st.session_state.season_data[s]["prev_level"] = st.session_state.prev_level
-  st.session_state.season_data[s]["max_level"] = st.session_state.max_level
-  st.session_state.season_data[s]["money"] = st.session_state.money
-  st.session_state.season_data[s]["status"] = st.session_state.status
-  st.session_state.season_data[s]["shield"] = st.session_state.shield
-  st.session_state.season_data[s]["tears"] = st.session_state.tears
-  st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
+    s = 2 if st.session_state.get("is_rebirth", False) else 1
+    st.session_state.season_data[s]["level"] = st.session_state.level
+    st.session_state.season_data[s]["prev_level"] = st.session_state.prev_level
+    st.session_state.season_data[s]["max_level"] = st.session_state.max_level
+    st.session_state.season_data[s]["money"] = st.session_state.money
+    st.session_state.season_data[s]["status"] = st.session_state.status
+    st.session_state.season_data[s]["shield"] = st.session_state.shield
+    st.session_state.season_data[s]["tears"] = st.session_state.tears
+    st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
 
-  if s == 1:
-    st.session_state.season_data[1]["unlocked_warps"] = (
-        st.session_state.unlocked_warps
-    )
-  else:
-    st.session_state.season_data[2]["unlocked_season2_warps"] = (
-        st.session_state.unlocked_season2_warps
-    )
+    if s == 1:
+        st.session_state.season_data[1]["unlocked_warps"] = (
+            st.session_state.unlocked_warps
+        )
+    else:
+        st.session_state.season_data[2]["unlocked_season2_warps"] = (
+            st.session_state.unlocked_season2_warps
+        )
 
 
 if "is_rebirth" not in st.session_state:
-  sync_session_state(1)
+    sync_session_state(1)
 
 # -----------------------------------------------------------------------------
 # 5. 강화 로직
@@ -1106,128 +1106,128 @@ if "is_rebirth" not in st.session_state:
 
 
 def run_enhance():
-  save_current_season_state()
-  max_lvl = 25 if st.session_state.is_rebirth else 35
-  curr = st.session_state.level
-  if curr >= max_lvl:
     save_current_season_state()
-    return
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    curr = st.session_state.level
+    if curr >= max_lvl:
+        save_current_season_state()
+        return
 
-  cost = get_enhance_cost(curr, st.session_state.is_rebirth)
-  if st.session_state.money < cost:
-    st.session_state.status = "NOT_ENOUGH_MONEY"
-    save_current_season_state()
-    return
+    cost = get_enhance_cost(curr, st.session_state.is_rebirth)
+    if st.session_state.money < cost:
+        st.session_state.status = "NOT_ENOUGH_MONEY"
+        save_current_season_state()
+        return
 
-  st.session_state.money -= cost
-  st.session_state.prev_level = curr  # 이전 단계 저장
+    st.session_state.money -= cost
+    st.session_state.prev_level = curr  # 이전 단계 저장
 
-  # [수정] 관리자 모드가 활성화된 경우: 무조건 성공 (100% 성공 처리)
-  if st.session_state.get("admin_mode", False):
-    st.session_state.pity_count = 0
-    st.session_state.level += 1
-    st.session_state.status = "SUCCESS"
+    # 관리자 모드가 활성화된 경우: 무조건 성공 (100% 성공 처리)
+    if st.session_state.get("admin_mode", False):
+        st.session_state.pity_count = 0
+        st.session_state.level += 1
+        st.session_state.status = "SUCCESS"
+        if st.session_state.level > st.session_state.max_level:
+            st.session_state.max_level = st.session_state.level
+
+        if not st.session_state.is_rebirth:
+            for w_lvl in [10, 15, 20, 25, 30]:
+                if st.session_state.level >= w_lvl:
+                    st.session_state.unlocked_warps[w_lvl] = True
+        else:
+            for w_lvl in [5, 10, 15, 20]:
+                if st.session_state.level >= w_lvl:
+                    st.session_state.unlocked_season2_warps[w_lvl] = True
+
+        save_current_season_state()
+        return
+
+    # 정상 일반 강화 로직
+    if st.session_state.pity_count >= PITY_MAX - 1:
+        st.session_state.level += 1
+        st.session_state.status = "PITY_SUCCESS"
+        st.session_state.pity_count = 0
+        if st.session_state.level > st.session_state.max_level:
+            st.session_state.max_level = st.session_state.level
+        save_current_season_state()
+        return
+
+    current_prob = PROB_TABLE[st.session_state.is_rebirth]
+    sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
+    r = random.uniform(0, 100)
+
+    success_limit = sp
+    down_limit = success_limit + down_p
+    destroy_limit = down_limit + dp
+
+    if r < success_limit:
+        st.session_state.pity_count = 0
+        if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
+            st.session_state.level += 2
+            st.session_state.status = "CRITICAL"
+        else:
+            st.session_state.level += 1
+            st.session_state.status = "SUCCESS"
+    elif r < down_limit:
+        st.session_state.pity_count += 1
+        if curr > 0:
+            st.session_state.level -= 1
+        st.session_state.status = "FAILED"
+        st.session_state.tears = min(80, st.session_state.tears + 1)
+    elif r < destroy_limit:
+        if st.session_state.shield > 0:
+            st.session_state.shield -= 1
+            st.session_state.pity_count += 1
+            st.session_state.status = "SHIELD_SAVED"
+            st.session_state.tears = min(80, st.session_state.tears + 1)
+        else:
+            st.session_state.pity_count += 1
+            st.session_state.level = 0
+            st.session_state.status = "DESTROYED"
+            st.session_state.tears = min(80, st.session_state.tears + 2)
+    else:
+        st.session_state.pity_count += 1
+        st.session_state.status = "HOLD"
+        st.session_state.tears = min(80, st.session_state.tears + 1)
+
     if st.session_state.level > st.session_state.max_level:
-      st.session_state.max_level = st.session_state.level
+        st.session_state.max_level = st.session_state.level
 
     if not st.session_state.is_rebirth:
-      for w_lvl in [10, 15, 20, 25, 30]:
-        if st.session_state.level >= w_lvl:
-          st.session_state.unlocked_warps[w_lvl] = True
+        for w_lvl in [10, 15, 20, 25, 30]:
+            if st.session_state.level >= w_lvl:
+                st.session_state.unlocked_warps[w_lvl] = True
     else:
-      for w_lvl in [5, 10, 15, 20]:
-        if st.session_state.level >= w_lvl:
-          st.session_state.unlocked_season2_warps[w_lvl] = True
+        for w_lvl in [5, 10, 15, 20]:
+            if st.session_state.level >= w_lvl:
+                st.session_state.unlocked_season2_warps[w_lvl] = True
 
     save_current_season_state()
-    return
-
-  # 정상 일반 강화 로직
-  if st.session_state.pity_count >= PITY_MAX - 1:
-    st.session_state.level += 1
-    st.session_state.status = "PITY_SUCCESS"
-    st.session_state.pity_count = 0
-    if st.session_state.level > st.session_state.max_level:
-      st.session_state.max_level = st.session_state.level
-    save_current_season_state()
-    return
-
-  current_prob = PROB_TABLE[st.session_state.is_rebirth]
-  sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
-  r = random.uniform(0, 100)
-
-  success_limit = sp
-  down_limit = success_limit + down_p
-  destroy_limit = down_limit + dp
-
-  if r < success_limit:
-    st.session_state.pity_count = 0
-    if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
-      st.session_state.level += 2
-      st.session_state.status = "CRITICAL"
-    else:
-      st.session_state.level += 1
-      st.session_state.status = "SUCCESS"
-  elif r < down_limit:
-    st.session_state.pity_count += 1
-    if curr > 0:
-      st.session_state.level -= 1
-    st.session_state.status = "FAILED"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
-  elif r < destroy_limit:
-    if st.session_state.shield > 0:
-      st.session_state.shield -= 1
-      st.session_state.pity_count += 1
-      st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(80, st.session_state.tears + 1)
-    else:
-      st.session_state.pity_count += 1
-      st.session_state.level = 0
-      st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(80, st.session_state.tears + 2)
-  else:
-    st.session_state.pity_count += 1
-    st.session_state.status = "HOLD"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
-
-  if st.session_state.level > st.session_state.max_level:
-    st.session_state.max_level = st.session_state.level
-
-  if not st.session_state.is_rebirth:
-    for w_lvl in [10, 15, 20, 25, 30]:
-      if st.session_state.level >= w_lvl:
-        st.session_state.unlocked_warps[w_lvl] = True
-  else:
-    for w_lvl in [5, 10, 15, 20]:
-      if st.session_state.level >= w_lvl:
-        st.session_state.unlocked_season2_warps[w_lvl] = True
-
-  save_current_season_state()
 
 
 def sell():
-  save_current_season_state()
-  curr = st.session_state.level
-  if curr == 0:
-    return
-  price_val = SMELL_DB[st.session_state.is_rebirth][curr]["price"]
-  if price_val == float("inf"):
-    st.session_state.money = float("inf")
-  else:
-    st.session_state.money += price_val
-  st.session_state.prev_level = curr
-  st.session_state.level = 0
-  st.session_state.status = "READY"
-  save_current_season_state()
+    save_current_season_state()
+    curr = st.session_state.level
+    if curr == 0:
+        return
+    price_val = SMELL_DB[st.session_state.is_rebirth][curr]["price"]
+    if price_val == float("inf"):
+        st.session_state.money = float("inf")
+    else:
+        st.session_state.money += price_val
+    st.session_state.prev_level = curr
+    st.session_state.level = 0
+    st.session_state.status = "READY"
+    save_current_season_state()
 
 
 def trigger_rebirth():
-  unlock_achievement("rebirth")
-  save_current_season_state()
-  sync_session_state(2)
-  st.session_state.rebirth_count += 1
-  st.session_state.status = "READY"
-  save_current_season_state()
+    unlock_achievement("rebirth")
+    save_current_season_state()
+    sync_session_state(2)
+    st.session_state.rebirth_count += 1
+    st.session_state.status = "READY"
+    save_current_season_state()
 
 
 # -----------------------------------------------------------------------------
@@ -1271,357 +1271,357 @@ st.markdown(
 left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 
 with left_col:
-  if not st.session_state.is_rebirth and st.session_state.level >= 35:
+    if not st.session_state.is_rebirth and st.session_state.level >= 35:
+        st.markdown(
+            "<div"
+            " style='background:rgba(220,38,38,0.2);border:2px solid"
+            " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
+            "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
+            "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
+            " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        if st.button("✨ 환생하기", use_container_width=True):
+            trigger_rebirth()
+            st.rerun()
+        st.markdown(
+            "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
+            unsafe_allow_html=True,
+        )
+
+    mode_title = (
+        "🌀 [시즌 2] 얼티밋 자이온의 시작"
+        if st.session_state.is_rebirth
+        else "🌌 [시즌 1] 지온의 탄생과 시초"
+    )
     st.markdown(
-        "<div"
-        " style='background:rgba(220,38,38,0.2);border:2px solid"
-        " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
-        "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
-        "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
-        " 0;'>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>"
-        "</div>",
+        f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
+        f" color:#fde68a;'>{mode_title}</h4>",
         unsafe_allow_html=True,
     )
-    if st.button("✨ 환생하기", use_container_width=True):
-      trigger_rebirth()
-      st.rerun()
+
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
     )
 
-  mode_title = (
-      "🌀 [시즌 2] 얼티밋 자이온의 시작"
-      if st.session_state.is_rebirth
-      else "🌌 [시즌 1] 지온의 탄생과 시초"
-  )
-  st.markdown(
-      f"<h4 style='margin:0 0 8px 0; font-size: 15px;"
-      f" color:#fde68a;'>{mode_title}</h4>",
-      unsafe_allow_html=True,
-  )
+    s_col1, s_col2 = st.columns(2)
 
-  st.markdown(
-      "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  s_col1, s_col2 = st.columns(2)
-
-  with s_col1:
-    st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
-        f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
-        unsafe_allow_html=True,
-    )
-    st.write("")
-    st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
-        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 80개</div></div>",
-        unsafe_allow_html=True,
-    )
-
-  with s_col2:
-    st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
-        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 3개</div></div>",
-        unsafe_allow_html=True,
-    )
-    st.write("")
-
-    pity_left = PITY_MAX - st.session_state.pity_count
-    st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
-        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
-        unsafe_allow_html=True,
-    )
-
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  curr_lvl = st.session_state.level
-  current_prob = PROB_TABLE[st.session_state.is_rebirth]
-  sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
-  st.markdown(
-      f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
-      f" 강화 확률 ({curr_lvl}단계)</h4>",
-      unsafe_allow_html=True,
-  )
-  st.markdown(
-      f"<div style='font-size:12px; color:#cbd5e1;"
-      f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
-      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
-      f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
-      f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
-      f" style='color:#94a3b8;'>{hold_p}%</b></div>",
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
-  )
-
-  with tab_shop1:
-    min_shield_level = 16 if st.session_state.is_rebirth else 20
-    if st.session_state.is_rebirth:
-      current_shield_cost = int(
-          SMELL_DB[True][st.session_state.level]["price"] / 5
-      )
-    else:
-      current_shield_cost = get_shield_cost(
-          st.session_state.level, st.session_state.is_rebirth
-      )
-
-    if st.session_state.level < min_shield_level:
-      st.markdown(
-          f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
-          f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
-          unsafe_allow_html=True,
-      )
-    else:
-      st.markdown(
-          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
-          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
-          f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
-          f"{format_gold(current_shield_cost)}</span></div>",
-          unsafe_allow_html=True,
-      )
-
-    can_buy_shield = (st.session_state.shield < 3) and (
-        st.session_state.level >= min_shield_level
-    )
-    if st.button(
-        "방지권 구매", use_container_width=True, disabled=not can_buy_shield
-    ):
-      if st.session_state.level < min_shield_level:
-        st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
-      elif st.session_state.shield >= 3:
-        st.warning("최대 3개까지만 보유 가능합니다.")
-      elif st.session_state.money >= current_shield_cost:
-        st.session_state.money -= current_shield_cost
-        st.session_state.shield += 1
-        save_current_season_state()
-        st.success("파괴 방지권 구매 완료!")
-        st.rerun()
-      else:
-        st.error("금액이 부족합니다.")
-
-  with tab_shop2:
-    max_lvl = 25 if st.session_state.is_rebirth else 35
-    limit_lvl = 18 if st.session_state.is_rebirth else 32
-    if st.session_state.level >= limit_lvl:
-      st.markdown(
-          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
-          " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
-          " 없습니다!</div>",
-          unsafe_allow_html=True,
-      )
-    else:
-      st.markdown(
-          f"<div style='font-size:13px; color:#cbd5e1;"
-          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
-          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
-          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
-          unsafe_allow_html=True,
-      )
-
-    can_use_tears = st.session_state.level < limit_lvl
-    if st.button(
-        "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
-    ):
-      if st.session_state.level >= limit_lvl:
-        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= 20:
-        st.session_state.tears -= 20
-        add_lvl = random.choice([1, 2, 3])
-        st.session_state.prev_level = st.session_state.level
-        st.session_state.level = min(
-            max_lvl, st.session_state.level + add_lvl
-        )
-        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-        save_current_season_state()
-        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
-        st.rerun()
-      else:
-        st.error("눈물 20개가 필요합니다.")
-
-  with tab_warp:
-    st.markdown(
-        "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
-        unsafe_allow_html=True,
-    )
-
-    if not st.session_state.is_rebirth:
-      warp_prices = {
-          10: 40000000,
-          15: 200000000,
-          20: 800000000,
-          25: 4000000000,
-          30: 20000000000,
-      }
-      active_warps = warp_prices.items()
-    else:
-      season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] * 2)
-          for w_level in [5, 10, 15, 20]
-      }
-      active_warps = season2_warp_prices.items()
-
-    for w_level, w_price in active_warps:
-      if not st.session_state.is_rebirth:
-        is_unlocked = (
-            st.session_state.unlocked_warps.get(w_level, False)
-            or st.session_state.max_level >= w_level
-        )
-      else:
-        is_unlocked = (
-            st.session_state.unlocked_season2_warps.get(w_level, False)
-            or st.session_state.max_level >= w_level
-        )
-
-      c1, c2 = st.columns([1.2, 1])
-      with c1:
+    with s_col1:
         st.markdown(
-            f"<div style='font-size:13px; font-weight:bold;"
-            f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
-            f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+            f"<div style='text-align: center;'><div style='font-size:12px;"
+            f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
+            f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
             unsafe_allow_html=True,
         )
-      with c2:
+        st.write("")
+        st.markdown(
+            f"<div style='text-align: center;'><div style='font-size:12px;"
+            f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
+            f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
+            " 80개</div></div>",
+            unsafe_allow_html=True,
+        )
+
+    with s_col2:
+        st.markdown(
+            f"<div style='text-align: center;'><div style='font-size:12px;"
+            f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+            f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
+            " 3개</div></div>",
+            unsafe_allow_html=True,
+        )
+        st.write("")
+
+        pity_left = PITY_MAX - st.session_state.pity_count
+        st.markdown(
+            f"<div style='text-align: center;'><div style='font-size:12px;"
+            f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
+            f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+            unsafe_allow_html=True,
+        )
+
+    st.markdown(
+        "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+    curr_lvl = st.session_state.level
+    current_prob = PROB_TABLE[st.session_state.is_rebirth]
+    sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
+    st.markdown(
+        f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
+        f" 강화 확률 ({curr_lvl}단계)</h4>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"<div style='font-size:12px; color:#cbd5e1;"
+        f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
+        f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>•"
+        f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
+        f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
+        f" style='color:#94a3b8;'>{hold_p}%</b></div>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+    tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
+        ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
+    )
+
+    with tab_shop1:
+        min_shield_level = 16 if st.session_state.is_rebirth else 20
+        if st.session_state.is_rebirth:
+            current_shield_cost = int(
+                SMELL_DB[True][st.session_state.level]["price"] / 5
+            )
+        else:
+            current_shield_cost = get_shield_cost(
+                st.session_state.level, st.session_state.is_rebirth
+            )
+
+        if st.session_state.level < min_shield_level:
+            st.markdown(
+                f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
+                f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+                f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
+                f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+                f"{format_gold(current_shield_cost)}</span></div>",
+                unsafe_allow_html=True,
+            )
+
+        can_buy_shield = (st.session_state.shield < 3) and (
+            st.session_state.level >= min_shield_level
+        )
         if st.button(
-            "이동",
-            key=f"warp_{st.session_state.is_rebirth}_{w_level}",
-            disabled=not is_unlocked
-            or (st.session_state.level >= w_level),
+            "방지권 구매", use_container_width=True, disabled=not can_buy_shield
         ):
-          if not is_unlocked:
-            st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
-          elif st.session_state.money < w_price:
-            st.error("보유 금액이 부족합니다!")
-          else:
-            st.session_state.money -= w_price
-            st.session_state.warp_uses += 1
-            st.session_state.prev_level = st.session_state.level
-            st.session_state.level = w_level
-            if w_level > st.session_state.max_level:
-              st.session_state.max_level = w_level
-            st.session_state.status = "SUCCESS"
+            if st.session_state.level < min_shield_level:
+                st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
+            elif st.session_state.shield >= 3:
+                st.warning("최대 3개까지만 보유 가능합니다.")
+            elif st.session_state.money >= current_shield_cost:
+                st.session_state.money -= current_shield_cost
+                st.session_state.shield += 1
+                save_current_season_state()
+                st.success("파괴 방지권 구매 완료!")
+                st.rerun()
+            else:
+                st.error("금액이 부족합니다.")
+
+    with tab_shop2:
+        max_lvl = 25 if st.session_state.is_rebirth else 35
+        limit_lvl = 18 if st.session_state.is_rebirth else 32
+        if st.session_state.level >= limit_lvl:
+            st.markdown(
+                "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+                " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
+                " 없습니다!</div>",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                f"<div style='font-size:13px; color:#cbd5e1;"
+                f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
+                f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+                f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
+                unsafe_allow_html=True,
+            )
+
+        can_use_tears = st.session_state.level < limit_lvl
+        if st.button(
+            "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
+        ):
+            if st.session_state.level >= limit_lvl:
+                st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
+            elif st.session_state.tears >= 20:
+                st.session_state.tears -= 20
+                add_lvl = random.choice([1, 2, 3])
+                st.session_state.prev_level = st.session_state.level
+                st.session_state.level = min(
+                    max_lvl, st.session_state.level + add_lvl
+                )
+                st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+                save_current_season_state()
+                st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
+                st.rerun()
+            else:
+                st.error("눈물 20개가 필요합니다.")
+
+    with tab_warp:
+        st.markdown(
+            "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
+            " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
+            unsafe_allow_html=True,
+        )
+
+        if not st.session_state.is_rebirth:
+            warp_prices = {
+                10: 20000000,
+                15: 100000000,
+                20: 400000000,
+                25: 2000000000,
+                30: 10000000000,
+            }
+            active_warps = warp_prices.items()
+        else:
+            season2_warp_prices = {
+                w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+                for w_level in [5, 10, 15, 20]
+            }
+            active_warps = season2_warp_prices.items()
+
+        for w_level, w_price in active_warps:
+            if not st.session_state.is_rebirth:
+                is_unlocked = (
+                    st.session_state.unlocked_warps.get(w_level, False)
+                    or st.session_state.max_level >= w_level
+                )
+            else:
+                is_unlocked = (
+                    st.session_state.unlocked_season2_warps.get(w_level, False)
+                    or st.session_state.max_level >= w_level
+                )
+
+            c1, c2 = st.columns([1.2, 1])
+            with c1:
+                st.markdown(
+                    f"<div style='font-size:13px; font-weight:bold;"
+                    f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
+                    f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+                    unsafe_allow_html=True,
+                )
+            with c2:
+                if st.button(
+                    "이동",
+                    key=f"warp_{st.session_state.is_rebirth}_{w_level}",
+                    disabled=not is_unlocked
+                    or (st.session_state.level >= w_level),
+                ):
+                    if not is_unlocked:
+                        st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
+                    elif st.session_state.money < w_price:
+                        st.error("보유 금액이 부족합니다!")
+                    else:
+                        st.session_state.money -= w_price
+                        st.session_state.warp_uses += 1
+                        st.session_state.prev_level = st.session_state.level
+                        st.session_state.level = w_level
+                        if w_level > st.session_state.max_level:
+                            st.session_state.max_level = w_level
+                        st.session_state.status = "SUCCESS"
+                        save_current_season_state()
+                        st.success(f"🚀 {w_level}단계로 워프 성공!")
+                        st.rerun()
+
+    with tab_ach:
+        achieved = sum(st.session_state.achievements.values())
+        st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
+        achievement_items = list(ACHIEVEMENTS.items())
+        ach_cols = st.columns(3)
+        for i, (key, info) in enumerate(achievement_items):
+            done = st.session_state.achievements.get(key, False)
+            icon = "✅" if done else "🔒"
+            bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
+            border = (
+                "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
+            )
+            with ach_cols[i % 3]:
+                st.markdown(
+                    f"<div style='background:{bg}; border:1px solid {border};"
+                    " border-radius:12px; padding:10px; margin:0 0 10px 0;"
+                    f" min-height:92px;'><div"
+                    f" style='font-size:14px;font-weight:800'>{icon}"
+                    f" {info['name']}</div><div"
+                    f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
+                    f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
+                    f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
+                    unsafe_allow_html=True,
+                )
+        options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
+        if st.session_state.selected_title not in options:
+            st.session_state.selected_title = TITLE_DEFAULT
+        selected = st.selectbox(
+            "현재 칭호",
+            options,
+            index=options.index(st.session_state.selected_title),
+        )
+        st.session_state.selected_title = selected
+
+    st.markdown(
+        "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 지온"
+        " 강화 제어</h4>",
+        unsafe_allow_html=True,
+    )
+
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    if st.button(
+        "🔥 냄새 강화 실행",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl),
+    ):
+        cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+        if st.session_state.money < cost:
+            st.error("강화 비용 부족!")
+        else:
+            st.session_state.enhance_attempts += 1
+            run_enhance()
+            check_achievements()
             save_current_season_state()
-            st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
-  with tab_ach:
-    achieved = sum(st.session_state.achievements.values())
-    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
-    achievement_items = list(ACHIEVEMENTS.items())
-    ach_cols = st.columns(3)
-    for i, (key, info) in enumerate(achievement_items):
-      done = st.session_state.achievements.get(key, False)
-      icon = "✅" if done else "🔒"
-      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
-      border = (
-          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
-      )
-      with ach_cols[i % 3]:
-        st.markdown(
-            f"<div style='background:{bg}; border:1px solid {border};"
-            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
-            f" min-height:92px;'><div"
-            f" style='font-size:14px;font-weight:800'>{icon}"
-            f" {info['name']}</div><div"
-            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
-            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
-            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
-            unsafe_allow_html=True,
-        )
-    options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
-    if st.session_state.selected_title not in options:
-      st.session_state.selected_title = TITLE_DEFAULT
-    selected = st.selectbox(
-        "현재 칭호",
-        options,
-        index=options.index(st.session_state.selected_title),
-    )
-    st.session_state.selected_title = selected
-
-  st.markdown(
-      "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 지온"
-      " 강화 제어</h4>",
-      unsafe_allow_html=True,
-  )
-
-  max_lvl = 25 if st.session_state.is_rebirth else 35
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= max_lvl),
-  ):
-    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
-    if st.session_state.money < cost:
-      st.error("강화 비용 부족!")
-    else:
-      st.session_state.enhance_attempts += 1
-      run_enhance()
-      check_achievements()
-      save_current_season_state()
-      st.rerun()
-
-  st.write("")
-  if st.button(
-      "💰 현재 냄새 판매",
-      use_container_width=True,
-      disabled=(st.session_state.level == 0),
-  ):
-    sell()
-    unlock_achievement("seller")
-    st.rerun()
+    st.write("")
+    if st.button(
+        "💰 현재 냄새 판매",
+        use_container_width=True,
+        disabled=(st.session_state.level == 0),
+    ):
+        sell()
+        unlock_achievement("seller")
+        st.rerun()
 
 with right_col:
-  current_level = st.session_state.level
-  prev_level = getattr(st.session_state, "prev_level", current_level)
-  max_lvl = 25 if st.session_state.is_rebirth else 35
-  curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
-  card_color = curr_data["color"]
-  card_title = curr_data["name"]
-  card_desc = curr_data["desc"]
-  card_price = format_gold(curr_data["price"])
-  current_cost = format_gold(
-      get_enhance_cost(current_level, st.session_state.is_rebirth)
-  )
-  tier = curr_data["tier"]
-  status = st.session_state.status
+    current_level = st.session_state.level
+    prev_level = getattr(st.session_state, "prev_level", current_level)
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    curr_data = SMELL_DB[st.session_state.is_rebirth][current_level]
+    card_color = curr_data["color"]
+    card_title = curr_data["name"]
+    card_desc = curr_data["desc"]
+    card_price = format_gold(curr_data["price"])
+    current_cost = format_gold(
+        get_enhance_cost(current_level, st.session_state.is_rebirth)
+    )
+    tier = curr_data["tier"]
+    status = st.session_state.status
 
-  # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
-  target_last_lvl = max_lvl - 1
-  is_last_attempt = (
-      prev_level == target_last_lvl
-      and status
-      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
-  ) or (
-      current_level == max_lvl
-      and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
-  )
+    # 마지막 강화 시도 여부 판별 (S1: 34->35 혹은 S1 35성공, S2: 24->25 혹은 S2 25성공)
+    target_last_lvl = max_lvl - 1
+    is_last_attempt = (
+        prev_level == target_last_lvl
+        and status
+        in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
+    ) or (
+        current_level == max_lvl
+        and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
+    )
 
-  three_js_code = f"""
+    three_js_code = f"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -2104,80 +2104,38 @@ with right_col:
                         onUpdate: function() {{
                             const progress = this.progress();
                             shards.forEach(s => {{
-                                s.position.x += s.userData.vx * 0.02;
-                                s.position.y += s.userData.vy * 0.02 - 0.03;
-                                s.position.z += s.userData.vz * 0.02;
-                                s.rotation.x += s.userData.rx * 0.02;
-                                s.rotation.y += s.userData.ry * 0.02;
-                                s.material.opacity = 1.0 - progress;
-                                s.material.transparent = true;
+                                s.position.x += s.userData.vx * 0.016;
+                                s.position.y += s.userData.vy * 0.016;
+                                s.position.z += s.userData.vz * 0.016;
+                                s.rotation.x += s.userData.rx * 0.016;
+                                s.rotation.y += s.userData.ry * 0.016;
                             }});
                         }}
                     }});
-                }} else {{
-                    const maxScale = isFinalSuccess ? 2.0 : 1.3;
-                    resultTl.to(objectGroup.scale, {{
-                        x: maxScale, y: maxScale, z: maxScale,
-                        duration: 0.2,
-                        ease: "back.out(2)"
-                    }})
-                    .to(objectGroup.scale, {{
-                        x: 1.0, y: 1.0, z: 1.0,
-                        duration: 0.25,
-                        ease: "power2.out"
-                    }});
-
-                    const basePosY = -0.7;
-                    resultTl.to(objectGroup.position, {{
-                        duration: 0.35,
-                        onUpdate: function() {{
-                            const p = this.progress();
-                            const shakeIntensity = (isFinalSuccess ? 0.45 : 0.12) * Math.sin(p * Math.PI);
-                            objectGroup.position.x = (Math.random() - 0.5) * shakeIntensity;
-                            objectGroup.position.y = basePosY + (Math.random() - 0.5) * shakeIntensity;
-                            objectGroup.position.z = (Math.random() - 0.5) * shakeIntensity * 0.5;
-
-                            objectGroup.rotation.x += (Math.random() - 0.5) * shakeIntensity;
-                            objectGroup.rotation.y += (Math.random() - 0.5) * shakeIntensity;
-                            objectGroup.rotation.z += (Math.random() - 0.5) * shakeIntensity;
-                        }}
-                    }}, 0);
                 }}
             }}
 
-            const clock = new THREE.Clock();
-
             function animate() {{
                 requestAnimationFrame(animate);
-                const time = clock.getElapsedTime();
 
-                if (status !== "DESTROYED") {{
-                    const rotSpeed = isFinalSuccess ? 2.2 : (status === "FAILED" ? 0.3 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.8 : 0.5));
-                    outerMesh.rotation.x += 0.005 * rotSpeed;
-                    outerMesh.rotation.y += 0.008 * rotSpeed;
-                    coreMesh.rotation.x -= 0.01 * rotSpeed;
-                    coreMesh.rotation.y -= 0.012 * rotSpeed;
-
-                    const floatHeight = isFinalSuccess ? 0.25 : 0.15;
-                    const basePosY = -0.7;
-                    objectGroup.position.y = basePosY + Math.sin(time * (isFinalSuccess ? 3.0 : 1.8)) * floatHeight;
+                if (!isLastAttempt) {{
+                    objectGroup.rotation.y += 0.01;
+                    objectGroup.rotation.x += 0.005;
                 }}
 
-                const positions = particleGeo.attributes.position.array;
+                const pos = particleGeo.attributes.position.array;
                 for(let i=0; i<particleCount; i++) {{
-                    positions[i*3] += particleVelocities[i].x;
-                    positions[i*3 + 1] += particleVelocities[i].y;
-                    positions[i*3 + 2] += particleVelocities[i].z;
+                    pos[i*3] += particleVelocities[i].x;
+                    pos[i*3 + 1] += particleVelocities[i].y;
+                    pos[i*3 + 2] += particleVelocities[i].z;
 
-                    if (positions[i*3 + 1] > 4.0) {{
-                        positions[i*3] = (Math.random() - 0.5) * 6.0;
-                        positions[i*3 + 1] = -4.0;
-                        positions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
+                    if (pos[i*3 + 1] > 4.0) {{
+                        pos[i*3 + 1] = -4.0;
+                        pos[i*3] = (Math.random() - 0.5) * 6.0;
+                        pos[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                     }}
                 }}
                 particleGeo.attributes.position.needsUpdate = true;
-
-                starField.rotation.y = time * 0.02;
 
                 renderer.render(scene, camera);
             }}
@@ -2193,4 +2151,5 @@ with right_col:
     </body>
     </html>
     """
-  components.html(three_js_code, height=720)
+
+    components.html(three_js_code, height=620, scrolling=False)
