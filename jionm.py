@@ -1307,7 +1307,7 @@ with left_col:
   st.markdown(
       f"<div style='font-size:12px; color:#cbd5e1;"
       f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
-      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b><br>•"
       f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
       f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
       f" style='color:#94a3b8;'>{hold_p}%</b></div>",
@@ -1410,7 +1410,7 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
         unsafe_allow_html=True,
     )
 
