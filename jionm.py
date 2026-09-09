@@ -2018,7 +2018,7 @@ with right_col:
                     ease: "power2.out"
                 }}, 5.68);
 
-            }}            }} else {{
+            }} else {{
                 // 일반 단계 시도 시 즉시 결과 연출
                 triggerResultAnimation();
             }}
