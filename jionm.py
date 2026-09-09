@@ -1219,8 +1219,7 @@ left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 with left_col:
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
-        "<div"
-        " style='background:rgba(220,38,38,0.2);border:2px solid"
+        "<div id='rebirth-prompt' style='display:none;background:rgba(220,38,38,0.2);border:2px solid"
         " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
         "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
         "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
@@ -1231,6 +1230,10 @@ with left_col:
     if st.button("✨ 환생하기", use_container_width=True):
       trigger_rebirth()
       st.rerun()
+    st.markdown(
+        "<script>setTimeout(function(){var e=document.getElementById('rebirth-prompt'); if(e){e.style.display='block';}}, 6200);</script>",
+        unsafe_allow_html=True,
+    )
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
@@ -1588,7 +1591,7 @@ with right_col:
   is_last_attempt = (
       prev_level == target_last_lvl
       and status
-      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
+      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "SHIELD_SAVED", "HOLD"]
   ) or (
       current_level == max_lvl
       and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
@@ -2026,7 +2029,65 @@ with right_col:
             function triggerResultAnimation() {{
                 const resultTl = gsap.timeline();
 
-                if (status === "DESTROYED") {{
+                if (status === "SHIELD_SAVED") {{
+                    // 방지권 발동: 결과 공개 후 전용 보호막 애니메이션
+                    outerMesh.visible = true;
+                    coreMesh.visible = true;
+                    pointLight.color.set("#60a5fa");
+                    pointLight.intensity = 85;
+
+                    const shieldGeo = new THREE.SphereGeometry(3.15, 32, 32);
+                    const shieldMat = new THREE.MeshBasicMaterial({{
+                        color: 0x60a5fa,
+                        transparent: true,
+                        opacity: 0.0,
+                        wireframe: true,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false
+                    }});
+                    const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+                    shieldMesh.position.y = -0.7;
+                    shieldMesh.scale.set(0.35, 0.35, 0.35);
+                    scene.add(shieldMesh);
+
+                    resultTl.to(shieldMesh.material, {{
+                        opacity: 0.9,
+                        duration: 0.18,
+                        ease: "power2.out"
+                    }}, 0)
+                    .to(shieldMesh.scale, {{
+                        x: 1.0, y: 1.0, z: 1.0,
+                        duration: 0.45,
+                        ease: "back.out(2.2)"
+                    }}, 0)
+                    .to(objectGroup.scale, {{
+                        x: 1.35, y: 1.35, z: 1.35,
+                        duration: 0.22,
+                        ease: "back.out(2)"
+                    }}, 0)
+                    .to(objectGroup.scale, {{
+                        x: 1.0, y: 1.0, z: 1.0,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    }})
+                    .to(shieldMesh.rotation, {{
+                        y: Math.PI * 2,
+                        x: Math.PI * 0.5,
+                        duration: 1.0,
+                        ease: "power2.out"
+                    }}, 0)
+                    .to(shieldMesh.material, {{
+                        opacity: 0.0,
+                        duration: 0.45,
+                        ease: "power2.in"
+                    }}, 0.65)
+                    .to(pointLight, {{
+                        intensity: 18,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    }}, 0.15);
+
+                }} else if (status === "DESTROYED") {{
                     outerMesh.visible = false;
                     coreMesh.visible = false;
 
