@@ -1728,18 +1728,47 @@ with right_col:
             #container {{ width: 100vw; height: 100vh; position: absolute; top:0; left:0; }}
 
             .selected-title-ui {{
-                position: absolute;
-                top: 18px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 120;
-                pointer-events: none;
-                font-size: 22px;
-                font-weight: 900;
-                white-space: nowrap;
-                letter-spacing: .2px;
-                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
-            }}
+                 position: absolute;
+                 top: 18px;
+                 left: 50%;
+                 transform: translateX(-50%);
+                 z-index: 120;
+                 pointer-events: none;
+                 width: min(380px, 82vw);
+                 min-height: 82px;
+                 box-sizing: border-box;
+                 padding: 13px 18px;
+                 border-radius: 16px;
+                 overflow: hidden;
+                 text-align: left;
+                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                 box-shadow: inset 0 1px rgba(255,255,255,.14), 0 12px 30px rgba(0,0,0,.35);
+             }}
+             .selected-title-ui::before, .selected-title-ui::after {{
+                 content: "";
+                 position: absolute;
+                 pointer-events: none;
+             }}
+             .selected-title-label {{
+                 position: relative;
+                 z-index: 2;
+                 font-size: 9px;
+                 letter-spacing: 1.8px;
+                 font-weight: 800;
+                 opacity: .72;
+                 margin-bottom: 5px;
+             }}
+             .selected-title-name {{
+                 position: relative;
+                 z-index: 2;
+                 font-size: 21px;
+                 line-height: 1.25;
+                 font-weight: 900;
+                 white-space: nowrap;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+                 text-shadow: 0 0 12px currentColor, 0 2px 5px rgba(0,0,0,.9);
+             }}
 
             .cinematic-ui {{
                 position: absolute;
@@ -1796,7 +1825,10 @@ with right_col:
     <body>
         <div id="container"></div>
         <div id="flashOverlay"></div>
-        <div class="selected-title-ui" style="color:{get_title_theme(st.session_state.selected_title)[0]};text-shadow:0 0 12px {get_title_theme(st.session_state.selected_title)[0]}99,0 2px 4px rgba(0,0,0,0.9);">{get_title_theme(st.session_state.selected_title)[3]} {st.session_state.selected_title}</div>
+        <div class="selected-title-ui title-design {get_title_style(st.session_state.selected_title)}" style="background:linear-gradient(135deg,{get_title_theme(st.session_state.selected_title)[2]},{get_title_theme(st.session_state.selected_title)[1]}88,#020617);border:1px solid {get_title_theme(st.session_state.selected_title)[0]};box-shadow:0 0 22px {get_title_theme(st.session_state.selected_title)[0]}35,inset 0 1px rgba(255,255,255,.12);">
+            <div class="selected-title-label" style="color:{get_title_theme(st.session_state.selected_title)[0]};">EQUIPPED TITLE</div>
+            <div class="selected-title-name" style="color:{get_title_theme(st.session_state.selected_title)[0]};">{get_title_theme(st.session_state.selected_title)[3]} {st.session_state.selected_title}</div>
+        </div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
