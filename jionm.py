@@ -1564,8 +1564,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_stats, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "📊 통계", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1743,53 +1743,6 @@ with left_col:
         "현재 칭호", options, index=options.index(st.session_state.selected_title),
     )
     st.session_state.selected_title = selected
-
-  with tab_stats:
-    total_attempts = st.session_state.enhance_attempts
-    successes = st.session_state.enhance_successes
-    failures = st.session_state.enhance_failures
-    success_rate = (successes / total_attempts * 100) if total_attempts else 0
-
-    st.markdown(
-        "<div class='stats-header'><span class='stats-header-icon'>📊</span> PLAY STATISTICS</div>"
-        "<div class='stats-subtitle'>지온냄새 강화하기 · 나의 플레이 기록</div>",
-        unsafe_allow_html=True,
-    )
-
-    stats = [
-        ("🏆", "최고 단계", f"{st.session_state.max_level}강", "BEST LEVEL"),
-        ("⚒️", "총 강화", f"{total_attempts:,}회", "TOTAL ENHANCE"),
-        ("🎯", "성공률", f"{success_rate:.1f}%", "SUCCESS RATE"),
-        ("✅", "성공", f"{successes:,}회", "SUCCESS"),
-        ("❌", "실패", f"{failures:,}회", "FAILURE"),
-        ("💥", "크리티컬", f"{st.session_state.critical_count:,}회", "CRITICAL"),
-        ("☠️", "파괴", f"{st.session_state.destroy_count:,}회", "DESTROY"),
-        ("🚀", "워프 사용", f"{st.session_state.warp_uses:,}회", "WARP USE"),
-        ("💰", "판매 횟수", f"{st.session_state.sell_count:,}회", "SELL"),
-    ]
-
-    stat_cols = st.columns(3)
-    for i, (icon, label, value, small) in enumerate(stats):
-      with stat_cols[i % 3]:
-        st.markdown(
-            f"<div class='stats-card'>"
-            f"<div class='stats-card-top'><span class='stats-icon'>{icon}</span><span class='stats-small'>{small}</span></div>"
-            f"<div class='stats-label'>{label}</div>"
-            f"<div class='stats-value'>{value}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-
-    st.markdown(
-        f"<div class='stats-points-panel'>"
-        f"<div class='stats-points-title'>⭐ POINT RECORD</div>"
-        f"<div class='stats-points-grid'>"
-        f"<div><span>누적 획득 포인트</span><b>{st.session_state.points_earned_total:,}P</b></div>"
-        f"<div><span>누적 사용 포인트</span><b>{st.session_state.points_spent_total:,}P</b></div>"
-        f"<div><span>현재 보유 포인트</span><b>{st.session_state.points:,}P</b></div>"
-        f"</div></div>",
-        unsafe_allow_html=True,
-    )
 
   with tab_dev:
     st.markdown(
