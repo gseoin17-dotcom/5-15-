@@ -1231,7 +1231,51 @@ with left_col:
       trigger_rebirth()
       st.rerun()
     st.markdown(
-        "<script>setTimeout(function(){var e=document.getElementById('rebirth-prompt'); if(e){e.style.display='block';}}, 6200);</script>",
+        """
+        <script>
+        (function() {
+            const delay = 6200;
+            const prompt = document.getElementById('rebirth-prompt');
+
+            function findRebirthButton() {
+                const buttons = Array.from(document.querySelectorAll('button'));
+                return buttons.find(btn => (btn.innerText || '').includes('환생하기'));
+            }
+
+            function hideButton() {
+                const btn = findRebirthButton();
+                if (!btn) return false;
+                const wrap = btn.closest('[data-testid="stButton"]') || btn.parentElement;
+                if (wrap) {
+                    wrap.setAttribute('data-rebirth-hidden', 'true');
+                    wrap.style.display = 'none';
+                }
+                return true;
+            }
+
+            function reveal() {
+                if (prompt) prompt.style.display = 'block';
+                const btn = findRebirthButton();
+                if (btn) {
+                    const wrap = btn.closest('[data-testid="stButton"]') || btn.parentElement;
+                    if (wrap) {
+                        wrap.style.display = '';
+                        wrap.removeAttribute('data-rebirth-hidden');
+                    }
+                }
+            }
+
+            hideButton();
+            const observer = new MutationObserver(function() { hideButton(); });
+            observer.observe(document.body, {childList: true, subtree: true});
+
+            setTimeout(function() {
+                observer.disconnect();
+                reveal();
+            }, delay);
+        })();
+        </script>
+        """,
         unsafe_allow_html=True,
     )
     st.markdown(
