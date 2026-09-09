@@ -12,16 +12,15 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# [New] Shift + Delete 키 감지 및 관리자 모드 토글 스크립트 (조용한 토글)
+# [수정됨] Shift + Delete 키 감지 및 관리자 모드 토글 스크립트 (안정화 적용)
 # -----------------------------------------------------------------------------
-# Query param 'admin'을 통해 세션 상태로 넘겨받도록 연동
 if "admin_mode" not in st.session_state:
     st.session_state.admin_mode = False
 
-# URL Query parameter 확인
+# URL Query parameter 확인 및 적용
 query_params = st.query_params
 if "admin" in query_params:
-    new_admin_val = query_params["admin"] == "true"
+    new_admin_val = query_params["admin"].lower() == "true"
     if st.session_state.admin_mode != new_admin_val:
         st.session_state.admin_mode = new_admin_val
         if new_admin_val:
@@ -29,23 +28,34 @@ if "admin" in query_params:
         else:
             st.toast("🛡️ Admin Mode Deactivated", icon="🔒")
 
-# Shift + Delete 키보드 단축키 감지 JS
+# Shift + Delete 키보드 단축키 감지 JS (Iframe -> Parent 연동 안정화)
 components.html(
     """
     <script>
-    const parentDoc = window.parent.document;
-    if (!parentDoc.dataset.adminShortcutAdded) {
-        parentDoc.dataset.adminShortcutAdded = "true";
-        parentDoc.addEventListener('keydown', function(e) {
-            if (e.shiftKey && (e.key === 'Delete' || e.code === 'Delete')) {
-                e.preventDefault();
-                const url = new URL(window.parent.location.href);
-                const currentAdmin = url.searchParams.get('admin') === 'true';
-                url.searchParams.set('admin', !currentAdmin);
-                window.parent.location.href = url.toString();
+    (function() {
+        try {
+            const parentDoc = window.parent.document;
+            const parentWindow = window.parent;
+            
+            if (!parentDoc.dataset.adminShortcutAdded) {
+                parentDoc.dataset.adminShortcutAdded = "true";
+                parentDoc.addEventListener('keydown', function(e) {
+                    if (e.shiftKey && (e.key === 'Delete' || e.code === 'Delete')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const url = new URL(parentWindow.location.href);
+                        const currentAdmin = url.searchParams.get('admin') === 'true';
+                        
+                        url.searchParams.set('admin', (!currentAdmin).toString());
+                        parentWindow.location.href = url.toString();
+                    }
+                }, true);
             }
-        });
-    }
+        } catch (err) {
+            console.error("Admin shortcut listener error:", err);
+        }
+    })();
     </script>
 """,
     height=0,
