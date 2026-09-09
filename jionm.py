@@ -2168,81 +2168,186 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            let baseGeo;
-            const lvl = {current_level};
-
-            if (isRebirth) {{
-                if (lvl <= 3) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.3);
-                }} else if (lvl <= 6) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.2);
-                }} else if (lvl <= 9) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.3);
-                }} else if (lvl <= 12) {{
-                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                }} else if (lvl <= 15) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
-                }} else if (lvl <= 18) {{
-                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
-                }} else if (lvl <= 21) {{
-                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
-                }} else if (lvl <= 24) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
-                }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
+            // 단계별 3D 모형: 단순히 색만 바뀌는 구조가 아니라 단계마다 완전히 다른 기하 형태를 사용
+            function starPolygonPoints(outerR, innerR, tips, rotation = -Math.PI / 2) {{
+                const pts = [];
+                for (let i = 0; i < tips * 2; i++) {{
+                    const a = rotation + (Math.PI * i) / tips;
+                    const r = (i % 2 === 0) ? outerR : innerR;
+                    pts.push(new THREE.Vector2(Math.cos(a) * r, Math.sin(a) * r));
                 }}
-            }} else {{
-                if (lvl <= 2) {{
-                    baseGeo = new THREE.TetrahedronGeometry(2.3);
-                }} else if (lvl <= 5) {{
-                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-                }} else if (lvl <= 8) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-                }} else if (lvl <= 11) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-                }} else if (lvl <= 14) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-                }} else if (lvl <= 17) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-                }} else if (lvl == 18) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.5);
-                }} else if (lvl == 19) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.4);
-                }} else if (lvl == 20) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.4);
-                }} else if (lvl == 21) {{
-                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-                }} else if (lvl == 22) {{
-                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-                }} else if (lvl == 23) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-                }} else if (lvl == 24) {{
-                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-                }} else if (lvl == 25) {{
-                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-                }} else if (lvl == 26) {{
-                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-                }} else if (lvl == 27) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-                }} else if (lvl == 28) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-                }} else if (lvl == 29) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-                }} else if (lvl == 30) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-                }} else if (lvl == 31) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-                }} else if (lvl == 32) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-                }} else if (lvl == 33) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-                }} else if (lvl == 34) {{
-                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
-                }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                return pts;
+            }}
+
+            function extrudedPolygon(points, depth, bevel = 0.10) {{
+                const shape = new THREE.Shape();
+                shape.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) shape.lineTo(points[i].x, points[i].y);
+                shape.closePath();
+                return new THREE.ExtrudeGeometry(shape, {{
+                    depth: depth,
+                    steps: 2,
+                    bevelEnabled: true,
+                    bevelSegments: 3,
+                    bevelSize: bevel,
+                    bevelThickness: bevel
+                }});
+            }}
+
+            function gearPoints(teeth, outerR, rootR) {{
+                const pts = [];
+                for (let i = 0; i < teeth * 4; i++) {{
+                    const a = (Math.PI * 2 * i) / (teeth * 4);
+                    const phase = i % 4;
+                    const r = phase < 2 ? outerR : rootR;
+                    pts.push(new THREE.Vector2(Math.cos(a) * r, Math.sin(a) * r));
+                }}
+                return pts;
+            }}
+
+            function latheGeometry(profile, segments = 32) {{
+                return new THREE.LatheGeometry(
+                    profile.map(([r, y]) => new THREE.Vector2(r, y)),
+                    segments,
+                    0,
+                    Math.PI * 2
+                );
+            }}
+
+            function makeUniqueGeometry(level, rebirth) {{
+                // 시즌 1: 1~35 전부 서로 다른 형태
+                if (!rebirth) {{
+                    switch (level) {{
+                        case 1:  return new THREE.TetrahedronGeometry(2.25, 0);                         // 삼각 피라미드
+                        case 2:  return new THREE.BoxGeometry(2.75, 2.15, 1.85);                       // 직육면체
+                        case 3:  return new THREE.OctahedronGeometry(2.35, 0);                         // 팔면체
+                        case 4:  return new THREE.DodecahedronGeometry(2.25, 0);                       // 십이면체
+                        case 5:  return new THREE.IcosahedronGeometry(2.35, 0);                        // 이십면체
+                        case 6:  return new THREE.ConeGeometry(2.2, 3.5, 3);                            // 삼각뿔
+                        case 7:  return new THREE.ConeGeometry(2.15, 3.4, 5);                            // 오각뿔
+                        case 8:  return new THREE.ConeGeometry(2.10, 3.4, 7);                            // 칠각뿔
+                        case 9:  return new THREE.CylinderGeometry(2.0, 2.0, 3.0, 3);                  // 삼각기둥
+                        case 10: return new THREE.CylinderGeometry(2.0, 2.0, 3.0, 4);                  // 사각기둥
+                        case 11: return new THREE.CylinderGeometry(1.9, 2.15, 3.2, 6);                 // 육각기둥
+                        case 12: return new THREE.CylinderGeometry(1.8, 2.25, 3.4, 8);                 // 팔각기둥
+                        case 13: return new THREE.TorusGeometry(1.55, 0.62, 12, 28);                   // 기본 링
+                        case 14: return new THREE.TorusGeometry(1.7, 0.42, 18, 40);                    // 얇은 링
+                        case 15: return new THREE.TorusKnotGeometry(1.35, 0.42, 96, 14, 2, 3);         // 매듭 2-3
+                        case 16: return new THREE.TorusKnotGeometry(1.35, 0.40, 100, 16, 2, 5);       // 매듭 2-5
+                        case 17: return new THREE.TorusKnotGeometry(1.40, 0.40, 110, 18, 3, 4);       // 매듭 3-4
+                        case 18: return new THREE.TorusKnotGeometry(1.45, 0.38, 120, 20, 3, 7);       // 매듭 3-7
+                        case 19: return new THREE.SphereGeometry(2.35, 12, 8);                          // 각진 구
+                        case 20: return new THREE.SphereGeometry(2.25, 20, 12);                         // 타원형에 가까운 구
+                        case 21: return latheGeometry([[0.0,-1.8],[1.1,-1.7],[1.7,-0.8],[1.5,0.0],[1.7,0.8],[1.1,1.7],[0.0,1.8]], 28); // 물방울형
+                        case 22: return latheGeometry([[0.0,-1.8],[1.65,-1.55],[1.15,-0.8],[1.9,-0.2],[1.15,0.5],[1.65,1.55],[0.0,1.8]], 32); // 요요형
+                        case 23: return latheGeometry([[0.0,-1.8],[0.9,-1.65],[1.9,-1.2],[1.2,-0.2],[1.0,0.7],[1.7,1.5],[0.0,1.8]], 36); // 꽃병형
+                        case 24: return latheGeometry([[0.0,-1.8],[1.8,-1.5],[1.55,-0.7],[0.75,0.0],[1.55,0.7],[1.8,1.5],[0.0,1.8]], 40); // 아령형
+                        case 25: return extrudedPolygon(starPolygonPoints(2.65, 1.05, 5), 1.15, 0.16); // 5각 별
+                        case 26: return extrudedPolygon(starPolygonPoints(2.6, 1.20, 6, Math.PI/6), 1.25, 0.18); // 6각 별
+                        case 27: return extrudedPolygon(starPolygonPoints(2.55, 1.05, 7), 1.30, 0.18); // 7각 별
+                        case 28: return extrudedPolygon(gearPoints(8, 2.65, 1.95), 1.15, 0.12);        // 8톱니 기어
+                        case 29: return extrudedPolygon(gearPoints(10, 2.65, 2.00), 1.25, 0.12);       // 10톱니 기어
+                        case 30: return extrudedPolygon(gearPoints(12, 2.60, 1.90), 1.35, 0.12);       // 12톱니 기어
+                        case 31: return extrudedPolygon(starPolygonPoints(2.75, 0.95, 8, Math.PI/8), 1.20, 0.13); // 8각 별
+                        case 32: return extrudedPolygon(starPolygonPoints(2.7, 1.15, 9), 1.30, 0.13);  // 9각 별
+                        case 33: return extrudedPolygon(gearPoints(14, 2.7, 1.85), 1.40, 0.11);        // 14톱니 기어
+                        case 34: return extrudedPolygon(starPolygonPoints(2.8, 0.72, 12, Math.PI/12), 1.45, 0.10); // 12각 초결정
+                        case 35: {{                                                                        // 최종: 다단 결정체
+                            const pts = [];
+                            const rings = [
+                                [2.75, -1.55], [1.55, -0.85], [2.55, -0.15], [1.35, 0.55], [2.75, 1.55]
+                            ];
+                            for (const [r, y] of rings) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+                                    pts.push([r * Math.cos(a), y]);
+                                }}
+                            }}
+                            const verts = [];
+                            for (const [r, y] of rings) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+                                    verts.push(r * Math.cos(a), y, r * Math.sin(a));
+                                }}
+                            }}
+                            const idx = [];
+                            const ringCount = rings.length;
+                            for (let rr = 0; rr < ringCount - 1; rr++) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const n = (i + 1) % 8;
+                                    const a = rr * 8 + i, b = rr * 8 + n, c = (rr + 1) * 8 + n, d = (rr + 1) * 8 + i;
+                                    idx.push(a,b,d, b,c,d);
+                                }}
+                            }}
+                            return new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+                        }}
+                        default: return new THREE.IcosahedronGeometry(2.4, 1);
+                    }}
+                }}
+
+                // 시즌 2: 1~25 역시 시즌 1과 겹치지 않도록 완전히 다른 계열의 형태
+                switch (level) {{
+                    case 1:  return new THREE.RingGeometry(1.15, 2.55, 7, 2);                              // 두꺼운 칠각 링
+                    case 2:  return new THREE.RingGeometry(0.75, 2.55, 9, 3);                              // 구멍이 큰 9각 링
+                    case 3:  return new THREE.CylinderGeometry(1.0, 2.45, 3.6, 5, 2);                    // 역피라미드 기둥
+                    case 4:  return new THREE.CylinderGeometry(2.5, 0.85, 3.8, 7, 2);                    // 뾰족한 역원뿔 기둥
+                    case 5:  return new THREE.CylinderGeometry(1.5, 2.4, 3.8, 9, 3);                    // 계단형 9각 기둥
+                    case 6:  return latheGeometry([[0,-1.9],[0.7,-1.8],[2.0,-1.3],[0.9,-0.5],[1.65,0.0],[0.9,0.6],[2.0,1.35],[0.7,1.8],[0,1.9]], 30); // 쌍곡선
+                    case 7:  return latheGeometry([[0,-1.8],[1.7,-1.6],[0.9,-0.9],[1.9,-0.15],[0.8,0.55],[1.75,1.45],[0,1.9]], 34); // 왕관 몸체
+                    case 8:  return latheGeometry([[0,-1.8],[1.2,-1.6],[0.65,-0.8],[1.8,-0.2],[1.2,0.4],[1.95,1.2],[0.8,1.7],[0,1.85]], 38); // 모래시계 변형
+                    case 9:  return extrudedPolygon(gearPoints(7, 2.75, 1.55), 1.10, 0.20);              // 7톱니 기어
+                    case 10: return extrudedPolygon(gearPoints(11, 2.7, 1.60), 1.20, 0.18);              // 11톱니 기어
+                    case 11: return extrudedPolygon(gearPoints(13, 2.75, 1.58), 1.30, 0.16);              // 13톱니 기어
+                    case 12: return extrudedPolygon(starPolygonPoints(2.75, 1.55, 4, Math.PI/4), 1.30, 0.15); // 4중성광
+                    case 13: return extrudedPolygon(starPolygonPoints(2.75, 0.80, 10), 1.35, 0.15);     // 10각 별
+                    case 14: return extrudedPolygon(starPolygonPoints(2.75, 1.00, 11), 1.40, 0.15);     // 11각 별
+                    case 15: return extrudedPolygon(starPolygonPoints(2.8, 0.65, 13), 1.45, 0.12);      // 13각 결정
+                    case 16: return new THREE.TorusKnotGeometry(1.45, 0.28, 140, 14, 4, 7);              // 복합 매듭
+                    case 17: return new THREE.TorusKnotGeometry(1.50, 0.24, 150, 18, 5, 7);              // 초고밀도 매듭
+                    case 18: return new THREE.TorusKnotGeometry(1.35, 0.52, 128, 12, 5, 9);              // 굵은 매듭
+                    case 19: return new THREE.TorusKnotGeometry(1.15, 0.68, 120, 16, 7, 9);              // 거대 리본 매듭
+                    case 20: return latheGeometry([[0,-1.8],[1.45,-1.7],[1.65,-1.25],[1.65,-0.7],[1.35,-0.25],[1.35,0.25],[1.65,0.7],[1.65,1.25],[1.45,1.7],[0,1.8]], 32); // 캡슐형
+                    case 21: {{                                                                              // 삼각 프리즘 + 비틀림 효과용
+                        const g = extrudedPolygon([
+                            new THREE.Vector2(0, 2.7), new THREE.Vector2(-2.35, -1.7), new THREE.Vector2(2.35, -1.7)
+                        ], 1.7, 0.20);
+                        return g;
+                    }}
+                    case 22: {{                                                                              // 십자 방패
+                        const pts = [
+                            new THREE.Vector2(-0.7,2.8), new THREE.Vector2(0.7,2.8), new THREE.Vector2(0.7,0.8),
+                            new THREE.Vector2(2.4,0.8), new THREE.Vector2(2.4,-0.8), new THREE.Vector2(0.7,-0.8),
+                            new THREE.Vector2(0.7,-2.8), new THREE.Vector2(-0.7,-2.8), new THREE.Vector2(-0.7,-0.8),
+                            new THREE.Vector2(-2.4,-0.8), new THREE.Vector2(-2.4,0.8), new THREE.Vector2(-0.7,0.8)
+                        ];
+                        return extrudedPolygon(pts, 1.45, 0.14);
+                    }}
+                    case 23: {{                                                                              // 번개형
+                        const pts = [
+                            new THREE.Vector2(-0.3,2.8), new THREE.Vector2(0.6,0.7), new THREE.Vector2(1.8,0.7),
+                            new THREE.Vector2(-0.8,-0.1), new THREE.Vector2(-1.7,-2.8), new THREE.Vector2(-0.9,-0.2),
+                            new THREE.Vector2(-1.9,-0.2)
+                        ];
+                        return extrudedPolygon(pts, 1.35, 0.12);
+                    }}
+                    case 24: {{                                                                              // 왕관형 다각체
+                        const pts = [
+                            new THREE.Vector2(-2.5,-1.7), new THREE.Vector2(-2.1,1.9), new THREE.Vector2(-0.8,0.8),
+                            new THREE.Vector2(0,2.5), new THREE.Vector2(0.8,0.8), new THREE.Vector2(2.1,1.9),
+                            new THREE.Vector2(2.5,-1.7), new THREE.Vector2(1.2,-0.8), new THREE.Vector2(0,-1.9),
+                            new THREE.Vector2(-1.2,-0.8)
+                        ];
+                        return extrudedPolygon(pts, 1.55, 0.15);
+                    }}
+                    case 25: {{                                                                              // 최종: 태양 플라즈마 링
+                        return new THREE.TorusGeometry(2.0, 0.9, 10, 14);
+                    }}
+                    default: return new THREE.DodecahedronGeometry(2.5, 1);
                 }}
             }}
 
+            const lvl = visualLevel;
+            const baseGeo = makeUniqueGeometry(lvl, isRebirth);
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
