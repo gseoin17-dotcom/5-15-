@@ -1564,8 +1564,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_point, tab_ach, tab_stats, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "⭐ 포인트 상점", "🏆 업적", "📊 통계", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_stats, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "📊 통계", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1708,53 +1708,6 @@ with left_col:
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
-  with tab_point:
-    st.markdown(
-        f"<div style='font-size:12px;color:#cbd5e1;margin-bottom:10px;'>"
-        f"보유 포인트: <b style='color:#facc15;font-size:15px;'>{st.session_state.points:,}P</b><br>"
-        f"강화로 모은 포인트를 각종 아이템으로 교환할 수 있습니다.</div>",
-        unsafe_allow_html=True,
-    )
-
-    point_items = [
-        ("💧 눈물 10개", 15000, "눈물 +10 (최대 60개)", "tears"),
-        ("🛡️ 방지권 1개", 50000, "파괴 방지권 +1 (최대 3개)", "shield"),
-        ("💰 1,000만 골드", 100000, "보유 금액 +10,000,000", "money"),
-    ]
-    for item_name, item_cost, item_desc, item_type in point_items:
-      c1, c2 = st.columns([1.55, 1])
-      with c1:
-        st.markdown(
-            f"<div style='padding:9px 4px;'><div style='font-size:13px;font-weight:800;'>{item_name}</div>"
-            f"<div style='font-size:11px;color:#94a3b8;'>{item_desc}</div>"
-            f"<div style='font-size:11px;color:#facc15;margin-top:2px;'>{item_cost:,}P</div></div>",
-            unsafe_allow_html=True,
-        )
-      with c2:
-        can_buy = st.session_state.points >= item_cost
-        if item_type == "tears":
-          can_buy = can_buy and st.session_state.tears < 60
-        elif item_type == "shield":
-          can_buy = can_buy and st.session_state.shield < 3
-        if st.button("교환", key=f"point_shop_{item_type}", use_container_width=True, disabled=not can_buy):
-          if item_type == "tears" and st.session_state.tears < 60:
-            st.session_state.points -= item_cost
-            st.session_state.points_spent_total += item_cost
-            st.session_state.tears = min(60, st.session_state.tears + 10)
-            st.success("💧 눈물 10개를 교환했습니다!")
-          elif item_type == "shield" and st.session_state.shield < 3:
-            st.session_state.points -= item_cost
-            st.session_state.points_spent_total += item_cost
-            st.session_state.shield += 1
-            st.success("🛡️ 방지권 1개를 교환했습니다!")
-          elif item_type == "money":
-            st.session_state.points -= item_cost
-            st.session_state.points_spent_total += item_cost
-            st.session_state.money += 10_000_000
-            st.success("💰 1,000만 골드를 교환했습니다!")
-          save_current_season_state()
-          st.rerun()
-
   with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     pct = int((achieved / len(ACHIEVEMENTS)) * 100) if ACHIEVEMENTS else 0
@@ -1796,25 +1749,45 @@ with left_col:
     successes = st.session_state.enhance_successes
     failures = st.session_state.enhance_failures
     success_rate = (successes / total_attempts * 100) if total_attempts else 0
-    st.markdown("### 📊 플레이 통계")
-    m1, m2, m3 = st.columns(3)
-    m1.metric("최고 단계", f"{st.session_state.max_level}강")
-    m2.metric("총 강화", f"{total_attempts:,}회")
-    m3.metric("성공률", f"{success_rate:.1f}%")
-    m4, m5, m6 = st.columns(3)
-    m4.metric("성공", f"{successes:,}회")
-    m5.metric("실패", f"{failures:,}회")
-    m6.metric("크리티컬", f"{st.session_state.critical_count:,}회")
-    m7, m8, m9 = st.columns(3)
-    m7.metric("파괴", f"{st.session_state.destroy_count:,}회")
-    m8.metric("워프 사용", f"{st.session_state.warp_uses:,}회")
-    m9.metric("판매 횟수", f"{st.session_state.sell_count:,}회")
+
     st.markdown(
-        f"<div style='margin-top:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);"
-        f"border:1px solid rgba(255,255,255,.10);font-size:12px;color:#cbd5e1;'>"
-        f"⭐ 누적 획득 포인트 <b style='color:#facc15'>{st.session_state.points_earned_total:,}P</b><br>"
-        f"⭐ 누적 사용 포인트 <b style='color:#facc15'>{st.session_state.points_spent_total:,}P</b><br>"
-        f"⭐ 현재 보유 포인트 <b style='color:#facc15'>{st.session_state.points:,}P</b></div>",
+        "<div class='stats-header'><span class='stats-header-icon'>📊</span> PLAY STATISTICS</div>"
+        "<div class='stats-subtitle'>지온냄새 강화하기 · 나의 플레이 기록</div>",
+        unsafe_allow_html=True,
+    )
+
+    stats = [
+        ("🏆", "최고 단계", f"{st.session_state.max_level}강", "BEST LEVEL"),
+        ("⚒️", "총 강화", f"{total_attempts:,}회", "TOTAL ENHANCE"),
+        ("🎯", "성공률", f"{success_rate:.1f}%", "SUCCESS RATE"),
+        ("✅", "성공", f"{successes:,}회", "SUCCESS"),
+        ("❌", "실패", f"{failures:,}회", "FAILURE"),
+        ("💥", "크리티컬", f"{st.session_state.critical_count:,}회", "CRITICAL"),
+        ("☠️", "파괴", f"{st.session_state.destroy_count:,}회", "DESTROY"),
+        ("🚀", "워프 사용", f"{st.session_state.warp_uses:,}회", "WARP USE"),
+        ("💰", "판매 횟수", f"{st.session_state.sell_count:,}회", "SELL"),
+    ]
+
+    stat_cols = st.columns(3)
+    for i, (icon, label, value, small) in enumerate(stats):
+      with stat_cols[i % 3]:
+        st.markdown(
+            f"<div class='stats-card'>"
+            f"<div class='stats-card-top'><span class='stats-icon'>{icon}</span><span class='stats-small'>{small}</span></div>"
+            f"<div class='stats-label'>{label}</div>"
+            f"<div class='stats-value'>{value}</div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+
+    st.markdown(
+        f"<div class='stats-points-panel'>"
+        f"<div class='stats-points-title'>⭐ POINT RECORD</div>"
+        f"<div class='stats-points-grid'>"
+        f"<div><span>누적 획득 포인트</span><b>{st.session_state.points_earned_total:,}P</b></div>"
+        f"<div><span>누적 사용 포인트</span><b>{st.session_state.points_spent_total:,}P</b></div>"
+        f"<div><span>현재 보유 포인트</span><b>{st.session_state.points:,}P</b></div>"
+        f"</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -2019,6 +1992,56 @@ with right_col:
                 z-index: 200;
                 transition: opacity 0.15s ease-out;
             }}
+        .stats-header {{
+            font-family: inherit;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            color: #f8fafc;
+            text-shadow: 0 2px 12px rgba(0,0,0,.9);
+            margin: 2px 0 2px;
+        }}
+        .stats-header-icon {{
+            display:inline-block;
+            margin-right:7px;
+            filter: drop-shadow(0 0 8px rgba(250,204,21,.35));
+        }}
+        .stats-subtitle {{
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: .35px;
+            margin-bottom: 12px;
+        }}
+        .stats-card {{
+            font-family: inherit;
+            min-height: 108px;
+            margin-bottom: 12px;
+            padding: 13px 14px;
+            border: 1px solid rgba(148,163,184,.18);
+            border-radius: 15px;
+            background: linear-gradient(145deg, rgba(30,41,59,.78), rgba(2,6,23,.9));
+            box-shadow: inset 0 1px rgba(255,255,255,.06), 0 8px 22px rgba(0,0,0,.18);
+        }}
+        .stats-card-top {{ display:flex; align-items:center; justify-content:space-between; }}
+        .stats-icon {{ font-size: 19px; line-height:1; }}
+        .stats-small {{ font-size: 9px; font-weight: 800; letter-spacing: 1px; color:#64748b; }}
+        .stats-label {{ margin-top: 10px; font-size: 12px; font-weight: 800; color:#cbd5e1; }}
+        .stats-value {{ margin-top: 2px; font-size: 23px; font-weight: 900; letter-spacing:.2px; color:#f8fafc; text-shadow:0 0 12px rgba(255,255,255,.08); }}
+        .stats-points-panel {{
+            font-family: inherit;
+            margin-top: 3px; padding: 14px 15px; border-radius: 15px;
+            border: 1px solid rgba(250,204,21,.20);
+            background: linear-gradient(135deg, rgba(250,204,21,.07), rgba(15,23,42,.78));
+            box-shadow: inset 0 1px rgba(255,255,255,.05), 0 8px 22px rgba(0,0,0,.16);
+        }}
+        .stats-points-title {{ font-size: 11px; font-weight: 900; letter-spacing: 1.2px; color:#facc15; margin-bottom:10px; }}
+        .stats-points-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }}
+        .stats-points-grid div {{ display:flex; flex-direction:column; gap:3px; }}
+        .stats-points-grid span {{ font-size:10px; font-weight:700; color:#94a3b8; }}
+        .stats-points-grid b {{ font-size:15px; font-weight:900; color:#fde68a; }}
+        @media (max-width: 700px) {{ .stats-points-grid {{ grid-template-columns:1fr; }} }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
