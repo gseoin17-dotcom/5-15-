@@ -112,6 +112,15 @@ def get_shield_cost(level, is_rebirth):
   return max(50000, base_cost * 15)
 
 
+# 강화 성공 시 지급되는 포인트
+POINTS_PER_SUCCESS = 100
+
+
+def get_warp_point_cost(level):
+  # 해당 단계의 강화 성공 포인트 2배
+  return POINTS_PER_SUCCESS * 2
+
+
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
 # -----------------------------------------------------------------------------
@@ -967,6 +976,8 @@ def init_progress():
     st.session_state.warp_uses = 0
   if "sell_count" not in st.session_state:
     st.session_state.sell_count = 0
+  if "points" not in st.session_state:
+    st.session_state.points = 0
 
 
 def unlock_achievement(key):
@@ -1129,6 +1140,10 @@ if "is_rebirth" not in st.session_state:
 # -----------------------------------------------------------------------------
 
 
+def reward_enhance_points():
+  st.session_state.points += POINTS_PER_SUCCESS
+
+
 def run_enhance():
   save_current_season_state()
   max_lvl = 25 if st.session_state.is_rebirth else 35
@@ -1152,6 +1167,7 @@ def run_enhance():
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
+    reward_enhance_points()
     save_current_season_state()
     return
 
@@ -1171,6 +1187,7 @@ def run_enhance():
     else:
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
+    reward_enhance_points()
   elif r < down_limit:
     st.session_state.pity_count += 1
     if curr > 0:
@@ -1381,6 +1398,13 @@ with left_col:
         " 80개</div></div>",
         unsafe_allow_html=True,
     )
+    st.write("")
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>⭐ 포인트</div><div style='font-size:15px;"
+        f" font-weight:800; color:#facc15;'>{st.session_state.points:,}P</div></div>",
+        unsafe_allow_html=True,
+    )
 
   with s_col2:
     st.markdown(
@@ -1416,7 +1440,7 @@ with left_col:
   st.markdown(
       f"<div style='font-size:12px; color:#cbd5e1;"
       f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
-      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)<br>•"
       f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
       f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
       f" style='color:#94a3b8;'>{hold_p}%</b></div>",
@@ -1518,26 +1542,15 @@ with left_col:
 
   with tab_warp:
     st.markdown(
-        "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
+        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>{POINTS_PER_SUCCESS}P</b>를 획득합니다. "
+        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>해당 단계에 도달한 적이 있으면 포인트로 워프할 수 있습니다.</div>",
         unsafe_allow_html=True,
     )
 
-    if not st.session_state.is_rebirth:
-      warp_prices = {
-          10: 20000000,
-          15: 100000000,
-          20: 400000000,
-          25: 2000000000,
-          30: 10000000000,
-      }
-      active_warps = warp_prices.items()
-    else:
-      season2_warp_prices = {
-          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
-          for w_level in [5, 10, 15, 20]
-      }
-      active_warps = season2_warp_prices.items()
+    warp_levels = [5, 10, 15, 20] if st.session_state.is_rebirth else [10, 15, 20, 25, 30]
+
+    # 워프권 가격은 해당 단계의 강화 성공 포인트 2배
+    active_warps = [(w_level, get_warp_point_cost(w_level)) for w_level in warp_levels]
 
     for w_level, w_price in active_warps:
       if not st.session_state.is_rebirth:
@@ -1556,7 +1569,7 @@ with left_col:
         st.markdown(
             f"<div style='font-size:13px; font-weight:bold;"
             f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
-            f" style='font-size:11px; color:#fde68a;'>{format_gold(w_price)}</div>",
+            f" style='font-size:11px; color:#facc15;'>{w_price:,}P</div>",
             unsafe_allow_html=True,
         )
       with c2:
@@ -1568,10 +1581,10 @@ with left_col:
         ):
           if not is_unlocked:
             st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
-          elif st.session_state.money < w_price:
-            st.error("보유 금액이 부족합니다!")
+          elif st.session_state.points < w_price:
+            st.error(f"포인트가 부족합니다! (필요: {w_price:,}P)")
           else:
-            st.session_state.money -= w_price
+            st.session_state.points -= w_price
             st.session_state.warp_uses += 1
             st.session_state.prev_level = st.session_state.level
             st.session_state.level = w_level
@@ -1600,6 +1613,7 @@ with left_col:
       st.session_state.prev_level = st.session_state.level
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
+      reward_enhance_points()
       if st.session_state.level > st.session_state.max_level:
         st.session_state.max_level = st.session_state.level
 
