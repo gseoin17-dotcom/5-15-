@@ -113,10 +113,55 @@ def get_shield_cost(level, is_rebirth):
 
 
 # 강화 성공 시 지급되는 포인트
-# 도달한 단계가 높을수록 더 많은 포인트를 지급합니다.
-# 예: 20단계 달성 성공 = 40P, 20단계 워프권 = 80P
+# 강화 단계가 높아질수록 포인트 보상도 크게 증가합니다.
+# 워프권은 해당 단계의 강화 성공 포인트 보상 × 2입니다.
+# 예: 20단계 성공 보상 20,000P -> 20단계 워프권 40,000P
+POINT_REWARD_TABLE = {
+    1: 100,
+    2: 150,
+    3: 200,
+    4: 300,
+    5: 500,
+    6: 700,
+    7: 900,
+    8: 1200,
+    9: 1500,
+    10: 2000,
+    11: 2500,
+    12: 3000,
+    13: 3500,
+    14: 4000,
+    15: 5000,
+    16: 6000,
+    17: 7000,
+    18: 8000,
+    19: 9000,
+    20: 10000,
+    21: 12000,
+    22: 14000,
+    23: 16000,
+    24: 18000,
+    25: 20000,
+    26: 23000,
+    27: 26000,
+    28: 30000,
+    29: 35000,
+    30: 40000,
+    31: 45000,
+    32: 50000,
+    33: 60000,
+    34: 70000,
+    35: 80000,
+}
+
 def get_enhance_point_reward(level):
-  return max(2, int(level) * 2)
+  level = int(level)
+  if level <= 0:
+    return 0
+  if level in POINT_REWARD_TABLE:
+    return POINT_REWARD_TABLE[level]
+  # 표 밖의 단계가 생겨도 마지막 보상 기준으로 자연스럽게 증가
+  return POINT_REWARD_TABLE[35] + (level - 35) * 10000
 
 
 def get_warp_point_cost(level):
@@ -1551,8 +1596,8 @@ with left_col:
 
   with tab_warp:
     st.markdown(
-        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>도달한 단계 × 2P</b>를 획득합니다. "
-        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>워프권 가격은 해당 단계 강화 성공 포인트의 2배입니다.</div>",
+        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>단계별 포인트</b>를 획득합니다. "
+        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>워프권 가격은 해당 단계 강화 성공 포인트의 <b>2배</b>입니다.</div>",
         unsafe_allow_html=True,
     )
 
