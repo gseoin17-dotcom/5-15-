@@ -1035,40 +1035,6 @@ def get_title_style(title):
 TITLE_DEFAULT = "칭호 없음"
 
 
-REGIONS = {
-    False: [
-        (0, 4, "🌱 지온 평원", "평범한 냄새가 퍼지는 시작 지역"),
-        (5, 9, "🌲 구린내 숲", "냄새가 점점 진해지기 시작한다"),
-        (10, 14, "🏜️ 악취 사막", "강력한 악취가 몰아치는 지역"),
-        (15, 19, "🌋 냄새 화산", "뜨거운 냄새 에너지가 폭발한다"),
-        (20, 24, "🌌 차원 균열", "공간 자체가 냄새에 오염됐다"),
-        (25, 29, "🪐 냄새 행성", "상상을 초월하는 냄새의 세계"),
-        (30, 35, "👑 지온의 왕좌", "최강의 냄새가 지배하는 최종 지역"),
-    ],
-    True: [
-        (0, 4, "🌀 환생의 문", "새로운 차원이 열린다"),
-        (5, 9, "💫 초월 공간", "일반 차원을 넘어선 공간"),
-        (10, 14, "⚡ 에너지 폭풍", "강력한 에너지가 몰아친다"),
-        (15, 19, "🌠 초신성 지대", "냄새 에너지가 별처럼 폭발한다"),
-        (20, 24, "♾️ 무한 차원", "끝을 알 수 없는 최종 영역"),
-        (25, 25, "👑 TRUE REBIRTH 왕좌", "환생의 최종 단계"),
-    ],
-}
-
-BOSSES = {
-    False: {10: ("👹 구린내 골렘", 3, 500000), 20: ("☠️ 악취의 지배자", 5, 5000000), 30: ("👑 지온의 냄새왕", 7, 50000000)},
-    True: {5: ("🌀 차원 포식자", 4, 10000000), 10: ("⚡ 초월한 냄새신", 6, 100000000), 20: ("♾️ 무한의 지온", 10, 1000000000)},
-}
-
-def get_region(level, is_rebirth):
-    for lo, hi, name, desc in REGIONS[bool(is_rebirth)]:
-        if lo <= level <= hi:
-            return name, desc
-    return "미지의 지역", "아직 발견되지 않은 공간"
-
-def get_boss(level, is_rebirth):
-    return BOSSES[bool(is_rebirth)].get(level)
-
 def init_progress():
   if "achievements" not in st.session_state:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS}
@@ -1098,20 +1064,6 @@ def init_progress():
     st.session_state.critical_count = 0
   if "destroy_count" not in st.session_state:
     st.session_state.destroy_count = 0
-  if "combo" not in st.session_state:
-    st.session_state.combo = 0
-  if "max_combo" not in st.session_state:
-    st.session_state.max_combo = 0
-  if "revive_tokens" not in st.session_state:
-    st.session_state.revive_tokens = 0
-  if "last_destroyed_level" not in st.session_state:
-    st.session_state.last_destroyed_level = 0
-  if "defeated_bosses" not in st.session_state:
-    st.session_state.defeated_bosses = set()
-  if "boss_hp" not in st.session_state:
-    st.session_state.boss_hp = 0
-  if "boss_level" not in st.session_state:
-    st.session_state.boss_level = 0
 
 
 def unlock_achievement(key):
@@ -1204,9 +1156,6 @@ if "season_data" not in st.session_state:
           "shield": 0,
           "tears": 0,
           "pity_count": 0,
-          "combo": 0,
-          "bosses_defeated": [],
-          "revive_tokens": 0,
           "unlocked_warps": {
               10: False,
               15: False,
@@ -1224,9 +1173,6 @@ if "season_data" not in st.session_state:
           "shield": 0,
           "tears": 50,
           "pity_count": 0,
-          "combo": 0,
-          "bosses_defeated": [],
-          "revive_tokens": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
       },
   }
@@ -1250,9 +1196,6 @@ def sync_session_state(target_season):
   st.session_state.shield = data["shield"]
   st.session_state.tears = min(60, data["tears"])
   st.session_state.pity_count = data["pity_count"]
-  st.session_state.combo = data.get("combo", 0)
-  st.session_state.defeated_bosses = set(data.get("bosses_defeated", []))
-  st.session_state.revive_tokens = data.get("revive_tokens", 0)
 
   if target_season == 1:
     st.session_state.unlocked_warps = data["unlocked_warps"]
@@ -1270,9 +1213,6 @@ def save_current_season_state():
   st.session_state.season_data[s]["shield"] = st.session_state.shield
   st.session_state.season_data[s]["tears"] = min(60, st.session_state.tears)
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
-  st.session_state.season_data[s]["combo"] = st.session_state.combo
-  st.session_state.season_data[s]["bosses_defeated"] = list(st.session_state.defeated_bosses)
-  st.session_state.season_data[s]["revive_tokens"] = st.session_state.revive_tokens
 
   if s == 1:
     st.session_state.season_data[1]["unlocked_warps"] = (
@@ -1329,8 +1269,6 @@ def run_enhance():
 
   current_prob = PROB_TABLE[st.session_state.is_rebirth]
   sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
-  combo_bonus = min(15.0, st.session_state.combo * 1.0)
-  sp = min(90.0, sp + combo_bonus)
   r = random.uniform(0, 100)
 
   success_limit = sp
@@ -1390,41 +1328,6 @@ def run_enhance():
 
   save_current_season_state()
 
-
-def fight_boss():
-  level = st.session_state.level
-  boss = get_boss(level, st.session_state.is_rebirth)
-  if not boss or level in st.session_state.defeated_bosses:
-    return
-  name, max_hp, reward = boss
-  if st.session_state.boss_level != level or st.session_state.boss_hp <= 0:
-    st.session_state.boss_level = level
-    st.session_state.boss_hp = max_hp
-  damage = random.randint(1, 2)
-  st.session_state.boss_hp = max(0, st.session_state.boss_hp - damage)
-  if st.session_state.boss_hp <= 0:
-    st.session_state.defeated_bosses.add(level)
-    st.session_state.money += reward
-    st.session_state.points += get_enhance_point_reward(level) * 5
-    st.session_state.revive_tokens = min(3, st.session_state.revive_tokens + 1)
-    st.toast(f"👹 {name} 처치! +{format_gold(reward)} / 부활권 +1")
-    st.session_state.boss_level = 0
-  else:
-    st.toast(f"⚔️ {name}에게 {damage} 피해! 남은 HP: {st.session_state.boss_hp}")
-  save_current_season_state()
-
-def revive():
-  if st.session_state.revive_tokens <= 0 or st.session_state.last_destroyed_level <= 0:
-    return
-  restore = max(1, min(st.session_state.last_destroyed_level, st.session_state.max_level))
-  st.session_state.revive_tokens -= 1
-  st.session_state.level = restore
-  st.session_state.prev_level = restore
-  st.session_state.status = "REVIVED"
-  st.session_state.pity_count = 0
-  st.session_state.combo = 0
-  st.session_state.last_destroyed_level = 0
-  save_current_season_state()
 
 def sell():
   save_current_season_state()
@@ -1664,8 +1567,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_boss, tab_region = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "👹 보스", "🌋 지역"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
   )
 
   with tab_shop1:
@@ -1844,37 +1747,6 @@ with left_col:
     )
     st.session_state.selected_title = selected
 
-
-  with tab_boss:
-    boss = get_boss(st.session_state.level, st.session_state.is_rebirth)
-    if boss and st.session_state.level not in st.session_state.defeated_bosses:
-      name, max_hp, reward = boss
-      hp = st.session_state.boss_hp if st.session_state.boss_level == st.session_state.level else max_hp
-      st.markdown(f"### {name}")
-      st.progress(hp / max_hp)
-      st.write(f"❤️ HP: **{hp} / {max_hp}**")
-      st.write(f"💰 처치 보상: **{format_gold(reward)}**")
-      if st.button("⚔️ 보스 공격", use_container_width=True):
-        fight_boss()
-        st.rerun()
-    else:
-      st.success("👹 현재 지역에는 아직 싸울 보스가 없습니다." if not boss else "🏆 이 보스를 이미 처치했습니다!")
-      st.write(f"부활권: **{st.session_state.revive_tokens}개**")
-      if st.session_state.last_destroyed_level > 0 and st.session_state.revive_tokens > 0:
-        st.warning(f"💀 {st.session_state.last_destroyed_level}단계에서 파괴되었습니다.")
-        if st.button("✨ 부활하기", use_container_width=True):
-          revive()
-          st.rerun()
-
-  with tab_region:
-    region_name, region_desc = get_region(st.session_state.level, st.session_state.is_rebirth)
-    st.markdown(f"### {region_name}")
-    st.write(region_desc)
-    st.write(f"📍 현재 위치: **{st.session_state.level}단계**")
-    st.progress(st.session_state.level / (25 if st.session_state.is_rebirth else 35))
-    st.write(f"🔥 강화 콤보: **{st.session_state.combo}연속**")
-    st.caption("연속 성공할수록 다음 강화 성공 확률이 최대 +15%까지 증가합니다. 실패하면 콤보가 초기화됩니다.")
-    st.write(f"🏆 최고 콤보: **{st.session_state.max_combo}연속**")
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
