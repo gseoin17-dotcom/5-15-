@@ -1351,6 +1351,9 @@ def trigger_rebirth():
   save_current_season_state()
   sync_session_state(2)
   st.session_state.rebirth_count += 1
+  # 환생하면 보유 포인트를 초기화한다.
+  st.session_state.points = 0
+  st.session_state.last_point_reward = 0
   st.session_state.status = "READY"
   save_current_season_state()
 
