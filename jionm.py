@@ -1298,7 +1298,7 @@ with left_col:
   sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
   st.markdown(
       f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
-      f" 강화 확률 ({curr_lvl}단계)</h4>",
+      f" 강화 확률</h4>",
       unsafe_allow_html=True,
   )
   st.markdown(
@@ -1688,13 +1688,17 @@ with right_col:
 
         <script>
             const currentLevel = {current_level};
+            const previousLevel = {prev_level};
             const maxLvl = {max_lvl};
             const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
             const status = "{status}";
             const isLastAttempt = {"true" if is_last_attempt else "false"};
             const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
+            // 마지막 단계 연출에서는 결과와 무관하게 동일한 시각 연출을 사용
+            const visualLevel = isLastAttempt ? previousLevel : currentLevel;
+            const neutralColor = "#7dd3fc";
 
-            if (currentLevel >= 15 || isFinalSuccess) {{
+            if (!isLastAttempt && (currentLevel >= 15 || isFinalSuccess)) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
@@ -1759,6 +1763,14 @@ with right_col:
 
             applyStatusText();
 
+            // 마지막 단계에서는 결과가 공개되기 전까지 모든 모션/색상을 동일하게 유지
+            if (isLastAttempt) {{
+                statusColor = neutralColor;
+                particleSize = 0.30;
+                particleSpeed = 0.85;
+                glowIntensity = 18;
+            }}
+
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0.6, 10.0);
@@ -1769,14 +1781,14 @@ with right_col:
             renderer.shadowMap.enabled = true;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, (isFinalSuccess && !isLastAttempt) ? 2.0 : 0.8);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
+            const mainLight = new THREE.DirectionalLight(0xffffff, (isFinalSuccess && !isLastAttempt) ? 4.0 : 2.0);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, (isFinalSuccess && !isLastAttempt) ? 60 : 40);
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
@@ -1790,8 +1802,8 @@ with right_col:
             }}
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
-                color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
-                size: isFinalSuccess ? 0.12 : 0.07,
+                color: isLastAttempt ? 0x7dd3fc : (isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff)),
+                size: isLastAttempt ? 0.07 : (isFinalSuccess ? 0.12 : 0.07),
                 transparent: true,
                 opacity: 0.7,
                 blending: THREE.AdditiveBlending
@@ -1799,7 +1811,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = isFinalSuccess ? 2000 : 500;
+            const particleCount = (isFinalSuccess && !isLastAttempt) ? 2000 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1810,7 +1822,7 @@ with right_col:
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                 
                 let spd = particleSpeed;
-                if (status === "FAILED") spd = 0.2;
+                if (!isLastAttempt && status === "FAILED") spd = 0.2;
 
                 particleVelocities.push({{
                     x: (Math.random() - 0.5) * 0.01 * spd,
@@ -1824,7 +1836,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.2 : 0.8,
+                opacity: (!isLastAttempt && status === "FAILED") ? 0.2 : 0.8,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -1835,7 +1847,7 @@ with right_col:
             objectGroup.position.y = -0.7;
 
             let baseGeo;
-            const lvl = {current_level};
+            const lvl = visualLevel;
 
             if (isRebirth) {{
                 if (lvl <= 3) {{
@@ -1911,23 +1923,23 @@ with right_col:
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
-                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
-                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
+                emissive: isLastAttempt ? neutralColor : (isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111")),
+                emissiveIntensity: isLastAttempt ? 0.45 : (isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1))),
                 metalness: 0.9,
                 roughness: 0.1,
                 transmission: 0.6,
                 transparent: true,
-                opacity: status === "FAILED" ? 0.5 : 0.95,
+                opacity: (!isLastAttempt && status === "FAILED") ? 0.5 : 0.95,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
+            const coreGeo = new THREE.SphereGeometry((isFinalSuccess && !isLastAttempt) ? 1.6 : 1.2, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
+                emissiveIntensity: isLastAttempt ? 1.2 : (isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8)),
                 roughness: 0.02,
                 metalness: 0.95,
                 transmission: 0.8
@@ -1943,84 +1955,70 @@ with right_col:
             const mainTl = gsap.timeline();
 
             if (isLastAttempt) {{
-                // UI 잠시 숨기기
+                // 결과를 바로 알 수 없도록 5.5초 동안 결과 UI를 숨기고
+                // 성공/하락/파괴/유지 모두 동일한 색상과 동일한 시네마틱 연출을 사용
                 cinematicUi.style.opacity = "0";
+                statusText.innerText = "";
 
-                // 연출 초기화
-                objectGroup.scale.set(0.5, 0.5, 0.5);
-                pointLight.intensity = 5;
+                objectGroup.scale.set(0.45, 0.45, 0.45);
+                pointLight.color.set(neutralColor);
+                pointLight.intensity = 4;
 
-                // 5초간 화려한 진동, 카메라 서서히 줌인, 오브젝트 수퍼 스케일업 & 초고속 회전 연출
+                // 5.5초 동안 천천히 긴장감을 올리는 공통 연출
                 mainTl.to(camera.position, {{
-                    z: 4.2,
-                    duration: 4.8,
-                    ease: "power3.in"
+                    z: 4.8,
+                    duration: 5.5,
+                    ease: "power2.inOut"
                 }}, 0);
 
                 mainTl.to(objectGroup.scale, {{
-                    x: 3.5, y: 3.5, z: 3.5,
-                    duration: 4.8,
-                    ease: "power3.in"
+                    x: 2.8, y: 2.8, z: 2.8,
+                    duration: 5.5,
+                    ease: "power2.in"
                 }}, 0);
 
                 mainTl.to(pointLight, {{
-                    intensity: 200,
-                    duration: 4.8,
-                    ease: "power4.in"
+                    intensity: 140,
+                    duration: 5.5,
+                    ease: "power3.in"
                 }}, 0);
 
-                // 빛의 서라운드 라이트 컬러 왜곡 (무지개빛 색상 트랜지션)
-                const colors = ["#ff0055", "#00ffff", "#ffaa00", "#7000ff", "#ffffff"];
-                colors.forEach((col, idx) => {{
-                    mainTl.to(pointLight.color, {{
-                        r: new THREE.Color(col).r,
-                        g: new THREE.Color(col).g,
-                        b: new THREE.Color(col).b,
-                        duration: 0.9,
-                        ease: "linear"
-                    }}, idx * 0.9);
-                }});
-
-                // 카메라 & 코어 가속 및 극적인 시공간 시각적 왜곡 진동
-                const basePosY = -0.7;
-                mainTl.to(objectGroup.position, {{
-                    duration: 4.8,
-                    onUpdate: function() {{
-                        const p = this.progress(); // 0 ~ 1
-                        const shake = Math.pow(p, 2) * 0.8; // 진행될수록 가속되는 진동 폭
-                        objectGroup.position.x = (Math.random() - 0.5) * shake;
-                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
-                        objectGroup.position.z = (Math.random() - 0.5) * shake;
-
-                        // 회전 가속 연출
-                        const speedMult = 1 + p * 15;
-                        objectGroup.rotation.x += 0.05 * speedMult;
-                        objectGroup.rotation.y += 0.08 * speedMult;
-                        objectGroup.rotation.z += 0.03 * speedMult;
-                    }}
+                mainTl.to(objectGroup.rotation, {{
+                    y: Math.PI * 8,
+                    x: Math.PI * 2,
+                    duration: 5.5,
+                    ease: "power2.in"
                 }}, 0);
 
-                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
+                // 중간에 살짝 흔들리지만 결과별 차이는 전혀 없음
+                mainTl.to(camera.position, {{
+                    x: 0.35,
+                    duration: 0.25,
+                    repeat: 7,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                }}, 2.2);
+
+                // 5.5초 후에만 결과 자막 공개
                 mainTl.to(flashOverlay, {{
                     opacity: 1.0,
-                    duration: 0.2,
+                    duration: 0.18,
                     ease: "power4.in",
                     onComplete: function() {{
                         cinematicUi.style.opacity = "1";
                         camera.position.set(0, 0.6, 10.0);
-                        
-                        // 결과 연출 (파괴 or 성공 or 실패)
+                        applyStatusText();
                         triggerResultAnimation();
                     }}
-                }}, 4.8);
+                }}, 5.5);
 
                 mainTl.to(flashOverlay, {{
                     opacity: 0,
-                    duration: 1.0,
+                    duration: 0.9,
                     ease: "power2.out"
-                }}, 5.0);
+                }}, 5.68);
 
-            }} else {{
+            }}            }} else {{
                 // 일반 단계 시도 시 즉시 결과 연출
                 triggerResultAnimation();
             }}
