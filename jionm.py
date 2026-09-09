@@ -1875,6 +1875,7 @@ with right_col:
             .status-header {{ font-size: 20px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); }}
             .desc-text {{ font-size: 17px; color: #cbd5e1; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.95); font-weight: 600; }}
             .price-text {{ font-size: 19px; font-weight: 800; color: #fbbf24; margin-top: 5px; text-shadow: 0 0 15px rgba(0,0,0,0.95); }}
+            .point-text {{ font-size: 17px; font-weight: 800; color: #67e8f9; margin-top: 5px; text-shadow: 0 0 14px rgba(0,0,0,0.95); letter-spacing: .2px; }}
             .cost-text {{ font-size: 16px; font-weight: 700; color: #f87171; margin-top: 4px; text-shadow: 0 0 12px rgba(0,0,0,0.95); }}
 
             /* 연출용 찰나의 화면 비치는 광원 덮개 */
@@ -1920,6 +1921,7 @@ with right_col:
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
+                document.getElementById('pointText').classList.add('shaking-text');
                 document.getElementById('costText').classList.add('shaking-text');
             }}
 
