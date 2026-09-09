@@ -1664,8 +1664,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_boss, tab_region = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "👹 보스", "🌋 지역"]
   )
 
   with tab_shop1:
