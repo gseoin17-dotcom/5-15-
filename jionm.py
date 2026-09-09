@@ -935,6 +935,24 @@ ACHIEVEMENTS = {
         "title": "자이온 전설의 상인",
         "reward": 300000,
     },
+    "points_100k": {
+        "name": "포인트 수집가",
+        "desc": "누적 획득 포인트 100,000P를 달성하세요.",
+        "title": "지온 포인트 수집가",
+        "reward": 100000,
+    },
+    "points_1m": {
+        "name": "포인트 백만장자",
+        "desc": "누적 획득 포인트 1,000,000P를 달성하세요.",
+        "title": "자이온 포인트 부자",
+        "reward": 1000000,
+    },
+    "critical_5": {
+        "name": "크리티컬 헌터",
+        "desc": "크리티컬 강화를 5회 성공하세요.",
+        "title": "지온 크리티컬 헌터",
+        "reward": 500000,
+    },
     "survivor": {
         "name": "기적의 생존",
         "desc": "20단계 이상에서 강화 실패 후 살아남으세요.",
@@ -970,6 +988,9 @@ TITLE_THEMES = {
     "지온 재벌": ('#fcd34d', '#b45309', '#451a03', '💎'),
     "자이온 전설의 상인": ('#5eead4', '#0f766e', '#042f2e', '🏪'),
     "불굴의 자이온": ('#f87171', '#991b1b', '#450a0a', '🛡️'),
+    "지온 포인트 수집가": ('#fde047', '#a16207', '#422006', '🪙'),
+    "자이온 포인트 부자": ('#67e8f9', '#0891b2', '#083344', '💎'),
+    "지온 크리티컬 헌터": ('#fb7185', '#9f1239', '#4c0519', '🎯'),
 }
 
 def get_title_theme(title):
@@ -1002,6 +1023,9 @@ TITLE_STYLES = {
     "지온 재벌": "title-style-gem",
     "자이온 전설의 상인": "title-style-shop",
     "불굴의 자이온": "title-style-shield",
+    "지온 포인트 수집가": "title-style-pointcoin",
+    "자이온 포인트 부자": "title-style-pointgem",
+    "지온 크리티컬 헌터": "title-style-crithunter",
 }
 
 def get_title_style(title):
@@ -1028,6 +1052,18 @@ def init_progress():
     st.session_state.points = 0
   if "last_point_reward" not in st.session_state:
     st.session_state.last_point_reward = 0
+  if "points_earned_total" not in st.session_state:
+    st.session_state.points_earned_total = 0
+  if "points_spent_total" not in st.session_state:
+    st.session_state.points_spent_total = 0
+  if "enhance_successes" not in st.session_state:
+    st.session_state.enhance_successes = 0
+  if "enhance_failures" not in st.session_state:
+    st.session_state.enhance_failures = 0
+  if "critical_count" not in st.session_state:
+    st.session_state.critical_count = 0
+  if "destroy_count" not in st.session_state:
+    st.session_state.destroy_count = 0
 
 
 def unlock_achievement(key):
@@ -1095,6 +1131,12 @@ def check_achievements():
     unlock_achievement("warp_1")
   if st.session_state.status == "CRITICAL":
     unlock_achievement("critical")
+  if st.session_state.points_earned_total >= 100_000:
+    unlock_achievement("points_100k")
+  if st.session_state.points_earned_total >= 1_000_000:
+    unlock_achievement("points_1m")
+  if st.session_state.critical_count >= 5:
+    unlock_achievement("critical_5")
 
 
 # -----------------------------------------------------------------------------
@@ -1193,6 +1235,7 @@ if "is_rebirth" not in st.session_state:
 def reward_enhance_points(level):
   reward = get_enhance_point_reward(level)
   st.session_state.points += reward
+  st.session_state.points_earned_total += reward
   st.session_state.last_point_reward = reward
   return reward
 
@@ -1237,30 +1280,38 @@ def run_enhance():
     if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
       st.session_state.level += 2
       st.session_state.status = "CRITICAL"
+      st.session_state.enhance_successes += 1
+      st.session_state.critical_count += 1
     else:
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
+      st.session_state.enhance_successes += 1
     reward_enhance_points(st.session_state.level)
   elif r < down_limit:
     st.session_state.pity_count += 1
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
+    st.session_state.enhance_failures += 1
     st.session_state.tears = min(60, st.session_state.tears + 1)
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
+      st.session_state.enhance_failures += 1
       st.session_state.tears = min(60, st.session_state.tears + 1)
     else:
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
+      st.session_state.enhance_failures += 1
+      st.session_state.destroy_count += 1
       st.session_state.tears = min(60, st.session_state.tears + 2)
   else:
     st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
+    st.session_state.enhance_failures += 1
     st.session_state.tears = min(60, st.session_state.tears + 1)
 
   if st.session_state.level > st.session_state.max_level:
@@ -1284,6 +1335,7 @@ def sell():
   if curr == 0:
     return
   price_val = SMELL_DB[st.session_state.is_rebirth][curr]["price"]
+  st.session_state.sell_count += 1
   if price_val == float("inf"):
     st.session_state.money = float("inf")
   else:
@@ -1387,6 +1439,12 @@ st.markdown(
     .title-style-shop::after { left:10px;right:10px;bottom:12px;height:10px;border-top:2px solid #5eead466;border-bottom:2px solid #5eead466; }
     .title-style-shield::before { width:60px;height:70px;right:18px;top:18px;border:3px solid #f8717188;clip-path:polygon(50% 0,90% 18%,82% 72%,50% 100%,18% 72%,10% 18%);box-shadow:0 0 20px #f8717155; }
     .title-style-shield::after { content:"✦";right:37px;top:36px;font-size:22px;color:#fff8; }
+    .title-style-pointcoin::before { width:58px;height:58px;right:18px;top:22px;border:5px double #fde04788;border-radius:50%;box-shadow:0 0 24px #fde04755; }
+    .title-style-pointcoin::after { content:"P";right:37px;top:31px;font-size:25px;font-weight:900;color:#fff9; }
+    .title-style-pointgem::before { width:52px;height:62px;right:21px;top:18px;background:linear-gradient(135deg,#67e8f955,#0891b055);clip-path:polygon(50% 0,100% 28%,78% 100%,22% 100%,0 28%);box-shadow:0 0 24px #67e8f855; }
+    .title-style-pointgem::after { width:2px;height:54px;right:47px;top:22px;background:#fff9;transform:rotate(25deg); }
+    .title-style-crithunter::before { width:72px;height:72px;right:10px;top:14px;border:2px solid #fb718866;border-radius:50%;box-shadow:0 0 0 8px #fb718822,0 0 0 16px #fb718811; }
+    .title-style-crithunter::after { content:"✦";right:35px;top:31px;font-size:28px;color:#fff;transform:rotate(15deg);text-shadow:0 0 16px #fb7188; }
     hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
     """,
@@ -1506,8 +1564,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
+  tab_shop1, tab_shop2, tab_warp, tab_point, tab_ach, tab_stats, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "⭐ 포인트 상점", "🏆 업적", "📊 통계", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1639,6 +1697,7 @@ with left_col:
             st.error(f"포인트가 부족합니다! (필요: {w_price:,}P)")
           else:
             st.session_state.points -= w_price
+            st.session_state.points_spent_total += w_price
             st.session_state.warp_uses += 1
             st.session_state.prev_level = st.session_state.level
             st.session_state.level = w_level
@@ -1648,6 +1707,116 @@ with left_col:
             save_current_season_state()
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
+
+  with tab_point:
+    st.markdown(
+        f"<div style='font-size:12px;color:#cbd5e1;margin-bottom:10px;'>"
+        f"보유 포인트: <b style='color:#facc15;font-size:15px;'>{st.session_state.points:,}P</b><br>"
+        f"강화로 모은 포인트를 각종 아이템으로 교환할 수 있습니다.</div>",
+        unsafe_allow_html=True,
+    )
+
+    point_items = [
+        ("💧 눈물 10개", 15000, "눈물 +10 (최대 60개)", "tears"),
+        ("🛡️ 방지권 1개", 50000, "파괴 방지권 +1 (최대 3개)", "shield"),
+        ("💰 1,000만 골드", 100000, "보유 금액 +10,000,000", "money"),
+    ]
+    for item_name, item_cost, item_desc, item_type in point_items:
+      c1, c2 = st.columns([1.55, 1])
+      with c1:
+        st.markdown(
+            f"<div style='padding:9px 4px;'><div style='font-size:13px;font-weight:800;'>{item_name}</div>"
+            f"<div style='font-size:11px;color:#94a3b8;'>{item_desc}</div>"
+            f"<div style='font-size:11px;color:#facc15;margin-top:2px;'>{item_cost:,}P</div></div>",
+            unsafe_allow_html=True,
+        )
+      with c2:
+        can_buy = st.session_state.points >= item_cost
+        if item_type == "tears":
+          can_buy = can_buy and st.session_state.tears < 60
+        elif item_type == "shield":
+          can_buy = can_buy and st.session_state.shield < 3
+        if st.button("교환", key=f"point_shop_{item_type}", use_container_width=True, disabled=not can_buy):
+          if item_type == "tears" and st.session_state.tears < 60:
+            st.session_state.points -= item_cost
+            st.session_state.points_spent_total += item_cost
+            st.session_state.tears = min(60, st.session_state.tears + 10)
+            st.success("💧 눈물 10개를 교환했습니다!")
+          elif item_type == "shield" and st.session_state.shield < 3:
+            st.session_state.points -= item_cost
+            st.session_state.points_spent_total += item_cost
+            st.session_state.shield += 1
+            st.success("🛡️ 방지권 1개를 교환했습니다!")
+          elif item_type == "money":
+            st.session_state.points -= item_cost
+            st.session_state.points_spent_total += item_cost
+            st.session_state.money += 10_000_000
+            st.success("💰 1,000만 골드를 교환했습니다!")
+          save_current_season_state()
+          st.rerun()
+
+  with tab_ach:
+    achieved = sum(st.session_state.achievements.values())
+    pct = int((achieved / len(ACHIEVEMENTS)) * 100) if ACHIEVEMENTS else 0
+    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)} · {pct}%")
+    st.progress(pct / 100)
+    achievement_items = list(ACHIEVEMENTS.items())
+    ach_cols = st.columns(3)
+    for i, (key, info) in enumerate(achievement_items):
+      done = st.session_state.achievements.get(key, False)
+      icon = "✅" if done else "🔒"
+      accent, accent2, deep, title_icon = get_title_theme(info["title"])
+      title_style = get_title_style(info["title"])
+      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
+            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
+      border = accent if done else "rgba(148,163,184,.22)"
+      with ach_cols[i % 3]:
+        st.markdown(
+            f"<div class='title-design {title_style}' style='background:{bg};border:1px solid {border};"
+            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
+            f"margin:0 0 10px 0;min-height:116px;'>"
+            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
+            f"{('UNLOCKED' if done else 'LOCKED')}</div>"
+            f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{icon} {info['name']}</div>"
+            f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
+            f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
+            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
+            unsafe_allow_html=True,
+        )
+    options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
+    if st.session_state.selected_title not in options:
+      st.session_state.selected_title = TITLE_DEFAULT
+    selected = st.selectbox(
+        "현재 칭호", options, index=options.index(st.session_state.selected_title),
+    )
+    st.session_state.selected_title = selected
+
+  with tab_stats:
+    total_attempts = st.session_state.enhance_attempts
+    successes = st.session_state.enhance_successes
+    failures = st.session_state.enhance_failures
+    success_rate = (successes / total_attempts * 100) if total_attempts else 0
+    st.markdown("### 📊 플레이 통계")
+    m1, m2, m3 = st.columns(3)
+    m1.metric("최고 단계", f"{st.session_state.max_level}강")
+    m2.metric("총 강화", f"{total_attempts:,}회")
+    m3.metric("성공률", f"{success_rate:.1f}%")
+    m4, m5, m6 = st.columns(3)
+    m4.metric("성공", f"{successes:,}회")
+    m5.metric("실패", f"{failures:,}회")
+    m6.metric("크리티컬", f"{st.session_state.critical_count:,}회")
+    m7, m8, m9 = st.columns(3)
+    m7.metric("파괴", f"{st.session_state.destroy_count:,}회")
+    m8.metric("워프 사용", f"{st.session_state.warp_uses:,}회")
+    m9.metric("판매 횟수", f"{st.session_state.sell_count:,}회")
+    st.markdown(
+        f"<div style='margin-top:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);"
+        f"border:1px solid rgba(255,255,255,.10);font-size:12px;color:#cbd5e1;'>"
+        f"⭐ 누적 획득 포인트 <b style='color:#facc15'>{st.session_state.points_earned_total:,}P</b><br>"
+        f"⭐ 누적 사용 포인트 <b style='color:#facc15'>{st.session_state.points_spent_total:,}P</b><br>"
+        f"⭐ 현재 보유 포인트 <b style='color:#facc15'>{st.session_state.points:,}P</b></div>",
+        unsafe_allow_html=True,
+    )
 
   with tab_dev:
     st.markdown(
@@ -1667,6 +1836,7 @@ with left_col:
       st.session_state.prev_level = st.session_state.level
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
+      st.session_state.enhance_successes += 1
       reward_enhance_points(st.session_state.level)
       if st.session_state.level > st.session_state.max_level:
         st.session_state.max_level = st.session_state.level
@@ -1684,45 +1854,6 @@ with left_col:
       save_current_season_state()
       st.success("개발자 권한으로 강제 성공 처리되었습니다!")
       st.rerun()
-
-  with tab_ach:
-    achieved = sum(st.session_state.achievements.values())
-    st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
-    achievement_items = list(ACHIEVEMENTS.items())
-    ach_cols = st.columns(3)
-    for i, (key, info) in enumerate(achievement_items):
-      done = st.session_state.achievements.get(key, False)
-      icon = "✅" if done else "🔒"
-      accent, accent2, deep, title_icon = get_title_theme(info["title"])
-      title_style = get_title_style(info["title"])
-      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
-            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
-      border = accent if done else "rgba(148,163,184,.22)"
-      with ach_cols[i % 3]:
-        st.markdown(
-            f"<div class='title-design {title_style}' style='background:{bg};border:1px solid {border};"
-            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
-            f"margin:0 0 10px 0;min-height:116px;'>"
-            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
-            f"{'UNLOCKED' if done else 'LOCKED'}</div>"
-            f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{title_icon} {info['name']}</div>"
-            f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
-            f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
-            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
-            unsafe_allow_html=True,
-        )
-    options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
-    if st.session_state.selected_title not in options:
-      st.session_state.selected_title = TITLE_DEFAULT
-    selected = st.selectbox(
-        "현재 칭호",
-        options,
-        index=options.index(st.session_state.selected_title),
-    )
-    st.session_state.selected_title = selected
-    t_accent, t_accent2, t_deep, t_icon = get_title_theme(selected)
-    # 선택한 칭호는 아래 3D 화면 상단의 칭호 위치에서만 표시합니다.
-    # 기존의 큰 "EQUIPPED TITLE" 카드 영역은 제거했습니다.
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
