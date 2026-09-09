@@ -731,25 +731,25 @@ ACHIEVEMENTS = {
     "first_enhance": {
         "name": "첫걸음",
         "desc": "처음으로 강화를 시도하세요.",
-        "title": "꼬마 킁킁이",
+        "title": "지온 킁킁 견습생",
         "reward": 5000,
     },
     "level_10": {
         "name": "10강 돌파",
         "desc": "시즌 1에서 10단계에 도달하세요.",
-        "title": "구린내 수련생",
+        "title": "지온 구린내 수련생",
         "reward": 20000,
     },
     "level_20": {
         "name": "20강 돌파",
         "desc": "시즌 1에서 20단계에 도달하세요.",
-        "title": "베테랑 후각러",
+        "title": "지온 베테랑 후각러",
         "reward": 100000,
     },
     "level_30": {
         "name": "30강 돌파",
         "desc": "시즌 1에서 30단계에 도달하세요.",
-        "title": "악취 마스터",
+        "title": "지온 악취 마스터",
         "reward": 500000,
     },
     "level_35": {
@@ -761,13 +761,13 @@ ACHIEVEMENTS = {
     "drop_to_0": {
         "name": "끝없는 추락",
         "desc": "34단계에서 0단계로 돌아가세요.",
-        "title": "추락의 전설",
+        "title": "자이온 추락의 전설",
         "reward": 300000,
     },
     "rebirth": {
         "name": "차원의 문",
         "desc": "시즌 2 환생을 시작하세요.",
-        "title": "차원 여행자",
+        "title": "지온 차원 여행자",
         "reward": 5000000,
     },
     "s2_level_10": {
@@ -785,61 +785,61 @@ ACHIEVEMENTS = {
     "s2_level_25": {
         "name": "진정한 환생",
         "desc": "시즌 2 최종 25단계를 달성하세요.",
-        "title": "TRUE REBIRTH",
+        "title": "TRUE REBIRTH 자이온",
         "reward": 100000000,
     },
     "warp_1": {
         "name": "공간 이동",
         "desc": "워프권을 처음 사용하세요.",
-        "title": "워프 개척자",
+        "title": "자이온 워프 개척자",
         "reward": 10000,
     },
     "warp_5": {
         "name": "워프 중독",
         "desc": "워프권을 5회 사용하세요.",
-        "title": "차원 도약자",
+        "title": "자이온 차원 도약자",
         "reward": 100000,
     },
     "critical": {
         "name": "대성공",
         "desc": "크리티컬 강화를 성공시키세요.",
-        "title": "우주의 선택",
+        "title": "우주의 지온 선택",
         "reward": 50000,
     },
     "seller": {
         "name": "냄새 장사꾼",
         "desc": "냄새를 판매해 돈을 획득하세요.",
-        "title": "냄새 상인",
+        "title": "지온 냄새 상인",
         "reward": 25000,
     },
     "enhance_50": {
         "name": "강화광",
         "desc": "강화를 총 50회 시도하세요.",
-        "title": "망치 중독자",
+        "title": "자이온 망치 중독자",
         "reward": 200000,
     },
     "enhance_100": {
         "name": "강화의 끝",
         "desc": "강화를 총 100회 시도하세요.",
-        "title": "단련의 신",
+        "title": "단련의 지온 신",
         "reward": 1000000,
     },
     "level_5": {
         "name": "첫 강화",
         "desc": "5단계에 도달하세요.",
-        "title": "입문 코끝러",
+        "title": "지온 입문 코끝러",
         "reward": 5000,
     },
     "level_15": {
         "name": "중급 냄새꾼",
         "desc": "15단계에 도달하세요.",
-        "title": "향기 수집가",
+        "title": "지온 향기 수집가",
         "reward": 50000,
     },
     "level_25": {
         "name": "고급 냄새꾼",
         "desc": "25단계에 도달하세요.",
-        "title": "악취 지배자",
+        "title": "자이온 악취 지배자",
         "reward": 250000,
     },
     "s2_level_5": {
@@ -857,13 +857,13 @@ ACHIEVEMENTS = {
     "warp_10": {
         "name": "워프 마스터",
         "desc": "워프권을 10회 사용하세요.",
-        "title": "공간의 지배자",
+        "title": "자이온 공간 지배자",
         "reward": 500000,
     },
     "enhance_200": {
         "name": "강화는 계속된다",
         "desc": "강화를 총 200회 시도하세요.",
-        "title": "강화의 초월자",
+        "title": "자이온 강화의 초월자",
         "reward": 5000000,
     },
     "rich": {
@@ -875,16 +875,81 @@ ACHIEVEMENTS = {
     "seller_10": {
         "name": "장사의 신",
         "desc": "판매를 10회 성공하세요.",
-        "title": "전설의 상인",
+        "title": "자이온 전설의 상인",
         "reward": 300000,
     },
     "survivor": {
         "name": "기적의 생존",
         "desc": "20단계 이상에서 강화 실패 후 살아남으세요.",
-        "title": "불굴의 지온",
+        "title": "불굴의 자이온",
         "reward": 300000,
     },
 }
+
+TITLE_THEMES = {
+    "지온 킁킁 견습생": ('#22d3ee', '#0e7490', '#083344', '🫧'),
+    "지온 구린내 수련생": ('#a3e635', '#4d7c0f', '#1a2e05', '🌿'),
+    "지온 베테랑 후각러": ('#60a5fa', '#1d4ed8', '#172554', '🎯'),
+    "지온 악취 마스터": ('#f97316', '#c2410c', '#431407', '🔥'),
+    "디 오리지널 지온": ('#facc15', '#a16207', '#422006', '👑'),
+    "자이온 추락의 전설": ('#94a3b8', '#475569', '#0f172a', '☄️'),
+    "지온 차원 여행자": ('#c084fc', '#7e22ce', '#2e1065', '🌀'),
+    "각성한 자이온": ('#2dd4bf', '#0f766e', '#042f2e', '⚡'),
+    "폭주의 자이온": ('#fb7185', '#be123c', '#4c0519', '💢'),
+    "TRUE REBIRTH 자이온": ('#f0abfc', '#c026d3', '#4a044e', '♾️'),
+    "자이온 워프 개척자": ('#38bdf8', '#0369a1', '#082f49', '🚀'),
+    "자이온 차원 도약자": ('#818cf8', '#4338ca', '#1e1b4b', '🌌'),
+    "우주의 지온 선택": ('#fde047', '#ca8a04', '#422006', '✦'),
+    "지온 냄새 상인": ('#34d399', '#047857', '#022c22', '💰'),
+    "자이온 망치 중독자": ('#fbbf24', '#d97706', '#451a03', '🔨'),
+    "단련의 지온 신": ('#f8fafc', '#64748b', '#111827', '⚔️'),
+    "지온 입문 코끝러": ('#67e8f9', '#0891b2', '#083344', '👃'),
+    "지온 향기 수집가": ('#86efac', '#16a34a', '#052e16', '🍃'),
+    "자이온 악취 지배자": ('#f472b6', '#db2777', '#500724', '☠️'),
+    "자이온 견습생": ('#93c5fd', '#2563eb', '#172554', '🔷'),
+    "자이온 숙련자": ('#a78bfa', '#6d28d9', '#2e1065', '💠'),
+    "자이온 공간 지배자": ('#e879f9', '#a21caf', '#4a044e', '🛸'),
+    "자이온 강화의 초월자": ('#fef08a', '#ea580c', '#431407', '🌠'),
+    "지온 재벌": ('#fcd34d', '#b45309', '#451a03', '💎'),
+    "자이온 전설의 상인": ('#5eead4', '#0f766e', '#042f2e', '🏪'),
+    "불굴의 자이온": ('#f87171', '#991b1b', '#450a0a', '🛡️'),
+}
+
+def get_title_theme(title):
+    return TITLE_THEMES.get(title, ("#a78bfa", "#6d28d9", "#111827", "🏷️"))
+
+TITLE_STYLES = {
+    "지온 킁킁 견습생": "title-style-bubble",
+    "지온 구린내 수련생": "title-style-leaf",
+    "지온 베테랑 후각러": "title-style-target",
+    "지온 악취 마스터": "title-style-flame",
+    "디 오리지널 지온": "title-style-crown",
+    "자이온 추락의 전설": "title-style-meteor",
+    "지온 차원 여행자": "title-style-portal",
+    "각성한 자이온": "title-style-bolt",
+    "폭주의 자이온": "title-style-rage",
+    "TRUE REBIRTH 자이온": "title-style-infinity",
+    "자이온 워프 개척자": "title-style-rocket",
+    "자이온 차원 도약자": "title-style-galaxy",
+    "우주의 지온 선택": "title-style-star",
+    "지온 냄새 상인": "title-style-coin",
+    "자이온 망치 중독자": "title-style-hammer",
+    "단련의 지온 신": "title-style-blade",
+    "지온 입문 코끝러": "title-style-nose",
+    "지온 향기 수집가": "title-style-nature",
+    "자이온 악취 지배자": "title-style-skull",
+    "자이온 견습생": "title-style-diamond",
+    "자이온 숙련자": "title-style-crystal",
+    "자이온 공간 지배자": "title-style-ufo",
+    "자이온 강화의 초월자": "title-style-comet",
+    "지온 재벌": "title-style-gem",
+    "자이온 전설의 상인": "title-style-shop",
+    "불굴의 자이온": "title-style-shield",
+}
+
+def get_title_style(title):
+    return TITLE_STYLES.get(title, "title-style-default")
+
 
 TITLE_DEFAULT = "칭호 없음"
 
@@ -902,8 +967,6 @@ def init_progress():
     st.session_state.warp_uses = 0
   if "sell_count" not in st.session_state:
     st.session_state.sell_count = 0
-  if "developer_mode" not in st.session_state:
-    st.session_state.developer_mode = False
 
 
 def unlock_achievement(key):
@@ -1083,13 +1146,7 @@ def run_enhance():
   st.session_state.money -= cost
   st.session_state.prev_level = curr  # 이전 단계 저장
 
-  # 개발자 모드: 무조건 +1 성공
-  if st.session_state.get("developer_mode", False):
-    st.session_state.level += 1
-    st.session_state.status = "SUCCESS"
-    st.session_state.pity_count = 0
-
-  elif st.session_state.pity_count >= PITY_MAX - 1:
+  if st.session_state.pity_count >= PITY_MAX - 1:
     st.session_state.level += 1
     st.session_state.status = "PITY_SUCCESS"
     st.session_state.pity_count = 0
@@ -1098,44 +1155,44 @@ def run_enhance():
     save_current_season_state()
     return
 
-  else:
-    current_prob = PROB_TABLE[st.session_state.is_rebirth]
-    sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
-    r = random.uniform(0, 100)
+  current_prob = PROB_TABLE[st.session_state.is_rebirth]
+  sp, down_p, dp, hold_p = current_prob.get(curr, (5.0, 40.0, 50.0, 5.0))
+  r = random.uniform(0, 100)
 
-    success_limit = sp
-    down_limit = success_limit + down_p
-    destroy_limit = down_limit + dp
+  success_limit = sp
+  down_limit = success_limit + down_p
+  destroy_limit = down_limit + dp
 
-    if r < success_limit:
-      st.session_state.pity_count = 0
-      if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
-        st.session_state.level += 2
-        st.session_state.status = "CRITICAL"
-      else:
-        st.session_state.level += 1
-        st.session_state.status = "SUCCESS"
-    elif r < down_limit:
+  if r < success_limit:
+    st.session_state.pity_count = 0
+    if random.random() < CRITICAL_RATE and curr + 2 <= max_lvl:
+      st.session_state.level += 2
+      st.session_state.status = "CRITICAL"
+    else:
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+  elif r < down_limit:
+    st.session_state.pity_count += 1
+    if curr > 0:
+      st.session_state.level -= 1
+    st.session_state.status = "FAILED"
+    st.session_state.tears = min(80, st.session_state.tears + 1)
+  elif r < destroy_limit:
+    if st.session_state.shield > 0:
+      st.session_state.shield -= 1
       st.session_state.pity_count += 1
-      if curr > 0:
-        st.session_state.level -= 1
-      st.session_state.status = "FAILED"
+      st.session_state.status = "SHIELD_SAVED"
       st.session_state.tears = min(80, st.session_state.tears + 1)
-    elif r < destroy_limit:
-      if st.session_state.shield > 0:
-        st.session_state.shield -= 1
-        st.session_state.pity_count += 1
-        st.session_state.status = "SHIELD_SAVED"
-        st.session_state.tears = min(80, st.session_state.tears + 1)
-      else:
-        st.session_state.pity_count += 1
-        st.session_state.level = 0
-        st.session_state.status = "DESTROYED"
-        st.session_state.tears = min(80, st.session_state.tears + 2)
     else:
       st.session_state.pity_count += 1
-      st.session_state.status = "HOLD"
-      st.session_state.tears = min(80, st.session_state.tears + 1)
+      st.session_state.level = 0
+      st.session_state.status = "DESTROYED"
+      st.session_state.tears = min(80, st.session_state.tears + 2)
+  else:
+    st.session_state.pity_count += 1
+    st.session_state.status = "HOLD"
+    st.session_state.tears = min(80, st.session_state.tears + 1)
+
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
 
@@ -1205,6 +1262,61 @@ st.markdown(
     [data-testid="stTabs"] button { border-radius:14px !important; }
     [data-testid="stTabs"] [aria-selected="true"] { background:rgba(255,255,255,.13) !important; backdrop-filter:blur(18px); }
     [data-testid="stMetric"], [data-testid="stExpander"] { border:1px solid var(--stroke); border-radius:22px; background:var(--glass); backdrop-filter:blur(24px) saturate(150%); box-shadow:inset 0 1px rgba(255,255,255,.14),0 18px 45px rgba(0,0,0,.18); }
+
+    .title-design { position:relative; overflow:hidden; min-height:116px; }
+    .title-design::before,.title-design::after { content:""; position:absolute; pointer-events:none; }
+    .title-style-bubble::before { width:70px;height:70px;border:2px solid rgba(34,211,238,.45);border-radius:50%;right:-18px;top:-25px;box-shadow:0 0 25px #22d3ee55; }
+    .title-style-bubble::after { width:18px;height:18px;border:2px solid #67e8f9;border-radius:50%;right:28px;bottom:12px; }
+    .title-style-leaf::before { width:100px;height:35px;right:-15px;bottom:4px;border:2px solid #a3e63566;border-radius:100% 0 100% 0;transform:rotate(-28deg); }
+    .title-style-leaf::after { width:65px;height:2px;right:15px;bottom:28px;background:#a3e63588;transform:rotate(-28deg); }
+    .title-style-target::before { width:66px;height:66px;right:-2px;top:16px;border:2px solid #60a5fa66;border-radius:50%;box-shadow:0 0 0 9px #60a5fa22,0 0 0 18px #60a5fa12; }
+    .title-style-target::after { width:82px;height:2px;right:-8px;top:48px;background:#60a5fa66;transform:rotate(45deg); }
+    .title-style-flame::before { width:52px;height:74px;right:10px;bottom:-24px;border-radius:60% 40% 60% 40%;background:linear-gradient(#f97316aa,#ef444400);transform:rotate(18deg);filter:blur(2px); }
+    .title-style-flame::after { width:20px;height:40px;right:28px;bottom:-6px;border-radius:70% 30% 60% 40%;background:#facc15aa;transform:rotate(18deg); }
+    .title-style-crown::before { content:"♛";right:16px;top:8px;font-size:62px;color:#facc1544;transform:rotate(8deg); }
+    .title-style-crown::after { left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,#facc15,#fff,#facc15,transparent); }
+    .title-style-meteor::before { width:130px;height:2px;right:-25px;top:35px;background:linear-gradient(90deg,transparent,#94a3b8);transform:rotate(-25deg);box-shadow:0 14px 0 #94a3b833,0 28px 0 #94a3b822; }
+    .title-style-meteor::after { width:11px;height:11px;border-radius:50%;right:34px;top:28px;background:#fff;box-shadow:0 0 18px 5px #94a3b866; }
+    .title-style-portal::before { width:80px;height:80px;right:-10px;top:15px;border:8px double #c084fc55;border-radius:50%;transform:rotate(20deg); }
+    .title-style-portal::after { width:35px;height:35px;right:13px;top:38px;border:1px solid #fff4;border-radius:50%;box-shadow:0 0 20px #c084fc88; }
+    .title-style-bolt::before { content:"ϟ";right:18px;top:2px;font-size:76px;color:#2dd4bf55;transform:skew(-8deg); }
+    .title-style-bolt::after { left:0;top:0;width:5px;height:100%;background:#2dd4bf;box-shadow:0 0 18px #2dd4bf; }
+    .title-style-rage::before { left:-20px;right:-20px;bottom:14px;height:16px;background:repeating-linear-gradient(135deg,#fb718522 0 8px,transparent 8px 16px);transform:skewX(-25deg); }
+    .title-style-rage::after { width:12px;height:75px;right:24px;top:10px;background:#fb718533;transform:rotate(38deg);box-shadow:18px 0 #fb718522; }
+    .title-style-infinity::before { content:"∞";right:5px;top:-18px;font-size:110px;color:#f0abfc30;font-weight:900; }
+    .title-style-infinity::after { left:8px;right:8px;top:8px;bottom:8px;border:1px dashed #f0abfc66;border-radius:12px; }
+    .title-style-rocket::before { content:"➤";right:18px;top:18px;font-size:48px;color:#38bdf866;transform:rotate(-25deg); }
+    .title-style-rocket::after { width:100px;height:3px;right:4px;top:65px;background:linear-gradient(90deg,transparent,#38bdf8aa);transform:rotate(-25deg); }
+    .title-style-galaxy::before { width:95px;height:45px;right:-5px;top:30px;border:8px solid #818cf844;border-radius:50%;transform:rotate(-28deg);box-shadow:0 0 22px #818cf855; }
+    .title-style-galaxy::after { width:7px;height:7px;border-radius:50%;right:42px;top:47px;background:#fff;box-shadow:20px -18px 0 #c4b5fd, -22px 15px 0 #818cfdaa; }
+    .title-style-star::before { content:"✦";right:17px;top:4px;font-size:72px;color:#fde04755;text-shadow:0 0 22px #fde047; }
+    .title-style-star::after { width:100%;height:1px;left:0;bottom:17px;background:linear-gradient(90deg,transparent,#fde04788,transparent); }
+    .title-style-coin::before { width:58px;height:58px;right:15px;top:21px;border:5px solid #34d39955;border-radius:50%;box-shadow:inset 0 0 0 4px #34d39922,0 0 18px #34d39944; }
+    .title-style-coin::after { content:"₩";right:31px;top:28px;font-size:28px;color:#34d39977;font-weight:900; }
+    .title-style-hammer::before { content:"⚒";right:12px;top:13px;font-size:58px;color:#fbbf2466;transform:rotate(-20deg); }
+    .title-style-hammer::after { left:0;right:0;bottom:0;height:5px;background:repeating-linear-gradient(90deg,#fbbf24 0 18px,#d97706 18px 36px);opacity:.45; }
+    .title-style-blade::before { width:110px;height:5px;right:-8px;top:25px;background:linear-gradient(90deg,transparent,#f8fafc,#94a3b8);transform:rotate(-35deg);box-shadow:0 28px 0 #f8faf822; }
+    .title-style-blade::after { width:28px;height:28px;right:30px;top:42px;border:2px solid #f8fafc66;border-radius:50%; }
+    .title-style-nose::before { content:"〰";right:8px;top:20px;font-size:70px;color:#67e8f955;transform:rotate(-8deg); }
+    .title-style-nose::after { width:70px;height:20px;right:18px;bottom:14px;border-bottom:3px dotted #67e8f966;border-radius:50%; }
+    .title-style-nature::before { width:95px;height:95px;right:-20px;top:-20px;border:1px solid #86efac55;border-radius:50%;box-shadow:inset 0 0 0 12px #86efac11,0 0 25px #86efac22; }
+    .title-style-nature::after { width:70px;height:2px;right:10px;top:58px;background:#86efac66;transform:rotate(-45deg); }
+    .title-style-skull::before { content:"☠";right:12px;top:7px;font-size:65px;color:#f472b655;filter:drop-shadow(0 0 12px #f472b8); }
+    .title-style-skull::after { left:0;right:0;bottom:0;height:2px;background:#f472b866;box-shadow:0 -8px 0 #f472b822,0 -16px 0 #f472b811; }
+    .title-style-diamond::before { width:58px;height:58px;right:20px;top:25px;border:3px solid #93c5fd88;transform:rotate(45deg);box-shadow:0 0 25px #93c5fd55; }
+    .title-style-diamond::after { width:28px;height:28px;right:35px;top:40px;background:#93c5fd22;transform:rotate(45deg); }
+    .title-style-crystal::before { width:45px;height:70px;right:24px;top:17px;background:linear-gradient(135deg,#a78bfa55,transparent);clip-path:polygon(50% 0,100% 25%,75% 100%,25% 100%,0 25%); }
+    .title-style-crystal::after { width:2px;height:78px;right:46px;top:13px;background:#fff8;transform:rotate(20deg); }
+    .title-style-ufo::before { width:86px;height:32px;right:3px;top:35px;border:3px solid #e879f966;border-radius:50%;box-shadow:0 0 20px #e879f955; }
+    .title-style-ufo::after { width:34px;height:18px;right:29px;top:27px;border:2px solid #f0abfc55;border-radius:50% 50% 35% 35%; }
+    .title-style-comet::before { width:105px;height:14px;right:-4px;top:34px;border-radius:50%;background:linear-gradient(90deg,transparent,#fef08a44,#fff);transform:rotate(-22deg);filter:blur(1px); }
+    .title-style-comet::after { width:20px;height:20px;border-radius:50%;right:20px;top:28px;background:#fff;box-shadow:0 0 22px 7px #fef08a77; }
+    .title-style-gem::before { width:52px;height:52px;right:21px;top:25px;border:4px solid #fcd34d77;transform:rotate(45deg) skew(8deg,8deg);box-shadow:0 0 24px #fcd34d55; }
+    .title-style-gem::after { left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#fcd34d,transparent,#fcd34d); }
+    .title-style-shop::before { content:"▣";right:16px;top:8px;font-size:62px;color:#5eead455; }
+    .title-style-shop::after { left:10px;right:10px;bottom:12px;height:10px;border-top:2px solid #5eead466;border-bottom:2px solid #5eead466; }
+    .title-style-shield::before { width:60px;height:70px;right:18px;top:18px;border:3px solid #f8717188;clip-path:polygon(50% 0,90% 18%,82% 72%,50% 100%,18% 72%,10% 18%);box-shadow:0 0 20px #f8717155; }
+    .title-style-shield::after { content:"✦";right:37px;top:36px;font-size:22px;color:#fff8; }
     hr { border-color:rgba(255,255,255,.10) !important; }
     </style>
     """,
@@ -1219,7 +1331,8 @@ left_col, right_col = st.columns([2.4, 7.6], gap="medium")
 with left_col:
   if not st.session_state.is_rebirth and st.session_state.level >= 35:
     st.markdown(
-        "<div id='rebirth-prompt' style='display:none;background:rgba(220,38,38,0.2);border:2px solid"
+        "<div"
+        " style='background:rgba(220,38,38,0.2);border:2px solid"
         " #ef4444;padding:12px;border-radius:8px;text-align:center;margin-bottom:12px;'>"
         "<h3 style='color:#f87171; margin:0 0 6px 0;'>🌌 차원 한계 도달</h3>"
         "<p style='font-size:13px; color:#f1f5f9; margin:0 0 10px"
@@ -1230,54 +1343,6 @@ with left_col:
     if st.button("✨ 환생하기", use_container_width=True):
       trigger_rebirth()
       st.rerun()
-    st.markdown(
-        """
-        <script>
-        (function() {
-            const delay = 6200;
-            const prompt = document.getElementById('rebirth-prompt');
-
-            function findRebirthButton() {
-                const buttons = Array.from(document.querySelectorAll('button'));
-                return buttons.find(btn => (btn.innerText || '').includes('환생하기'));
-            }
-
-            function hideButton() {
-                const btn = findRebirthButton();
-                if (!btn) return false;
-                const wrap = btn.closest('[data-testid="stButton"]') || btn.parentElement;
-                if (wrap) {
-                    wrap.setAttribute('data-rebirth-hidden', 'true');
-                    wrap.style.display = 'none';
-                }
-                return true;
-            }
-
-            function reveal() {
-                if (prompt) prompt.style.display = 'block';
-                const btn = findRebirthButton();
-                if (btn) {
-                    const wrap = btn.closest('[data-testid="stButton"]') || btn.parentElement;
-                    if (wrap) {
-                        wrap.style.display = '';
-                        wrap.removeAttribute('data-rebirth-hidden');
-                    }
-                }
-            }
-
-            hideButton();
-            const observer = new MutationObserver(function() { hideButton(); });
-            observer.observe(document.body, {childList: true, subtree: true});
-
-            setTimeout(function() {
-                observer.disconnect();
-                reveal();
-            }, delay);
-        })();
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
     st.markdown(
         "<hr style='margin:10px 0; border-color:rgba(255,255,255,0.1);'>",
         unsafe_allow_html=True,
@@ -1345,13 +1410,13 @@ with left_col:
   sp, down_p, dp, hold_p = current_prob.get(curr_lvl, (5.0, 40.0, 50.0, 5.0))
   st.markdown(
       f"<h4 style='margin:0 0 4px 0; font-size: 14px; color:#fde68a;'>📊 현재"
-      f" 강화 확률</h4>",
+      f" 강화 확률 ({curr_lvl}단계)</h4>",
       unsafe_allow_html=True,
   )
   st.markdown(
       f"<div style='font-size:12px; color:#cbd5e1;"
       f" background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;'>•"
-      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b><br>•"
+      f" 성공 확률: <b style='color:#38bdf8;'>{sp}%</b> (크리티컬 5%)[cite: 1]<br>•"
       f" 하락 확률: <b style='color:#facc15;'>{down_p}%</b><br>• 파괴 확률: <b"
       f" style='color:#ef4444;'>{dp}%</b><br>• 유지 확률: <b"
       f" style='color:#94a3b8;'>{hold_p}%</b></div>",
@@ -1363,8 +1428,8 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop1, tab_shop2, tab_warp, tab_ach = st.tabs(
-      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적"]
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
   )
 
   with tab_shop1:
@@ -1454,21 +1519,25 @@ with left_col:
   with tab_warp:
     st.markdown(
         "<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>해당 단계에"
-        " 도달한 적이 있으면 워프권을 사용할 수 있습니다.</div>",
+        " 도달한 적이 있으면 워프권을 사용할 수 있습니다[cite: 1].</div>",
         unsafe_allow_html=True,
     )
 
-    # 워프권 가격 = 해당 워프 단계 가격의 2배
-    warp_levels = (
-        [10, 15, 20, 25, 30]
-        if not st.session_state.is_rebirth
-        else [5, 10, 15, 20]
-    )
-    warp_prices = {
-        w_level: SMELL_DB[st.session_state.is_rebirth][w_level]["price"] * 2
-        for w_level in warp_levels
-    }
-    active_warps = warp_prices.items()
+    if not st.session_state.is_rebirth:
+      warp_prices = {
+          10: 20000000,
+          15: 100000000,
+          20: 400000000,
+          25: 2000000000,
+          30: 10000000000,
+      }
+      active_warps = warp_prices.items()
+    else:
+      season2_warp_prices = {
+          w_level: int(SMELL_DB[True][w_level]["price"] / 2)
+          for w_level in [5, 10, 15, 20]
+      }
+      active_warps = season2_warp_prices.items()
 
     for w_level, w_price in active_warps:
       if not st.session_state.is_rebirth:
@@ -1513,6 +1582,41 @@ with left_col:
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
 
+  with tab_dev:
+    st.markdown(
+        "<div style='font-size:12px; color:#f87171; font-weight:700;"
+        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
+        " 성공합니다</div>",
+        unsafe_allow_html=True,
+    )
+
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+
+    if st.button(
+        "✨ 강제 성공 (+1)",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl),
+    ):
+      st.session_state.prev_level = st.session_state.level
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
+
+      if not st.session_state.is_rebirth:
+        for w_lvl in [10, 15, 20, 25, 30]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_warps[w_lvl] = True
+      else:
+        for w_lvl in [5, 10, 15, 20]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_season2_warps[w_lvl] = True
+
+      check_achievements()
+      save_current_season_state()
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
+
   with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)}")
@@ -1521,20 +1625,22 @@ with left_col:
     for i, (key, info) in enumerate(achievement_items):
       done = st.session_state.achievements.get(key, False)
       icon = "✅" if done else "🔒"
-      bg = "rgba(34,197,94,0.18)" if done else "rgba(30,41,59,0.78)"
-      border = (
-          "rgba(74,222,128,0.7)" if done else "rgba(148,163,184,0.3)"
-      )
+      accent, accent2, deep, title_icon = get_title_theme(info["title"])
+      title_style = get_title_style(info["title"])
+      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
+            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
+      border = accent if done else "rgba(148,163,184,.22)"
       with ach_cols[i % 3]:
         st.markdown(
-            f"<div style='background:{bg}; border:1px solid {border};"
-            " border-radius:12px; padding:10px; margin:0 0 10px 0;"
-            f" min-height:92px;'><div"
-            f" style='font-size:14px;font-weight:800'>{icon}"
-            f" {info['name']}</div><div"
-            f" style='font-size:12px;color:#cbd5e1;margin-top:5px'>{info['desc']}</div><div"
-            f" style='font-size:11px;color:#fde68a;margin-top:7px'>🏷️"
-            f" {info['title']} · 💰 {format_gold(info['reward'])}</div></div>",
+            f"<div class='title-design {title_style}' style='background:{bg};border:1px solid {border};"
+            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
+            f"margin:0 0 10px 0;min-height:116px;'>"
+            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
+            f"{'UNLOCKED' if done else 'LOCKED'}</div>"
+            f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{title_icon} {info['name']}</div>"
+            f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
+            f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
+            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
             unsafe_allow_html=True,
         )
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
@@ -1546,6 +1652,16 @@ with left_col:
         index=options.index(st.session_state.selected_title),
     )
     st.session_state.selected_title = selected
+    t_accent, t_accent2, t_deep, t_icon = get_title_theme(selected)
+    selected_style = get_title_style(selected)
+    st.markdown(
+        f"<div class='title-design {selected_style}' style='margin-top:10px;padding:14px 16px;border-radius:16px;"
+        f"background:linear-gradient(135deg,{t_deep},{t_accent2}55,#020617);"
+        f"border:1px solid {t_accent};box-shadow:0 0 24px {t_accent}25;'>"
+        f"<div style='font-size:10px;letter-spacing:2px;color:#94a3b8'>EQUIPPED TITLE</div>"
+        f"<div style='font-size:20px;font-weight:900;color:{t_accent};margin-top:4px'>{t_icon} {selected}</div></div>",
+        unsafe_allow_html=True,
+    )
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1559,61 +1675,25 @@ with left_col:
   )
 
   max_lvl = 25 if st.session_state.is_rebirth else 35
-
-  dev_mode_text = (
-      "🟢 개발자 모드 ON · 강화 100%"
-      if st.session_state.developer_mode
-      else "⚪ 개발자 모드 OFF"
-  )
-  if st.button(dev_mode_text, use_container_width=True):
-    st.session_state.developer_mode = not st.session_state.developer_mode
-    st.rerun()
-
-  if st.session_state.developer_mode:
-    st.markdown(
-        """
-        <div style="
-            background:rgba(34,197,94,0.15);
-            border:1px solid rgba(74,222,128,0.7);
-            border-radius:10px;
-            padding:8px;
-            margin-bottom:10px;
-            text-align:center;
-            color:#86efac;
-            font-weight:800;
-            font-size:12px;
-        ">
-        🛠️ 개발자 모드 활성화<br>
-        모든 강화가 무조건 성공합니다.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-  if st.button(
-      "🔥 냄새 강화 실행",
-      use_container_width=True,
-      disabled=(st.session_state.level >= max_lvl),
-  ):
-    cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
-    if st.session_state.money < cost:
-      st.error("강화 비용 부족!")
-    else:
-      st.session_state.enhance_attempts += 1
-      run_enhance()
+  action_enhance, action_sell = st.columns(2, gap="small")
+  with action_enhance:
+    if st.button("🔥 강화하기", use_container_width=True, disabled=(st.session_state.level >= max_lvl)):
+      cost = get_enhance_cost(st.session_state.level, st.session_state.is_rebirth)
+      if st.session_state.money < cost:
+        st.error("강화 비용 부족!")
+      else:
+        st.session_state.enhance_attempts += 1
+        run_enhance()
+        check_achievements()
+        save_current_season_state()
+        st.rerun()
+  with action_sell:
+    sell_price = SMELL_DB[st.session_state.is_rebirth][st.session_state.level]["price"]
+    if st.button(f"💰 판매하기  +{format_gold(sell_price)}", use_container_width=True, disabled=(st.session_state.level == 0)):
+      sell()
+      unlock_achievement("seller")
       check_achievements()
-      save_current_season_state()
       st.rerun()
-
-  st.write("")
-  if st.button(
-      "💰 현재 냄새 판매",
-      use_container_width=True,
-      disabled=(st.session_state.level == 0),
-  ):
-    sell()
-    unlock_achievement("seller")
-    st.rerun()
 
 with right_col:
   current_level = st.session_state.level
@@ -1635,7 +1715,7 @@ with right_col:
   is_last_attempt = (
       prev_level == target_last_lvl
       and status
-      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "SHIELD_SAVED", "HOLD"]
+      in ["SUCCESS", "CRITICAL", "PITY_SUCCESS", "FAILED", "DESTROYED", "HOLD"]
   ) or (
       current_level == max_lvl
       and status in ["SUCCESS", "CRITICAL", "PITY_SUCCESS"]
@@ -1735,17 +1815,13 @@ with right_col:
 
         <script>
             const currentLevel = {current_level};
-            const previousLevel = {prev_level};
             const maxLvl = {max_lvl};
             const isRebirth = {"true" if st.session_state.is_rebirth else "false"};
             const status = "{status}";
             const isLastAttempt = {"true" if is_last_attempt else "false"};
             const isFinalSuccess = (currentLevel === maxLvl && (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS"));
-            // 마지막 단계 연출에서는 결과와 무관하게 동일한 시각 연출을 사용
-            const visualLevel = isLastAttempt ? previousLevel : currentLevel;
-            const neutralColor = "#7dd3fc";
 
-            if (!isLastAttempt && (currentLevel >= 15 || isFinalSuccess)) {{
+            if (currentLevel >= 15 || isFinalSuccess) {{
                 document.getElementById('mainTitle').classList.add('shaking-text');
                 document.getElementById('descText').classList.add('shaking-text');
                 document.getElementById('priceText').classList.add('shaking-text');
@@ -1810,14 +1886,6 @@ with right_col:
 
             applyStatusText();
 
-            // 마지막 단계에서는 결과가 공개되기 전까지 모든 모션/색상을 동일하게 유지
-            if (isLastAttempt) {{
-                statusColor = neutralColor;
-                particleSize = 0.30;
-                particleSpeed = 0.85;
-                glowIntensity = 18;
-            }}
-
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 0.6, 10.0);
@@ -1828,14 +1896,14 @@ with right_col:
             renderer.shadowMap.enabled = true;
             document.getElementById('container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, (isFinalSuccess && !isLastAttempt) ? 2.0 : 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, isFinalSuccess ? 2.0 : 0.8);
             scene.add(ambientLight);
 
-            const mainLight = new THREE.DirectionalLight(0xffffff, (isFinalSuccess && !isLastAttempt) ? 4.0 : 2.0);
+            const mainLight = new THREE.DirectionalLight(0xffffff, isFinalSuccess ? 4.0 : 2.0);
             mainLight.position.set(5, 8, 5);
             scene.add(mainLight);
 
-            const pointLight = new THREE.PointLight(statusColor, glowIntensity, (isFinalSuccess && !isLastAttempt) ? 60 : 40);
+            const pointLight = new THREE.PointLight(statusColor, glowIntensity, isFinalSuccess ? 60 : 40);
             pointLight.position.set(0, 0, 3);
             scene.add(pointLight);
 
@@ -1849,8 +1917,8 @@ with right_col:
             }}
             starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMat = new THREE.PointsMaterial({{
-                color: isLastAttempt ? 0x7dd3fc : (isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff)),
-                size: isLastAttempt ? 0.07 : (isFinalSuccess ? 0.12 : 0.07),
+                color: isFinalSuccess ? 0xffd700 : (isRebirth ? 0x00f0ff : 0xffffff),
+                size: isFinalSuccess ? 0.12 : 0.07,
                 transparent: true,
                 opacity: 0.7,
                 blending: THREE.AdditiveBlending
@@ -1858,7 +1926,7 @@ with right_col:
             const starField = new THREE.Points(starGeo, starMat);
             scene.add(starField);
 
-            const particleCount = (isFinalSuccess && !isLastAttempt) ? 2000 : 500;
+            const particleCount = isFinalSuccess ? 2000 : 500;
             const particleGeo = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             const particleVelocities = [];
@@ -1869,7 +1937,7 @@ with right_col:
                 particlePositions[i*3 + 2] = (Math.random() - 0.5) * 6.0;
                 
                 let spd = particleSpeed;
-                if (!isLastAttempt && status === "FAILED") spd = 0.2;
+                if (status === "FAILED") spd = 0.2;
 
                 particleVelocities.push({{
                     x: (Math.random() - 0.5) * 0.01 * spd,
@@ -1883,7 +1951,7 @@ with right_col:
                 color: new THREE.Color(statusColor),
                 size: particleSize,
                 transparent: true,
-                opacity: (!isLastAttempt && status === "FAILED") ? 0.2 : 0.8,
+                opacity: status === "FAILED" ? 0.2 : 0.8,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             }});
@@ -1894,7 +1962,7 @@ with right_col:
             objectGroup.position.y = -0.7;
 
             let baseGeo;
-            const lvl = visualLevel;
+            const lvl = {current_level};
 
             if (isRebirth) {{
                 if (lvl <= 3) {{
@@ -1970,23 +2038,23 @@ with right_col:
 
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
-                emissive: isLastAttempt ? neutralColor : (isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111")),
-                emissiveIntensity: isLastAttempt ? 0.45 : (isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1))),
+                emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
+                emissiveIntensity: isFinalSuccess ? 1.5 : (status === "SUCCESS" ? 0.3 : (status === "CRITICAL" || status === "PITY_SUCCESS" ? 0.6 : 0.1)),
                 metalness: 0.9,
                 roughness: 0.1,
                 transmission: 0.6,
                 transparent: true,
-                opacity: (!isLastAttempt && status === "FAILED") ? 0.5 : 0.95,
+                opacity: status === "FAILED" ? 0.5 : 0.95,
                 wireframe: false
             }});
             const outerMesh = new THREE.Mesh(baseGeo, outerMat);
             objectGroup.add(outerMesh);
 
-            const coreGeo = new THREE.SphereGeometry((isFinalSuccess && !isLastAttempt) ? 1.6 : 1.2, 32, 32);
+            const coreGeo = new THREE.SphereGeometry(isFinalSuccess ? 1.6 : 1.2, 32, 32);
             const coreMat = new THREE.MeshPhysicalMaterial({{
                 color: 0xffffff,
                 emissive: statusColor,
-                emissiveIntensity: isLastAttempt ? 1.2 : (isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8)),
+                emissiveIntensity: isFinalSuccess ? 5.0 : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? 2.0 : 0.8),
                 roughness: 0.02,
                 metalness: 0.95,
                 transmission: 0.8
@@ -2002,68 +2070,82 @@ with right_col:
             const mainTl = gsap.timeline();
 
             if (isLastAttempt) {{
-                // 결과를 바로 알 수 없도록 5.5초 동안 결과 UI를 숨기고
-                // 성공/하락/파괴/유지 모두 동일한 색상과 동일한 시네마틱 연출을 사용
+                // UI 잠시 숨기기
                 cinematicUi.style.opacity = "0";
-                statusText.innerText = "";
 
-                objectGroup.scale.set(0.45, 0.45, 0.45);
-                pointLight.color.set(neutralColor);
-                pointLight.intensity = 4;
+                // 연출 초기화
+                objectGroup.scale.set(0.5, 0.5, 0.5);
+                pointLight.intensity = 5;
 
-                // 5.5초 동안 천천히 긴장감을 올리는 공통 연출
+                // 5초간 화려한 진동, 카메라 서서히 줌인, 오브젝트 수퍼 스케일업 & 초고속 회전 연출
                 mainTl.to(camera.position, {{
-                    z: 4.8,
-                    duration: 5.5,
-                    ease: "power2.inOut"
-                }}, 0);
-
-                mainTl.to(objectGroup.scale, {{
-                    x: 2.8, y: 2.8, z: 2.8,
-                    duration: 5.5,
-                    ease: "power2.in"
-                }}, 0);
-
-                mainTl.to(pointLight, {{
-                    intensity: 140,
-                    duration: 5.5,
+                    z: 4.2,
+                    duration: 4.8,
                     ease: "power3.in"
                 }}, 0);
 
-                mainTl.to(objectGroup.rotation, {{
-                    y: Math.PI * 8,
-                    x: Math.PI * 2,
-                    duration: 5.5,
-                    ease: "power2.in"
+                mainTl.to(objectGroup.scale, {{
+                    x: 3.5, y: 3.5, z: 3.5,
+                    duration: 4.8,
+                    ease: "power3.in"
                 }}, 0);
 
-                // 중간에 살짝 흔들리지만 결과별 차이는 전혀 없음
-                mainTl.to(camera.position, {{
-                    x: 0.35,
-                    duration: 0.25,
-                    repeat: 7,
-                    yoyo: true,
-                    ease: "sine.inOut"
-                }}, 2.2);
+                mainTl.to(pointLight, {{
+                    intensity: 200,
+                    duration: 4.8,
+                    ease: "power4.in"
+                }}, 0);
 
-                // 5.5초 후에만 결과 자막 공개
+                // 빛의 서라운드 라이트 컬러 왜곡 (무지개빛 색상 트랜지션)
+                const colors = ["#ff0055", "#00ffff", "#ffaa00", "#7000ff", "#ffffff"];
+                colors.forEach((col, idx) => {{
+                    mainTl.to(pointLight.color, {{
+                        r: new THREE.Color(col).r,
+                        g: new THREE.Color(col).g,
+                        b: new THREE.Color(col).b,
+                        duration: 0.9,
+                        ease: "linear"
+                    }}, idx * 0.9);
+                }});
+
+                // 카메라 & 코어 가속 및 극적인 시공간 시각적 왜곡 진동
+                const basePosY = -0.7;
+                mainTl.to(objectGroup.position, {{
+                    duration: 4.8,
+                    onUpdate: function() {{
+                        const p = this.progress(); // 0 ~ 1
+                        const shake = Math.pow(p, 2) * 0.8; // 진행될수록 가속되는 진동 폭
+                        objectGroup.position.x = (Math.random() - 0.5) * shake;
+                        objectGroup.position.y = basePosY + (Math.random() - 0.5) * shake;
+                        objectGroup.position.z = (Math.random() - 0.5) * shake;
+
+                        // 회전 가속 연출
+                        const speedMult = 1 + p * 15;
+                        objectGroup.rotation.x += 0.05 * speedMult;
+                        objectGroup.rotation.y += 0.08 * speedMult;
+                        objectGroup.rotation.z += 0.03 * speedMult;
+                    }}
+                }}, 0);
+
+                // 4.8초 시점에 극적인 화면 가득 차는 섬광 연출 (Flash explosion)
                 mainTl.to(flashOverlay, {{
                     opacity: 1.0,
-                    duration: 0.18,
+                    duration: 0.2,
                     ease: "power4.in",
                     onComplete: function() {{
                         cinematicUi.style.opacity = "1";
                         camera.position.set(0, 0.6, 10.0);
-                        applyStatusText();
+                        
+                        // 결과 연출 (파괴 or 성공 or 실패)
                         triggerResultAnimation();
                     }}
-                }}, 5.5);
+                }}, 4.8);
 
                 mainTl.to(flashOverlay, {{
                     opacity: 0,
-                    duration: 0.9,
+                    duration: 1.0,
                     ease: "power2.out"
-                }}, 5.68);
+                }}, 5.0);
 
             }} else {{
                 // 일반 단계 시도 시 즉시 결과 연출
@@ -2073,65 +2155,7 @@ with right_col:
             function triggerResultAnimation() {{
                 const resultTl = gsap.timeline();
 
-                if (status === "SHIELD_SAVED") {{
-                    // 방지권 발동: 결과 공개 후 전용 보호막 애니메이션
-                    outerMesh.visible = true;
-                    coreMesh.visible = true;
-                    pointLight.color.set("#60a5fa");
-                    pointLight.intensity = 85;
-
-                    const shieldGeo = new THREE.SphereGeometry(3.15, 32, 32);
-                    const shieldMat = new THREE.MeshBasicMaterial({{
-                        color: 0x60a5fa,
-                        transparent: true,
-                        opacity: 0.0,
-                        wireframe: true,
-                        blending: THREE.AdditiveBlending,
-                        depthWrite: false
-                    }});
-                    const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
-                    shieldMesh.position.y = -0.7;
-                    shieldMesh.scale.set(0.35, 0.35, 0.35);
-                    scene.add(shieldMesh);
-
-                    resultTl.to(shieldMesh.material, {{
-                        opacity: 0.9,
-                        duration: 0.18,
-                        ease: "power2.out"
-                    }}, 0)
-                    .to(shieldMesh.scale, {{
-                        x: 1.0, y: 1.0, z: 1.0,
-                        duration: 0.45,
-                        ease: "back.out(2.2)"
-                    }}, 0)
-                    .to(objectGroup.scale, {{
-                        x: 1.35, y: 1.35, z: 1.35,
-                        duration: 0.22,
-                        ease: "back.out(2)"
-                    }}, 0)
-                    .to(objectGroup.scale, {{
-                        x: 1.0, y: 1.0, z: 1.0,
-                        duration: 0.3,
-                        ease: "power2.out"
-                    }})
-                    .to(shieldMesh.rotation, {{
-                        y: Math.PI * 2,
-                        x: Math.PI * 0.5,
-                        duration: 1.0,
-                        ease: "power2.out"
-                    }}, 0)
-                    .to(shieldMesh.material, {{
-                        opacity: 0.0,
-                        duration: 0.45,
-                        ease: "power2.in"
-                    }}, 0.65)
-                    .to(pointLight, {{
-                        intensity: 18,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    }}, 0.15);
-
-                }} else if (status === "DESTROYED") {{
+                if (status === "DESTROYED") {{
                     outerMesh.visible = false;
                     coreMesh.visible = false;
 
