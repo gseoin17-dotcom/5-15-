@@ -113,12 +113,15 @@ def get_shield_cost(level, is_rebirth):
 
 
 # 강화 성공 시 지급되는 포인트
-POINTS_PER_SUCCESS = 100
+# 도달한 단계가 높을수록 더 많은 포인트를 지급합니다.
+# 예: 20단계 달성 성공 = 40P, 20단계 워프권 = 80P
+def get_enhance_point_reward(level):
+  return max(2, int(level) * 2)
 
 
 def get_warp_point_cost(level):
-  # 해당 단계의 강화 성공 포인트 2배
-  return POINTS_PER_SUCCESS * 2
+  # 해당 단계 강화 성공 보상의 2배
+  return get_enhance_point_reward(level) * 2
 
 
 # -----------------------------------------------------------------------------
@@ -978,6 +981,8 @@ def init_progress():
     st.session_state.sell_count = 0
   if "points" not in st.session_state:
     st.session_state.points = 0
+  if "last_point_reward" not in st.session_state:
+    st.session_state.last_point_reward = 0
 
 
 def unlock_achievement(key):
@@ -1102,7 +1107,7 @@ def sync_session_state(target_season):
   st.session_state.money = data["money"]
   st.session_state.status = data["status"]
   st.session_state.shield = data["shield"]
-  st.session_state.tears = data["tears"]
+  st.session_state.tears = min(60, data["tears"])
   st.session_state.pity_count = data["pity_count"]
 
   if target_season == 1:
@@ -1119,7 +1124,7 @@ def save_current_season_state():
   st.session_state.season_data[s]["money"] = st.session_state.money
   st.session_state.season_data[s]["status"] = st.session_state.status
   st.session_state.season_data[s]["shield"] = st.session_state.shield
-  st.session_state.season_data[s]["tears"] = st.session_state.tears
+  st.session_state.season_data[s]["tears"] = min(60, st.session_state.tears)
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
 
   if s == 1:
@@ -1140,8 +1145,11 @@ if "is_rebirth" not in st.session_state:
 # -----------------------------------------------------------------------------
 
 
-def reward_enhance_points():
-  st.session_state.points += POINTS_PER_SUCCESS
+def reward_enhance_points(level):
+  reward = get_enhance_point_reward(level)
+  st.session_state.points += reward
+  st.session_state.last_point_reward = reward
+  return reward
 
 
 def run_enhance():
@@ -1167,7 +1175,7 @@ def run_enhance():
     st.session_state.pity_count = 0
     if st.session_state.level > st.session_state.max_level:
       st.session_state.max_level = st.session_state.level
-    reward_enhance_points()
+    reward_enhance_points(st.session_state.level)
     save_current_season_state()
     return
 
@@ -1187,28 +1195,28 @@ def run_enhance():
     else:
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
-    reward_enhance_points()
+    reward_enhance_points(st.session_state.level)
   elif r < down_limit:
     st.session_state.pity_count += 1
     if curr > 0:
       st.session_state.level -= 1
     st.session_state.status = "FAILED"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
+    st.session_state.tears = min(60, st.session_state.tears + 1)
   elif r < destroy_limit:
     if st.session_state.shield > 0:
       st.session_state.shield -= 1
       st.session_state.pity_count += 1
       st.session_state.status = "SHIELD_SAVED"
-      st.session_state.tears = min(80, st.session_state.tears + 1)
+      st.session_state.tears = min(60, st.session_state.tears + 1)
     else:
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
-      st.session_state.tears = min(80, st.session_state.tears + 2)
+      st.session_state.tears = min(60, st.session_state.tears + 2)
   else:
     st.session_state.pity_count += 1
     st.session_state.status = "HOLD"
-    st.session_state.tears = min(80, st.session_state.tears + 1)
+    st.session_state.tears = min(60, st.session_state.tears + 1)
 
   if st.session_state.level > st.session_state.max_level:
     st.session_state.max_level = st.session_state.level
@@ -1395,14 +1403,15 @@ with left_col:
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
         f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 80개</div></div>",
+        " 60개</div></div>",
         unsafe_allow_html=True,
     )
     st.write("")
     st.markdown(
         f"<div style='text-align: center;'><div style='font-size:12px;"
         f" color:#fde68a;'>⭐ 포인트</div><div style='font-size:15px;"
-        f" font-weight:800; color:#facc15;'>{st.session_state.points:,}P</div></div>",
+        f" font-weight:800; color:#facc15;'>{st.session_state.points:,}P</div>"
+        f"<div style='font-size:10px; color:#cbd5e1;'>다음 성공: +{get_enhance_point_reward(min(st.session_state.level + 1, 35 if not st.session_state.is_rebirth else 25)):,}P</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -1516,7 +1525,7 @@ with left_col:
           f"<div style='font-size:13px; color:#cbd5e1;"
           f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
           f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
-          f" color:#38bdf8;'>{st.session_state.tears} / 80개</span></div>",
+          f" color:#38bdf8;'>{st.session_state.tears} / 60개</span></div>",
           unsafe_allow_html=True,
       )
 
@@ -1542,8 +1551,8 @@ with left_col:
 
   with tab_warp:
     st.markdown(
-        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>{POINTS_PER_SUCCESS}P</b>를 획득합니다. "
-        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>해당 단계에 도달한 적이 있으면 포인트로 워프할 수 있습니다.</div>",
+        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>도달한 단계 × 2P</b>를 획득합니다. "
+        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>워프권 가격은 해당 단계 강화 성공 포인트의 2배입니다.</div>",
         unsafe_allow_html=True,
     )
 
@@ -1613,7 +1622,7 @@ with left_col:
       st.session_state.prev_level = st.session_state.level
       st.session_state.level += 1
       st.session_state.status = "SUCCESS"
-      reward_enhance_points()
+      reward_enhance_points(st.session_state.level)
       if st.session_state.level > st.session_state.max_level:
         st.session_state.max_level = st.session_state.level
 
