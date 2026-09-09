@@ -1653,15 +1653,8 @@ with left_col:
     )
     st.session_state.selected_title = selected
     t_accent, t_accent2, t_deep, t_icon = get_title_theme(selected)
-    selected_style = get_title_style(selected)
-    st.markdown(
-        f"<div class='title-design {selected_style}' style='margin-top:10px;padding:14px 16px;border-radius:16px;"
-        f"background:linear-gradient(135deg,{t_deep},{t_accent2}55,#020617);"
-        f"border:1px solid {t_accent};box-shadow:0 0 24px {t_accent}25;'>"
-        f"<div style='font-size:10px;letter-spacing:2px;color:#94a3b8'>EQUIPPED TITLE</div>"
-        f"<div style='font-size:20px;font-weight:900;color:{t_accent};margin-top:4px'>{t_icon} {selected}</div></div>",
-        unsafe_allow_html=True,
-    )
+    # 선택한 칭호는 아래 3D 화면 상단의 칭호 위치에서만 표시합니다.
+    # 기존의 큰 "EQUIPPED TITLE" 카드 영역은 제거했습니다.
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
@@ -1743,9 +1736,9 @@ with right_col:
                 pointer-events: none;
                 font-size: 22px;
                 font-weight: 900;
-                color: #fde68a;
-                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
                 white-space: nowrap;
+                letter-spacing: .2px;
+                text-shadow: 0 0 12px rgba(253,230,138,0.75), 0 2px 4px rgba(0,0,0,0.9);
             }}
 
             .cinematic-ui {{
@@ -1803,7 +1796,7 @@ with right_col:
     <body>
         <div id="container"></div>
         <div id="flashOverlay"></div>
-        <div class="selected-title-ui">🏷️ {st.session_state.selected_title}</div>
+        <div class="selected-title-ui" style="color:{get_title_theme(st.session_state.selected_title)[0]};text-shadow:0 0 12px {get_title_theme(st.session_state.selected_title)[0]}99,0 2px 4px rgba(0,0,0,0.9);">{get_title_theme(st.session_state.selected_title)[3]} {st.session_state.selected_title}</div>
 
         <div id="cinematicUi" class="cinematic-ui visible">
             <div id="statusText" class="status-header">READY</div>
