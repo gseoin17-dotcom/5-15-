@@ -1768,6 +1768,7 @@ with right_col:
   current_cost = format_gold(
       get_enhance_cost(current_level, st.session_state.is_rebirth)
   )
+  current_point_reward = get_enhance_point_reward(current_level)
   tier = curr_data["tier"]
   status = st.session_state.status
 
@@ -1903,6 +1904,7 @@ with right_col:
             <div id="mainTitle" class="title-tier-{tier}">{card_title}</div>
             <div id="descText" class="desc-text">"{card_desc}"</div>
             <div id="priceText" class="price-text">예상 가치: {card_price}</div>
+            <div id="pointText" class="point-text">획득 포인트: {current_point_reward:,}P</div>
             <div id="costText" class="cost-text">필요 강화 비용: {current_cost}</div>
         </div>
 
