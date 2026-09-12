@@ -181,6 +181,20 @@ def get_shield_point_cost(level, is_rebirth):
   return get_enhance_point_reward(level) * 5
 
 
+def get_revival_money_cost(level, is_rebirth):
+  # 부활권은 파괴 직전 단계 가치의 10배로 매우 비싸게 설정
+  level = max(1, min(int(level), 25 if is_rebirth else 35))
+  base_price = SMELL_DB[is_rebirth][level]["price"]
+  if base_price == float("inf"):
+    return float("inf")
+  return int(base_price * 10)
+
+
+def get_revival_point_cost(level):
+  # 포인트 부활권도 매우 비싸게 설정
+  return get_enhance_point_reward(level) * 50
+
+
 # -----------------------------------------------------------------------------
 # 3. 게임 데이터베이스 정의 (시즌1: 35단계 / 시즌2: 25단계)
 # -----------------------------------------------------------------------------
@@ -1166,6 +1180,7 @@ if "season_data" not in st.session_state:
           "money": 1000000,
           "status": "READY",
           "shield": 0,
+          "revival_ticket": 0,
           "tears": 0,
           "pity_count": 0,
           "unlocked_warps": {
@@ -1183,6 +1198,7 @@ if "season_data" not in st.session_state:
           "money": 1000000000,
           "status": "READY",
           "shield": 0,
+          "revival_ticket": 0,
           "tears": 50,
           "pity_count": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
@@ -1206,6 +1222,7 @@ def sync_session_state(target_season):
   st.session_state.money = data["money"]
   st.session_state.status = data["status"]
   st.session_state.shield = data["shield"]
+  st.session_state.revival_ticket = data.get("revival_ticket", 0)
   st.session_state.tears = min(60, data["tears"])
   st.session_state.pity_count = data["pity_count"]
 
@@ -1223,6 +1240,7 @@ def save_current_season_state():
   st.session_state.season_data[s]["money"] = st.session_state.money
   st.session_state.season_data[s]["status"] = st.session_state.status
   st.session_state.season_data[s]["shield"] = st.session_state.shield
+  st.session_state.season_data[s]["revival_ticket"] = st.session_state.revival_ticket
   st.session_state.season_data[s]["tears"] = min(60, st.session_state.tears)
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
 
@@ -1339,6 +1357,45 @@ def run_enhance():
         st.session_state.unlocked_season2_warps[w_lvl] = True
 
   save_current_season_state()
+
+
+def buy_revival_ticket_with_money():
+  if st.session_state.status != "DESTROYED":
+    return False
+  destroyed_level = max(1, st.session_state.prev_level)
+  cost = get_revival_money_cost(destroyed_level, st.session_state.is_rebirth)
+  if st.session_state.money < cost:
+    return False
+  st.session_state.money -= cost
+  st.session_state.revival_ticket += 1
+  save_current_season_state()
+  return True
+
+
+def buy_revival_ticket_with_points():
+  if st.session_state.status != "DESTROYED":
+    return False
+  destroyed_level = max(1, st.session_state.prev_level)
+  cost = get_revival_point_cost(destroyed_level)
+  if st.session_state.points < cost:
+    return False
+  st.session_state.points -= cost
+  st.session_state.points_spent_total += cost
+  st.session_state.revival_ticket += 1
+  save_current_season_state()
+  return True
+
+
+def use_revival_ticket():
+  if st.session_state.revival_ticket <= 0 or st.session_state.status != "DESTROYED":
+    return False
+  destroyed_level = max(1, st.session_state.prev_level)
+  st.session_state.revival_ticket -= 1
+  st.session_state.level = destroyed_level
+  st.session_state.status = "REVIVED"
+  st.session_state.pity_count = 0
+  save_current_season_state()
+  return True
 
 
 def sell():
@@ -1933,6 +1990,74 @@ with left_col:
       # 💧 눈물
       # ---------------------------------------------------------------------------
 
+      # -----------------------------------------------------------------------
+      # 🔥 부활권 - 파괴되었을 때만 구매 가능
+      # -----------------------------------------------------------------------
+      if st.session_state.status == "DESTROYED":
+        destroyed_level = max(1, st.session_state.prev_level)
+        revival_money_cost = get_revival_money_cost(
+            destroyed_level, st.session_state.is_rebirth
+        )
+        revival_point_cost = get_revival_point_cost(destroyed_level)
+
+        st.markdown(
+            f"""
+            <div style="
+                padding:14px;
+                border-radius:16px;
+                background:#111827;
+                border-left:4px solid #ef4444;
+                margin-top:16px;
+            ">
+                <div style="font-size:17px;font-weight:900;color:#f87171;">🔥 부활권</div>
+                <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
+                    💥 {destroyed_level}단계 강화가 파괴되었습니다. 부활권을 구매하면 파괴 직전 단계로 즉시 부활합니다.
+                </div>
+                <div style="font-size:12px;color:#cbd5e1;margin-top:9px;">
+                    💰 돈 가격: <b style="color:#fde68a;">{format_gold(revival_money_cost)}</b><br>
+                    ⭐ 포인트 가격: <b style="color:#facc15;">{revival_point_cost:,}P</b><br>
+                    🎟️ 부활권은 구매 즉시 사용됩니다.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        revival_money_col, revival_point_col = st.columns(2)
+
+        with revival_money_col:
+          can_buy_revival_money = st.session_state.money >= revival_money_cost
+          if st.button(
+              "💰 돈으로 부활권 구매",
+              key="shop_revival_money",
+              use_container_width=True,
+              disabled=not can_buy_revival_money,
+          ):
+            if buy_revival_ticket_with_money() and use_revival_ticket():
+              st.success(f"🔥 부활권 구매 완료! {destroyed_level}단계로 부활했습니다!")
+              st.rerun()
+            else:
+              st.error(f"돈이 부족합니다! (필요: {format_gold(revival_money_cost)})")
+
+        with revival_point_col:
+          can_buy_revival_point = st.session_state.points >= revival_point_cost
+          if st.button(
+              "⭐ 포인트로 부활권 구매",
+              key="shop_revival_point",
+              use_container_width=True,
+              disabled=not can_buy_revival_point,
+          ):
+            if buy_revival_ticket_with_points() and use_revival_ticket():
+              st.success(f"🔥 부활권 구매 완료! {destroyed_level}단계로 부활했습니다!")
+              st.rerun()
+            else:
+              st.error(f"포인트가 부족합니다! (필요: {revival_point_cost:,}P)")
+
+        st.markdown(
+            "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
+            unsafe_allow_html=True,
+        )
+
   @st.dialog("💧 눈물", width="large")
   def show_tears():
     max_lvl = 25 if st.session_state.is_rebirth else 35
@@ -2330,6 +2455,11 @@ with right_col:
                 }} else if (status === "SHIELD_SAVED") {{
                     statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                     statusColor = "#60a5fa";
+                }} else if (status === "REVIVED") {{
+                    statusText.innerText = "🔥 REVIVAL COMPLETE! (부활권으로 파괴 직전 단계 복구) 🔥";
+                    statusColor = "#f97316";
+                    particleSpeed = 1.1;
+                    glowIntensity = 24;
                 }} else if (status === "DESTROYED") {{
                     statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
                     statusColor = "#ff0000";
