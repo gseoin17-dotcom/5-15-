@@ -1332,6 +1332,8 @@ def run_enhance():
       st.session_state.enhance_failures += 1
       st.session_state.tears = min(60, st.session_state.tears + 1)
     else:
+      # 파괴되기 직전 단계를 저장해 부활권이 정확히 그 단계로 복구하도록 함
+      st.session_state.prev_level = curr
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
@@ -1991,72 +1993,108 @@ with left_col:
       # ---------------------------------------------------------------------------
 
       # -----------------------------------------------------------------------
-      # 🔥 부활권 - 파괴되었을 때만 구매 가능
+      # 🔥 부활권
+      # 파괴 전에도 상점에 미리 표시하고, 실제 구매는 파괴된 뒤에만 가능
       # -----------------------------------------------------------------------
       if st.session_state.status == "DESTROYED":
-        destroyed_level = max(1, st.session_state.prev_level)
-        revival_money_cost = get_revival_money_cost(
-            destroyed_level, st.session_state.is_rebirth
+        revival_target_level = max(1, st.session_state.prev_level)
+        revival_locked = False
+      else:
+        revival_target_level = max(1, st.session_state.level)
+        revival_locked = True
+
+      revival_money_cost = get_revival_money_cost(
+          revival_target_level, st.session_state.is_rebirth
+      )
+      revival_point_cost = get_revival_point_cost(revival_target_level)
+
+      if revival_locked:
+        revival_desc = (
+            f"💡 현재 {revival_target_level}단계에서 파괴되면, 이 가격으로 "
+            "파괴 직전 단계까지 부활할 수 있습니다."
         )
-        revival_point_cost = get_revival_point_cost(destroyed_level)
-
-        st.markdown(
-            f"""
-            <div style="
-                padding:14px;
-                border-radius:16px;
-                background:#111827;
-                border-left:4px solid #ef4444;
-                margin-top:16px;
-            ">
-                <div style="font-size:17px;font-weight:900;color:#f87171;">🔥 부활권</div>
-                <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
-                    💥 {destroyed_level}단계 강화가 파괴되었습니다. 부활권을 구매하면 파괴 직전 단계로 즉시 부활합니다.
-                </div>
-                <div style="font-size:12px;color:#cbd5e1;margin-top:9px;">
-                    💰 돈 가격: <b style="color:#fde68a;">{format_gold(revival_money_cost)}</b><br>
-                    ⭐ 포인트 가격: <b style="color:#facc15;">{revival_point_cost:,}P</b><br>
-                    🎟️ 부활권은 구매 즉시 사용됩니다.
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        revival_border = "#f59e0b"
+        revival_title_color = "#fbbf24"
+      else:
+        revival_desc = (
+            f"💥 {revival_target_level}단계 강화가 파괴되었습니다. "
+            "부활권을 구매하면 파괴 직전 단계로 즉시 부활합니다."
         )
+        revival_border = "#ef4444"
+        revival_title_color = "#f87171"
 
-        revival_money_col, revival_point_col = st.columns(2)
+      st.markdown(
+          f"""
+          <div style="
+              padding:14px;
+              border-radius:16px;
+              background:#111827;
+              border-left:4px solid {revival_border};
+              margin-top:16px;
+          ">
+              <div style="font-size:17px;font-weight:900;color:{revival_title_color};">🔥 부활권</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
+                  {revival_desc}
+              </div>
+              <div style="font-size:12px;color:#cbd5e1;margin-top:9px;">
+                  🎯 부활 대상: <b style="color:#f8fafc;">{revival_target_level}단계</b><br>
+                  💰 돈 가격: <b style="color:#fde68a;">{format_gold(revival_money_cost)}</b><br>
+                  ⭐ 포인트 가격: <b style="color:#facc15;">{revival_point_cost:,}P</b><br>
+                  🎟️ {"파괴 후 구매 및 즉시 사용 가능" if not revival_locked else "파괴되기 전에는 구매할 수 없습니다"}
+              </div>
+          </div>
+          """,
+          unsafe_allow_html=True,
+      )
 
-        with revival_money_col:
-          can_buy_revival_money = st.session_state.money >= revival_money_cost
-          if st.button(
-              "💰 돈으로 부활권 구매",
-              key=f"shop_revival_money_{st.session_state.is_rebirth}_{destroyed_level}",
-              use_container_width=True,
-              disabled=not can_buy_revival_money,
-          ):
-            if buy_revival_ticket_with_money() and use_revival_ticket():
-              st.success(f"🔥 부활권 구매 완료! {destroyed_level}단계로 부활했습니다!")
-              st.rerun()
-            else:
-              st.error(f"돈이 부족합니다! (필요: {format_gold(revival_money_cost)})")
+      revival_money_col, revival_point_col = st.columns(2)
 
-        with revival_point_col:
-          can_buy_revival_point = st.session_state.points >= revival_point_cost
-          if st.button(
-              "⭐ 포인트로 부활권 구매",
-              key=f"shop_revival_point_{st.session_state.is_rebirth}_{destroyed_level}",
-              use_container_width=True,
-              disabled=not can_buy_revival_point,
-          ):
-            if buy_revival_ticket_with_points() and use_revival_ticket():
-              st.success(f"🔥 부활권 구매 완료! {destroyed_level}단계로 부활했습니다!")
-              st.rerun()
-            else:
-              st.error(f"포인트가 부족합니다! (필요: {revival_point_cost:,}P)")
-
-        st.markdown(
-            "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
-            unsafe_allow_html=True,
+      with revival_money_col:
+        can_buy_revival_money = (
+            not revival_locked
+            and st.session_state.money >= revival_money_cost
         )
+        if st.button(
+            "💰 돈으로 부활권 구매",
+            key=f"shop_revival_money_{st.session_state.is_rebirth}_{revival_target_level}",
+            use_container_width=True,
+            disabled=not can_buy_revival_money,
+        ):
+          if buy_revival_ticket_with_money() and use_revival_ticket():
+            st.success(
+                f"🔥 부활권 구매 완료! {revival_target_level}단계로 부활했습니다!"
+            )
+            st.rerun()
+          else:
+            st.error(
+                f"돈이 부족합니다! (필요: {format_gold(revival_money_cost)})"
+            )
+
+      with revival_point_col:
+        can_buy_revival_point = (
+            not revival_locked
+            and st.session_state.points >= revival_point_cost
+        )
+        if st.button(
+            "⭐ 포인트로 부활권 구매",
+            key=f"shop_revival_point_{st.session_state.is_rebirth}_{revival_target_level}",
+            use_container_width=True,
+            disabled=not can_buy_revival_point,
+        ):
+          if buy_revival_ticket_with_points() and use_revival_ticket():
+            st.success(
+                f"🔥 부활권 구매 완료! {revival_target_level}단계로 부활했습니다!"
+            )
+            st.rerun()
+          else:
+            st.error(
+                f"포인트가 부족합니다! (필요: {revival_point_cost:,}P)"
+            )
+
+      st.markdown(
+          "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
+          unsafe_allow_html=True,
+      )
 
   @st.dialog("💧 눈물", width="large")
   def show_tears():
