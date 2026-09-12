@@ -1579,15 +1579,12 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  tab_shop, tab_tears, tab_ach = st.tabs(
-      ["🛒 포인트 상점", "💧 눈물", "🏆 업적"]
-  )
-
   # ---------------------------------------------------------------------------
-  # 🛒 포인트 상점
-  # 방지권/워프권을 한 곳에서 돈 또는 포인트로 구매
+  # 🛒 상점 / 💧 눈물 / 🏆 업적
+  # 각각 버튼을 누르면 큰 전체 화면형 대화창으로 표시
   # ---------------------------------------------------------------------------
-  with tab_shop:
+  @st.dialog("🛒 상점", width="large")
+  def show_shop():
     st.markdown(
         """
         <div style="
@@ -1598,7 +1595,7 @@ with left_col:
             margin-bottom:12px;
         ">
             <div style="font-size:18px;font-weight:900;color:#fde68a;">
-                🛒 포인트 상점
+                🛒 상점
             </div>
             <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
                 방지권과 워프권을 💰 돈 또는 ⭐ 포인트로 구매할 수 있습니다.
@@ -1607,9 +1604,9 @@ with left_col:
         """,
         unsafe_allow_html=True,
     )
-
+    
     money_col, point_col = st.columns(2)
-
+    
     with money_col:
       st.markdown(
           f"""
@@ -1623,7 +1620,7 @@ with left_col:
           """,
           unsafe_allow_html=True,
       )
-
+    
     with point_col:
       st.markdown(
           f"""
@@ -1637,9 +1634,9 @@ with left_col:
           """,
           unsafe_allow_html=True,
       )
-
+    
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-
+    
     # -----------------------------------------------------------------------
     # 🛡️ 방지권
     # -----------------------------------------------------------------------
@@ -1661,9 +1658,9 @@ with left_col:
         """,
         unsafe_allow_html=True,
     )
-
+    
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-
+    
     if st.session_state.is_rebirth:
       shield_money_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
@@ -1673,12 +1670,12 @@ with left_col:
           st.session_state.level,
           st.session_state.is_rebirth,
       )
-
+    
     shield_point_cost = get_shield_point_cost(
         st.session_state.level,
         st.session_state.is_rebirth,
     )
-
+    
     st.markdown(
         f"""
         <div style="font-size:12px;color:#cbd5e1;margin:9px 0;">
@@ -1693,16 +1690,16 @@ with left_col:
         """,
         unsafe_allow_html=True,
     )
-
+    
     shield_money_col, shield_point_col = st.columns(2)
-
+    
     with shield_money_col:
       can_buy_shield_money = (
           st.session_state.level >= min_shield_level
           and st.session_state.shield < 3
           and st.session_state.money >= shield_money_cost
       )
-
+    
       if st.button(
           "💰 돈으로 구매",
           key="shop_shield_money",
@@ -1721,14 +1718,14 @@ with left_col:
           save_current_season_state()
           st.success("🛡️ 파괴 방지권 구매 완료!")
           st.rerun()
-
+    
     with shield_point_col:
       can_buy_shield_point = (
           st.session_state.level >= min_shield_level
           and st.session_state.shield < 3
           and st.session_state.points >= shield_point_cost
       )
-
+    
       if st.button(
           "⭐ 포인트로 구매",
           key="shop_shield_point",
@@ -1748,12 +1745,12 @@ with left_col:
           save_current_season_state()
           st.success(f"⭐ 방지권 구매 완료! (-{shield_point_cost:,}P)")
           st.rerun()
-
+    
     st.markdown(
         "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
         unsafe_allow_html=True,
     )
-
+    
     # -----------------------------------------------------------------------
     # 🚀 워프권
     # -----------------------------------------------------------------------
@@ -1775,13 +1772,13 @@ with left_col:
         """,
         unsafe_allow_html=True,
     )
-
+    
     warp_levels = (
         [5, 10, 15, 20]
         if st.session_state.is_rebirth
         else [10, 15, 20, 25, 30]
     )
-
+    
     for w_level in warp_levels:
       if not st.session_state.is_rebirth:
         is_unlocked = (
@@ -1793,13 +1790,13 @@ with left_col:
             st.session_state.unlocked_season2_warps.get(w_level, False)
             or st.session_state.max_level >= w_level
         )
-
+    
       warp_point_cost = get_warp_point_cost(w_level)
       warp_money_cost = get_warp_money_cost(
           w_level,
           st.session_state.is_rebirth,
       )
-
+    
       st.markdown(
           f"""
           <div style="
@@ -1828,9 +1825,9 @@ with left_col:
           """,
           unsafe_allow_html=True,
       )
-
+    
       warp_money_col, warp_point_col = st.columns(2)
-
+    
       # 워프권 - 돈으로 구매
       with warp_money_col:
         can_buy_warp_money = (
@@ -1838,7 +1835,7 @@ with left_col:
             and st.session_state.level < w_level
             and st.session_state.money >= warp_money_cost
         )
-
+    
         if st.button(
             "💰 돈으로 구매",
             key=f"shop_warp_money_{st.session_state.is_rebirth}_{w_level}",
@@ -1863,7 +1860,7 @@ with left_col:
             check_achievements()
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
-
+    
       # 워프권 - 포인트로 구매
       with warp_point_col:
         can_buy_warp_point = (
@@ -1871,7 +1868,7 @@ with left_col:
             and st.session_state.level < w_level
             and st.session_state.points >= warp_point_cost
         )
-
+    
         if st.button(
             "⭐ 포인트로 구매",
             key=f"shop_warp_point_{st.session_state.is_rebirth}_{w_level}",
@@ -1897,14 +1894,16 @@ with left_col:
             check_achievements()
             st.success(f"🚀 {w_level}단계로 워프 성공! (-{warp_point_cost:,}P)")
             st.rerun()
+    
+      # ---------------------------------------------------------------------------
+      # 💧 눈물
+      # ---------------------------------------------------------------------------
 
-  # ---------------------------------------------------------------------------
-  # 💧 눈물
-  # ---------------------------------------------------------------------------
-  with tab_tears:
+  @st.dialog("💧 눈물", width="large")
+  def show_tears():
     max_lvl = 25 if st.session_state.is_rebirth else 35
     limit_lvl = 18 if st.session_state.is_rebirth else 32
-
+    
     if st.session_state.level >= limit_lvl:
       st.markdown(
           "<div style='font-size:13px;color:#ef4444;font-weight:700;margin-bottom:8px;'>"
@@ -1919,9 +1918,9 @@ with left_col:
           f"{st.session_state.tears} / 60개</span></div>",
           unsafe_allow_html=True,
       )
-
+    
     can_use_tears = st.session_state.level < limit_lvl
-
+    
     if st.button(
         "눈물 기적 가동",
         use_container_width=True,
@@ -1944,7 +1943,8 @@ with left_col:
       else:
         st.error("눈물 20개가 필요합니다.")
 
-  with tab_ach:
+  @st.dialog("🏆 업적", width="large")
+  def show_achievements():
     achieved = sum(st.session_state.achievements.values())
     pct = int((achieved / len(ACHIEVEMENTS)) * 100) if ACHIEVEMENTS else 0
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)} · {pct}%")
@@ -1979,6 +1979,18 @@ with left_col:
         "현재 칭호", options, index=options.index(st.session_state.selected_title),
     )
     st.session_state.selected_title = selected
+
+
+  menu_shop, menu_tears, menu_ach = st.columns(3)
+  with menu_shop:
+    if st.button("🛒 상점", key="open_shop", use_container_width=True):
+      show_shop()
+  with menu_tears:
+    if st.button("💧 눈물", key="open_tears", use_container_width=True):
+      show_tears()
+  with menu_ach:
+    if st.button("🏆 업적", key="open_achievements", use_container_width=True):
+      show_achievements()
 
 
   st.markdown(
