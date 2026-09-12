@@ -164,35 +164,18 @@ def get_enhance_point_reward(level):
   return POINT_REWARD_TABLE[35] + (level - 35) * 10000
 
 
-def get_warp_point_cost(level):
-  # 워프권은 해당 단계 강화 성공 포인트의 20배
-  return get_enhance_point_reward(level) * 20
-
-
-def get_warp_money_cost(level, is_rebirth):
-  # 워프권을 돈으로 구매할 때의 가격
-  # 해당 단계의 냄새 가치와 동일하게 설정
-  return int(SMELL_DB[is_rebirth][level]["price"])
-
-
-def get_shield_point_cost(level, is_rebirth):
-  # 방지권 포인트 가격
-  # 해당 단계 강화 성공 포인트의 5배
-  return get_enhance_point_reward(level) * 5
-
-
 def get_revival_money_cost(level, is_rebirth):
-  # 부활권은 파괴 직전 단계 가치의 10배로 매우 비싸게 설정
-  level = max(1, min(int(level), 25 if is_rebirth else 35))
-  base_price = SMELL_DB[is_rebirth][level]["price"]
-  if base_price == float("inf"):
-    return float("inf")
-  return int(base_price * 10)
-
+  # 부활권 가격: 파괴된 단계의 강화 비용 5배
+  return max(10000, get_enhance_cost(max(0, int(level)), is_rebirth) * 5)
 
 def get_revival_point_cost(level):
-  # 포인트 부활권도 매우 비싸게 설정
-  return get_enhance_point_reward(level) * 50
+  # 부활권 가격: 파괴된 단계의 성공 보상 50배
+  return max(1000, get_enhance_point_reward(max(0, int(level))) * 50)
+
+
+def get_warp_point_cost(level):
+  # 워프권은 포인트가 쉽게 쌓이지 않도록 해당 단계 강화 성공 보상의 20배
+  return get_enhance_point_reward(level) * 20
 
 
 # -----------------------------------------------------------------------------
@@ -1090,6 +1073,10 @@ def init_progress():
     st.session_state.critical_count = 0
   if "destroy_count" not in st.session_state:
     st.session_state.destroy_count = 0
+  if "revival_ticket" not in st.session_state:
+    st.session_state.revival_ticket = 0
+  if "destroyed_level" not in st.session_state:
+    st.session_state.destroyed_level = 0
 
 
 def unlock_achievement(key):
@@ -1180,9 +1167,10 @@ if "season_data" not in st.session_state:
           "money": 1000000,
           "status": "READY",
           "shield": 0,
-          "revival_ticket": 0,
           "tears": 0,
           "pity_count": 0,
+          "revival_ticket": 0,
+          "destroyed_level": 0,
           "unlocked_warps": {
               10: False,
               15: False,
@@ -1198,9 +1186,10 @@ if "season_data" not in st.session_state:
           "money": 1000000000,
           "status": "READY",
           "shield": 0,
-          "revival_ticket": 0,
           "tears": 50,
           "pity_count": 0,
+          "revival_ticket": 0,
+          "destroyed_level": 0,
           "unlocked_season2_warps": {5: False, 10: False, 15: False, 20: False},
       },
   }
@@ -1222,9 +1211,10 @@ def sync_session_state(target_season):
   st.session_state.money = data["money"]
   st.session_state.status = data["status"]
   st.session_state.shield = data["shield"]
-  st.session_state.revival_ticket = data.get("revival_ticket", 0)
   st.session_state.tears = min(60, data["tears"])
   st.session_state.pity_count = data["pity_count"]
+  st.session_state.revival_ticket = data.get("revival_ticket", 0)
+  st.session_state.destroyed_level = data.get("destroyed_level", 0)
 
   if target_season == 1:
     st.session_state.unlocked_warps = data["unlocked_warps"]
@@ -1240,9 +1230,10 @@ def save_current_season_state():
   st.session_state.season_data[s]["money"] = st.session_state.money
   st.session_state.season_data[s]["status"] = st.session_state.status
   st.session_state.season_data[s]["shield"] = st.session_state.shield
-  st.session_state.season_data[s]["revival_ticket"] = st.session_state.revival_ticket
   st.session_state.season_data[s]["tears"] = min(60, st.session_state.tears)
   st.session_state.season_data[s]["pity_count"] = st.session_state.pity_count
+  st.session_state.season_data[s]["revival_ticket"] = st.session_state.get("revival_ticket", 0)
+  st.session_state.season_data[s]["destroyed_level"] = st.session_state.get("destroyed_level", 0)
 
   if s == 1:
     st.session_state.season_data[1]["unlocked_warps"] = (
@@ -1268,6 +1259,42 @@ def reward_enhance_points(level):
   st.session_state.points_earned_total += reward
   st.session_state.last_point_reward = reward
   return reward
+
+
+def buy_and_use_revival(payment):
+  if st.session_state.status != "DESTROYED":
+    st.warning("현재 부활할 수 있는 파괴 상태가 아닙니다.")
+    return
+
+  destroyed_level = max(0, int(st.session_state.get("destroyed_level", 0)))
+  money_cost = get_revival_money_cost(destroyed_level, st.session_state.is_rebirth)
+  point_cost = get_revival_point_cost(destroyed_level)
+
+  if payment == "money":
+    if st.session_state.money < money_cost:
+      st.error(f"돈이 부족합니다. 필요 금액: {format_gold(money_cost)}")
+      return
+    st.session_state.money -= money_cost
+  else:
+    if st.session_state.points < point_cost:
+      st.error(f"포인트가 부족합니다. 필요 포인트: {point_cost:,}P")
+      return
+    st.session_state.points -= point_cost
+    st.session_state.points_spent_total += point_cost
+
+  max_lvl = 25 if st.session_state.is_rebirth else 35
+  st.session_state.level = min(destroyed_level, max_lvl)
+  st.session_state.prev_level = 0
+  st.session_state.destroyed_level = 0
+  st.session_state.status = "REVIVED"
+  save_current_season_state()
+  st.rerun()
+
+def give_up_revival():
+  st.session_state.destroyed_level = 0
+  st.session_state.status = "GAVE_UP"
+  save_current_season_state()
+  st.rerun()
 
 
 def run_enhance():
@@ -1332,8 +1359,7 @@ def run_enhance():
       st.session_state.enhance_failures += 1
       st.session_state.tears = min(60, st.session_state.tears + 1)
     else:
-      # 파괴되기 직전 단계를 저장해 부활권이 정확히 그 단계로 복구하도록 함
-      st.session_state.prev_level = curr
+      st.session_state.destroyed_level = curr
       st.session_state.pity_count += 1
       st.session_state.level = 0
       st.session_state.status = "DESTROYED"
@@ -1359,45 +1385,6 @@ def run_enhance():
         st.session_state.unlocked_season2_warps[w_lvl] = True
 
   save_current_season_state()
-
-
-def buy_revival_ticket_with_money():
-  if st.session_state.status != "DESTROYED":
-    return False
-  destroyed_level = max(1, st.session_state.prev_level)
-  cost = get_revival_money_cost(destroyed_level, st.session_state.is_rebirth)
-  if st.session_state.money < cost:
-    return False
-  st.session_state.money -= cost
-  st.session_state.revival_ticket += 1
-  save_current_season_state()
-  return True
-
-
-def buy_revival_ticket_with_points():
-  if st.session_state.status != "DESTROYED":
-    return False
-  destroyed_level = max(1, st.session_state.prev_level)
-  cost = get_revival_point_cost(destroyed_level)
-  if st.session_state.points < cost:
-    return False
-  st.session_state.points -= cost
-  st.session_state.points_spent_total += cost
-  st.session_state.revival_ticket += 1
-  save_current_season_state()
-  return True
-
-
-def use_revival_ticket():
-  if st.session_state.revival_ticket <= 0 or st.session_state.status != "DESTROYED":
-    return False
-  destroyed_level = max(1, st.session_state.prev_level)
-  st.session_state.revival_ticket -= 1
-  st.session_state.level = destroyed_level
-  st.session_state.status = "REVIVED"
-  st.session_state.pity_count = 0
-  save_current_season_state()
-  return True
 
 
 def sell():
@@ -1566,49 +1553,47 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  # -----------------------------------------------------------------------
-  # 보유 정보 — 3줄 구성
-  # 1줄: 보유 금액 / 포인트
-  # 2줄: 눈물 / 지온이의 가오
-  # 3줄: 방지권
-  # -----------------------------------------------------------------------
-  info_row1 = st.columns(2)
-  with info_row1[0]:
+  s_col1, s_col2 = st.columns(2)
+
+  with s_col1:
     st.markdown(
-        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>💳 보유 금액</div>"
-        f"<div style='font-size:14px;font-weight:800;color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
+        f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
         unsafe_allow_html=True,
     )
-  with info_row1[1]:
+    st.write("")
     st.markdown(
-        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>⭐ 포인트</div>"
-        f"<div style='font-size:15px;font-weight:800;color:#facc15;'>{st.session_state.points:,}P</div>"
-        f"<div style='font-size:10px;color:#cbd5e1;'>다음 성공: +{get_enhance_point_reward(min(st.session_state.level + 1, 35 if not st.session_state.is_rebirth else 25)):,}P</div></div>",
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
+        " 60개</div></div>",
+        unsafe_allow_html=True,
+    )
+    st.write("")
+    st.markdown(
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>⭐ 포인트</div><div style='font-size:15px;"
+        f" font-weight:800; color:#facc15;'>{st.session_state.points:,}P</div>"
+        f"<div style='font-size:10px; color:#cbd5e1;'>다음 성공: +{get_enhance_point_reward(min(st.session_state.level + 1, 35 if not st.session_state.is_rebirth else 25)):,}P</div></div>",
         unsafe_allow_html=True,
     )
 
-  st.write("")
-  info_row2 = st.columns(2)
-  with info_row2[0]:
+  with s_col2:
     st.markdown(
-        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>💧 눈물</div>"
-        f"<div style='font-size:15px;font-weight:800;color:#ffffff;'>{st.session_state.tears} / 60개</div></div>",
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
+        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
+        " 3개</div></div>",
         unsafe_allow_html=True,
     )
-  with info_row2[1]:
+    st.write("")
+
     pity_left = PITY_MAX - st.session_state.pity_count
     st.markdown(
-        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>✨ 지온이의 가오</div>"
-        f"<div style='font-size:13px;font-weight:800;color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
-        unsafe_allow_html=True,
-    )
-
-  st.write("")
-  pity_row = st.columns(2)
-  with pity_row[0]:
-    st.markdown(
-        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>🛡️ 방지권</div>"
-        f"<div style='font-size:15px;font-weight:800;color:#ffffff;'>{st.session_state.shield} / 3개</div></div>",
+        f"<div style='text-align: center;'><div style='font-size:12px;"
+        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
+        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
         unsafe_allow_html=True,
     )
 
@@ -1640,239 +1625,107 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  st.markdown("""
-  <style>
-    /* 상점/눈물/업적 전용: Liquid Glass 대신 깔끔한 평면 패널 */
-    .shop-flat, .tear-flat, .ach-flat {
-      background:#111827 !important;
-      border:1px solid #334155 !important;
-      border-radius:12px !important;
-      box-shadow:none !important;
-      backdrop-filter:none !important;
-      -webkit-backdrop-filter:none !important;
-    }
-    .shop-flat { border-left:4px solid #facc15 !important; }
-    .tear-flat { border-left:4px solid #38bdf8 !important; }
-    .ach-flat { border-left:4px solid #a78bfa !important; }
-    .flat-item {
-      background:#0f172a !important;
-      border:1px solid #263449 !important;
-      border-radius:10px !important;
-      box-shadow:none !important;
-    }
-    .flat-ach-card {
-      position:relative; overflow:hidden; min-height:112px;
-      background:#111827 !important;
-      border:1px solid #334155 !important;
-      border-radius:12px !important;
-      box-shadow:none !important;
-      backdrop-filter:none !important;
-    }
-  </style>
-  """, unsafe_allow_html=True)
+  tab_shop1, tab_shop2, tab_warp, tab_ach, tab_dev = st.tabs(
+      ["🛡️ 방지권", "💧 눈물", "🚀 워프권", "🏆 업적", "🛠️ 개발자 모드"]
+  )
 
-  # ---------------------------------------------------------------------------
-  # 🛒 상점 / 💧 눈물 / 🏆 업적
-  # 각각 버튼을 누르면 큰 전체 화면형 대화창으로 표시
-  # ---------------------------------------------------------------------------
-  @st.dialog("🛒 상점", width="large")
-  def show_shop():
-    st.markdown(
-        """
-        <div style="
-            padding:14px;
-            border-radius:18px;
-            background:#111827;
-            border-left:4px solid #facc15;
-            border-top:0;border-right:0;border-bottom:0;
-            margin-bottom:12px;
-        ">
-            <div style="font-size:18px;font-weight:900;color:#fde68a;">
-                🛒 상점
-            </div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
-                방지권과 워프권을 💰 돈 또는 ⭐ 포인트로 구매할 수 있습니다.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    
-    money_col, point_col = st.columns(2)
-    
-    with money_col:
-      st.markdown(
-          f"""
-          <div class='flat-item' style="text-align:center;padding:10px;">
-              <div style="font-size:11px;color:#94a3b8;">💰 보유 금액</div>
-              <div style="font-size:17px;font-weight:900;color:#fde68a;">
-                  {format_gold(st.session_state.money)}
-              </div>
-          </div>
-          """,
-          unsafe_allow_html=True,
-      )
-    
-    with point_col:
-      st.markdown(
-          f"""
-          <div class='flat-item' style="text-align:center;padding:10px;">
-              <div style="font-size:11px;color:#94a3b8;">⭐ 보유 포인트</div>
-              <div style="font-size:17px;font-weight:900;color:#facc15;">
-                  {st.session_state.points:,}P
-              </div>
-          </div>
-          """,
-          unsafe_allow_html=True,
-      )
-    
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-    
-    # -----------------------------------------------------------------------
-    # 🛡️ 방지권
-    # -----------------------------------------------------------------------
-    st.markdown(
-        """
-        <div style="
-            padding:12px;
-            border-radius:16px;
-            background:#111827;
-            border-left:4px solid #60a5fa;
-            border-top:0;border-right:0;border-bottom:0;
-        ">
-            <div style="font-size:16px;font-weight:900;color:#60a5fa;">
-                🛡️ 파괴 방지권
-            </div>
-            <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
-                강화 파괴 확률에 당첨되었을 때 파괴를 한 번 막아줍니다.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    
+  with tab_shop1:
     min_shield_level = 16 if st.session_state.is_rebirth else 20
-    
     if st.session_state.is_rebirth:
-      shield_money_cost = int(
+      current_shield_cost = int(
           SMELL_DB[True][st.session_state.level]["price"] / 5
       )
     else:
-      shield_money_cost = get_shield_cost(
-          st.session_state.level,
-          st.session_state.is_rebirth,
+      current_shield_cost = get_shield_cost(
+          st.session_state.level, st.session_state.is_rebirth
       )
-    
-    shield_point_cost = get_shield_point_cost(
-        st.session_state.level,
-        st.session_state.is_rebirth,
+
+    if st.session_state.level < min_shield_level:
+      st.markdown(
+          f"<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          f" margin-bottom:8px;'>⚠️ 방지권은 {min_shield_level}단계 이상부터 구매할 수 있습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1; margin-bottom:8px;'>"
+          f"<b>보유한도:</b> 최대 3개<br><b>가격:</b> <span"
+          f" style='font-size:14px; font-weight:bold; color:#fde68a;'>"
+          f"{format_gold(current_shield_cost)}</span></div>",
+          unsafe_allow_html=True,
+      )
+
+    can_buy_shield = (st.session_state.shield < 3) and (
+        st.session_state.level >= min_shield_level
     )
-    
+    if st.button(
+        "방지권 구매", use_container_width=True, disabled=not can_buy_shield
+    ):
+      if st.session_state.level < min_shield_level:
+        st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
+      elif st.session_state.shield >= 3:
+        st.warning("최대 3개까지만 보유 가능합니다.")
+      elif st.session_state.money >= current_shield_cost:
+        st.session_state.money -= current_shield_cost
+        st.session_state.shield += 1
+        save_current_season_state()
+        st.success("파괴 방지권 구매 완료!")
+        st.rerun()
+      else:
+        st.error("금액이 부족합니다.")
+
+  with tab_shop2:
+    max_lvl = 25 if st.session_state.is_rebirth else 35
+    limit_lvl = 18 if st.session_state.is_rebirth else 32
+    if st.session_state.level >= limit_lvl:
+      st.markdown(
+          "<div style='font-size:13px; color:#ef4444; font-weight:700;"
+          " margin-bottom:8px;'>⚠️ 고단계부터는 눈물을 사용할 수"
+          " 없습니다!</div>",
+          unsafe_allow_html=True,
+      )
+    else:
+      st.markdown(
+          f"<div style='font-size:13px; color:#cbd5e1;"
+          f" margin-bottom:8px;'><b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계"
+          f" 상승)<br><b>현재보유:</b> <span style='font-weight:bold;"
+          f" color:#38bdf8;'>{st.session_state.tears} / 60개</span></div>",
+          unsafe_allow_html=True,
+      )
+
+    can_use_tears = st.session_state.level < limit_lvl
+    if st.button(
+        "눈물 기적 가동", use_container_width=True, disabled=not can_use_tears
+    ):
+      if st.session_state.level >= limit_lvl:
+        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
+      elif st.session_state.tears >= 20:
+        st.session_state.tears -= 20
+        add_lvl = random.choice([1, 2, 3])
+        st.session_state.prev_level = st.session_state.level
+        st.session_state.level = min(
+            max_lvl, st.session_state.level + add_lvl
+        )
+        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
+        save_current_season_state()
+        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
+        st.rerun()
+      else:
+        st.error("눈물 20개가 필요합니다.")
+
+  with tab_warp:
     st.markdown(
-        f"""
-        <div style="font-size:12px;color:#cbd5e1;margin:9px 0;">
-            <b>보유:</b> <span style="color:#60a5fa;font-weight:900;">
-            {st.session_state.shield} / 3개</span><br>
-            <b>구매 가능 단계:</b> {min_shield_level}단계 이상<br>
-            <b>💰 돈 가격:</b> <span style="color:#fde68a;font-weight:900;">
-            {format_gold(shield_money_cost)}</span><br>
-            <b>⭐ 포인트 가격:</b> <span style="color:#facc15;font-weight:900;">
-            {shield_point_cost:,}P</span>
-        </div>
-        """,
+        f"<div style='font-size:12px; color:#cbd5e1; margin-bottom:6px;'>강화 성공 시 <b style='color:#facc15;'>단계별 포인트</b>를 획득합니다. "
+        f"현재 보유 포인트: <b style='color:#facc15;'>{st.session_state.points:,}P</b><br>워프권 가격은 해당 단계 강화 성공 포인트의 <b>20배</b>입니다.</div>",
         unsafe_allow_html=True,
     )
-    
-    shield_money_col, shield_point_col = st.columns(2)
-    
-    with shield_money_col:
-      can_buy_shield_money = (
-          st.session_state.level >= min_shield_level
-          and st.session_state.shield < 3
-          and st.session_state.money >= shield_money_cost
-      )
-    
-      if st.button(
-          "💰 돈으로 구매",
-          key="shop_shield_money",
-          use_container_width=True,
-          disabled=not can_buy_shield_money,
-      ):
-        if st.session_state.level < min_shield_level:
-          st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
-        elif st.session_state.shield >= 3:
-          st.warning("방지권은 최대 3개까지 보유할 수 있습니다.")
-        elif st.session_state.money < shield_money_cost:
-          st.error("금액이 부족합니다.")
-        else:
-          st.session_state.money -= shield_money_cost
-          st.session_state.shield += 1
-          save_current_season_state()
-          st.success("🛡️ 파괴 방지권 구매 완료!")
-          st.rerun()
-    
-    with shield_point_col:
-      can_buy_shield_point = (
-          st.session_state.level >= min_shield_level
-          and st.session_state.shield < 3
-          and st.session_state.points >= shield_point_cost
-      )
-    
-      if st.button(
-          "⭐ 포인트로 구매",
-          key="shop_shield_point",
-          use_container_width=True,
-          disabled=not can_buy_shield_point,
-      ):
-        if st.session_state.level < min_shield_level:
-          st.warning(f"방지권은 {min_shield_level}단계 이상부터 구매 가능합니다.")
-        elif st.session_state.shield >= 3:
-          st.warning("방지권은 최대 3개까지 보유할 수 있습니다.")
-        elif st.session_state.points < shield_point_cost:
-          st.error(f"포인트가 부족합니다! (필요: {shield_point_cost:,}P)")
-        else:
-          st.session_state.points -= shield_point_cost
-          st.session_state.points_spent_total += shield_point_cost
-          st.session_state.shield += 1
-          save_current_season_state()
-          st.success(f"⭐ 방지권 구매 완료! (-{shield_point_cost:,}P)")
-          st.rerun()
-    
-    st.markdown(
-        "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
-        unsafe_allow_html=True,
-    )
-    
-    # -----------------------------------------------------------------------
-    # 🚀 워프권
-    # -----------------------------------------------------------------------
-    st.markdown(
-        """
-        <div style="
-            padding:12px;
-            border-radius:16px;
-            background:#111827;
-            border-left:4px solid #c084fc;
-            border-top:0;border-right:0;border-bottom:0;
-        ">
-            <div style="font-size:16px;font-weight:900;color:#c084fc;">
-                🚀 워프권
-            </div>
-            <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
-                이미 도달했던 단계로 즉시 이동합니다.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    
-    warp_levels = (
-        [5, 10, 15, 20]
-        if st.session_state.is_rebirth
-        else [10, 15, 20, 25, 30]
-    )
-    
-    for w_level in warp_levels:
+
+    warp_levels = [5, 10, 15, 20] if st.session_state.is_rebirth else [10, 15, 20, 25, 30]
+
+    # 워프권 가격은 해당 단계 강화 성공 포인트 20배
+    active_warps = [(w_level, get_warp_point_cost(w_level)) for w_level in warp_levels]
+
+    for w_level, w_price in active_warps:
       if not st.session_state.is_rebirth:
         is_unlocked = (
             st.session_state.unlocked_warps.get(w_level, False)
@@ -1883,66 +1736,29 @@ with left_col:
             st.session_state.unlocked_season2_warps.get(w_level, False)
             or st.session_state.max_level >= w_level
         )
-    
-      warp_point_cost = get_warp_point_cost(w_level)
-      warp_money_cost = get_warp_money_cost(
-          w_level,
-          st.session_state.is_rebirth,
-      )
-    
-      st.markdown(
-          f"""
-          <div style="
-              margin-top:9px;
-              padding:11px 12px;
-              border-radius:14px;
-              background:#0f172a;
-              border:1px solid #263449;
-          ">
-              <div style="font-size:14px;font-weight:900;">
-                  🚀 {w_level}강 워프권
-              </div>
-              <div style="font-size:11px;color:#cbd5e1;margin-top:4px;">
-                  💰 {format_gold(warp_money_cost)}
-                  &nbsp;&nbsp;|&nbsp;&nbsp;
-                  ⭐ {warp_point_cost:,}P
-              </div>
-              <div style="
-                  font-size:10px;
-                  margin-top:3px;
-                  color:{'#4ade80' if is_unlocked else '#ef4444'};
-              ">
-                  {'구매 가능' if is_unlocked else f'{w_level}단계 도달 후 구매 가능'}
-              </div>
-          </div>
-          """,
-          unsafe_allow_html=True,
-      )
-    
-      warp_money_col, warp_point_col = st.columns(2)
-    
-      # 워프권 - 돈으로 구매
-      with warp_money_col:
-        can_buy_warp_money = (
-            is_unlocked
-            and st.session_state.level < w_level
-            and st.session_state.money >= warp_money_cost
+
+      c1, c2 = st.columns([1.2, 1])
+      with c1:
+        st.markdown(
+            f"<div style='font-size:13px; font-weight:bold;"
+            f" padding-top:6px;'>🚀 {w_level}강 워프권</div><div"
+            f" style='font-size:11px; color:#facc15;'>{w_price:,}P</div>",
+            unsafe_allow_html=True,
         )
-    
+      with c2:
         if st.button(
-            "💰 돈으로 구매",
-            key=f"shop_warp_money_{st.session_state.is_rebirth}_{w_level}",
-            use_container_width=True,
-            disabled=not can_buy_warp_money,
+            "이동",
+            key=f"warp_{st.session_state.is_rebirth}_{w_level}",
+            disabled=not is_unlocked
+            or (st.session_state.level >= w_level),
         ):
           if not is_unlocked:
             st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
-          elif st.session_state.level >= w_level:
-            st.warning(f"현재 단계가 이미 {w_level}단계 이상입니다.")
-          elif st.session_state.money < warp_money_cost:
-            st.error(f"금액이 부족합니다! (필요: {format_gold(warp_money_cost)})")
+          elif st.session_state.points < w_price:
+            st.error(f"포인트가 부족합니다! (필요: {w_price:,}P)")
           else:
-            st.session_state.money -= warp_money_cost
+            st.session_state.points -= w_price
+            st.session_state.points_spent_total += w_price
             st.session_state.warp_uses += 1
             st.session_state.prev_level = st.session_state.level
             st.session_state.level = w_level
@@ -1950,198 +1766,10 @@ with left_col:
               st.session_state.max_level = w_level
             st.session_state.status = "SUCCESS"
             save_current_season_state()
-            check_achievements()
             st.success(f"🚀 {w_level}단계로 워프 성공!")
             st.rerun()
-    
-      # 워프권 - 포인트로 구매
-      with warp_point_col:
-        can_buy_warp_point = (
-            is_unlocked
-            and st.session_state.level < w_level
-            and st.session_state.points >= warp_point_cost
-        )
-    
-        if st.button(
-            "⭐ 포인트로 구매",
-            key=f"shop_warp_point_{st.session_state.is_rebirth}_{w_level}",
-            use_container_width=True,
-            disabled=not can_buy_warp_point,
-        ):
-          if not is_unlocked:
-            st.warning(f"아직 {w_level}단계에 도달한 적이 없습니다!")
-          elif st.session_state.level >= w_level:
-            st.warning(f"현재 단계가 이미 {w_level}단계 이상입니다.")
-          elif st.session_state.points < warp_point_cost:
-            st.error(f"포인트가 부족합니다! (필요: {warp_point_cost:,}P)")
-          else:
-            st.session_state.points -= warp_point_cost
-            st.session_state.points_spent_total += warp_point_cost
-            st.session_state.warp_uses += 1
-            st.session_state.prev_level = st.session_state.level
-            st.session_state.level = w_level
-            if w_level > st.session_state.max_level:
-              st.session_state.max_level = w_level
-            st.session_state.status = "SUCCESS"
-            save_current_season_state()
-            check_achievements()
-            st.success(f"🚀 {w_level}단계로 워프 성공! (-{warp_point_cost:,}P)")
-            st.rerun()
-    
-      # ---------------------------------------------------------------------------
-      # 💧 눈물
-      # ---------------------------------------------------------------------------
 
-      # -----------------------------------------------------------------------
-      # 🔥 부활권
-      # 파괴 전에도 상점에 미리 표시하고, 실제 구매는 파괴된 뒤에만 가능
-      # -----------------------------------------------------------------------
-      if st.session_state.status == "DESTROYED":
-        revival_target_level = max(1, st.session_state.prev_level)
-        revival_locked = False
-      else:
-        revival_target_level = max(1, st.session_state.level)
-        revival_locked = True
-
-      revival_money_cost = get_revival_money_cost(
-          revival_target_level, st.session_state.is_rebirth
-      )
-      revival_point_cost = get_revival_point_cost(revival_target_level)
-
-      if revival_locked:
-        revival_desc = (
-            f"💡 현재 {revival_target_level}단계에서 파괴되면, 이 가격으로 "
-            "파괴 직전 단계까지 부활할 수 있습니다."
-        )
-        revival_border = "#f59e0b"
-        revival_title_color = "#fbbf24"
-      else:
-        revival_desc = (
-            f"💥 {revival_target_level}단계 강화가 파괴되었습니다. "
-            "부활권을 구매하면 파괴 직전 단계로 즉시 부활합니다."
-        )
-        revival_border = "#ef4444"
-        revival_title_color = "#f87171"
-
-      st.markdown(
-          f"""
-          <div style="
-              padding:14px;
-              border-radius:16px;
-              background:#111827;
-              border-left:4px solid {revival_border};
-              margin-top:16px;
-          ">
-              <div style="font-size:17px;font-weight:900;color:{revival_title_color};">🔥 부활권</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:4px;">
-                  {revival_desc}
-              </div>
-              <div style="font-size:12px;color:#cbd5e1;margin-top:9px;">
-                  🎯 부활 대상: <b style="color:#f8fafc;">{revival_target_level}단계</b><br>
-                  💰 돈 가격: <b style="color:#fde68a;">{format_gold(revival_money_cost)}</b><br>
-                  ⭐ 포인트 가격: <b style="color:#facc15;">{revival_point_cost:,}P</b><br>
-                  🎟️ {"파괴 후 구매 및 즉시 사용 가능" if not revival_locked else "파괴되기 전에는 구매할 수 없습니다"}
-              </div>
-          </div>
-          """,
-          unsafe_allow_html=True,
-      )
-
-      revival_money_col, revival_point_col = st.columns(2)
-
-      with revival_money_col:
-        can_buy_revival_money = (
-            not revival_locked
-            and st.session_state.money >= revival_money_cost
-        )
-        if st.button(
-            "💰 돈으로 부활권 구매",
-            key=f"shop_revival_money_{st.session_state.is_rebirth}_{revival_target_level}",
-            use_container_width=True,
-            disabled=not can_buy_revival_money,
-        ):
-          if buy_revival_ticket_with_money() and use_revival_ticket():
-            st.success(
-                f"🔥 부활권 구매 완료! {revival_target_level}단계로 부활했습니다!"
-            )
-            st.rerun()
-          else:
-            st.error(
-                f"돈이 부족합니다! (필요: {format_gold(revival_money_cost)})"
-            )
-
-      with revival_point_col:
-        can_buy_revival_point = (
-            not revival_locked
-            and st.session_state.points >= revival_point_cost
-        )
-        if st.button(
-            "⭐ 포인트로 부활권 구매",
-            key=f"shop_revival_point_{st.session_state.is_rebirth}_{revival_target_level}",
-            use_container_width=True,
-            disabled=not can_buy_revival_point,
-        ):
-          if buy_revival_ticket_with_points() and use_revival_ticket():
-            st.success(
-                f"🔥 부활권 구매 완료! {revival_target_level}단계로 부활했습니다!"
-            )
-            st.rerun()
-          else:
-            st.error(
-                f"포인트가 부족합니다! (필요: {revival_point_cost:,}P)"
-            )
-
-      st.markdown(
-          "<hr style='margin:16px 0;border-color:rgba(255,255,255,.10);'>",
-          unsafe_allow_html=True,
-      )
-
-  @st.dialog("💧 눈물", width="large")
-  def show_tears():
-    max_lvl = 25 if st.session_state.is_rebirth else 35
-    limit_lvl = 18 if st.session_state.is_rebirth else 32
-
-    st.markdown(
-        f"""<div class='tear-flat' style='padding:18px;margin-bottom:14px;'>
-        <div style='font-size:21px;font-weight:900;color:#e0f2fe;'>💧 눈물의 기적</div>
-        <div style='font-size:13px;color:#94a3b8;margin-top:5px;'>눈물 20개를 사용해 1~3단계를 확정적으로 올립니다.</div>
-        <div style='display:flex;gap:30px;margin-top:16px;flex-wrap:wrap;'>
-          <div><div style='font-size:10px;color:#64748b;'>보유 눈물</div><div style='font-size:24px;font-weight:900;color:#38bdf8;'>{st.session_state.tears} <span style='font-size:13px;color:#94a3b8;'>/ 60</span></div></div>
-          <div><div style='font-size:10px;color:#64748b;'>사용 조건</div><div style='font-size:18px;font-weight:900;color:#f8fafc;'>20개</div></div>
-          <div><div style='font-size:10px;color:#64748b;'>상승 범위</div><div style='font-size:18px;font-weight:900;color:#f8fafc;'>+1 ~ +3</div></div>
-        </div></div>""",
-        unsafe_allow_html=True,
-    )
-
-    if st.session_state.level >= limit_lvl:
-      st.warning("⚠️ 고단계부터는 눈물을 사용할 수 없습니다!")
-    
-    can_use_tears = st.session_state.level < limit_lvl
-    
-    if st.button(
-        "눈물 기적 가동",
-        use_container_width=True,
-        disabled=not can_use_tears,
-    ):
-      if st.session_state.level >= limit_lvl:
-        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
-      elif st.session_state.tears >= 20:
-        st.session_state.tears -= 20
-        add_lvl = random.choice([1, 2, 3])
-        st.session_state.prev_level = st.session_state.level
-        st.session_state.level = min(
-            max_lvl,
-            st.session_state.level + add_lvl,
-        )
-        st.session_state.status = "CRITICAL" if add_lvl >= 2 else "SUCCESS"
-        save_current_season_state()
-        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
-        st.rerun()
-      else:
-        st.error("눈물 20개가 필요합니다.")
-
-  @st.dialog("🏆 업적", width="large")
-  def show_achievements():
+  with tab_ach:
     achieved = sum(st.session_state.achievements.values())
     pct = int((achieved / len(ACHIEVEMENTS)) * 100) if ACHIEVEMENTS else 0
     st.markdown(f"**업적 진행도:** {achieved} / {len(ACHIEVEMENTS)} · {pct}%")
@@ -2153,62 +1781,100 @@ with left_col:
       icon = "✅" if done else "🔒"
       accent, accent2, deep, title_icon = get_title_theme(info["title"])
       title_style = get_title_style(info["title"])
+      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
+            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
+      border = accent if done else "rgba(148,163,184,.22)"
       with ach_cols[i % 3]:
         st.markdown(
-            f"<div class='flat-ach-card title-design {title_style}' style='border-color:{accent if done else '#334155'} !important;'>"
-            f"<div style='padding:13px;'>"
-            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'};font-weight:800'>"
+            f"<div class='title-design {title_style}' style='background:{bg};border:1px solid {border};"
+            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
+            f"margin:0 0 10px 0;min-height:116px;'>"
+            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
             f"{('UNLOCKED' if done else 'LOCKED')}</div>"
             f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{icon} {info['name']}</div>"
             f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
             f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
-            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div>"
-            f"</div></div>",
+            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
             unsafe_allow_html=True,
         )
-
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
+    selected = st.selectbox(
+        "현재 칭호", options, index=options.index(st.session_state.selected_title),
+    )
+    st.session_state.selected_title = selected
 
-    def apply_title_selection():
-      st.session_state.selected_title = st.session_state.title_selector
-      # 칭호를 바꾸는 즉시 메인 화면까지 다시 그려서 바로 적용
-      st.rerun()
-
+  with tab_dev:
     st.markdown(
-        "<div class='ach-flat' style='padding:14px;margin-top:8px;margin-bottom:8px;'>"
-        "<div style='font-size:14px;font-weight:900;color:#e9d5ff;'>🏷️ 칭호 장착</div>"
-        "<div style='font-size:11px;color:#94a3b8;margin-top:3px;'>칭호를 선택하면 즉시 메인 화면에 적용됩니다.</div>"
-        "</div>",
+        "<div style='font-size:12px; color:#f87171; font-weight:700;"
+        " margin-bottom:8px;'> 개발자 구역입니다. 비용 없이 무조건"
+        " 성공합니다</div>",
         unsafe_allow_html=True,
     )
-    st.selectbox(
-        "현재 칭호",
-        options,
-        index=options.index(st.session_state.selected_title),
-        key="title_selector",
-        on_change=apply_title_selection,
-    )
 
+    max_lvl = 25 if st.session_state.is_rebirth else 35
 
+    if st.button(
+        "✨ 강제 성공 (+1)",
+        use_container_width=True,
+        disabled=(st.session_state.level >= max_lvl or st.session_state.status == "DESTROYED"),
+    ):
+      st.session_state.prev_level = st.session_state.level
+      st.session_state.level += 1
+      st.session_state.status = "SUCCESS"
+      st.session_state.enhance_successes += 1
+      reward_enhance_points(st.session_state.level)
+      if st.session_state.level > st.session_state.max_level:
+        st.session_state.max_level = st.session_state.level
 
-  menu_shop, menu_tears, menu_ach = st.columns(3)
-  with menu_shop:
-    if st.button("🛒 상점", key="open_shop", use_container_width=True):
-      show_shop()
-  with menu_tears:
-    if st.button("💧 눈물", key="open_tears", use_container_width=True):
-      show_tears()
-  with menu_ach:
-    if st.button("🏆 업적", key="open_achievements", use_container_width=True):
-      show_achievements()
+      if not st.session_state.is_rebirth:
+        for w_lvl in [10, 15, 20, 25, 30]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_warps[w_lvl] = True
+      else:
+        for w_lvl in [5, 10, 15, 20]:
+          if st.session_state.level >= w_lvl:
+            st.session_state.unlocked_season2_warps[w_lvl] = True
 
+      check_achievements()
+      save_current_season_state()
+      st.success("개발자 권한으로 강제 성공 처리되었습니다!")
+      st.rerun()
 
   st.markdown(
       "<hr style='margin:12px 0; border-color:rgba(255,255,255,0.1);'>",
       unsafe_allow_html=True,
   )
+
+  if st.session_state.status == "DESTROYED":
+    destroyed_level = max(0, int(st.session_state.get("destroyed_level", 0)))
+    revival_money_cost = get_revival_money_cost(destroyed_level, st.session_state.is_rebirth)
+    revival_point_cost = get_revival_point_cost(destroyed_level)
+
+    st.markdown(
+        f"""<div style='padding:16px; margin-bottom:12px; border-radius:18px;
+        border:2px solid rgba(239,68,68,.65); background:linear-gradient(135deg,rgba(127,29,29,.35),rgba(30,41,59,.55));'>
+        <div style='font-size:20px; font-weight:900; color:#fca5a5;'>💥 파괴되었습니다!</div>
+        <div style='margin-top:6px; color:#e2e8f0;'>파괴 직전 <b>{destroyed_level}단계</b>로 부활할 수 있습니다.</div>
+        <div style='margin-top:6px; font-size:13px; color:#cbd5e1;'>
+        💰 {format_gold(revival_money_cost)} / ⭐ {revival_point_cost:,}P</div></div>""",
+        unsafe_allow_html=True,
+    )
+
+    revival_payment = st.radio(
+        "부활 비용 선택",
+        ["💰 돈", "⭐ 포인트"],
+        horizontal=True,
+        key="revival_payment_choice",
+    )
+    revive_col, giveup_col = st.columns(2, gap="small")
+    with revive_col:
+      if st.button("💫 부활하기", use_container_width=True, type="primary"):
+        buy_and_use_revival("money" if revival_payment == "💰 돈" else "point")
+    with giveup_col:
+      if st.button("❌ 포기하기", use_container_width=True):
+        give_up_revival()
 
   st.markdown(
       "<h4 style='margin:0 0 8px 0; font-size: 16px; color:#fde68a;'>🌌 지온"
@@ -2493,15 +2159,18 @@ with right_col:
                 }} else if (status === "SHIELD_SAVED") {{
                     statusText.innerText = "🛡️ SHIELD PROTECTED! (우주 방어 발동) 🛡️";
                     statusColor = "#60a5fa";
-                }} else if (status === "REVIVED") {{
-                    statusText.innerText = "🔥 REVIVAL COMPLETE! (부활권으로 파괴 직전 단계 복구) 🔥";
-                    statusColor = "#f97316";
-                    particleSpeed = 1.1;
-                    glowIntensity = 24;
                 }} else if (status === "DESTROYED") {{
                     statusText.innerText = "💥 BLACKHOLE CATACLYSM DESTROYED (코어 대폭발 붕괴됨!) 💥";
                     statusColor = "#ff0000";
                     particleSpeed = 2.0;
+                }} else if (status === "REVIVED") {{
+                    statusText.innerText = "💫 REVIVED! (부활 성공) 💫";
+                    statusColor = "#a78bfa";
+                    particleSpeed = 1.2;
+                }} else if (status === "GAVE_UP") {{
+                    statusText.innerText = "❌ REVIVAL ABANDONED (부활 포기)";
+                    statusColor = "#64748b";
+                    particleSpeed = 0.2;
                 }} else if (status === "FAILED") {{
                     statusText.innerText = "🔻 FAILED (에너지 하락) 🔻";
                     statusColor = "#64748b";
@@ -2594,81 +2263,186 @@ with right_col:
             const objectGroup = new THREE.Group();
             objectGroup.position.y = -0.7;
 
-            let baseGeo;
-            const lvl = {current_level};
-
-            if (isRebirth) {{
-                if (lvl <= 3) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.3);
-                }} else if (lvl <= 6) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.2);
-                }} else if (lvl <= 9) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.3);
-                }} else if (lvl <= 12) {{
-                    baseGeo = new THREE.TorusGeometry(1.8, 0.6, 16, 32);
-                }} else if (lvl <= 15) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 3, 5);
-                }} else if (lvl <= 18) {{
-                    baseGeo = new THREE.ConeGeometry(2.2, 3.2, 7);
-                }} else if (lvl <= 21) {{
-                    baseGeo = new THREE.CylinderGeometry(1.5, 2.3, 3.0, 10);
-                }} else if (lvl <= 24) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.6, 2);
-                }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.1, 0.75, 128, 32, 4, 7);
+            // 단계별 3D 모형: 단순히 색만 바뀌는 구조가 아니라 단계마다 완전히 다른 기하 형태를 사용
+            function starPolygonPoints(outerR, innerR, tips, rotation = -Math.PI / 2) {{
+                const pts = [];
+                for (let i = 0; i < tips * 2; i++) {{
+                    const a = rotation + (Math.PI * i) / tips;
+                    const r = (i % 2 === 0) ? outerR : innerR;
+                    pts.push(new THREE.Vector2(Math.cos(a) * r, Math.sin(a) * r));
                 }}
-            }} else {{
-                if (lvl <= 2) {{
-                    baseGeo = new THREE.TetrahedronGeometry(2.3);
-                }} else if (lvl <= 5) {{
-                    baseGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
-                }} else if (lvl <= 8) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 5);
-                }} else if (lvl <= 11) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 6);
-                }} else if (lvl <= 14) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 7);
-                }} else if (lvl <= 17) {{
-                    baseGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.4, 8);
-                }} else if (lvl == 18) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.5);
-                }} else if (lvl == 19) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.4);
-                }} else if (lvl == 20) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.4);
-                }} else if (lvl == 21) {{
-                    baseGeo = new THREE.ConeGeometry(2.1, 3.1, 6);
-                }} else if (lvl == 22) {{
-                    baseGeo = new THREE.TorusGeometry(1.7, 0.65, 16, 32);
-                }} else if (lvl == 23) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.4, 0.45, 64, 16, 2, 3);
-                }} else if (lvl == 24) {{
-                    baseGeo = new THREE.CylinderGeometry(0.5, 2.1, 2.9, 12);
-                }} else if (lvl == 25) {{
-                    baseGeo = new THREE.SphereGeometry(2.2, 16, 16);
-                }} else if (lvl == 26) {{
-                    baseGeo = new THREE.ConeGeometry(2.3, 3.3, 8);
-                }} else if (lvl == 27) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 96, 24, 3, 4);
-                }} else if (lvl == 28) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.5, 1);
-                }} else if (lvl == 29) {{
-                    baseGeo = new THREE.DodecahedronGeometry(2.6, 1);
-                }} else if (lvl == 30) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.5, 0.55, 128, 32, 2, 5);
-                }} else if (lvl == 31) {{
-                    baseGeo = new THREE.OctahedronGeometry(2.7, 2);
-                }} else if (lvl == 32) {{
-                    baseGeo = new THREE.IcosahedronGeometry(2.7, 2);
-                }} else if (lvl == 33) {{
-                    baseGeo = new THREE.TorusKnotGeometry(1.6, 0.6, 128, 32, 3, 5);
-                }} else if (lvl == 34) {{
-                    baseGeo = new THREE.SphereGeometry(2.8, 32, 32);
-                }} else {{
-                    baseGeo = new THREE.TorusKnotGeometry(2.2, 0.8, 200, 50, 5, 8);
+                return pts;
+            }}
+
+            function extrudedPolygon(points, depth, bevel = 0.10) {{
+                const shape = new THREE.Shape();
+                shape.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) shape.lineTo(points[i].x, points[i].y);
+                shape.closePath();
+                return new THREE.ExtrudeGeometry(shape, {{
+                    depth: depth,
+                    steps: 2,
+                    bevelEnabled: true,
+                    bevelSegments: 3,
+                    bevelSize: bevel,
+                    bevelThickness: bevel
+                }});
+            }}
+
+            function gearPoints(teeth, outerR, rootR) {{
+                const pts = [];
+                for (let i = 0; i < teeth * 4; i++) {{
+                    const a = (Math.PI * 2 * i) / (teeth * 4);
+                    const phase = i % 4;
+                    const r = phase < 2 ? outerR : rootR;
+                    pts.push(new THREE.Vector2(Math.cos(a) * r, Math.sin(a) * r));
+                }}
+                return pts;
+            }}
+
+            function latheGeometry(profile, segments = 32) {{
+                return new THREE.LatheGeometry(
+                    profile.map(([r, y]) => new THREE.Vector2(r, y)),
+                    segments,
+                    0,
+                    Math.PI * 2
+                );
+            }}
+
+            function makeUniqueGeometry(level, rebirth) {{
+                // 시즌 1: 1~35 전부 서로 다른 형태
+                if (!rebirth) {{
+                    switch (level) {{
+                        case 1:  return new THREE.TetrahedronGeometry(2.25, 0);                         // 삼각 피라미드
+                        case 2:  return new THREE.BoxGeometry(2.75, 2.15, 1.85);                       // 직육면체
+                        case 3:  return new THREE.OctahedronGeometry(2.35, 0);                         // 팔면체
+                        case 4:  return new THREE.DodecahedronGeometry(2.25, 0);                       // 십이면체
+                        case 5:  return new THREE.IcosahedronGeometry(2.35, 0);                        // 이십면체
+                        case 6:  return new THREE.ConeGeometry(2.2, 3.5, 3);                            // 삼각뿔
+                        case 7:  return new THREE.ConeGeometry(2.15, 3.4, 5);                            // 오각뿔
+                        case 8:  return new THREE.ConeGeometry(2.10, 3.4, 7);                            // 칠각뿔
+                        case 9:  return new THREE.CylinderGeometry(2.0, 2.0, 3.0, 3);                  // 삼각기둥
+                        case 10: return new THREE.CylinderGeometry(2.0, 2.0, 3.0, 4);                  // 사각기둥
+                        case 11: return new THREE.CylinderGeometry(1.9, 2.15, 3.2, 6);                 // 육각기둥
+                        case 12: return new THREE.CylinderGeometry(1.8, 2.25, 3.4, 8);                 // 팔각기둥
+                        case 13: return new THREE.TorusGeometry(1.55, 0.62, 12, 28);                   // 기본 링
+                        case 14: return new THREE.TorusGeometry(1.7, 0.42, 18, 40);                    // 얇은 링
+                        case 15: return new THREE.TorusKnotGeometry(1.35, 0.42, 96, 14, 2, 3);         // 매듭 2-3
+                        case 16: return new THREE.TorusKnotGeometry(1.35, 0.40, 100, 16, 2, 5);       // 매듭 2-5
+                        case 17: return new THREE.TorusKnotGeometry(1.40, 0.40, 110, 18, 3, 4);       // 매듭 3-4
+                        case 18: return new THREE.TorusKnotGeometry(1.45, 0.38, 120, 20, 3, 7);       // 매듭 3-7
+                        case 19: return new THREE.SphereGeometry(2.35, 12, 8);                          // 각진 구
+                        case 20: return new THREE.SphereGeometry(2.25, 20, 12);                         // 타원형에 가까운 구
+                        case 21: return latheGeometry([[0.0,-1.8],[1.1,-1.7],[1.7,-0.8],[1.5,0.0],[1.7,0.8],[1.1,1.7],[0.0,1.8]], 28); // 물방울형
+                        case 22: return latheGeometry([[0.0,-1.8],[1.65,-1.55],[1.15,-0.8],[1.9,-0.2],[1.15,0.5],[1.65,1.55],[0.0,1.8]], 32); // 요요형
+                        case 23: return latheGeometry([[0.0,-1.8],[0.9,-1.65],[1.9,-1.2],[1.2,-0.2],[1.0,0.7],[1.7,1.5],[0.0,1.8]], 36); // 꽃병형
+                        case 24: return latheGeometry([[0.0,-1.8],[1.8,-1.5],[1.55,-0.7],[0.75,0.0],[1.55,0.7],[1.8,1.5],[0.0,1.8]], 40); // 아령형
+                        case 25: return extrudedPolygon(starPolygonPoints(2.65, 1.05, 5), 1.15, 0.16); // 5각 별
+                        case 26: return extrudedPolygon(starPolygonPoints(2.6, 1.20, 6, Math.PI/6), 1.25, 0.18); // 6각 별
+                        case 27: return extrudedPolygon(starPolygonPoints(2.55, 1.05, 7), 1.30, 0.18); // 7각 별
+                        case 28: return extrudedPolygon(gearPoints(8, 2.65, 1.95), 1.15, 0.12);        // 8톱니 기어
+                        case 29: return extrudedPolygon(gearPoints(10, 2.65, 2.00), 1.25, 0.12);       // 10톱니 기어
+                        case 30: return extrudedPolygon(gearPoints(12, 2.60, 1.90), 1.35, 0.12);       // 12톱니 기어
+                        case 31: return extrudedPolygon(starPolygonPoints(2.75, 0.95, 8, Math.PI/8), 1.20, 0.13); // 8각 별
+                        case 32: return extrudedPolygon(starPolygonPoints(2.7, 1.15, 9), 1.30, 0.13);  // 9각 별
+                        case 33: return extrudedPolygon(gearPoints(14, 2.7, 1.85), 1.40, 0.11);        // 14톱니 기어
+                        case 34: return extrudedPolygon(starPolygonPoints(2.8, 0.72, 12, Math.PI/12), 1.45, 0.10); // 12각 초결정
+                        case 35: {{                                                                        // 최종: 다단 결정체
+                            const pts = [];
+                            const rings = [
+                                [2.75, -1.55], [1.55, -0.85], [2.55, -0.15], [1.35, 0.55], [2.75, 1.55]
+                            ];
+                            for (const [r, y] of rings) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+                                    pts.push([r * Math.cos(a), y]);
+                                }}
+                            }}
+                            const verts = [];
+                            for (const [r, y] of rings) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+                                    verts.push(r * Math.cos(a), y, r * Math.sin(a));
+                                }}
+                            }}
+                            const idx = [];
+                            const ringCount = rings.length;
+                            for (let rr = 0; rr < ringCount - 1; rr++) {{
+                                for (let i = 0; i < 8; i++) {{
+                                    const n = (i + 1) % 8;
+                                    const a = rr * 8 + i, b = rr * 8 + n, c = (rr + 1) * 8 + n, d = (rr + 1) * 8 + i;
+                                    idx.push(a,b,d, b,c,d);
+                                }}
+                            }}
+                            return new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+                        }}
+                        default: return new THREE.IcosahedronGeometry(2.4, 1);
+                    }}
+                }}
+
+                // 시즌 2: 1~25 역시 시즌 1과 겹치지 않도록 완전히 다른 계열의 형태
+                switch (level) {{
+                    case 1:  return new THREE.RingGeometry(1.15, 2.55, 7, 2);                              // 두꺼운 칠각 링
+                    case 2:  return new THREE.RingGeometry(0.75, 2.55, 9, 3);                              // 구멍이 큰 9각 링
+                    case 3:  return new THREE.CylinderGeometry(1.0, 2.45, 3.6, 5, 2);                    // 역피라미드 기둥
+                    case 4:  return new THREE.CylinderGeometry(2.5, 0.85, 3.8, 7, 2);                    // 뾰족한 역원뿔 기둥
+                    case 5:  return new THREE.CylinderGeometry(1.5, 2.4, 3.8, 9, 3);                    // 계단형 9각 기둥
+                    case 6:  return latheGeometry([[0,-1.9],[0.7,-1.8],[2.0,-1.3],[0.9,-0.5],[1.65,0.0],[0.9,0.6],[2.0,1.35],[0.7,1.8],[0,1.9]], 30); // 쌍곡선
+                    case 7:  return latheGeometry([[0,-1.8],[1.7,-1.6],[0.9,-0.9],[1.9,-0.15],[0.8,0.55],[1.75,1.45],[0,1.9]], 34); // 왕관 몸체
+                    case 8:  return latheGeometry([[0,-1.8],[1.2,-1.6],[0.65,-0.8],[1.8,-0.2],[1.2,0.4],[1.95,1.2],[0.8,1.7],[0,1.85]], 38); // 모래시계 변형
+                    case 9:  return extrudedPolygon(gearPoints(7, 2.75, 1.55), 1.10, 0.20);              // 7톱니 기어
+                    case 10: return extrudedPolygon(gearPoints(11, 2.7, 1.60), 1.20, 0.18);              // 11톱니 기어
+                    case 11: return extrudedPolygon(gearPoints(13, 2.75, 1.58), 1.30, 0.16);              // 13톱니 기어
+                    case 12: return extrudedPolygon(starPolygonPoints(2.75, 1.55, 4, Math.PI/4), 1.30, 0.15); // 4중성광
+                    case 13: return extrudedPolygon(starPolygonPoints(2.75, 0.80, 10), 1.35, 0.15);     // 10각 별
+                    case 14: return extrudedPolygon(starPolygonPoints(2.75, 1.00, 11), 1.40, 0.15);     // 11각 별
+                    case 15: return extrudedPolygon(starPolygonPoints(2.8, 0.65, 13), 1.45, 0.12);      // 13각 결정
+                    case 16: return new THREE.TorusKnotGeometry(1.45, 0.28, 140, 14, 4, 7);              // 복합 매듭
+                    case 17: return new THREE.TorusKnotGeometry(1.50, 0.24, 150, 18, 5, 7);              // 초고밀도 매듭
+                    case 18: return new THREE.TorusKnotGeometry(1.35, 0.52, 128, 12, 5, 9);              // 굵은 매듭
+                    case 19: return new THREE.TorusKnotGeometry(1.15, 0.68, 120, 16, 7, 9);              // 거대 리본 매듭
+                    case 20: return new THREE.CapsuleGeometry(1.65, 2.8, 10, 20);                         // 캡슐
+                    case 21: {{                                                                              // 삼각 프리즘 + 비틀림 효과용
+                        const g = extrudedPolygon([
+                            new THREE.Vector2(0, 2.7), new THREE.Vector2(-2.35, -1.7), new THREE.Vector2(2.35, -1.7)
+                        ], 1.7, 0.20);
+                        return g;
+                    }}
+                    case 22: {{                                                                              // 십자 방패
+                        const pts = [
+                            new THREE.Vector2(-0.7,2.8), new THREE.Vector2(0.7,2.8), new THREE.Vector2(0.7,0.8),
+                            new THREE.Vector2(2.4,0.8), new THREE.Vector2(2.4,-0.8), new THREE.Vector2(0.7,-0.8),
+                            new THREE.Vector2(0.7,-2.8), new THREE.Vector2(-0.7,-2.8), new THREE.Vector2(-0.7,-0.8),
+                            new THREE.Vector2(-2.4,-0.8), new THREE.Vector2(-2.4,0.8), new THREE.Vector2(-0.7,0.8)
+                        ];
+                        return extrudedPolygon(pts, 1.45, 0.14);
+                    }}
+                    case 23: {{                                                                              // 번개형
+                        const pts = [
+                            new THREE.Vector2(-0.3,2.8), new THREE.Vector2(0.6,0.7), new THREE.Vector2(1.8,0.7),
+                            new THREE.Vector2(-0.8,-0.1), new THREE.Vector2(-1.7,-2.8), new THREE.Vector2(-0.9,-0.2),
+                            new THREE.Vector2(-1.9,-0.2)
+                        ];
+                        return extrudedPolygon(pts, 1.35, 0.12);
+                    }}
+                    case 24: {{                                                                              // 왕관형 다각체
+                        const pts = [
+                            new THREE.Vector2(-2.5,-1.7), new THREE.Vector2(-2.1,1.9), new THREE.Vector2(-0.8,0.8),
+                            new THREE.Vector2(0,2.5), new THREE.Vector2(0.8,0.8), new THREE.Vector2(2.1,1.9),
+                            new THREE.Vector2(2.5,-1.7), new THREE.Vector2(1.2,-0.8), new THREE.Vector2(0,-1.9),
+                            new THREE.Vector2(-1.2,-0.8)
+                        ];
+                        return extrudedPolygon(pts, 1.55, 0.15);
+                    }}
+                    case 25: {{                                                                              // 최종: 태양 플라즈마 링
+                        return new THREE.TorusGeometry(2.0, 0.9, 10, 14);
+                    }}
+                    default: return new THREE.DodecahedronGeometry(2.5, 1);
                 }}
             }}
 
+            const lvl = visualLevel;
+            const baseGeo = makeUniqueGeometry(lvl, isRebirth);
             const outerMat = new THREE.MeshPhysicalMaterial({{
                 color: tierColor,
                 emissive: isFinalSuccess ? "#ffffff" : (status === "SUCCESS" || status === "CRITICAL" || status === "PITY_SUCCESS" ? statusColor : "#111111"),
