@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>지온냄새 강화하기</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      background-color: #181825;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #f5e0dc;
+      margin-bottom: 20px;
+    }
+    .card {
+      background-color: #313244;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .level {
+      font-size: 1.2rem;
+      color: #a6e3a1;
+      margin-bottom: 8px;
+    }
+    .item-name {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #f9e2af;
+      margin-bottom: 12px;
+    }
+    .desc {
+      font-size: 0.95rem;
+      color: #bac2de;
+      line-height: 1.4;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0;
+      font-size: 0.9rem;
+      color: #a6adc8;
+    }
+    .btn {
+      background-color: #89b4fa;
+      color: #11111b;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      width: 100%;
+    }
+    .btn:active {
+      transform: scale(0.97);
+      background-color: #74c7ec;
+    }
+    .log-box {
+      background-color: #11111b;
+      border-radius: 8px;
+      padding: 12px;
+      height: 120px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 0.85rem;
+      margin-top: 20px;
+      border: 1px solid #45475a;
+    }
+    .log-item {
+      margin-bottom: 6px;
+    }
+    .log-success { color: #a6e3a1; }
+    .log-fail { color: #f38ba8; }
+    .log-destroied { color: #fab387; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">🦨 지온냄새 강화하기</div>
+
+  <div class="card">
+    <div class="level" id="level-display">+0 단계</div>
+    <div class="item-name" id="name-display">무취의 공기</div>
+    <div class="desc" id="desc-display">아직 아무런 냄새도 나지 않는다.</div>
+  </div>
+
+  <div class="stats">
+    <div>성공 확률: <span id="prob-success">100%</span></div>
+    <div>하락 확률: <span id="prob-down">0%</span></div>
+    <div>파괴 확률: <span id="prob-destroy">0%</span></div>
+  </div>
+
+  <button class="btn" onclick="enhance()">🔥 강화 실행하기</button>
+
+  <div class="log-box" id="log-box">
+    <div class="log-item">게임을 시작했습니다. 지온냄새를 강화해보세요!</div>
+  </div>
+</div>
+
+<script>
+  // 지온냄새 데이터 (35단계)
+  const SMELL_DB = {
+    0: { name: "무취의 공기", desc: "아직 아무런 냄새도 나지 않는다." },
+    1: { name: "지온이의 정수리 킁킁", desc: "약간의 고소한 꼬북칩 냄새가 나기 시작한다." },
+    2: { name: "3일 안 빤 지온이 양말", desc: "콤콤한 시큼함이 은은하게 퍼진다." },
+    3: { name: "지온이 발가락 사이 땀방울", desc: "청국장과 치즈가 묘하게 섞인 진한 풍미." },
+    4: { name: "지온이 입안의 아침 양치 전 숨결", desc: "밀폐된 공간을 순간적으로 정적에 빠뜨린다." },
+    5: { name: "지온이 전용 땀에 적셔진 베개", desc: "숙면을 취한 자만이 만들어낼 수 있는 묵직함." },
+    6: { name: "지온이가 땀 흘리고 벗어둔 후드티", desc: "섬유유연제 소멸. 순수한 생체 악취 완성." },
+    7: { name: "지온이 귀 뒤쪽 비밀 공간", desc: "사람의 코를 마비시키는 은밀한 치명타." },
+    8: { name: "지온이 겨드랑이 3단 필살기", desc: "스쳐 지나가기만 해도 눈시울이 붉어진다." },
+    9: { name: "지온이 방 청소 안 한 지 3년째", desc: "방 문을 열면 생체 병기 구역으로 선포된다." },
+    10: { name: "지온이 똥방귀 초음파 폭탄", desc: "소리는 없지만 파괴력은 음속을 돌파한다." },
+    11: { name: "지온이의 진화한 암모니아 아우라", desc: "주변 식물이 시들기 시작한다." },
+    12: { name: "지온이 체취 추출액 100%", desc: "농축된 액체 상태의 생화학 물질." },
+    13: { name: "지온이 발효 인벤토리", desc: "시간이 지날수록 숙성되어 깊은 맛을 낸다." },
+    14: { name: "지온냄새 가스탄", desc: "군사적 목적으로 탐나는 가스탄 완제품." },
+    15: { name: "지온의 마법진: 악취의 영역", desc: "반경 10m 안의 모든 생명체가 코를 막는다." },
+    16: { name: "지온이 봉인해둔 유물 상자", desc: "열지 말아야 할 판도라의 상자." },
+    17: { name: "지온의 절망적인 겨드랑이 빔", desc: "눈을 뜨고 직시할 수 없는 악취의 광선." },
+    18: { name: "지온이 오염시킨 대기층", desc: "해당 지역 일대에 초미세 악취 주의보 발령." },
+    19: { name: "지온 악취 심연의 결정체", desc: "고체화된 악취의 정수. 손에 쥐면 지릿하다." },
+    20: { name: "지온냄새 재앙급 아포칼립스", desc: "도시 하나를 마비시킬 수 있는 괴멸적인 냄새." },
+    21: { name: "지온이의 파멸적인 방귀 충격파", desc: "시공간이 일시적으로 뒤틀리는 착각을 준다." },
+    22: { name: "지온 악취 블랙홀", desc: "모든 향기를 흡수하여 악취로 변환한다." },
+    23: { name: "지온의 신화적 썩은 미소", desc: "냄새가 형상화되어 눈앞에 보이는 지경." },
+    24: { name: "지온 초신성 폭발급 체취", desc: "우주 공간에서도 느껴질 것 같은 상상의 냄새." },
+    25: { name: "지온냄새 종말의 나팔", desc: "이 냄새가 퍼지면 인류의 종말이 시작된다." },
+    26: { name: "지온이 통제 불능 생체 병기", desc: "국가 안보 수준의 격리 조치가 필요한 단계." },
+    27: { name: "지온 차원 파괴급 꼬리랑이", desc: "차원의 벽을 뚫고 타 차원까지 오염시킨다." },
+    28: { name: "지온 전설의 999년 숙성 암모니아", desc: "역사에 기록될 단 하나의 신화적인 악취." },
+    29: { name: "지온의 악취 신성 제국", desc: "냄새만으로 하나의 제국을 건설할 수준." },
+    30: { name: "지온냄새 절대신 영역", desc: "코를 가진 모든 자들이 굴복하는 영역." },
+    31: { name: "지온 창조주의 악취 초월체", desc: "존재 자체가 냄새의 근원인 개념적 단계." },
+    32: { name: "지온 시공간 파괴 냄새 빅뱅", desc: "새로운 악취 우주가 탄생하는 순간." },
+    33: { name: "지온 옴니버스 악취의 지배자", desc: "모든 평행우주의 지온이가 하나로 모인 냄새." },
+    34: { name: "지온 무한의 악취 오메가", desc: "끝없는 악취의 굴레." },
+    35: { name: "✨ 전설의 궁극 지온냄새 마스터 ✨", desc: "축하합니다! 당신은 지온냄새의 진정한 지배자입니다." }
+  };
+
+  // 확률 설정 [성공, 유지/하락, 파괴]
+  function getProbs(lv) {
+    if (lv < 5) return [100, 0, 0];
+    if (lv < 10) return [80, 20, 0];
+    if (lv < 15) return [60, 35, 5];
+    if (lv < 20) return [45, 45, 10];
+    if (lv < 25) return [30, 55, 15];
+    if (lv < 30) return [20, 60, 20];
+    if (lv < 34) return [10, 65, 25];
+    return [5, 70, 25];
+  }
+
+  let currentLevel = 0;
+
+  function updateUI() {
+    const data = SMELL_DB[currentLevel];
+    document.getElementById("level-display").innerText = `+${currentLevel} 단계`;
+    document.getElementById("name-display").innerText = data.name;
+    document.getElementById("desc-display").innerText = data.desc;
+
+    if (currentLevel >= 35) {
+      document.getElementById("prob-success").innerText = "MAX";
+      document.getElementById("prob-down").innerText = "-";
+      document.getElementById("prob-destroy").innerText = "-";
+      return;
+    }
+
+    const [s, d, x] = getProbs(currentLevel);
+    document.getElementById("prob-success").innerText = `${s}%`;
+    document.getElementById("prob-down").innerText = `${d}%`;
+    document.getElementById("prob-destroy").innerText = `${x}%`;
+  }
+
+  function addLog(msg, type) {
+    const logBox = document.getElementById("log-box");
+    const div = document.createElement("div");
+    div.className = `log-item log-${type}`;
+    div.innerText = msg;
+    logBox.prepend(div);
+  }
+
+  function enhance() {
+    if (currentLevel >= 35) {
+      alert("이미 최종 단계에 도달했습니다!");
+      return;
+    }
+
+    const [succProb, downProb, destProb] = getProbs(currentLevel);
+    const rand = Math.random() * 100;
+
+    if (rand < succProb) {
+      currentLevel++;
+      addLog(`[성공] +${currentLevel} ${SMELL_DB[currentLevel].name} 달성!`, "success");
+    } else if (rand < succProb + destProb) {
+      addLog(`[파괴] 강한 악취를 견디지 못하고 터졌습니다! (+0 리셋)`, "destroied");
+      currentLevel = 0;
+    } else {
+      if (currentLevel > 0) currentLevel--;
+      addLog(`[실패] 강화 실패! (+${currentLevel} 단계로 하락)`, "fail");
+    }
+
+    updateUI();
+  }
+
+  updateUI();
+</script>
+
+</body>
+</html>
