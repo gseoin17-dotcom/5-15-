@@ -1673,24 +1673,40 @@ with left_col:
   with nav_shop:
     if st.button("🛒 포인트 상점",key="open_shop",use_container_width=True): st.session_state.open_panel="shop"; st.rerun()
   with nav_tears:
-    st.markdown("<div style='text-align:center;padding-top:9px;font-weight:800;'>💧 눈물</div>",unsafe_allow_html=True)
+    if st.button("💧 눈물",key="open_tears",use_container_width=True): st.session_state.open_panel="tears"; st.rerun()
   with nav_ach:
     if st.button("🏆 업적",key="open_ach",use_container_width=True): st.session_state.open_panel="ach"; st.rerun()
   if st.session_state.open_panel=="shop": show_point_shop()
+  elif st.session_state.open_panel=="tears": show_tears()
   elif st.session_state.open_panel=="ach": show_achievements()
 
-  tab_tears,=st.tabs(["💧 눈물"])
-  with tab_tears:
+  @st.dialog("💧 눈물", width="large")
+  def show_tears():
+    if st.button("✕ 닫기", key="close_tears", use_container_width=False):
+      st.session_state.open_panel = None
+      st.rerun()
+    st.markdown("### 💧 눈물")
     max_lvl=25 if st.session_state.is_rebirth else 35
     limit_lvl=18 if st.session_state.is_rebirth else 32
-    if st.session_state.level>=limit_lvl: st.warning("⚠️ 고단계부터는 눈물을 사용할 수 없습니다!")
-    else: st.markdown(f"**효과:** 눈물 20개 소모 (100% 확률로 1~3단계 상승) · **현재보유:** {st.session_state.tears} / 60개")
+    if st.session_state.level>=limit_lvl:
+      st.warning("⚠️ 고단계부터는 눈물을 사용할 수 없습니다!")
+    else:
+      st.markdown(f"**효과:** 눈물 20개 소모 (100% 확률로 1~3단계 상승) · **현재보유:** {st.session_state.tears} / 60개")
     can_use_tears=st.session_state.level<limit_lvl
-    if st.button("눈물 기적 가동",use_container_width=True,disabled=not can_use_tears):
-      if st.session_state.level>=limit_lvl: st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
+    if st.button("💧 눈물 기적 가동",key="tears_action",use_container_width=True,disabled=not can_use_tears):
+      if st.session_state.level>=limit_lvl:
+        st.warning("고단계부터는 눈물을 사용할 수 없습니다.")
       elif st.session_state.tears>=20:
-        st.session_state.tears-=20; add_lvl=random.choice([1,2,3]); st.session_state.prev_level=st.session_state.level; st.session_state.level=min(max_lvl,st.session_state.level+add_lvl); st.session_state.status="CRITICAL" if add_lvl>=2 else "SUCCESS"; save_current_season_state(); st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!"); st.rerun()
-      else: st.error("눈물 20개가 필요합니다.")
+        st.session_state.tears-=20
+        add_lvl=random.choice([1,2,3])
+        st.session_state.prev_level=st.session_state.level
+        st.session_state.level=min(max_lvl,st.session_state.level+add_lvl)
+        st.session_state.status="CRITICAL" if add_lvl>=2 else "SUCCESS"
+        save_current_season_state()
+        st.success(f"눈물 기적 100% 성공! {add_lvl}단계 상승!")
+        st.rerun()
+      else:
+        st.error("눈물 20개가 필요합니다.")
 
 
   st.markdown(
