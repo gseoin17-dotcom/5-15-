@@ -1507,47 +1507,49 @@ with left_col:
       unsafe_allow_html=True,
   )
 
-  s_col1, s_col2 = st.columns(2)
-
-  with s_col1:
+  # -----------------------------------------------------------------------
+  # 보유 정보 — 3줄 구성
+  # 1줄: 보유 금액 / 포인트
+  # 2줄: 눈물 / 지온이의 가오
+  # 3줄: 방지권
+  # -----------------------------------------------------------------------
+  info_row1 = st.columns(2)
+  with info_row1[0]:
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💳 보유 금액</div><div style='font-size:14px;"
-        f" font-weight:800; color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
+        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>💳 보유 금액</div>"
+        f"<div style='font-size:14px;font-weight:800;color:#ffffff;'>{format_gold(st.session_state.money)}</div></div>",
         unsafe_allow_html=True,
     )
-    st.write("")
+  with info_row1[1]:
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>💧 눈물</div><div style='font-size:15px;"
-        f" font-weight:800; color:#ffffff;'>{st.session_state.tears} /"
-        " 60개</div></div>",
-        unsafe_allow_html=True,
-    )
-    st.write("")
-    st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>⭐ 포인트</div><div style='font-size:15px;"
-        f" font-weight:800; color:#facc15;'>{st.session_state.points:,}P</div>"
-        f"<div style='font-size:10px; color:#cbd5e1;'>다음 성공: +{get_enhance_point_reward(min(st.session_state.level + 1, 35 if not st.session_state.is_rebirth else 25)):,}P</div></div>",
+        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>⭐ 포인트</div>"
+        f"<div style='font-size:15px;font-weight:800;color:#facc15;'>{st.session_state.points:,}P</div>"
+        f"<div style='font-size:10px;color:#cbd5e1;'>다음 성공: +{get_enhance_point_reward(min(st.session_state.level + 1, 35 if not st.session_state.is_rebirth else 25)):,}P</div></div>",
         unsafe_allow_html=True,
     )
 
-  with s_col2:
+  st.write("")
+  info_row2 = st.columns(2)
+  with info_row2[0]:
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>🛡️ 방지권</div><div style='font-size:15px;"
-        f" font-weight:800; color:#ffffff;'>{st.session_state.shield} /"
-        " 3개</div></div>",
+        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>💧 눈물</div>"
+        f"<div style='font-size:15px;font-weight:800;color:#ffffff;'>{st.session_state.tears} / 60개</div></div>",
         unsafe_allow_html=True,
     )
-    st.write("")
-
+  with info_row2[1]:
     pity_left = PITY_MAX - st.session_state.pity_count
     st.markdown(
-        f"<div style='text-align: center;'><div style='font-size:12px;"
-        f" color:#fde68a;'>✨ 지온이의 가오</div><div style='font-size:13px;"
-        f" font-weight:800; color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>✨ 지온이의 가오</div>"
+        f"<div style='font-size:13px;font-weight:800;color:#ffffff;'>실패까지 <b>{pity_left}회</b></div></div>",
+        unsafe_allow_html=True,
+    )
+
+  st.write("")
+  pity_row = st.columns(2)
+  with pity_row[0]:
+    st.markdown(
+        f"<div style='text-align:center;'><div style='font-size:12px;color:#fde68a;'>🛡️ 방지권</div>"
+        f"<div style='font-size:15px;font-weight:800;color:#ffffff;'>{st.session_state.shield} / 3개</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -1579,6 +1581,37 @@ with left_col:
       unsafe_allow_html=True,
   )
 
+  st.markdown("""
+  <style>
+    /* 상점/눈물/업적 전용: Liquid Glass 대신 깔끔한 평면 패널 */
+    .shop-flat, .tear-flat, .ach-flat {
+      background:#111827 !important;
+      border:1px solid #334155 !important;
+      border-radius:12px !important;
+      box-shadow:none !important;
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+    }
+    .shop-flat { border-left:4px solid #facc15 !important; }
+    .tear-flat { border-left:4px solid #38bdf8 !important; }
+    .ach-flat { border-left:4px solid #a78bfa !important; }
+    .flat-item {
+      background:#0f172a !important;
+      border:1px solid #263449 !important;
+      border-radius:10px !important;
+      box-shadow:none !important;
+    }
+    .flat-ach-card {
+      position:relative; overflow:hidden; min-height:112px;
+      background:#111827 !important;
+      border:1px solid #334155 !important;
+      border-radius:12px !important;
+      box-shadow:none !important;
+      backdrop-filter:none !important;
+    }
+  </style>
+  """, unsafe_allow_html=True)
+
   # ---------------------------------------------------------------------------
   # 🛒 상점 / 💧 눈물 / 🏆 업적
   # 각각 버튼을 누르면 큰 전체 화면형 대화창으로 표시
@@ -1590,8 +1623,9 @@ with left_col:
         <div style="
             padding:14px;
             border-radius:18px;
-            background:linear-gradient(135deg,rgba(250,204,21,.12),rgba(15,23,42,.78));
-            border:1px solid rgba(250,204,21,.25);
+            background:#111827;
+            border-left:4px solid #facc15;
+            border-top:0;border-right:0;border-bottom:0;
             margin-bottom:12px;
         ">
             <div style="font-size:18px;font-weight:900;color:#fde68a;">
@@ -1610,8 +1644,7 @@ with left_col:
     with money_col:
       st.markdown(
           f"""
-          <div style="text-align:center;padding:10px;border-radius:14px;
-          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);">
+          <div class='flat-item' style="text-align:center;padding:10px;">
               <div style="font-size:11px;color:#94a3b8;">💰 보유 금액</div>
               <div style="font-size:17px;font-weight:900;color:#fde68a;">
                   {format_gold(st.session_state.money)}
@@ -1624,8 +1657,7 @@ with left_col:
     with point_col:
       st.markdown(
           f"""
-          <div style="text-align:center;padding:10px;border-radius:14px;
-          background:rgba(255,255,255,.05);border:1px solid rgba(250,204,21,.20);">
+          <div class='flat-item' style="text-align:center;padding:10px;">
               <div style="font-size:11px;color:#94a3b8;">⭐ 보유 포인트</div>
               <div style="font-size:17px;font-weight:900;color:#facc15;">
                   {st.session_state.points:,}P
@@ -1645,8 +1677,9 @@ with left_col:
         <div style="
             padding:12px;
             border-radius:16px;
-            background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(15,23,42,.80));
-            border:1px solid rgba(96,165,250,.25);
+            background:#111827;
+            border-left:4px solid #60a5fa;
+            border-top:0;border-right:0;border-bottom:0;
         ">
             <div style="font-size:16px;font-weight:900;color:#60a5fa;">
                 🛡️ 파괴 방지권
@@ -1759,8 +1792,9 @@ with left_col:
         <div style="
             padding:12px;
             border-radius:16px;
-            background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(15,23,42,.80));
-            border:1px solid rgba(168,85,247,.25);
+            background:#111827;
+            border-left:4px solid #c084fc;
+            border-top:0;border-right:0;border-bottom:0;
         ">
             <div style="font-size:16px;font-weight:900;color:#c084fc;">
                 🚀 워프권
@@ -1803,8 +1837,8 @@ with left_col:
               margin-top:9px;
               padding:11px 12px;
               border-radius:14px;
-              background:rgba(255,255,255,.045);
-              border:1px solid rgba(255,255,255,.10);
+              background:#0f172a;
+              border:1px solid #263449;
           ">
               <div style="font-size:14px;font-weight:900;">
                   🚀 {w_level}강 워프권
@@ -1903,21 +1937,21 @@ with left_col:
   def show_tears():
     max_lvl = 25 if st.session_state.is_rebirth else 35
     limit_lvl = 18 if st.session_state.is_rebirth else 32
-    
+
+    st.markdown(
+        f"""<div class='tear-flat' style='padding:18px;margin-bottom:14px;'>
+        <div style='font-size:21px;font-weight:900;color:#e0f2fe;'>💧 눈물의 기적</div>
+        <div style='font-size:13px;color:#94a3b8;margin-top:5px;'>눈물 20개를 사용해 1~3단계를 확정적으로 올립니다.</div>
+        <div style='display:flex;gap:30px;margin-top:16px;flex-wrap:wrap;'>
+          <div><div style='font-size:10px;color:#64748b;'>보유 눈물</div><div style='font-size:24px;font-weight:900;color:#38bdf8;'>{st.session_state.tears} <span style='font-size:13px;color:#94a3b8;'>/ 60</span></div></div>
+          <div><div style='font-size:10px;color:#64748b;'>사용 조건</div><div style='font-size:18px;font-weight:900;color:#f8fafc;'>20개</div></div>
+          <div><div style='font-size:10px;color:#64748b;'>상승 범위</div><div style='font-size:18px;font-weight:900;color:#f8fafc;'>+1 ~ +3</div></div>
+        </div></div>""",
+        unsafe_allow_html=True,
+    )
+
     if st.session_state.level >= limit_lvl:
-      st.markdown(
-          "<div style='font-size:13px;color:#ef4444;font-weight:700;margin-bottom:8px;'>"
-          "⚠️ 고단계부터는 눈물을 사용할 수 없습니다!</div>",
-          unsafe_allow_html=True,
-      )
-    else:
-      st.markdown(
-          f"<div style='font-size:13px;color:#cbd5e1;margin-bottom:8px;'>"
-          f"<b>효과:</b> 눈물 20개 소모 (100% 확률로 1~3단계 상승)<br>"
-          f"<b>현재보유:</b> <span style='font-weight:bold;color:#38bdf8;'>"
-          f"{st.session_state.tears} / 60개</span></div>",
-          unsafe_allow_html=True,
-      )
+      st.warning("⚠️ 고단계부터는 눈물을 사용할 수 없습니다!")
     
     can_use_tears = st.session_state.level < limit_lvl
     
@@ -1956,29 +1990,44 @@ with left_col:
       icon = "✅" if done else "🔒"
       accent, accent2, deep, title_icon = get_title_theme(info["title"])
       title_style = get_title_style(info["title"])
-      bg = (f"linear-gradient(135deg,{deep},{accent2}55,#020617)" if done
-            else "linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,6,23,.99))")
-      border = accent if done else "rgba(148,163,184,.22)"
       with ach_cols[i % 3]:
         st.markdown(
-            f"<div class='title-design {title_style}' style='background:{bg};border:1px solid {border};"
-            f"box-shadow:0 0 22px {accent}25;border-radius:16px;padding:13px;"
-            f"margin:0 0 10px 0;min-height:116px;'>"
-            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'}'>"
+            f"<div class='flat-ach-card title-design {title_style}' style='border-color:{accent if done else '#334155'} !important;'>"
+            f"<div style='padding:13px;'>"
+            f"<div style='font-size:10px;letter-spacing:1.5px;color:{accent if done else '#64748b'};font-weight:800'>"
             f"{('UNLOCKED' if done else 'LOCKED')}</div>"
             f"<div style='font-size:15px;font-weight:900;margin-top:5px'>{icon} {info['name']}</div>"
             f"<div style='font-size:12px;color:#cbd5e1;margin-top:6px'>{info['desc']}</div>"
             f"<div style='font-size:11px;color:{accent};margin-top:8px;font-weight:800'>🏷️ {info['title']}</div>"
-            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div></div>",
+            f"<div style='font-size:10px;color:#fde68a;margin-top:2px'>💰 {format_gold(info['reward'])}</div>"
+            f"</div></div>",
             unsafe_allow_html=True,
         )
+
     options = [TITLE_DEFAULT] + st.session_state.unlocked_titles
     if st.session_state.selected_title not in options:
       st.session_state.selected_title = TITLE_DEFAULT
-    selected = st.selectbox(
-        "현재 칭호", options, index=options.index(st.session_state.selected_title),
+
+    def apply_title_selection():
+      st.session_state.selected_title = st.session_state.title_selector
+      # 칭호를 바꾸는 즉시 메인 화면까지 다시 그려서 바로 적용
+      st.rerun()
+
+    st.markdown(
+        "<div class='ach-flat' style='padding:14px;margin-top:8px;margin-bottom:8px;'>"
+        "<div style='font-size:14px;font-weight:900;color:#e9d5ff;'>🏷️ 칭호 장착</div>"
+        "<div style='font-size:11px;color:#94a3b8;margin-top:3px;'>칭호를 선택하면 즉시 메인 화면에 적용됩니다.</div>"
+        "</div>",
+        unsafe_allow_html=True,
     )
-    st.session_state.selected_title = selected
+    st.selectbox(
+        "현재 칭호",
+        options,
+        index=options.index(st.session_state.selected_title),
+        key="title_selector",
+        on_change=apply_title_selection,
+    )
+
 
 
   menu_shop, menu_tears, menu_ach = st.columns(3)
