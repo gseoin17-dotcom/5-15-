@@ -2029,7 +2029,7 @@ with left_col:
           can_buy_revival_money = st.session_state.money >= revival_money_cost
           if st.button(
               "💰 돈으로 부활권 구매",
-              key="shop_revival_money",
+              key=f"shop_revival_money_{st.session_state.is_rebirth}_{destroyed_level}",
               use_container_width=True,
               disabled=not can_buy_revival_money,
           ):
@@ -2043,7 +2043,7 @@ with left_col:
           can_buy_revival_point = st.session_state.points >= revival_point_cost
           if st.button(
               "⭐ 포인트로 부활권 구매",
-              key="shop_revival_point",
+              key=f"shop_revival_point_{st.session_state.is_rebirth}_{destroyed_level}",
               use_container_width=True,
               disabled=not can_buy_revival_point,
           ):
