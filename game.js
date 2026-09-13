@@ -38,9 +38,9 @@ const INITIAL = {
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
   enhanceSuccesses:0,enhanceFailures:0,criticalCount:0,destroyCount:0,
   seasonData:{
-    1:{level:0,prev_level:0,max_level:0,money:1000000,status:"READY",shield:0,tears:0,pity_count:0,
+    1:{level:0,prev_level:0,max_level:0,money:1000000,status:"READY",shield:0,reviveTickets:0,tears:0,pity_count:0,
        unlocked_warps:{10:false,15:false,20:false,25:false,30:false}},
-    2:{level:0,prev_level:0,max_level:0,money:1000000000,status:"READY",shield:0,tears:50,pity_count:0,
+    2:{level:0,prev_level:0,max_level:0,money:1000000000,status:"READY",shield:0,reviveTickets:0,tears:50,pity_count:0,
        unlocked_season2_warps:{5:false,10:false,15:false,20:false}}
   }
 };
@@ -61,6 +61,7 @@ function loadState(){
     if(!saved) return clone(INITIAL);
     const s=Object.assign(clone(INITIAL),saved);
     s.seasonData=Object.assign(clone(INITIAL.seasonData),saved.seasonData||{});
+    for(const k of [1,2]) s.seasonData[k]=Object.assign(clone(INITIAL.seasonData[k]),s.seasonData[k]||{});
     s.achievements=Object.assign(clone(INITIAL.achievements),saved.achievements||{});
     return s;
   }catch(e){ return clone(INITIAL); }
@@ -193,6 +194,45 @@ function enhance(){
   const key=isS2()?"unlocked_season2_warps":"unlocked_warps";
   for(const w of warps) if(d.level>=w) d[key][w]=true;
   checkAchievements(); save(); render(); animateResult(d.status);
+  if(d.status==="DESTROYED") setTimeout(()=>showRevivePrompt(), 2900);
+}
+function showRevivePrompt(){
+  const d=state.seasonData[state.currentSeason];
+  if(!d || d.status!=="DESTROYED") return;
+  const old=document.getElementById("revivePrompt"); if(old) old.remove();
+  const overlay=document.createElement("div"); overlay.id="revivePrompt"; overlay.className="revive-overlay";
+  const has=(d.reviveTickets||0)>0;
+  overlay.innerHTML=`<div class="revive-box">
+    <div class="revive-icon">💖</div><div class="revive-title">강화 파괴!</div>
+    <div class="revive-desc">부활권을 사용해서 <b>${d.prev_level}단계</b>로 돌아가시겠습니까?</div>
+    <div class="revive-count">보유 부활권: <b>${d.reviveTickets||0}개</b></div>
+    <div class="revive-actions"><button id="reviveYes" class="glass-btn" ${has?"":"disabled"}>⭕ O · 부활</button><button id="reviveNo" class="glass-btn">❌ X · 포기</button></div>
+    ${has?"":"<div class=\"revive-none\">부활권이 없습니다. 상점에서 구매할 수 있습니다.</div>"}
+  </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById("reviveNo").onclick=()=>{overlay.remove();};
+  const yes=document.getElementById("reviveYes");
+  if(yes) yes.onclick=()=>{
+    if((d.reviveTickets||0)<=0) return;
+    const restore=Math.max(0,Number(d.prev_level)||0);
+    d.reviveTickets--; d.level=restore; d.status="REVIVED"; d.max_level=Math.max(d.max_level,restore);
+    save(); render(); overlay.remove();
+    playReviveAnimation(restore);
+  };
+}
+function playReviveAnimation(restore){
+  const scene=document.getElementById("enhanceCardScene"), card=document.getElementById("enhanceCard"), glow=document.getElementById("cardStatusGlow");
+  if(!scene||!card)return;
+  scene.classList.remove("status-destroyed"); scene.classList.add("status-revived");
+  renderEnhanceCard();
+  const color=data().color; if(glow){glow.style.background="#f472b6"; glow.style.opacity=".08";}
+  cardBurst("#f472b6",120,360); cardBurst("#fff",65,300); impactFlash(.7); screenShake(.16,.28);
+  gsap.fromTo(card,{scale:.62,opacity:.35,y:35,filter:"brightness(.6) blur(2px)"},{scale:1.12,opacity:1,y:-8,filter:"brightness(1.7) saturate(1.35)",duration:.48,ease:"back.out(1.8)",onComplete:()=>{
+    if(glow) gsap.to(glow,{scale:1.9,opacity:.35,duration:.35,yoyo:true,repeat:1});
+    gsap.to(card,{scale:1,y:0,filter:"brightness(1) saturate(1)",duration:.45,ease:"elastic.out(1,.5)"});
+  }});
+  setTimeout(()=>{scene.classList.remove("status-revived"); render();},1200);
+  showToast(`💖 부활 성공! ${restore}단계로 돌아왔습니다.`);
 }
 function sell(){
   const d=state.seasonData[state.currentSeason], l=d.level;
@@ -399,7 +439,7 @@ function renderEquippedTitle(){
   el.style.boxShadow=`0 0 22px ${th[0]}35,inset 0 1px rgba(255,255,255,.12)`;
   const titleAch=Object.values(ACH).find(a=>a.title===t);
   const obtain=titleAch ? `획득 방법 · ${titleAch.desc}` : (t===DEFAULT_TITLE ? '기본 칭호 · 별도의 획득 조건 없음' : '획득 방법 · 업적을 달성하면 획득할 수 있습니다.');
-  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-stage">${state.season2 ? "환생 " : ""}${state.level}단계</div><div class="selected-title-obtain">${obtain}</div>`;
+  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-stage" style="color:${th[0]}">시즌 ${state.currentSeason} · ${level()}단계</div><div class="selected-title-obtain">${obtain}</div>`;
 }
 
 /* --------------------------- MODALS --------------------------- */
@@ -430,6 +470,11 @@ function shopHTML(){
   }).join("");
   return `<div class="modal-head shop"><h2>🛒 상점</h2><p>방지권과 워프권을 💰 돈 또는 ⭐ 포인트로 구매할 수 있습니다.</p></div>
     <div class="shop-grid"><div class="flat-item"><div>💰 보유 금액</div><b>${formatGold(money())}</b></div><div class="flat-item"><div>⭐ 보유 포인트</div><b>${state.points.toLocaleString("ko-KR")}P</b></div></div>
+    <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #f472b6">
+      <h3 style="color:#f472b6">💖 부활권</h3>
+      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0}개<br><b>가격:</b> ${formatGold(100000)} / 1개</div>
+      <button class="glass-btn" data-buy-revive ${money()<100000?"disabled":""}>💰 부활권 구매</button>
+    </div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #60a5fa">
       <h3 style="color:#60a5fa">🛡️ 파괴 방지권</h3>
       <div class="modal-meta"><b>보유:</b> ${sh} / 3개<br><b>구매 가능 단계:</b> ${minShield}단계 이상<br><b>💰 돈 가격:</b> ${formatGold(moneyCost)}<br><b>⭐ 포인트 가격:</b> ${pointCost.toLocaleString("ko-KR")}P</div>
@@ -470,6 +515,12 @@ function achievementsHTML(){
     <select id="titleSelect" class="title-select">${options.map(t=>`<option ${t===state.selectedTitle?"selected":""}>${t}</option>`).join("")}</select></div>`;
 }
 function bindModal(kind){
+  const reviveBtn=document.querySelector('[data-buy-revive]');
+  if(reviveBtn) reviveBtn.onclick=()=>{
+    const d=state.seasonData[state.currentSeason], price=100000;
+    if(money()<price){showToast("금액이 부족합니다.");return;}
+    setMoney(money()-price); d.reviveTickets=(d.reviveTickets||0)+1; save(); render(); openModal("shop"); showToast("💖 부활권 1개 구매 완료!");
+  };
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyShield,l=level(), min=isS2()?16:20,cost=type==="money"?shieldMoneyCost(l):shieldPointCost(l);
     if(l<min||shield()>=3){showToast("구매 조건을 만족하지 못했습니다.");return;}
