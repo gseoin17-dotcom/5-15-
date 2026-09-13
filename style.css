@@ -582,3 +582,6 @@ body::before{
 @keyframes reviveFade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}@keyframes revivePulse{50%{transform:scale(1.12)}}
 .status-revived .card-status-glow{background:#f472b6!important}
 @media(max-width:700px){.selected-title-name{font-size:13px!important}.selected-title-stage{font-size:10px}.selected-title-obtain{font-size:8px!important}.revive-box{padding:24px 18px 20px}}
+/* V9.9 readability / revive ticket */
+.selected-title-label{display:none!important;}
+#reviveTickets{font-size:18px;letter-spacing:.2px;}

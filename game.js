@@ -194,7 +194,7 @@ function enhance(){
   const key=isS2()?"unlocked_season2_warps":"unlocked_warps";
   for(const w of warps) if(d.level>=w) d[key][w]=true;
   checkAchievements(); save(); render(); animateResult(d.status);
-  if(d.status==="DESTROYED") setTimeout(()=>showRevivePrompt(), 2900);
+  if(d.status==="DESTROYED") setTimeout(()=>showRevivePrompt(), 3300);
 }
 function showRevivePrompt(){
   const d=state.seasonData[state.currentSeason];
@@ -297,6 +297,7 @@ function render(){
   document.getElementById("tears").textContent=tears()+" / 60개";
   document.getElementById("pity").textContent="실패까지 "+(PITY_MAX-pity())+"회";
   document.getElementById("shield").textContent=shield()+" / 3개";
+  document.getElementById("reviveTickets").textContent=(d.reviveTickets||0)+" / 1개";
   document.getElementById("nextReward").textContent="다음 성공: +"+pointReward(Math.min(l+1,max)).toLocaleString("ko-KR")+"P";
   document.getElementById("modeTitle").textContent=s2?"🌀 [시즌 2] 얼티밋 자이온의 시작":"🌌 [시즌 1] 지온의 탄생과 시초";
   document.getElementById("probLevel").textContent=l;
@@ -439,7 +440,7 @@ function renderEquippedTitle(){
   el.style.boxShadow=`0 0 22px ${th[0]}35,inset 0 1px rgba(255,255,255,.12)`;
   const titleAch=Object.values(ACH).find(a=>a.title===t);
   const obtain=titleAch ? `획득 방법 · ${titleAch.desc}` : (t===DEFAULT_TITLE ? '기본 칭호 · 별도의 획득 조건 없음' : '획득 방법 · 업적을 달성하면 획득할 수 있습니다.');
-  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-stage" style="color:${th[0]}">시즌 ${state.currentSeason} · ${level()}단계</div><div class="selected-title-obtain">${obtain}</div>`;
+  el.innerHTML=`<div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-stage" style="color:${th[0]}">시즌 ${state.currentSeason} · ${level()}단계</div><div class="selected-title-obtain">${obtain}</div>`;
 }
 
 /* --------------------------- MODALS --------------------------- */
@@ -472,8 +473,8 @@ function shopHTML(){
     <div class="shop-grid"><div class="flat-item"><div>💰 보유 금액</div><b>${formatGold(money())}</b></div><div class="flat-item"><div>⭐ 보유 포인트</div><b>${state.points.toLocaleString("ko-KR")}P</b></div></div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #f472b6">
       <h3 style="color:#f472b6">💖 부활권</h3>
-      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0}개<br><b>가격:</b> ${formatGold(100000)} / 1개</div>
-      <button class="glass-btn" data-buy-revive ${money()<100000?"disabled":""}>💰 부활권 구매</button>
+      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>가격:</b> ${formatGold(100000)} / 1개</div>
+      <button class="glass-btn" data-buy-revive ${(money()<100000 || (d.reviveTickets||0)>=1)?"disabled":""}>💰 부활권 구매</button>
     </div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #60a5fa">
       <h3 style="color:#60a5fa">🛡️ 파괴 방지권</h3>
@@ -518,8 +519,9 @@ function bindModal(kind){
   const reviveBtn=document.querySelector('[data-buy-revive]');
   if(reviveBtn) reviveBtn.onclick=()=>{
     const d=state.seasonData[state.currentSeason], price=100000;
+    if((d.reviveTickets||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
     if(money()<price){showToast("금액이 부족합니다.");return;}
-    setMoney(money()-price); d.reviveTickets=(d.reviveTickets||0)+1; save(); render(); openModal("shop"); showToast("💖 부활권 1개 구매 완료!");
+    setMoney(money()-price); d.reviveTickets=1; save(); render(); openModal("shop"); showToast("💖 부활권 1개 구매 완료! (최대 1개)");
   };
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyShield,l=level(), min=isS2()?16:20,cost=type==="money"?shieldMoneyCost(l):shieldPointCost(l);
