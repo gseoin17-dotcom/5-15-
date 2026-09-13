@@ -79,16 +79,16 @@ function pity(){ return state.seasonData[state.currentSeason].pity_count; }
 function formatGold(amount){
   if(amount===0) return "0원";
   if(!Number.isFinite(amount)) return "무한대(INF)";
-  // 금액이 너무 길어지지 않도록 조/경 단위 아래는 생략합니다.
-  // 예: 201경4,910조6,296억4,199만9,104원 → 201경4,910조
+  // 금액은 가장 큰 두 단위까지만 간단하게 표시합니다.
+  // 예: 6조5301억9045만3100원 → 6조 5301억
   const units=["","만","억","조","경","해"];
-  let result=[]; let n=Math.floor(amount), i=0;
+  let parts=[], n=Math.floor(amount), i=0;
   while(n>0 && i<units.length){
     const r=n%10000;
-    if(r>0 && i<=4) result.unshift(r.toLocaleString("ko-KR")+units[i]);
+    if(r>0) parts.unshift(r.toLocaleString("ko-KR")+units[i]);
     n=Math.floor(n/10000); i++;
   }
-  return result.join("")+"원";
+  return parts.slice(0,2).join(" ")+"원";
 }
 function enhanceCost(lvl,s2=isS2()){
   return (s2?ENHANCE_COST_S2:ENHANCE_COST_S1)[lvl] ?? 2000000000;
@@ -149,6 +149,7 @@ function rewardPoints(lvl){
   const r=pointReward(lvl); state.points+=r; state.pointsEarnedTotal+=r; state.lastPointReward=r;
 }
 function enhance(){
+  if(revivePromptOpen) return;
   const d=state.seasonData[state.currentSeason], curr=d.level, max=maxLevel(), cost=enhanceCost(curr);
   if(curr>=max){ render(); return; }
   if(d.money<cost){ d.status="NOT_ENOUGH_MONEY"; showToast("강화 비용 부족!"); render(); return; }
@@ -193,12 +194,14 @@ function enhance(){
   const warps=isS2()?[5,10,15,20]:[10,15,20,25,30];
   const key=isS2()?"unlocked_season2_warps":"unlocked_warps";
   for(const w of warps) if(d.level>=w) d[key][w]=true;
-  checkAchievements(); save(); render(); animateResult(d.status);
-  if(d.status==="DESTROYED") setTimeout(()=>showRevivePrompt(), 3300);
+  checkAchievements(); save(); render();
+  if(d.status==="DESTROYED") showRevivePrompt();
+  animateResult(d.status);
 }
 function showRevivePrompt(){
   const d=state.seasonData[state.currentSeason];
   if(!d || d.status!=="DESTROYED") return;
+  revivePromptOpen=true;
   const old=document.getElementById("revivePrompt"); if(old) old.remove();
   const overlay=document.createElement("div"); overlay.id="revivePrompt"; overlay.className="revive-overlay";
   const has=(d.reviveTickets||0)>0;
@@ -210,13 +213,13 @@ function showRevivePrompt(){
     ${has?"":"<div class=\"revive-none\">부활권이 없습니다. 상점에서 구매할 수 있습니다.</div>"}
   </div>`;
   document.body.appendChild(overlay);
-  document.getElementById("reviveNo").onclick=()=>{overlay.remove();};
+  document.getElementById("reviveNo").onclick=()=>{revivePromptOpen=false; overlay.remove();};
   const yes=document.getElementById("reviveYes");
   if(yes) yes.onclick=()=>{
     if((d.reviveTickets||0)<=0) return;
     const restore=Math.max(0,Number(d.prev_level)||0);
     d.reviveTickets--; d.level=restore; d.status="REVIVED"; d.max_level=Math.max(d.max_level,restore);
-    save(); render(); overlay.remove();
+    save(); render(); overlay.remove(); revivePromptOpen=false;
     playReviveAnimation(restore);
   };
 }
