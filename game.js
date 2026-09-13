@@ -48,6 +48,9 @@ const INITIAL = {
 let state = loadState();
 let sceneState = null;
 let toastTimer = null;
+// 강화 연출 상태
+let enhancing = false;
+let pendingEnhance = null;
 // 개발자 모드: DEL 키를 짧은 시간 안에 5번 연타하면 ON/OFF 전환.
 // 저장하지 않으므로 새로고침하면 기본적으로 꺼진 상태입니다.
 let devMode = false;
