@@ -516,14 +516,14 @@ function shopHTML(){
       </div>
     </div>`;
   }).join("");
-  return `<div class="modal-head shop"><h2>🛒 상점</h2><p>방지권과 워프권을 💰 돈 또는 ⭐ 포인트로 구매할 수 있습니다.</p></div>
+  return `<div class="modal-head shop"><h2>🛒 상점</h2></div>
     <div class="shop-grid"><div class="flat-item"><div>💰 보유 금액</div><b>${formatGold(money())}</b></div><div class="flat-item"><div>⭐ 보유 포인트</div><b>${state.points.toLocaleString("ko-KR")}P</b></div></div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #f472b6">
       <h3 style="color:#f472b6">💖 부활권</h3>
-      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>현재 단계:</b> ${l}단계 · 단계가 높을수록 가격 상승<br><b>💰 돈 가격:</b> ${formatGold(reviveMoney)}<br><b>⭐ 포인트 가격:</b> ${revivePoint.toLocaleString("ko-KR")}P</div>
+      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>구매 가능 단계:</b> 30단계 이상<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>현재 단계:</b> ${l}단계 · 단계가 높을수록 가격 상승<br><b>💰 돈 가격:</b> ${formatGold(reviveMoney)}<br><b>⭐ 포인트 가격:</b> ${revivePoint.toLocaleString("ko-KR")}P</div>
       <div class="two-buttons">
-        <button class="glass-btn" data-buy-revive="money" ${(money()<reviveMoney || (d.reviveTickets||0)>=1)?"disabled":""}>💰 돈으로 구매</button>
-        <button class="glass-btn" data-buy-revive="point" ${(state.points<revivePoint || (d.reviveTickets||0)>=1)?"disabled":""}>⭐ 포인트로 구매</button>
+        <button class="glass-btn" data-buy-revive="money" ${(l<30 || money()<reviveMoney || (d.reviveTickets||0)>=1)?"disabled":""}>💰 돈으로 구매</button>
+        <button class="glass-btn" data-buy-revive="point" ${(l<30 || state.points<revivePoint || (d.reviveTickets||0)>=1)?"disabled":""}>⭐ 포인트로 구매</button>
       </div>
     </div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #60a5fa">
@@ -569,6 +569,7 @@ function bindModal(kind){
   document.querySelectorAll("[data-buy-revive]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyRevive, d=state.seasonData[state.currentSeason], l=level();
     const cost=type==="money" ? reviveMoneyCost(l) : revivePointCost(l);
+    if(l<30){showToast("💖 부활권은 30단계 이상부터 구매할 수 있습니다.");return;}
     if((d.reviveTickets||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
     if(type==="money"){
       if(money()<cost){showToast("금액이 부족합니다.");return;}
@@ -600,10 +601,10 @@ function bindModal(kind){
     const d=state.seasonData[state.currentSeason], limit=isS2()?18:32;
     if(d.tears<20||d.level>=limit)return;
     d.tears-=20; const add=[1,2,3][Math.floor(Math.random()*3)]; d.prev_level=d.level; d.level=Math.min(maxLevel(),d.level+add); d.status=add>=2?"CRITICAL":"SUCCESS";
-    save(); render(); openModal("tears"); showToast(`눈물 기적 100% 성공! ${add}단계 상승!`);
+    save(); render(); closeModal(); showToast(`눈물 기적 100% 성공! ${add}단계 상승!`);
   };
   const ts=document.getElementById("titleSelect");
-  if(ts) ts.onchange=()=>{setTitle(ts.value);openModal("achievements");};
+  if(ts) ts.onchange=()=>{setTitle(ts.value);closeModal();};
 }
 document.getElementById("closeModal").onclick=closeModal;
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal();});
