@@ -317,8 +317,39 @@ function openModal(kind){
   if(kind==="shop") c.innerHTML=shopHTML();
   if(kind==="tears") c.innerHTML=tearsHTML();
   if(kind==="achievements") c.innerHTML=achievementsHTML();
+  if(kind==="cards") c.innerHTML=cardsHTML();
   m.classList.remove("hidden");
   bindModal(kind);
+}
+
+function cardsHTML(){
+  const s2=isS2();
+  const current=level();
+  const max=maxLevel();
+  const all=[];
+  for(let i=0;i<=max;i++){
+    const d=DB[s2][i];
+    if(!d) continue;
+    const unlocked=i<=current;
+    const tier=Math.min(6,d.tier||1);
+    const rarity=["COMMON","COMMON","RARE","EPIC","LEGEND","MYTHIC"][tier-1]||"MYTHIC";
+    const pct=Math.round((i/max)*100);
+    const point=pointReward(i);
+    const cost=i<max?enhanceCost(i,s2):0;
+    const shape=i===0?'orb':i<6?'gem':i<12?'core':i<20?'ring':i<28?'nova':'relic';
+    all.push(`<article class="level-card ${unlocked?'is-unlocked':'is-locked'} tier-${tier}" style="--card-accent:${d.color}">
+      <div class="card-top"><span class="card-rarity">${rarity}</span><span class="card-stage">${s2?'S2':'S1'} · ${i}</span></div>
+      <div class="card-art"><div class="card-orbit orbit-a"></div><div class="card-orbit orbit-b"></div><div class="card-shape ${shape}"></div><div class="card-shine"></div><span class="card-level">${i}</span></div>
+      <div class="card-body"><h3>${d.name}</h3><p>${d.desc}</p><div class="card-stats"><span>💰 ${formatGold(Number(d.price))}</span><span>⭐ +${point.toLocaleString('ko-KR')}P</span></div>${i<max?`<div class="card-cost">강화 비용 <b>${formatGold(cost)}</b></div>`:'<div class="card-cost final-card">★ MAX STAGE ★</div>'}</div>
+      <div class="card-lock">${unlocked?'UNLOCKED':'🔒 LOCKED'}</div>
+      <div class="card-progress"><i style="width:${pct}%"></i></div>
+    </article>`);
+  }
+  return `<div class="cards-modal">
+    <div class="cards-head"><div><div class="eyebrow">ZION ARCHIVE · COLLECTION</div><h2>🃏 ${s2?'시즌 2':'시즌 1'} 강화 카드 도감</h2><p>각 단계가 하나의 레어 카드가 됩니다. 현재 ${current}단계 · ${max}단계까지 수집 가능</p></div><div class="collection-badge"><b>${current+1}</b><span>/ ${max+1} 카드</span></div></div>
+    <div class="card-filter"><span class="active">전체</span><span>해금 ${current+1}</span><span>잠금 ${max-current}</span><span>최종 단계 ★</span></div>
+    <div class="level-card-grid">${all.join('')}</div>
+  </div>`;
 }
 function closeModal(){ document.getElementById("modal").classList.add("hidden"); }
 function shopHTML(){
