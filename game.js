@@ -673,6 +673,40 @@ function impactFlash(opacity=.75){
   flash.style.opacity='0';
   gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
 }
+function addCardCracks(color='#ff2038', count=9){
+  const card=document.getElementById('enhanceCard');
+  if(!card)return [];
+  card.querySelectorAll('.fx-crack').forEach(x=>x.remove());
+  const out=[];
+  for(let i=0;i<count;i++){
+    const el=document.createElement('span');
+    el.className='fx-crack';
+    const x=42+Math.random()*16, y=25+Math.random()*50;
+    const len=45+Math.random()*85, rot=-65+Math.random()*130;
+    el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=len+'px';
+    el.style.transform=`rotate(${rot}deg) scaleX(0)`;
+    el.style.setProperty('--crack',color);
+    card.appendChild(el); out.push(el);
+  }
+  return out;
+}
+function destroyBurst(count=180){
+  const scene=document.getElementById('enhanceCardScene');
+  if(!scene)return;
+  const colors=['#ff2038','#ff4657','#ff7a00','#ffd000','#ffffff'];
+  for(let i=0;i<count;i++){
+    const p=document.createElement('i'); p.className='destroy-particle';
+    p.style.setProperty('--c',colors[i%colors.length]);
+    p.style.left='50%'; p.style.top='50%';
+    const a=Math.random()*Math.PI*2, r=120+Math.random()*330;
+    p.style.setProperty('--dx',Math.cos(a)*r+'px');
+    p.style.setProperty('--dy',Math.sin(a)*r+'px');
+    p.style.setProperty('--rot',(Math.random()*900-450)+'deg');
+    p.style.setProperty('--delay',(Math.random()*.12)+'s');
+    scene.appendChild(p);
+    setTimeout(()=>p.remove(),1100);
+  }
+}
 function animateResult(status){
   const scene=document.getElementById('enhanceCardScene');
   const card=document.getElementById('enhanceCard');
@@ -683,88 +717,96 @@ function animateResult(status){
   const layer=document.getElementById('card3dLayer');
   if(!scene||!card||!wrap)return;
 
-  // 기존 CSS keyframe과 GSAP이 동시에 transform/opacity를 조작하면서
-  // 카드가 기울거나 사라지는 현상을 방지한다.
   gsap.killTweensOf([card,wrap,glow,flash,shine,layer]);
   scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');
-
+  card.querySelectorAll('.fx-crack').forEach(x=>x.remove());
   renderEnhanceCard();
   const color=data().color;
-  glow.style.background=color;
-  glow.style.opacity='.10';
-  wrap.style.transform='translate3d(0,0,0)';
+  const l=level();
+  const intensity=Math.min(2.4, .25 + l*.055);
+  glow.style.background=color; glow.style.opacity='.10';
   gsap.set(wrap,{x:0,y:0,rotation:0,scale:1,opacity:1});
   if(layer) layer.style.transform='rotateX(0deg) rotateY(0deg) translateZ(0)';
   gsap.set(card,{x:0,y:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'drop-shadow(0 28px 55px rgba(0,0,0,.42))'});
   if(shine) gsap.set(shine,{x:'-70%'});
 
   const finish=()=>{
-    // 어떤 결과에서도 카드가 사라지지 않고 정면으로 고정되도록 최종값을 보정
     gsap.set(card,{x:0,y:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'drop-shadow(0 28px 55px rgba(0,0,0,.42))'});
     gsap.set(wrap,{x:0,y:0,rotation:0,scale:1,opacity:1});
     renderEnhanceCard();
   };
 
+  // Higher stages shake harder. From 15+ the card visibly vibrates during every result.
+  const shake=(power,duration=.32,repeat=12)=>{
+    const p=power*(.65+Math.min(1,l/35));
+    gsap.to(card,{x:p,duration:.035,ease:'none',yoyo:true,repeat:repeat,onComplete:()=>gsap.set(card,{x:0})});
+    if(l>=10) screenShake(Math.min(.28,p*.018),duration);
+  };
+
   if(status==='SUCCESS'||status==='PITY_SUCCESS'){
     scene.classList.add('status-success');
-    cardBurst(color,status==='PITY_SUCCESS'?100:65,status==='PITY_SUCCESS'?320:240);
-    if(status==='PITY_SUCCESS') cardBurst('#fff',65,290);
-    gsap.fromTo(glow,{scale:.7,opacity:.03},{scale:1.65,opacity:status==='PITY_SUCCESS'?.30:.18,duration:.45,ease:'power2.out',yoyo:true,repeat:1});
-    // 살짝 들어왔다가 정면에 안착. 회전/투명도는 사용하지 않는다.
-    gsap.fromTo(card,{y:18,scale:.94},{y:-7,scale:1.035,duration:.22,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.28,ease:'back.out(1.8)',onComplete:finish});
-    }});
-    if(shine) gsap.to(shine,{x:'150%',duration:.9,ease:'power2.inOut',delay:.08});
-    impactFlash(status==='PITY_SUCCESS'?.55:.28);
-    return;
+    cardBurst(color,status==='PITY_SUCCESS'?130:85,status==='PITY_SUCCESS'?380:290);
+    spawnEnhanceBurst(color,Math.min(140,55+l*3),.16+l*.004,.055+l*.0015,.85);
+    if(status==='PITY_SUCCESS') cardBurst('#fff',90,360);
+    gsap.fromTo(glow,{scale:.7,opacity:.03},{scale:1.8,opacity:status==='PITY_SUCCESS'?.34:.20,duration:.45,ease:'power2.out',yoyo:true,repeat:1});
+    shake(status==='PITY_SUCCESS'?5.5:2.8,.3,8+Math.floor(l/8));
+    gsap.fromTo(card,{y:18,scale:.94},{y:-8,scale:1.04,duration:.22,ease:'power2.out',onComplete:()=>gsap.to(card,{y:0,scale:1,duration:.3,ease:'back.out(1.8)',onComplete:finish})});
+    if(shine) gsap.to(shine,{x:'170%',duration:.8,ease:'power2.inOut',delay:.03});
+    impactFlash(status==='PITY_SUCCESS'?.65:.32); return;
   }
 
   if(status==='CRITICAL'){
     scene.classList.add('status-critical');
-    cardBurst('#ffffff',115,380); cardBurst(color,95,300);
-    gsap.fromTo(glow,{scale:.55,opacity:.04},{scale:2.2,opacity:.34,duration:.6,ease:'power2.out',yoyo:true,repeat:1});
-    // 크리티컬도 과도한 3D 회전 없이 확대/착지로 표현
-    gsap.fromTo(card,{y:24,scale:.86},{y:-13,scale:1.10,duration:.25,ease:'power3.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.38,ease:'elastic.out(1,.55)',onComplete:finish});
-    }});
-    if(shine) gsap.to(shine,{x:'170%',duration:.7,ease:'power2.inOut',delay:.04});
-    impactFlash(.72);
-    return;
+    cardBurst('#ffffff',150,470); cardBurst(color,125,390);
+    spawnEnhanceBurst('#ffffff',110,.22,.065,1); spawnEnhanceBurst(color,100,.19,.07,1);
+    gsap.fromTo(glow,{scale:.45,opacity:.04},{scale:2.5,opacity:.42,duration:.58,ease:'power2.out',yoyo:true,repeat:1});
+    shake(7.5,.55,16);
+    gsap.fromTo(card,{y:25,scale:.84},{y:-16,scale:1.12,duration:.24,ease:'power3.out',onComplete:()=>gsap.to(card,{y:0,scale:1,duration:.42,ease:'elastic.out(1,.48)',onComplete:finish})});
+    if(shine) gsap.to(shine,{x:'190%',duration:.62,ease:'power2.inOut'});
+    impactFlash(.9); return;
   }
 
   if(status==='FAILED'||status==='HOLD'){
     scene.classList.add(status==='FAILED'?'status-failed':'status-hold');
-    cardBurst(status==='FAILED'?'#ff4d5d':'#a78bfa',45,180);
-    gsap.to(card,{x:-9,duration:.055,ease:'sine.inOut',yoyo:true,repeat:7,onComplete:()=>{
-      gsap.to(card,{x:0,duration:.12,ease:'power2.out',onComplete:finish});
-    }});
-    gsap.to(glow,{opacity:.20,duration:.16,yoyo:true,repeat:1});
-    impactFlash(status==='FAILED'?.38:.20);
-    return;
+    cardBurst(status==='FAILED'?'#ff4d5d':'#a78bfa',70+Math.floor(l*1.5),230+intensity*90);
+    shake(status==='FAILED'?3.5:2.2,.3+intensity*.05,10+Math.floor(l/6));
+    gsap.to(glow,{opacity:.28,duration:.14,yoyo:true,repeat:2});
+    gsap.to(card,{scale:1.02,duration:.08,yoyo:true,repeat:3});
+    impactFlash(status==='FAILED'?.48:.25);
+    gsap.delayedCall(.34,finish); return;
   }
 
   if(status==='SHIELD_SAVED'){
     scene.classList.add('status-shield');
-    cardBurst('#60a5fa',85,270);
-    gsap.fromTo(glow,{scale:.5,opacity:.04},{scale:1.9,opacity:.28,duration:.5,ease:'back.out(1.7)',yoyo:true,repeat:1});
-    gsap.fromTo(card,{y:12,scale:.96},{y:-8,scale:1.055,duration:.2,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.3,ease:'back.out(1.8)',onComplete:finish});
-    }});
-    impactFlash(.42);
-    return;
+    cardBurst('#60a5fa',115,340); spawnEnhanceBurst('#60a5fa',80,.17,.06,.9);
+    gsap.fromTo(glow,{scale:.5,opacity:.04},{scale:2.1,opacity:.32,duration:.5,ease:'back.out(1.7)',yoyo:true,repeat:1});
+    shake(3,.3,9);
+    gsap.fromTo(card,{y:12,scale:.96},{y:-8,scale:1.06,duration:.2,ease:'power2.out',onComplete:()=>gsap.to(card,{y:0,scale:1,duration:.3,ease:'back.out(1.8)',onComplete:finish})});
+    impactFlash(.5); return;
   }
 
   if(status==='DESTROYED'){
     scene.classList.add('status-destroyed');
-    cardBurst('#ff2638',150,410); cardBurst('#ffb000',80,310);
-    gsap.fromTo(glow,{scale:.45,opacity:.05},{scale:2.45,opacity:.38,duration:.5,ease:'power3.out',yoyo:true,repeat:1});
-    // 파괴여도 카드를 완전히 숨기지 않는다. 붉게 어두워졌다가 다시 표시한다.
-    gsap.fromTo(card,{scale:1,filter:'brightness(1)'},{scale:1.045,filter:'brightness(1.8)',duration:.18,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{scale:.98,filter:'grayscale(.75) brightness(.65)',duration:.28,ease:'power2.in',onComplete:()=>{
-        gsap.to(card,{scale:1,filter:'grayscale(.15) brightness(.9)',duration:.28,ease:'power2.out',onComplete:finish});
+    const cracks=addCardCracks('#ff2038',12);
+    cardBurst('#ff2038',210,520); cardBurst('#ff7a00',120,420); cardBurst('#fff',45,300);
+    spawnEnhanceBurst('#ff2038',150,.25,.07,1.1);
+    destroyBurst(210);
+    screenShake(Math.min(.34,.16+l*.005),.9);
+    // 1) 압축 -> 2) 강한 진동 -> 3) 균열 -> 4) 붉은 폭발 -> 5) 깨진 느낌으로 급격히 축소
+    gsap.to(card,{scale:1.10,duration:.12,ease:'power4.in'});
+    gsap.to(card,{x:9,duration:.035,ease:'none',yoyo:true,repeat:22});
+    gsap.to(glow,{scale:3.1,opacity:.65,duration:.22,ease:'power4.out'});
+    gsap.to(flash,{background:'rgba(255,15,35,.85)',opacity:.9,duration:.055,ease:'power4.out',yoyo:true,repeat:3,onComplete:()=>flash.style.opacity='0'});
+    cracks.forEach((c,i)=>gsap.to(c,{scaleX:1,opacity:1,duration:.08,delay:.12+i*.018,ease:'power3.out'}));
+    gsap.delayedCall(.22,()=>{
+      card.style.setProperty('--break-angle','-4deg');
+      gsap.to(card,{rotation:-5,scale:1.08,duration:.08,ease:'power4.in',yoyo:true,repeat:5});
+    });
+    gsap.delayedCall(.62,()=>{
+      gsap.to(card,{scale:.72,rotation:-12,opacity:.55,filter:'grayscale(.8) brightness(.5)',duration:.18,ease:'power4.in',onComplete:()=>{
+        gsap.to(card,{scale:1,rotation:0,opacity:1,filter:'drop-shadow(0 28px 55px rgba(0,0,0,.42))',duration:.35,ease:'back.out(1.7)',onComplete:finish});
       }});
-    }});
-    impactFlash(.75);
+    });
     return;
   }
 
