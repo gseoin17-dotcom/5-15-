@@ -1,3 +1,4 @@
+let season2GuideShown=false;
 /* 지온냄새 강화하기 — Streamlit 없는 순수 브라우저 버전 */
 let revivePromptOpen=false;
 const GAME_DATA = {"POINT_REWARD_TABLE":{"1":100,"2":150,"3":200,"4":300,"5":500,"6":700,"7":900,"8":1200,"9":1500,"10":2000,"11":2500,"12":3000,"13":3500,"14":4000,"15":5000,"16":6000,"17":7000,"18":8000,"19":9000,"20":10000,"21":12000,"22":14000,"23":16000,"24":18000,"25":20000,"26":23000,"27":26000,"28":30000,"29":35000,"30":40000,"31":45000,"32":50000,"33":60000,"34":70000,"35":80000},"SMELL_DB":{"false":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":150,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":400,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":600,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":800,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":3500,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":6100,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":10000,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":20000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":35100,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":160000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":350000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":1000000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":3000000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":7500000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":14200000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":20000000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":30000000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":47500000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":68300000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":101000000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":160000000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":230000000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":300000000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":400000000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":1800000000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":2500000000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":5500000000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":10500000000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":20000000000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":45000000000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":90000000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":200000000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":500000000000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":1000000000000,"color":"#ffffff","tier":6}},"true":{"0":{"name":"환생 0단계 : 초신성 핵폐기물 자이온","desc":"환생을 거쳐 새롭게 압축된 태초의 고밀도 방사능 악취.","price":1000000000,"color":"#ff0055","tier":1},"1":{"name":"환생 1단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":2500000000,"color":"#00ffff","tier":1},"2":{"name":"환생 2단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":6000000000,"color":"#ffffff","tier":1},"3":{"name":"환생 3단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":15000000000,"color":"#ffaa00","tier":2},"4":{"name":"환생 4단계 : 차원왜곡 자이온 타임루프 찌든내 ","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":35000000000,"color":"#9b2c2c","tier":2},"5":{"name":"환생 5단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":80000000000,"color":"#38a169","tier":2},"6":{"name":"환생 6단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":180000000000,"color":"#805ad5","tier":3},"7":{"name":"환생 7단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":400000000000,"color":"#e53e3e","tier":3},"8":{"name":"환생 8단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":900000000000,"color":"#ff4500","tier":3},"9":{"name":"환생 9단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":2000000000000,"color":"#0088ff","tier":4},"10":{"name":"환생 10단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":4500000000000,"color":"#cbd5e1","tier":4},"11":{"name":"환생 11단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":10000000000000,"color":"#319795","tier":4},"12":{"name":"환생 12단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":22000000000000,"color":"#f59e0b","tier":5},"13":{"name":"환생 13단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":50000000000000,"color":"#7000ff","tier":5},"14":{"name":"환생 14단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":120000000000000,"color":"#00ff66","tier":5},"15":{"name":"환생 15단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":280000000000000,"color":"#ff00ea","tier":6},"16":{"name":"환생 16단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":600000000000000,"color":"#ccff00","tier":6},"17":{"name":"환생 17단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":1300000000000000,"color":"#ff6600","tier":6},"18":{"name":"환생 18단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":3000000000000000,"color":"#00f0ff","tier":6},"19":{"name":"환생 19단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":7000000000000000,"color":"#ffe600","tier":6},"20":{"name":"환생 20단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":15000000000000000,"color":"#ff00aa","tier":6},"21":{"name":"환생 21단계 : 자이온트랜스센던탈 앱솔루트 가디언","desc":"차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.","price":35000000000000000,"color":"#ffffff","tier":6},"22":{"name":"환생 22단계 : 하이퍼 자이온 디바인 코어","desc":"자이온이라는 존재 자체가 우주의 신성한 법칙으로 등용한 상태.","price":80000000000000000,"color":"#7b00ff","tier":6},"23":{"name":"환생 23단계 : 자이온옴니버스 마스터피스 악취","desc":"모든 평행세계를 통틀어 단 하나만 존재하는 완벽한 걸작 악취.","price":200000000000000000,"color":"#00ffff","tier":6},"24":{"name":"환생 24단계 : 이터널 제네시스 울티마자이온s","desc":"우주의 탄생과 종말을 영원히 반복하게 만드는 궁극의 고리.","price":500000000000000000,"color":"#ff4500","tier":6},"25":{"name":"환생 25단계 : ★심플 성지온★","desc":"문일중 3학년 5반의 냄새를 담당하는 그저 GOA.T","price":1000000000000000000,"color":"#ffffff","tier":6}}},"PROB_TABLE":{"false":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[96.0,4.0,0.0,0.0],"4":[96.0,4.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[91.0,7.5,1.5,0.0],"7":[91.0,4.5,4.5,0.0],"8":[86.0,9.5,4.5,0.0],"9":[81.0,14.5,4.5,0.0],"10":[81.0,14.5,4.5,0.0],"11":[76.0,14.5,4.5,5.0],"12":[71.0,14.5,4.5,10.0],"13":[71.0,14.5,6.5,8.0],"14":[66.0,14.5,9.5,10.0],"15":[61.0,19.5,9.5,10.0],"16":[61.0,17.5,11.5,10.0],"17":[56.0,19.5,14.5,10.0],"18":[51.0,19.5,16.5,13.0],"19":[51.0,19.5,19.5,10.0],"20":[46.0,21.5,22.5,10.0],"21":[41.0,24.5,24.5,10.0],"22":[41.0,22.5,26.5,10.0],"23":[41.0,19.5,29.5,10.0],"24":[41.0,17.5,31.5,10.0],"25":[36.0,24.5,29.5,10.0],"26":[51.0,19.5,24.5,5.0],"27":[41.0,24.5,29.5,5.0],"28":[31.0,29.5,34.5,5.0],"29":[21.0,34.5,39.5,5.0],"30":[16.0,34.5,44.5,5.0],"31":[13.0,34.5,47.5,5.0],"32":[11.0,34.5,49.5,5.0],"33":[9.0,36.5,49.5,5.0],"34":[6.0,39.5,49.5,5.0]},"true":{"0":[100.0,0.0,0.0,0.0],"1":[96.0,4.0,0.0,0.0],"2":[91.0,7.5,1.5,0.0],"3":[86.0,9.5,4.5,0.0],"4":[81.0,14.5,4.5,0.0],"5":[76.0,14.5,4.5,5.0],"6":[71.0,14.5,6.5,8.0],"7":[66.0,17.5,9.5,7.0],"8":[61.0,19.5,9.5,10.0],"9":[56.0,19.5,14.5,10.0],"10":[51.0,21.5,17.5,10.0],"11":[46.0,24.5,19.5,10.0],"12":[41.0,24.5,24.5,10.0],"13":[39.0,24.5,26.5,10.0],"14":[36.0,24.5,29.5,10.0],"15":[33.0,27.5,29.5,10.0],"16":[31.0,29.5,34.5,5.0],"17":[26.0,31.5,37.5,5.0],"18":[21.0,34.5,39.5,5.0],"19":[19.0,34.5,41.5,5.0],"20":[16.0,34.5,44.5,5.0],"21":[13.0,37.5,44.5,5.0],"22":[11.0,39.5,44.5,5.0],"23":[9.0,41.5,44.5,5.0],"24":[6.0,44.5,44.5,5.0]}},"CRITICAL_RATE":0.05,"PITY_MAX":4,"ACHIEVEMENTS":{"first_enhance":{"name":"첫걸음","desc":"처음으로 강화를 시도하세요.","title":"지온 킁킁 견습생","reward":5000},"level_10":{"name":"10강 돌파","desc":"시즌 1에서 10단계에 도달하세요.","title":"지온 구린내 수련생","reward":20000},"level_20":{"name":"20강 돌파","desc":"시즌 1에서 20단계에 도달하세요.","title":"지온 베테랑 후각러","reward":100000},"level_30":{"name":"30강 돌파","desc":"시즌 1에서 30단계에 도달하세요.","title":"지온 악취 마스터","reward":500000},"level_35":{"name":"궁극의 지온","desc":"시즌 1 최종 35단계를 달성하세요.","title":"디 오리지널 지온","reward":1000000},"drop_to_0":{"name":"끝없는 추락","desc":"34단계에서 0단계로 돌아가세요.","title":"자이온 추락의 전설","reward":300000},"rebirth":{"name":"차원의 문","desc":"시즌 2 환생을 시작하세요.","title":"지온 차원 여행자","reward":5000000},"s2_level_10":{"name":"자이온 각성","desc":"시즌 2에서 10단계에 도달하세요.","title":"각성한 자이온","reward":10000000},"s2_level_20":{"name":"자이온 폭주","desc":"시즌 2에서 20단계에 도달하세요.","title":"폭주의 자이온","reward":30000000},"s2_level_25":{"name":"진정한 환생","desc":"시즌 2 최종 25단계를 달성하세요.","title":"TRUE REBIRTH 자이온","reward":100000000},"warp_1":{"name":"공간 이동","desc":"워프권을 처음 사용하세요.","title":"자이온 워프 개척자","reward":10000},"warp_5":{"name":"워프 중독","desc":"워프권을 5회 사용하세요.","title":"자이온 차원 도약자","reward":100000},"critical":{"name":"대성공","desc":"크리티컬 강화를 성공시키세요.","title":"우주의 지온 선택","reward":50000},"seller":{"name":"냄새 장사꾼","desc":"냄새를 판매해 돈을 획득하세요.","title":"지온 냄새 상인","reward":25000},"enhance_50":{"name":"강화광","desc":"강화를 총 50회 시도하세요.","title":"자이온 망치 중독자","reward":200000},"enhance_100":{"name":"강화의 끝","desc":"강화를 총 100회 시도하세요.","title":"단련의 지온 신","reward":1000000},"level_5":{"name":"첫 강화","desc":"5단계에 도달하세요.","title":"지온 입문 코끝러","reward":5000},"level_15":{"name":"중급 냄새꾼","desc":"15단계에 도달하세요.","title":"지온 향기 수집가","reward":50000},"level_25":{"name":"고급 냄새꾼","desc":"25단계에 도달하세요.","title":"자이온 악취 지배자","reward":250000},"s2_level_5":{"name":"자이온 입문","desc":"시즌 2에서 5단계에 도달하세요.","title":"자이온 견습생","reward":1000000},"s2_level_15":{"name":"자이온 숙련","desc":"시즌 2에서 15단계에 도달하세요.","title":"자이온 숙련자","reward":15000000},"warp_10":{"name":"워프 마스터","desc":"워프권을 10회 사용하세요.","title":"자이온 공간 지배자","reward":500000},"enhance_200":{"name":"강화는 계속된다","desc":"강화를 총 200회 시도하세요.","title":"자이온 강화의 초월자","reward":5000000},"rich":{"name":"부자 냄새","desc":"보유 금액 10억을 달성하세요.","title":"지온 재벌","reward":1000000},"seller_10":{"name":"장사의 신","desc":"판매를 10회 성공하세요.","title":"자이온 전설의 상인","reward":300000},"points_100k":{"name":"포인트 수집가","desc":"누적 획득 포인트 100,000P를 달성하세요.","title":"지온 포인트 수집가","reward":100000},"points_1m":{"name":"포인트 백만장자","desc":"누적 획득 포인트 1,000,000P를 달성하세요.","title":"자이온 포인트 부자","reward":1000000},"critical_5":{"name":"크리티컬 헌터","desc":"크리티컬 강화를 5회 성공하세요.","title":"지온 크리티컬 헌터","reward":500000},"survivor":{"name":"기적의 생존","desc":"20단계 이상에서 강화 실패 후 살아남으세요.","title":"불굴의 자이온","reward":300000}},"TITLE_THEMES":{"지온 킁킁 견습생":["#22d3ee","#0e7490","#083344","🫧"],"지온 구린내 수련생":["#a3e635","#4d7c0f","#1a2e05","🌿"],"지온 베테랑 후각러":["#60a5fa","#1d4ed8","#172554","🎯"],"지온 악취 마스터":["#f97316","#c2410c","#431407","🔥"],"디 오리지널 지온":["#facc15","#a16207","#422006","👑"],"자이온 추락의 전설":["#94a3b8","#475569","#0f172a","☄️"],"지온 차원 여행자":["#c084fc","#7e22ce","#2e1065","🌀"],"각성한 자이온":["#2dd4bf","#0f766e","#042f2e","⚡"],"폭주의 자이온":["#fb7185","#be123c","#4c0519","💢"],"TRUE REBIRTH 자이온":["#f0abfc","#c026d3","#4a044e","♾️"],"자이온 워프 개척자":["#38bdf8","#0369a1","#082f49","🚀"],"자이온 차원 도약자":["#818cf8","#4338ca","#1e1b4b","🌌"],"우주의 지온 선택":["#fde047","#ca8a04","#422006","✦"],"지온 냄새 상인":["#34d399","#047857","#022c22","💰"],"자이온 망치 중독자":["#fbbf24","#d97706","#451a03","🔨"],"단련의 지온 신":["#f8fafc","#64748b","#111827","⚔️"],"지온 입문 코끝러":["#67e8f9","#0891b2","#083344","👃"],"지온 향기 수집가":["#86efac","#16a34a","#052e16","🍃"],"자이온 악취 지배자":["#f472b6","#db2777","#500724","☠️"],"자이온 견습생":["#93c5fd","#2563eb","#172554","🔷"],"자이온 숙련자":["#a78bfa","#6d28d9","#2e1065","💠"],"자이온 공간 지배자":["#e879f9","#a21caf","#4a044e","🛸"],"자이온 강화의 초월자":["#fef08a","#ea580c","#431407","🌠"],"지온 재벌":["#fcd34d","#b45309","#451a03","💎"],"자이온 전설의 상인":["#5eead4","#0f766e","#042f2e","🏪"],"불굴의 자이온":["#f87171","#991b1b","#450a0a","🛡️"],"지온 포인트 수집가":["#fde047","#a16207","#422006","🪙"],"자이온 포인트 부자":["#67e8f9","#0891b2","#083344","💎"],"지온 크리티컬 헌터":["#fb7185","#9f1239","#4c0519","🎯"]},"TITLE_STYLES":{"지온 킁킁 견습생":"title-style-bubble","지온 구린내 수련생":"title-style-leaf","지온 베테랑 후각러":"title-style-target","지온 악취 마스터":"title-style-flame","디 오리지널 지온":"title-style-crown","자이온 추락의 전설":"title-style-meteor","지온 차원 여행자":"title-style-portal","각성한 자이온":"title-style-bolt","폭주의 자이온":"title-style-rage","TRUE REBIRTH 자이온":"title-style-infinity","자이온 워프 개척자":"title-style-rocket","자이온 차원 도약자":"title-style-galaxy","우주의 지온 선택":"title-style-star","지온 냄새 상인":"title-style-coin","자이온 망치 중독자":"title-style-hammer","단련의 지온 신":"title-style-blade","지온 입문 코끝러":"title-style-nose","지온 향기 수집가":"title-style-nature","자이온 악취 지배자":"title-style-skull","자이온 견습생":"title-style-diamond","자이온 숙련자":"title-style-crystal","자이온 공간 지배자":"title-style-ufo","자이온 강화의 초월자":"title-style-comet","지온 재벌":"title-style-gem","자이온 전설의 상인":"title-style-shop","불굴의 자이온":"title-style-shield","지온 포인트 수집가":"title-style-pointcoin","자이온 포인트 부자":"title-style-pointgem","지온 크리티컬 헌터":"title-style-crithunter"},"TITLE_DEFAULT":"칭호 없음"};
@@ -273,9 +274,21 @@ function switchSeason(n){
   if(n===2 && state.seasonData[1].max_level<35 && state.seasonData[1].level<35){
     showToast("시즌 1 35단계에 도달해야 시즌 2를 시작할 수 있습니다."); return;
   }
-  state.currentSeason=n; save(); render();
+  state.currentSeason=n;
+  if(n===2){
+    season2GuideShown=true;
+    localStorage.setItem("jion_season2_guide_seen","1");
+  }
+  save(); render();
 }
 function setTitle(t){ state.selectedTitle=t; save(); render(); }
+function resetGame(){
+  const ok=confirm("정말 게임을 초기화할까요?\n\n시즌 1·시즌 2 진행도, 돈, 포인트, 칭호, 업적 등 모든 저장 데이터가 삭제됩니다.");
+  if(!ok) return;
+  localStorage.removeItem("jion_smell_game_v3");
+  location.reload();
+}
+
 
 function updateDevModeUI(){
   let badge=document.getElementById("devModeBadge");
@@ -333,13 +346,19 @@ function render(){
   document.getElementById("season1Btn").classList.toggle("active",!s2);
   document.getElementById("season2Btn").classList.toggle("active",s2);
   document.getElementById("season2Btn").disabled=state.seasonData[1].max_level<35 && state.seasonData[1].level<35;
-
-  const season2Guide=document.getElementById("season2Guide");
-  if(season2Guide){
-    const showGuide=!s2 && l>=35;
-    season2Guide.classList.toggle("hidden",!showGuide);
-    document.getElementById("season2Btn").classList.toggle("season2-attention",showGuide);
+  const guide=document.getElementById("season2Guide");
+  if(guide){
+    const seen=season2GuideShown || localStorage.getItem("jion_season2_guide_seen")==="1";
+    const shouldShow=!s2 && l>=35 && !seen;
+    guide.classList.toggle("hidden",!shouldShow);
+    if(shouldShow){
+      guide.classList.remove("guide-pulse"); void guide.offsetWidth; guide.classList.add("guide-pulse");
+      document.getElementById("season2Btn").classList.add("season2-attention");
+    }else{
+      document.getElementById("season2Btn").classList.remove("season2-attention");
+    }
   }
+
   renderSceneText();
   renderEnhanceCard();
   renderEquippedTitle();
@@ -791,65 +810,63 @@ function finalStageCinematic(status, finish){
   const card=document.getElementById('enhanceCard');
   const wrap=document.getElementById('enhanceCardWrap');
   const glow=document.getElementById('cardStatusGlow');
-  const flash=document.getElementById('flashOverlay');
-  const shine=card?.querySelector('.card-shine');
   const result=document.getElementById('cardResult');
-  if(!scene||!card||!wrap||!result) return false;
+  const shine=card?.querySelector('.card-shine');
+  if(!scene||!card||!wrap||!result)return false;
 
-  scene.classList.add('final-stage-cinematic');
-  const d=data(), color=d.color;
-  const current=level();
-  const finalMax=maxLevel();
+  // 최종 강화(시즌1 34→35 / 시즌2 24→25)는 결과를 즉시 보여주지 않고
+  // 모든 결과가 같은 긴장감의 연출을 거친 뒤 마지막에 결과가 팍 나타납니다.
+  const current=state.seasonData[state.currentSeason].prev_level ?? level();
   const destroyed=status==='DESTROYED';
+  const colorMap={
+    SUCCESS:'#22c55e', CRITICAL:'#facc15', PITY_SUCCESS:'#38bdf8',
+    FAILED:'#ef4444', HOLD:'#a78bfa', SHIELD_SAVED:'#60a5fa', DESTROYED:'#ff2638'
+  };
+  const color=colorMap[status]||'#ffffff';
   const power=Math.min(2.25,1.05+current*.032);
 
-  // 결과를 잠시 숨겨 긴장감을 만들고, 카드 자체는 계속 보이게 유지합니다.
-  gsap.set(result,{opacity:0,scale:.72,y:10});
+  gsap.set(result,{opacity:0,scale:.55,y:18});
   gsap.set(card,{scale:.98,filter:'brightness(.82) saturate(1.1)',transformOrigin:'50% 50%'});
   gsap.set(glow,{scale:.35,opacity:.02});
   if(shine) gsap.set(shine,{x:'-85%',opacity:.25});
 
-  // 1) 에너지 집결: 0~1.25초
-  cardBurst(color,90+Math.floor(current*2.2),260+current*8);
-  cardBurst('#ffffff',40+Math.floor(current),210+current*5);
-  gsap.to(glow,{scale:1.4+power*.35,opacity:.28,duration:1.05,ease:'power2.inOut'});
-  gsap.to(card,{scale:1.015,duration:.9,ease:'sine.inOut',yoyo:true,repeat:1});
+  // 결과 종류와 상관없이 같은 타이밍으로 에너지를 모으고 긴장감을 만듭니다.
+  cardBurst(color,110+Math.floor(current*2),300+current*7);
+  cardBurst('#ffffff',45+Math.floor(current),220+current*5);
+  gsap.to(glow,{scale:1.5+power*.3,opacity:.3,duration:1.05,ease:'power2.inOut'});
+  gsap.to(card,{scale:1.018,duration:.85,ease:'sine.inOut',yoyo:true,repeat:1});
 
-  // 2) 단계가 높을수록 더 강하게 진동
   const shakeObj={x:0,y:0,r:0};
-  gsap.to(shakeObj,{x:power*5.5,y:power*3.2,r:power*1.15,duration:1.15,ease:'sine.inOut',yoyo:true,repeat:3,delay:.35,onUpdate:()=>{
+  gsap.to(shakeObj,{x:power*5.8,y:power*3.5,r:power*1.2,duration:1.15,ease:'sine.inOut',yoyo:true,repeat:3,delay:.3,onUpdate:()=>{
     gsap.set(card,{x:(Math.random()-.5)*shakeObj.x,y:(Math.random()-.5)*shakeObj.y,rotation:(Math.random()-.5)*shakeObj.r});
   }});
 
-  // 3) 절정 직전, 강한 플래시와 링/파티클
-  gsap.delayedCall(2.05,()=>{
-    cardBurst(color,150+Math.floor(current*2.8),430+current*10);
-    cardBurst('#fff',70+Math.floor(current*1.5),360+current*7);
-    gsap.to(glow,{scale:2.6,opacity:.62,duration:.32,ease:'power4.out',yoyo:true,repeat:1});
-    impactFlash(destroyed?.92:0.72);
+  gsap.delayedCall(1.85,()=>{
+    cardBurst(color,150+Math.floor(current*2.5),420+current*9);
+    cardBurst('#ffffff',65+Math.floor(current*1.3),340+current*6);
+    gsap.to(glow,{scale:2.65,opacity:.62,duration:.32,ease:'power4.out',yoyo:true,repeat:1});
+    impactFlash(destroyed?.92:.72);
     screenShake(destroyed?.42:.25,.42);
   });
 
-  // 4) 마지막 결과가 '팍' 나타나는 순간
-  gsap.delayedCall(destroyed?2.72:2.42,()=>{
+  // 약 2.55초 동안 결과를 숨긴 뒤 한 번에 공개
+  gsap.delayedCall(2.55,()=>{
     if(destroyed){
       scene.classList.add('final-destroy-impact');
       createFinalCracks(card);
-      createFinalShards(color,Math.min(90,48+current));
+      createFinalShards('#ff2638',Math.min(90,48+current));
       gsap.to(card,{x:0,y:0,rotation:-2.5,scale:1.08,filter:'brightness(2.1) saturate(1.8)',duration:.13,ease:'power4.out',onComplete:()=>{
-        gsap.to(card,{x:0,y:0,rotation:0,scale:.93,filter:'grayscale(.7) brightness(.7)',duration:.22,ease:'power3.in',onComplete:()=>{
-          revealFinalResult(result,finish);
-        }});
+        gsap.to(card,{x:0,y:0,rotation:0,scale:.93,filter:'grayscale(.7) brightness(.7)',duration:.22,ease:'power3.in',onComplete:()=>revealFinalResult(result,finish)});
       }});
       impactFlash(1);
-      return;
+    }else{
+      scene.classList.add('final-success-impact');
+      gsap.to(card,{scale:1.17,y:-14,rotation:0,duration:.16,ease:'power4.out',onComplete:()=>{
+        gsap.to(card,{scale:1,y:0,duration:.42,ease:'elastic.out(1,.42)',onComplete:()=>revealFinalResult(result,finish)});
+      }});
+      if(shine) gsap.to(shine,{x:'175%',opacity:1,duration:.42,ease:'power3.out'});
+      impactFlash(status==='CRITICAL'?.95:.86);
     }
-    scene.classList.add('final-success-impact');
-    gsap.to(card,{scale:1.17,y:-14,rotation:0,duration:.16,ease:'power4.out',onComplete:()=>{
-      gsap.to(card,{scale:1,y:0,duration:.42,ease:'elastic.out(1,.42)',onComplete:()=>revealFinalResult(result,finish)});
-    }});
-    if(shine) gsap.to(shine,{x:'175%',opacity:1,duration:.42,ease:'power3.out'});
-    impactFlash(.86);
   });
   return true;
 }
@@ -922,7 +939,7 @@ function animateResult(status, afterFinish=null){
   // 시즌 1 34→35 / 시즌 2 24→25는 최종 강화 전용 연출
   const prevLevel=state.seasonData[state.currentSeason].prev_level ?? level();
   const isFinalAttempt=prevLevel===maxLevel()-1;
-  if(isFinalAttempt && (status==='SUCCESS'||status==='CRITICAL'||status==='PITY_SUCCESS'||status==='DESTROYED'||status==='SHIELD_SAVED')){
+  if(isFinalAttempt){
     if(finalStageCinematic(status,finish)) return;
   }
 
@@ -1047,8 +1064,11 @@ function loop(){
   renderer.render(scene,camera);
 }
 
+document.getElementById("resetBtn")?.addEventListener("click",resetGame);
+
 initScene();
 updateDevModeUI();
+season2GuideShown=localStorage.getItem("jion_season2_guide_seen")==="1";
 render();
 buildObject();
 
