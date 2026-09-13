@@ -208,10 +208,9 @@ function enhance(){
   const key=isS2()?"unlocked_season2_warps":"unlocked_warps";
   for(const w of warps) if(d.level>=w) d[key][w]=true;
   checkAchievements(); save(); render();
-  if(d.status==="DESTROYED") {
-    showRevivePrompt();
-  }
-  animateResult(d.status);
+  animateResult(d.status, ()=>{
+    if(d.status==="DESTROYED") showRevivePrompt();
+  });
 }
 function showRevivePrompt(){
   const d=state.seasonData[state.currentSeason];
@@ -539,7 +538,7 @@ function bindModal(kind){
     const d=state.seasonData[state.currentSeason], price=100000;
     if((d.reviveTickets||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
     if(money()<price){showToast("금액이 부족합니다.");return;}
-    setMoney(money()-price); d.reviveTickets=1; save(); render(); openModal("shop"); showToast("💖 부활권 1개 구매 완료! (최대 1개)");
+    setMoney(money()-price); d.reviveTickets=1; render(); save(); openModal("shop"); showToast("💖 부활권 구매 완료! 보유량 1 / 1개");
   };
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyShield,l=level(), min=isS2()?16:20,cost=type==="money"?shieldMoneyCost(l):shieldPointCost(l);
@@ -883,7 +882,7 @@ function createFinalShards(color,count=60){
   }
 }
 
-function animateResult(status){
+function animateResult(status, afterFinish=null){
   const scene=document.getElementById('enhanceCardScene');
   const card=document.getElementById('enhanceCard');
   const wrap=document.getElementById('enhanceCardWrap');
@@ -913,6 +912,7 @@ function animateResult(status){
     gsap.set(card,{x:0,y:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'drop-shadow(0 28px 55px rgba(0,0,0,.42))'});
     gsap.set(wrap,{x:0,y:0,rotation:0,scale:1,opacity:1});
     renderEnhanceCard();
+    if(typeof afterFinish==='function') afterFinish();
   };
 
   // 시즌 1 34→35 / 시즌 2 24→25는 최종 강화 전용 연출
@@ -975,15 +975,31 @@ function animateResult(status){
 
   if(status==='DESTROYED'){
     scene.classList.add('status-destroyed');
-    cardBurst('#ff2638',150,410); cardBurst('#ffb000',80,310);
-    gsap.fromTo(glow,{scale:.45,opacity:.05},{scale:2.45,opacity:.38,duration:.5,ease:'power3.out',yoyo:true,repeat:1});
-    // 파괴여도 카드를 완전히 숨기지 않는다. 붉게 어두워졌다가 다시 표시한다.
-    gsap.fromTo(card,{scale:1,filter:'brightness(1)'},{scale:1.045,filter:'brightness(1.8)',duration:.18,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{scale:.98,filter:'grayscale(.75) brightness(.65)',duration:.28,ease:'power2.in',onComplete:()=>{
-        gsap.to(card,{scale:1,filter:'grayscale(.15) brightness(.9)',duration:.28,ease:'power2.out',onComplete:finish});
-      }});
+    // 강렬한 파괴 연출: 연속 플래시 → 고속 진동 → 폭발 파티클 → 균열 → 붕괴
+    cardBurst('#ff1838',230,520);
+    cardBurst('#ff8a00',130,430);
+    cardBurst('#ffffff',75,360);
+    createFinalCracks(card);
+    createFinalShards('#ff2638',72);
+    const shakeObj={x:0,y:0,r:0};
+    gsap.to(glow,{scale:3.2,opacity:.62,duration:.22,ease:'power4.out',yoyo:true,repeat:3});
+    gsap.to(shakeObj,{x:14,y:9,r:4.5,duration:.055,ease:'none',repeat:16,yoyo:true,onUpdate:()=>{
+      gsap.set(card,{x:(Math.random()-.5)*shakeObj.x,y:(Math.random()-.5)*shakeObj.y,rotation:(Math.random()-.5)*shakeObj.r});
     }});
-    impactFlash(.75);
+    impactFlash(1);
+    gsap.delayedCall(.22,()=>impactFlash(.9));
+    gsap.delayedCall(.5,()=>{
+      cardBurst('#ff0000',170,470);
+      impactFlash(.82);
+      screenShake(.5,.5);
+    });
+    gsap.delayedCall(.92,()=>{
+      gsap.to(card,{x:0,y:0,rotation:0,scale:1.09,filter:'brightness(2.5) saturate(2)',duration:.10,ease:'power4.out',onComplete:()=>{
+        gsap.to(card,{scale:.76,filter:'grayscale(1) brightness(.5)',duration:.24,ease:'power4.in',onComplete:()=>{
+          gsap.to(card,{scale:.92,filter:'grayscale(.25) brightness(.72)',duration:.28,ease:'power2.out',onComplete:finish});
+        }});
+      }});
+    });
     return;
   }
 

@@ -585,3 +585,11 @@ body::before{
 /* V9.9 readability / revive ticket */
 .selected-title-label{display:none!important;}
 #reviveTickets{font-size:18px;letter-spacing:.2px;}
+
+
+/* V10.2 destroy cinematic + stage readability */
+.card-stage-label{font-size:19px!important;font-weight:950!important;letter-spacing:.3px!important;text-shadow:0 0 14px color-mix(in srgb,var(--card) 65%,transparent),0 2px 8px rgba(0,0,0,.45);}
+.status-destroyed .enhance-card{box-shadow:0 0 45px rgba(255,0,35,.95),0 0 120px rgba(255,0,35,.55),inset 0 0 35px rgba(255,40,40,.25)!important;}
+.status-destroyed .card-art{filter:saturate(1.45) contrast(1.12);}
+@keyframes destroyPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(2.2)}}
+.status-destroyed .enhance-card{animation:destroyPulse .18s steps(2,end) 5;}
