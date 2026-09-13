@@ -118,6 +118,12 @@ function shieldMoneyCost(lvl){
   if(isS2()) return Math.floor(Number(DB[true][lvl].price)/5);
   return Math.max(50000,enhanceCost(lvl,false)*15);
 }
+function revivePointCost(lvl){
+  return Math.max(10000, pointReward(lvl)*15);
+}
+function reviveMoneyCost(lvl){
+  return Math.max(300000, shieldMoneyCost(lvl)*3);
+}
 function showToast(msg){
   const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove("show"),2600);
@@ -495,7 +501,7 @@ function openModal(kind){
 }
 function closeModal(){ document.getElementById("modal").classList.add("hidden"); }
 function shopHTML(){
-  const l=level(), s2=isS2(), sh=shield(), moneyCost=shieldMoneyCost(l), pointCost=shieldPointCost(l);
+  const l=level(), s2=isS2(), sh=shield(), moneyCost=shieldMoneyCost(l), pointCost=shieldPointCost(l), reviveMoney=reviveMoneyCost(l), revivePoint=revivePointCost(l);
   const minShield=s2?16:20;
   const d=state.seasonData[state.currentSeason];
   const warpLevels=s2?[5,10,15,20]:[10,15,20,25,30];
@@ -514,8 +520,11 @@ function shopHTML(){
     <div class="shop-grid"><div class="flat-item"><div>💰 보유 금액</div><b>${formatGold(money())}</b></div><div class="flat-item"><div>⭐ 보유 포인트</div><b>${state.points.toLocaleString("ko-KR")}P</b></div></div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #f472b6">
       <h3 style="color:#f472b6">💖 부활권</h3>
-      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>가격:</b> ${formatGold(100000)} / 1개</div>
-      <button class="glass-btn" data-buy-revive ${(money()<100000 || (d.reviveTickets||0)>=1)?"disabled":""}>💰 부활권 구매</button>
+      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>현재 단계:</b> ${l}단계 · 단계가 높을수록 가격 상승<br><b>💰 돈 가격:</b> ${formatGold(reviveMoney)}<br><b>⭐ 포인트 가격:</b> ${revivePoint.toLocaleString("ko-KR")}P</div>
+      <div class="two-buttons">
+        <button class="glass-btn" data-buy-revive="money" ${(money()<reviveMoney || (d.reviveTickets||0)>=1)?"disabled":""}>💰 돈으로 구매</button>
+        <button class="glass-btn" data-buy-revive="point" ${(state.points<revivePoint || (d.reviveTickets||0)>=1)?"disabled":""}>⭐ 포인트로 구매</button>
+      </div>
     </div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #60a5fa">
       <h3 style="color:#60a5fa">🛡️ 파괴 방지권</h3>
@@ -557,13 +566,19 @@ function achievementsHTML(){
     <select id="titleSelect" class="title-select">${options.map(t=>`<option ${t===state.selectedTitle?"selected":""}>${t}</option>`).join("")}</select></div>`;
 }
 function bindModal(kind){
-  const reviveBtn=document.querySelector('[data-buy-revive]');
-  if(reviveBtn) reviveBtn.onclick=()=>{
-    const d=state.seasonData[state.currentSeason], price=100000;
+  document.querySelectorAll("[data-buy-revive]").forEach(b=>b.onclick=()=>{
+    const type=b.dataset.buyRevive, d=state.seasonData[state.currentSeason], l=level();
+    const cost=type==="money" ? reviveMoneyCost(l) : revivePointCost(l);
     if((d.reviveTickets||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
-    if(money()<price){showToast("금액이 부족합니다.");return;}
-    setMoney(money()-price); d.reviveTickets=1; render(); save(); openModal("shop"); showToast("💖 부활권 구매 완료! 보유량 1 / 1개");
-  };
+    if(type==="money"){
+      if(money()<cost){showToast("금액이 부족합니다.");return;}
+      setMoney(money()-cost);
+    }else{
+      if(state.points<cost){showToast("포인트가 부족합니다.");return;}
+      state.points-=cost; state.pointsSpentTotal+=cost;
+    }
+    d.reviveTickets=1; render(); save(); openModal("shop"); showToast(`💖 부활권 구매 완료! ${type==="money"?"💰":"⭐"} ${type==="money"?formatGold(cost):cost.toLocaleString("ko-KR")+"P"}`);
+  });
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyShield,l=level(), min=isS2()?16:20,cost=type==="money"?shieldMoneyCost(l):shieldPointCost(l);
     if(l<min||shield()>=3){showToast("구매 조건을 만족하지 못했습니다.");return;}
