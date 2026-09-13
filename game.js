@@ -680,11 +680,12 @@ function animateResult(status){
   const glow=document.getElementById('cardStatusGlow');
   const flash=document.getElementById('flashOverlay');
   const shine=card?.querySelector('.card-shine');
+  const layer=document.getElementById('card3dLayer');
   if(!scene||!card||!wrap)return;
 
   // 기존 CSS keyframe과 GSAP이 동시에 transform/opacity를 조작하면서
   // 카드가 기울거나 사라지는 현상을 방지한다.
-  gsap.killTweensOf([card,wrap,glow,flash,shine]);
+  gsap.killTweensOf([card,wrap,glow,flash,shine,layer]);
   scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');
 
   renderEnhanceCard();
@@ -693,6 +694,7 @@ function animateResult(status){
   glow.style.opacity='.10';
   wrap.style.transform='translate3d(0,0,0)';
   gsap.set(wrap,{x:0,y:0,rotation:0,scale:1,opacity:1});
+  if(layer) layer.style.transform='rotateX(0deg) rotateY(0deg) translateZ(0)';
   gsap.set(card,{x:0,y:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'drop-shadow(0 28px 55px rgba(0,0,0,.42))'});
   if(shine) gsap.set(shine,{x:'-70%'});
 
