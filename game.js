@@ -322,15 +322,14 @@ function renderEnhanceCard(){
   card.style.setProperty('--card',d.color); card.style.setProperty('--card2',d.color); card.style.setProperty('--card3',s2?'#10051d':'#071122');
   document.getElementById('cardSeason').textContent=s2?'SEASON 2 • REBIRTH':'SEASON 1 • ORIGIN';
   document.getElementById('cardRarity').textContent=rarity;
+  document.getElementById('cardLevel').textContent='+'+l;
   card.className='enhance-card';
   card.dataset.level=String(l);
   card.dataset.season=s2?'2':'1';
   card.dataset.tier=String(d.tier||1);
   const art=document.getElementById('cardArt');
   if(art){ art.dataset.level=String(l); art.dataset.season=s2?'2':'1'; renderCardDesign(art,l,s2,d); }
-  const stageText=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
-  document.getElementById('cardStageLabel').textContent=stageText;
-  document.getElementById('cardSideStage').textContent=stageText;
+  document.getElementById('cardStageLabel').textContent=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
   document.getElementById('cardName').textContent=d.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'');
   document.getElementById('cardDesc').textContent=d.desc;
   document.getElementById('cardPrice').textContent=formatGold(Number(d.price));
@@ -400,7 +399,7 @@ function renderEquippedTitle(){
   el.style.boxShadow=`0 0 22px ${th[0]}35,inset 0 1px rgba(255,255,255,.12)`;
   const titleAch=Object.values(ACH).find(a=>a.title===t);
   const obtain=titleAch ? `획득 방법 · ${titleAch.desc}` : (t===DEFAULT_TITLE ? '기본 칭호 · 별도의 획득 조건 없음' : '획득 방법 · 업적을 달성하면 획득할 수 있습니다.');
-  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-obtain">${obtain}</div>`;
+  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-stage">${state.season2 ? "환생 " : ""}${state.level}단계</div><div class="selected-title-obtain">${obtain}</div>`;
 }
 
 /* --------------------------- MODALS --------------------------- */
