@@ -493,13 +493,15 @@ body::before{
   .three-wrap.card-stage .equipped-title{left:16px !important;top:16px !important;width:210px !important;transform:scale(.86) !important;transform-origin:top left !important;}
 }
 
-/* ================= V9.2 ENHANCED VFX ================= */
-.enhance-card{will-change:transform,filter;}
-.enhance-card .fx-crack{position:absolute;height:3px;background:linear-gradient(90deg,transparent,var(--crack),#fff,var(--crack),transparent);box-shadow:0 0 7px var(--crack),0 0 18px var(--crack);border-radius:999px;opacity:0;pointer-events:none;z-index:25;transform-origin:left center;}
-.enhance-card .fx-crack:nth-child(3n){height:2px;filter:blur(.2px)}
-.destroy-particle{position:absolute;width:7px;height:14px;border-radius:2px;background:var(--c);box-shadow:0 0 8px var(--c),0 0 22px var(--c);pointer-events:none;z-index:40;animation:destroyFly .8s cubic-bezier(.12,.7,.2,1) var(--delay) forwards;transform:translate(-50%,-50%) rotate(0deg);}
-.destroy-particle:nth-child(3n){width:4px;height:22px;border-radius:1px}.destroy-particle:nth-child(4n){width:11px;height:5px;border-radius:50%}
-@keyframes destroyFly{0%{opacity:1;transform:translate(-50%,-50%) scale(.5) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.15) rotate(var(--rot));}}
-.status-destroyed{background:radial-gradient(circle at 50% 50%,rgba(255,20,40,.30),rgba(80,0,10,.08) 38%,transparent 70%)!important;}
-.status-critical{background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.18),rgba(255,180,0,.06) 40%,transparent 72%)!important;}
-.status-success{background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--glow) 16%,transparent),transparent 68%)!important;}
+/* ================= V9.2 FINAL ENHANCEMENT CINEMATIC ================= */
+.final-stage-cinematic{overflow:visible!important;isolation:isolate}
+.final-stage-cinematic::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),rgba(255,255,255,0) 64%);filter:blur(20px);opacity:.4;pointer-events:none;animation:finalAura 1.15s ease-in-out infinite alternate;z-index:0}
+@keyframes finalAura{from{transform:scale(.78);opacity:.22}to{transform:scale(1.22);opacity:.68}}
+.final-stage-cinematic .enhance-card{z-index:5;will-change:transform,filter}
+.final-stage-cinematic .card-art{box-shadow:inset 0 0 30px rgba(255,255,255,.16),0 0 55px color-mix(in srgb,var(--card) 42%,transparent)}
+.final-stage-cinematic .card-result{position:relative;z-index:30;text-shadow:0 0 18px currentColor,0 0 42px currentColor}
+.final-crack{position:absolute;left:var(--rx);top:var(--ry);width:2px;height:var(--len);background:linear-gradient(to bottom,#fff,#ff1f3d 45%,transparent);box-shadow:0 0 8px #ff203f,0 0 18px #ff203f;transform-origin:top center;transform:rotate(var(--ang)) scaleY(0);z-index:26;pointer-events:none;animation:crackGrow .34s cubic-bezier(.2,.9,.2,1) forwards}
+@keyframes crackGrow{to{transform:rotate(var(--ang)) scaleY(1);opacity:1}}
+.final-destroy-impact .enhance-card{box-shadow:0 0 40px rgba(255,0,30,.8),0 0 120px rgba(255,0,30,.45)!important}
+.final-success-impact .enhance-card{box-shadow:0 0 45px color-mix(in srgb,var(--card) 85%,transparent),0 0 130px color-mix(in srgb,var(--card) 48%,transparent)!important}
+.final-shard{border-radius:2px;box-shadow:0 0 10px currentColor,0 0 22px currentColor;z-index:20}
