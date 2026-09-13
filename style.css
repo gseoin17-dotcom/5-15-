@@ -417,3 +417,83 @@ body::before{
 /* V9 animation stability: GSAP controls the card transform exclusively. */
 .enhance-card{transform:translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0);}
 .enhance-card:hover{transform:translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0);}
+
+
+/* ================= V9.1 TITLE POSITION + CARD 3D ================= */
+/* Keep the equipped title safely to the left of the card. */
+.three-wrap.card-stage .equipped-title{
+  left:26px !important;
+  top:24px !important;
+  transform:none !important;
+  width:245px !important;
+  min-height:86px !important;
+  z-index:30 !important;
+  pointer-events:none;
+}
+.card-3d-layer{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  will-change:transform;
+  transform:rotateX(0deg) rotateY(0deg) translateZ(0);
+  transition:transform .16s cubic-bezier(.2,.8,.2,1);
+}
+.enhance-card-wrap{
+  transform-style:preserve-3d;
+}
+.enhance-card{
+  transform-style:preserve-3d;
+  overflow:visible;
+}
+/* Real depth: layered pseudo surfaces make the card feel thick without
+   interfering with the JS result animations. */
+.enhance-card::after{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border-radius:21px;
+  pointer-events:none;
+  transform:translateZ(14px);
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:0 0 22px color-mix(in srgb,var(--card) 28%,transparent);
+}
+.card-3d-edge{
+  position:absolute;
+  inset:0;
+  border-radius:27px;
+  pointer-events:none;
+  transform:translateZ(-12px);
+  background:linear-gradient(145deg,color-mix(in srgb,var(--card) 55%,#111827),#020617 75%);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 20px 45px rgba(0,0,0,.45),0 0 35px color-mix(in srgb,var(--card) 25%,transparent);
+}
+.card-glass,.card-topline,.card-art,.card-stage-label,.enhance-card h2,.enhance-card p,.card-result,.card-stats,.card-bottom,.card-shine{
+  transform:translateZ(10px);
+}
+.card-art{
+  box-shadow:inset 0 1px 20px rgba(255,255,255,.10),inset 0 -20px 35px rgba(0,0,0,.22),0 8px 24px rgba(0,0,0,.16);
+}
+.art-core{
+  transform:translate(-50%,-50%) rotate(45deg) translateZ(24px);
+  box-shadow:0 0 25px color-mix(in srgb,var(--card) 70%,transparent),0 0 70px color-mix(in srgb,var(--card) 42%,transparent),inset 0 0 22px rgba(255,255,255,.55),0 12px 25px rgba(0,0,0,.28);
+}
+.card-shine{
+  mix-blend-mode:screen;
+  opacity:.85;
+}
+/* A slow holographic reflection is always visible, while mouse tilt adds depth. */
+.card-3d-layer::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  border-radius:40px;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.12) 47%,rgba(255,255,255,.28) 50%,transparent 56%);
+  transform:translateZ(34px) translateX(-65%) rotate(10deg);
+  animation:holoSweep 3.8s ease-in-out infinite;
+  filter:blur(.2px);
+}
+@keyframes holoSweep{0%,30%{transform:translateZ(34px) translateX(-65%) rotate(10deg);opacity:0}45%{opacity:.7}70%,100%{transform:translateZ(34px) translateX(65%) rotate(10deg);opacity:0}}
+@media(max-width:900px){
+  .three-wrap.card-stage .equipped-title{left:16px !important;top:16px !important;width:210px !important;transform:scale(.86) !important;transform-origin:top left !important;}
+}

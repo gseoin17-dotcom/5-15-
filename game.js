@@ -810,3 +810,32 @@ initScene();
 updateDevModeUI();
 render();
 buildObject();
+
+
+/* V9.1: interactive 3D card tilt. The tilt lives on a separate layer,
+   so GSAP can safely animate the card itself without fighting the mouse effect. */
+(function setupCard3D(){
+  const scene=document.getElementById('enhanceCardScene');
+  const layer=document.getElementById('card3dLayer');
+  if(!scene||!layer)return;
+  let tx=0,ty=0,rx=0,ry=0,raf=0;
+  const reset=()=>{tx=0;ty=0;};
+  scene.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch')return;
+    const r=scene.getBoundingClientRect();
+    const nx=((e.clientX-r.left)/r.width-.5)*2;
+    const ny=((e.clientY-r.top)/r.height-.5)*2;
+    tx=Math.max(-1,Math.min(1,nx));
+    ty=Math.max(-1,Math.min(1,ny));
+    if(!raf) raf=requestAnimationFrame(update);
+  });
+  scene.addEventListener('pointerleave',()=>{reset(); if(!raf)raf=requestAnimationFrame(update);});
+  function update(){
+    raf=0;
+    rx+=(ty* -7-rx)*.13;
+    ry+=(tx* 9-ry)*.13;
+    layer.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+    if(Math.abs(rx)>0.02||Math.abs(ry)>0.02||tx||ty) raf=requestAnimationFrame(update);
+  }
+  update();
+})();
