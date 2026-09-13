@@ -505,3 +505,49 @@ body::before{
 .final-destroy-impact .enhance-card{box-shadow:0 0 40px rgba(255,0,30,.8),0 0 120px rgba(255,0,30,.45)!important}
 .final-success-impact .enhance-card{box-shadow:0 0 45px color-mix(in srgb,var(--card) 85%,transparent),0 0 130px color-mix(in srgb,var(--card) 48%,transparent)!important}
 .final-shard{border-radius:2px;box-shadow:0 0 10px currentColor,0 0 22px currentColor;z-index:20}
+
+/* ================= V9.3 DEEP 3D CARD DESIGN ================= */
+.enhance-card-wrap{filter:drop-shadow(0 34px 35px rgba(0,0,0,.48)) drop-shadow(0 0 24px color-mix(in srgb,var(--card,#8b5cf6) 18%,transparent));}
+.enhance-card{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.28),rgba(255,255,255,.06) 22%,rgba(5,8,20,.72) 68%,rgba(0,0,0,.9)),
+    linear-gradient(145deg,var(--card),var(--card2) 42%,var(--card3));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 7px 7px 22px rgba(255,255,255,.08),inset -10px -16px 34px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.12),0 18px 0 rgba(0,0,0,.22),0 28px 70px rgba(0,0,0,.48),0 0 50px color-mix(in srgb,var(--card) 38%,transparent);
+}
+.enhance-card::before{inset:8px;border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 0 22px rgba(255,255,255,.05);}
+.enhance-card::after{inset:10px;border-radius:19px;transform:translateZ(22px);border-color:rgba(255,255,255,.32);box-shadow:0 0 28px color-mix(in srgb,var(--card) 34%,transparent),inset 0 0 12px rgba(255,255,255,.06);}
+.card-art{transform-style:preserve-3d;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--card) 58%,white 12%),rgba(8,10,27,.25) 45%,rgba(0,0,0,.42)),linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.025));box-shadow:inset 0 2px 24px rgba(255,255,255,.14),inset 0 -25px 42px rgba(0,0,0,.32),0 12px 30px rgba(0,0,0,.2);}
+.card-art::before{content:"";position:absolute;inset:8px;border-radius:16px;border:1px solid rgba(255,255,255,.13);transform:translateZ(5px);box-shadow:inset 0 0 28px color-mix(in srgb,var(--card) 18%,transparent);}
+.card-art::after{content:"";position:absolute;inset:-20%;background:conic-gradient(from 20deg,transparent 0 18%,rgba(255,255,255,.08) 23%,transparent 29% 58%,color-mix(in srgb,var(--card) 18%,transparent) 64%,transparent 72%);transform:translateZ(2px);animation:artSweep 5s linear infinite;pointer-events:none;}
+@keyframes artSweep{to{transform:translateZ(2px) rotate(360deg)}}
+.art-grid{transform:translateZ(4px) perspective(500px) rotateX(55deg) scale(1.2);transform-origin:center bottom;opacity:.28;}
+.art-orbit{transform:translate(-50%,-50%) rotate(-24deg) translateZ(15px);}
+.orbit-b{transform:translate(-50%,-50%) rotate(55deg) translateZ(12px)}.orbit-c{transform:translate(-50%,-50%) rotate(80deg) translateZ(9px)}
+.art-core{transform:translate(-50%,-50%) rotate(45deg) translateZ(42px);}
+.art-core::before{content:"";position:absolute;inset:-13px;border-radius:inherit;border:1px solid rgba(255,255,255,.32);box-shadow:0 0 25px color-mix(in srgb,var(--card) 55%,transparent);transform:rotate(22deg) translateZ(-8px);}
+.art-core::after{content:"";position:absolute;inset:-28px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--card) 60%,white 10%);opacity:.6;animation:coreOrbit 4s linear infinite;transform:translateZ(-5px);}
+@keyframes coreOrbit{to{transform:translateZ(-5px) rotate(360deg)}}
+.dynamic-card-design{position:absolute;display:block;pointer-events:none;transform-style:preserve-3d;z-index:8;}
+.design-ring{left:50%;top:50%;width:72%;height:30%;border:2px solid rgba(255,255,255,.16);border-radius:50%;transform:translate(-50%,-50%) rotate(calc(var(--i)*31deg)) translateZ(18px);box-shadow:0 0 18px color-mix(in srgb,var(--card) 28%,transparent);}
+.design-crown{left:50%;top:50%;width:110px;height:72px;transform:translate(-50%,-50%) translateZ(28px);border:2px solid rgba(255,255,255,.42);clip-path:polygon(0 80%,15% 25%,35% 60%,50% 8%,65% 60%,85% 25%,100% 80%,50% 100%);filter:drop-shadow(0 0 16px var(--card));}
+.design-diamond{left:50%;top:50%;width:116px;height:116px;border:2px solid rgba(255,255,255,.42);transform:translate(-50%,-50%) rotate(45deg) translateZ(28px);box-shadow:inset 0 0 24px color-mix(in srgb,var(--card) 35%,transparent),0 0 30px color-mix(in srgb,var(--card) 38%,transparent);}
+.design-cross{left:50%;top:50%;width:150px;height:12px;background:rgba(255,255,255,.28);transform:translate(-50%,-50%) translateZ(20px);box-shadow:0 0 22px var(--card)}.design-cross::after{content:"";position:absolute;width:12px;height:150px;left:69px;top:-69px;background:inherit;}
+.design-hex{left:50%;top:50%;width:128px;height:112px;background:linear-gradient(145deg,rgba(255,255,255,.22),transparent);clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%);transform:translate(-50%,-50%) translateZ(25px);border:1px solid rgba(255,255,255,.4);filter:drop-shadow(0 0 18px var(--card));}
+.design-node{left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:#fff;transform:translate(-50%,-50%) rotate(calc(var(--i)*60deg)) translateY(-72px) translateZ(30px);box-shadow:0 0 14px #fff,0 0 26px var(--card);}
+.design-reactor{left:50%;top:50%;width:124px;height:124px;border:12px double rgba(255,255,255,.25);border-radius:50%;transform:translate(-50%,-50%) translateZ(25px);box-shadow:0 0 25px var(--card),inset 0 0 20px color-mix(in srgb,var(--card) 55%,transparent);}
+.design-orbit{left:50%;top:50%;width:165px;height:48px;border:1px solid rgba(255,255,255,.3);border-radius:50%;transform:translate(-50%,-50%) rotate(calc(var(--i)*45deg)) translateZ(34px);}
+.design-blade{left:50%;top:50%;width:10px;height:92px;background:linear-gradient(to top,transparent,rgba(255,255,255,.72));clip-path:polygon(50% 0,100% 100%,50% 82%,0 100%);transform-origin:50% 0;transform:translate(-50%,-5%) rotate(calc(var(--i)*72deg)) translateZ(31px);filter:drop-shadow(0 0 9px var(--card));}
+.design-portal{left:50%;top:50%;width:132px;height:132px;border:7px solid rgba(255,255,255,.2);border-radius:50%;transform:translate(-50%,-50%) translateZ(20px);box-shadow:0 0 28px var(--card),inset 0 0 25px var(--card);}
+.design-portal-inner{left:50%;top:50%;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#fff 0 8%,var(--card) 22%,transparent 66%);transform:translate(-50%,-50%) translateZ(38px);box-shadow:0 0 35px var(--card);}
+.design-prism{left:50%;top:50%;width:105px;height:125px;background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,.06));clip-path:polygon(50% 0,100% 25%,83% 90%,50% 100%,17% 90%,0 25%);transform:translate(-50%,-50%) translateZ(28px) rotate(15deg);filter:drop-shadow(0 0 18px var(--card));}
+.design-prism-core{left:50%;top:50%;width:42px;height:42px;background:#fff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);transform:translate(-50%,-50%) translateZ(50px);box-shadow:0 0 35px #fff;}
+.design-gear{left:50%;top:50%;width:110px;height:110px;border:17px dotted rgba(255,255,255,.5);border-radius:50%;transform:translate(-50%,-50%) translateZ(24px);box-shadow:0 0 22px var(--card);}
+.design-tooth{left:50%;top:50%;width:14px;height:30px;background:rgba(255,255,255,.42);transform:translate(-50%,-50%) rotate(calc(var(--i)*45deg)) translateY(-72px) translateZ(27px);}
+.design-sun{left:50%;top:50%;width:86px;height:86px;border-radius:50%;background:radial-gradient(circle,#fff 0 10%,var(--card) 34%,transparent 72%);transform:translate(-50%,-50%) translateZ(38px);box-shadow:0 0 55px var(--card);}
+.design-ray{left:50%;top:50%;width:5px;height:170px;background:linear-gradient(to top,transparent,rgba(255,255,255,.55),transparent);transform:translate(-50%,-50%) rotate(calc(var(--i)*45deg)) translateZ(20px);}
+.design-singularity{left:50%;top:50%;width:86px;height:86px;border-radius:50%;background:#02030a;transform:translate(-50%,-50%) translateZ(45px);box-shadow:0 0 0 8px rgba(255,255,255,.05),0 0 25px var(--card),0 0 70px color-mix(in srgb,var(--card) 70%,transparent);}
+.design-singularity-ring{left:50%;top:50%;width:165px;height:45px;border:8px solid rgba(255,255,255,.24);border-radius:50%;transform:translate(-50%,-50%) rotate(-18deg) translateZ(52px);box-shadow:0 0 25px var(--card);}
+.design-particle{left:50%;top:50%;width:4px;height:4px;border-radius:50%;background:#fff;transform:rotate(calc(var(--i)*360deg/var(--n))) translateY(calc(-55px - var(--n)*2px)) translateZ(15px);box-shadow:0 0 9px #fff,0 0 17px var(--card);opacity:.7;}
+/* High stages become physically deeper and more layered. */
+.enhance-card[data-level="34"],.enhance-card[data-level="35"],.enhance-card[data-level="24"][data-season="2"],.enhance-card[data-level="25"][data-season="2"]{border-width:2px;box-shadow:inset 0 1px 0 #fff,inset 0 -25px 45px rgba(0,0,0,.4),0 20px 0 rgba(0,0,0,.3),0 30px 85px rgba(0,0,0,.55),0 0 80px color-mix(in srgb,var(--card) 60%,transparent);}
+.enhance-card[data-level="35"] .art-core,.enhance-card[data-level="25"][data-season="2"] .art-core{width:104px;height:104px;box-shadow:0 0 40px var(--card),0 0 110px color-mix(in srgb,var(--card) 65%,transparent),inset 0 0 30px #fff,0 20px 40px rgba(0,0,0,.4);}

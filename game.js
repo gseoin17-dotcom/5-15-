@@ -323,6 +323,12 @@ function renderEnhanceCard(){
   document.getElementById('cardSeason').textContent=s2?'SEASON 2 • REBIRTH':'SEASON 1 • ORIGIN';
   document.getElementById('cardRarity').textContent=rarity;
   document.getElementById('cardLevel').textContent='+'+l;
+  card.className='enhance-card';
+  card.dataset.level=String(l);
+  card.dataset.season=s2?'2':'1';
+  card.dataset.tier=String(d.tier||1);
+  const art=document.getElementById('cardArt');
+  if(art){ art.dataset.level=String(l); art.dataset.season=s2?'2':'1'; renderCardDesign(art,l,s2,d); }
   document.getElementById('cardStageLabel').textContent=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
   document.getElementById('cardName').textContent=d.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'');
   document.getElementById('cardDesc').textContent=d.desc;
@@ -358,6 +364,30 @@ function cardBurst(color='#ffffff', count=70, power=260){
   [...box.children].forEach((p,i)=>{
     gsap.fromTo(p,{x:0,y:0,scale:.2,opacity:0},{x:+p.dataset.dx,y:+p.dataset.dy,scale:1.4,opacity:1,duration:.18+Math.random()*.22,delay:i*.004,ease:'power3.out',onComplete(){gsap.to(p,{opacity:0,duration:.55,ease:'power2.out'})}});
   });
+}
+
+function renderCardDesign(art,l,s2,d){
+  const key=`${s2?'S2':'S1'}-${l}`;
+  if(art.dataset.designKey===key)return;
+  art.dataset.designKey=key;
+  art.querySelectorAll('.dynamic-card-design').forEach(e=>e.remove());
+  const frag=document.createDocumentFragment();
+  const add=(cls,style='')=>{const e=document.createElement('i');e.className='dynamic-card-design '+cls;if(style)e.style.cssText=style;frag.appendChild(e);};
+  // Every level gets a distinct silhouette language, not just a color swap.
+  const type=l%10;
+  const count=Math.min(12,2+Math.floor(l/4));
+  if(type===0){ add('design-crown'); for(let i=0;i<3;i++)add('design-ring',`--i:${i}`); }
+  else if(type===1){ add('design-diamond'); add('design-cross'); }
+  else if(type===2){ add('design-hex'); for(let i=0;i<6;i++)add('design-node',`--i:${i}`); }
+  else if(type===3){ add('design-reactor'); for(let i=0;i<4;i++)add('design-orbit',`--i:${i}`); }
+  else if(type===4){ add('design-blade'); for(let i=0;i<5;i++)add('design-blade',`--i:${i}`); }
+  else if(type===5){ add('design-portal'); add('design-portal-inner'); }
+  else if(type===6){ add('design-prism'); add('design-prism-core'); }
+  else if(type===7){ add('design-gear'); for(let i=0;i<8;i++)add('design-tooth',`--i:${i}`); }
+  else if(type===8){ add('design-sun'); for(let i=0;i<8;i++)add('design-ray',`--i:${i}`); }
+  else { add('design-singularity'); add('design-singularity-ring'); }
+  for(let i=0;i<count;i++) add('design-particle',`--i:${i};--n:${count}`);
+  art.appendChild(frag);
 }
 
 function renderEquippedTitle(){
