@@ -276,13 +276,6 @@ function switchSeason(n){
   state.currentSeason=n; save(); render();
 }
 function setTitle(t){ state.selectedTitle=t; save(); render(); }
-function resetGame(){
-  const ok=confirm("정말 게임을 초기화할까요?\n\n시즌 1·시즌 2 진행도, 돈, 포인트, 칭호, 업적 등 모든 저장 데이터가 삭제됩니다.");
-  if(!ok) return;
-  localStorage.removeItem("jion_smell_game_v3");
-  location.reload();
-}
-
 
 function updateDevModeUI(){
   let badge=document.getElementById("devModeBadge");
@@ -341,7 +334,12 @@ function render(){
   document.getElementById("season2Btn").classList.toggle("active",s2);
   document.getElementById("season2Btn").disabled=state.seasonData[1].max_level<35 && state.seasonData[1].level<35;
 
-  document.getElementById("rebirthNotice").classList.toggle("hidden",s2||l<35);
+  const season2Guide=document.getElementById("season2Guide");
+  if(season2Guide){
+    const showGuide=!s2 && l>=35;
+    season2Guide.classList.toggle("hidden",!showGuide);
+    document.getElementById("season2Btn").classList.toggle("season2-attention",showGuide);
+  }
   renderSceneText();
   renderEnhanceCard();
   renderEquippedTitle();
@@ -578,7 +576,6 @@ document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="
 document.querySelectorAll("[data-modal]").forEach(b=>b.onclick=()=>openModal(b.dataset.modal));
 document.getElementById("enhanceBtn").onclick=enhance;
 document.getElementById("sellBtn").onclick=sell;
-document.getElementById("rebirthBtn").onclick=rebirth;
 document.getElementById("season1Btn").onclick=()=>switchSeason(1);
 document.getElementById("season2Btn").onclick=()=>switchSeason(2);
 
@@ -1049,8 +1046,6 @@ function loop(){
   particles.geometry.attributes.position.needsUpdate=true;
   renderer.render(scene,camera);
 }
-
-document.getElementById("resetBtn")?.addEventListener("click",resetGame);
 
 initScene();
 updateDevModeUI();

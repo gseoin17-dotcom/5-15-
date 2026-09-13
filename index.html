@@ -16,12 +16,6 @@
     <main class="layout">
       <aside class="left-col">
 
-        <section id="rebirthNotice" class="rebirth-notice hidden">
-          <h3>🌌 차원 한계 도달</h3>
-          <p>최고 35단계에 도달했습니다!<br>새로운 차원으로 <b>환생(시즌2)</b>하시겠습니까?</p>
-          <button id="rebirthBtn" class="glass-btn wide">✨ 환생하기</button>
-        </section>
-
         <h4 id="modeTitle" class="section-title"></h4>
         <hr>
 
@@ -116,12 +110,18 @@
     </main>
 
     <section class="bottom-bar">
-      <div class="season-buttons">
-        <button id="season1Btn" class="season-btn active">🌌 시즌 1</button>
-        <button id="season2Btn" class="season-btn">🌀 시즌 2</button>
+      <div class="season-area">
+        <div class="season-buttons">
+          <button id="season1Btn" class="season-btn active">🌌 시즌 1</button>
+          <button id="season2Btn" class="season-btn">🌀 시즌 2</button>
+        </div>
+        <div id="season2Guide" class="season2-guide hidden">
+          <span class="guide-arrow">↓</span>
+          <span>35단계 달성! 이제 <b>시즌 2</b>를 눌러보세요!</span>
+          <span class="guide-arrow">↓</span>
+        </div>
       </div>
       <div class="save-note"></div>
-      <button id="resetBtn" class="reset-btn">↻ 초기화</button>
     </section>
   </div>
 </div>

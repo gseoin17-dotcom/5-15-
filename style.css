@@ -85,26 +85,6 @@ hr { border:0; border-top:1px solid rgba(255,255,255,.10); margin:12px 0; }
 .hidden { display:none !important; }
 .bottom-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; }
 .season-buttons { display:flex; gap:8px; }
-.reset-btn {
-  margin-left:auto;
-  border:1px solid rgba(248,113,113,.35);
-  border-radius:16px;
-  padding:11px 16px;
-  font-weight:700;
-  color:#fecaca;
-  background:linear-gradient(135deg,rgba(239,68,68,.16),rgba(127,29,29,.10));
-  backdrop-filter:blur(24px) saturate(150%);
-  -webkit-backdrop-filter:blur(24px) saturate(150%);
-  box-shadow:inset 0 1px rgba(255,255,255,.12),0 10px 30px rgba(0,0,0,.20);
-  cursor:pointer;
-  transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
-}
-.reset-btn:hover {
-  transform:translateY(-1px) scale(1.01);
-  background:rgba(239,68,68,.22);
-  box-shadow:inset 0 1px rgba(255,255,255,.2),0 14px 35px rgba(0,0,0,.28);
-}
-.reset-btn:active { transform:scale(.98); }
 .season-btn.active { background:rgba(255,255,255,.20); border-color:rgba(250,204,21,.4); }
 .save-note { font-size:11px; color:#64748b; }
 .toast {
@@ -292,7 +272,6 @@ hr { border:0; border-top:1px solid rgba(255,255,255,.10); margin:12px 0; }
   .bottom-bar { flex-direction:column; align-items:stretch; }
   .season-buttons { width:100%; }
   .season-btn { flex:1; }
-  .reset-btn { margin-left:0; width:100%; }
   .save-note { text-align:center; }
   .cinematic-ui { bottom:18px; }
   .title-tier-3 { font-size:28px; } .title-tier-4 { font-size:31px; } .title-tier-5 { font-size:34px; }
@@ -614,3 +593,32 @@ body::before{
 .status-destroyed .card-art{filter:saturate(1.45) contrast(1.12);}
 @keyframes destroyPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(2.2)}}
 .status-destroyed .enhance-card{animation:destroyPulse .18s steps(2,end) 5;}
+
+.season-area { display:flex; flex-direction:column; align-items:flex-start; gap:7px; }
+.season2-guide {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  min-height:30px; padding:5px 13px;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(124,58,237,.20),rgba(34,211,238,.10));
+  border:1px solid rgba(167,139,250,.42);
+  color:#e9d5ff; font-size:12px; font-weight:700;
+  box-shadow:0 8px 25px rgba(124,58,237,.16), inset 0 1px rgba(255,255,255,.14);
+  animation:guidePulse 1.35s ease-in-out infinite;
+}
+.season2-guide b { color:#67e8f9; }
+.guide-arrow {
+  display:inline-block; font-size:18px; line-height:1; color:#67e8f9;
+  animation:guideArrow .7s ease-in-out infinite alternate;
+}
+.season2-attention {
+  animation:season2Attention 1.05s ease-in-out infinite;
+  border-color:rgba(103,232,249,.78) !important;
+  box-shadow:0 0 0 2px rgba(103,232,249,.10),0 0 26px rgba(34,211,238,.34),inset 0 1px rgba(255,255,255,.30) !important;
+}
+@keyframes guideArrow { from { transform:translateY(-2px); } to { transform:translateY(5px); } }
+@keyframes guidePulse { 0%,100% { transform:translateY(0); opacity:.82; } 50% { transform:translateY(-2px); opacity:1; } }
+@keyframes season2Attention { 0%,100% { transform:scale(1); } 50% { transform:scale(1.075); } }
+@media (max-width:700px) {
+  .season-area { width:100%; align-items:center; }
+  .season2-guide { font-size:11px; }
+}
