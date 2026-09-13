@@ -271,6 +271,7 @@ function render(){
 
   document.getElementById("rebirthNotice").classList.toggle("hidden",s2||l<35);
   renderSceneText();
+  renderEnhanceCard();
   renderEquippedTitle();
 }
 function renderSceneText(){
@@ -301,6 +302,57 @@ function renderSceneText(){
   const shouldShake=l>=15 || (l===max && ["SUCCESS","CRITICAL","PITY_SUCCESS"].includes(status));
   ["mainTitle","descText","priceText","pointText","costText"].forEach(id=>document.getElementById(id).classList.toggle("shaking-text",shouldShake));
 }
+function cardMeta(tier){
+  const map={
+    1:['RARE','title-tier-1'],2:['EPIC','title-tier-2'],3:['LEGEND','title-tier-3'],
+    4:['MYTHIC','title-tier-4'],5:['COSMIC','title-tier-5'],6:['ABSOLUTE','title-tier-6']
+  }; return map[Math.min(6,tier||1)]||map[1];
+}
+function renderEnhanceCard(){
+  const d=data(), l=level(), s2=isS2(), max=maxLevel();
+  const [rarity]=cardMeta(d.tier);
+  const card=document.getElementById('enhanceCard'); if(!card)return;
+  card.style.setProperty('--card',d.color); card.style.setProperty('--card2',d.color); card.style.setProperty('--card3',s2?'#10051d':'#071122');
+  document.getElementById('cardSeason').textContent=s2?'SEASON 2 • REBIRTH':'SEASON 1 • ORIGIN';
+  document.getElementById('cardRarity').textContent=rarity;
+  document.getElementById('cardLevel').textContent='+'+l;
+  document.getElementById('cardStageLabel').textContent=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
+  document.getElementById('cardName').textContent=d.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'');
+  document.getElementById('cardDesc').textContent=d.desc;
+  document.getElementById('cardPrice').textContent=formatGold(Number(d.price));
+  document.getElementById('cardPoints').textContent=pointReward(l).toLocaleString('ko-KR')+'P';
+  document.getElementById('cardCost').textContent=l>=max?'MAX':formatGold(enhanceCost(l,s2));
+  document.getElementById('cardSerial').textContent=`JION • ${s2?'S2':'S1'} • ${String(l).padStart(2,'0')}`;
+  document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
+  const status=state.seasonData[state.currentSeason].status;
+  const labels={READY:'READY',SUCCESS:'✦ COSMIC SUCCESS',CRITICAL:'✦✦ CRITICAL HIT',PITY_SUCCESS:'✦ PITY SUCCESS',SHIELD_SAVED:'◈ SHIELD SAVED',DESTROYED:'✕ DESTROYED',FAILED:'▼ FAILED',HOLD:'◆ HOLD',NOT_ENOUGH_MONEY:'INSUFFICIENT FUNDS'};
+  const result=document.getElementById('cardResult'); result.textContent=labels[status]||status;
+  const scene=document.getElementById('enhanceCardScene');
+  scene.style.setProperty('--glow',d.color);
+  scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');
+  if(status==='SUCCESS'||status==='PITY_SUCCESS'||status==='CRITICAL')scene.classList.add(status==='CRITICAL'?'status-critical':'status-success');
+  else if(status==='FAILED')scene.classList.add('status-failed');
+  else if(status==='HOLD')scene.classList.add('status-hold');
+  else if(status==='DESTROYED')scene.classList.add('status-destroyed');
+  else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');
+  result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
+}
+function cardBurst(color='#ffffff', count=70, power=260){
+  const box=document.getElementById('cardParticles'); if(!box)return;
+  box.innerHTML='';
+  const frag=document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const p=document.createElement('i'); p.className='card-particle'; p.style.color=color;
+    const a=Math.random()*Math.PI*2, dist=power*(.35+Math.random()*.75);
+    p.dataset.dx=Math.cos(a)*dist; p.dataset.dy=Math.sin(a)*dist;
+    p.style.width=p.style.height=(2+Math.random()*6)+'px'; frag.appendChild(p);
+  }
+  box.appendChild(frag);
+  [...box.children].forEach((p,i)=>{
+    gsap.fromTo(p,{x:0,y:0,scale:.2,opacity:0},{x:+p.dataset.dx,y:+p.dataset.dy,scale:1.4,opacity:1,duration:.18+Math.random()*.22,delay:i*.004,ease:'power3.out',onComplete(){gsap.to(p,{opacity:0,duration:.55,ease:'power2.out'})}});
+  });
+}
+
 function renderEquippedTitle(){
   const t=state.selectedTitle, th=THEMES[t]||["#a78bfa","#6d28d9","#111827","🏷️"], style=STYLES[t]||"title-style-default";
   const el=document.getElementById("equippedTitle");
@@ -565,26 +617,6 @@ function makeLevelModel(level, color, season2){
   g.userData.isModel=true;
   return g;
 }
-function updateEnhanceCard(){
-  const card=document.getElementById('enhanceCard'); if(!card)return;
-  const d=data(), l=level(), s2=isS2();
-  const tierNames=['COMMON','RARE','EPIC','LEGEND','MYTHIC','TRANSCENDENT','ABSOLUTE'];
-  const rank=tierNames[Math.min(6,d.tier||1)-1];
-  const root=document.documentElement;
-  root.style.setProperty('--card-accent', d.color || '#67e8f9');
-  document.getElementById('cardSeason').textContent=s2?'SEASON 2 · REBIRTH':'SEASON 1';
-  document.getElementById('cardTier').textContent=rank;
-  document.getElementById('cardLevel').textContent='+'+l;
-  document.getElementById('cardStage').textContent=(s2?'환생 ':'')+l+'단계';
-  document.getElementById('cardName').textContent=(d.name||'').replace(/^.*?\s*:\s*/,'');
-  document.getElementById('cardDesc').textContent=d.desc||'';
-  document.getElementById('cardPrice').textContent=fmt(d.price||0);
-  document.getElementById('cardPoint').textContent=fmt(POINTS[l]||0);
-  document.getElementById('cardRank').textContent=rank+' · '+(s2?'REBIRTH':'ORIGINAL');
-  document.getElementById('cardNext').textContent=l>=maxLevel()?'MAX LEVEL':'NEXT +'+(l+1);
-  card.dataset.tier=String(d.tier||1); card.dataset.season=s2?'2':'1';
-  card.classList.remove('card-pulse'); void card.offsetWidth; card.classList.add('card-pulse');
-}
 function buildObject(){
   const {group}=sceneState;
   while(group.children.length)group.remove(group.children[0]);
@@ -596,7 +628,6 @@ function buildObject(){
   sceneState.coreLight.intensity=12 + l*.55;
   sceneState.outer=model;
   sceneState.core=model.children.find(x=>x.userData && x.userData.isCore) || model;
-  updateEnhanceCard();
 }
 function spawnEnhanceBurst(color, count=70, power=0.16, size=0.07, life=0.9){
   if(!sceneState) return;
@@ -643,141 +674,52 @@ function impactFlash(opacity=.75){
   gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
 }
 function animateResult(status){
-  if(!sceneState)return;
-  buildObject();
-  const card=document.getElementById('enhanceCard');
-  const canvas=document.getElementById('threeCanvas');
-  if(card){
-    card.classList.remove('result-success','result-fail','result-destroy','result-critical','result-shield','result-hold','result-final');
-    card.classList.add({SUCCESS:'result-success',PITY_SUCCESS:'result-success',FAILED:'result-fail',DESTROYED:'result-destroy',CRITICAL:'result-critical',SHIELD_SAVED:'result-shield',HOLD:'result-hold'}[status]||'');
-  }
-  if(canvas) canvas.style.opacity='0';
-  const {group,camera,coreLight,outer,core}=sceneState;
-  const flash=document.getElementById('flashOverlay');
-  const max=maxLevel(), l=level(), final=(l===max&&['SUCCESS','CRITICAL','PITY_SUCCESS'].includes(status));
-  const baseColor=data().color;
-  gsap.killTweensOf([group.scale,group.position,group.rotation,camera.position,coreLight,flash]);
-  group.scale.set(.88,.88,.88); group.position.set(0,-.7,0);
+  const scene=document.getElementById('enhanceCardScene'), card=document.getElementById('enhanceCard'), wrap=document.getElementById('enhanceCardWrap'), glow=document.getElementById('cardStatusGlow'), flash=document.getElementById('flashOverlay');
+  if(!scene||!card)return;
+  renderEnhanceCard();
+  gsap.killTweensOf([card,wrap,glow,flash]);
+  scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');
+  const color=data().color;
+  glow.style.background=color; glow.style.opacity='.12';
+  card.style.filter='drop-shadow(0 28px 55px rgba(0,0,0,.42))';
+  wrap.style.transform='translate3d(0,0,0)';
 
-  // 마지막 강화: 카드가 화면을 가득 채우는 5초 시네마틱
-  if(final){
-    if(card){ card.classList.add('result-final'); gsap.fromTo(card,{scale:.72,rotationY:-18,filter:'brightness(.7)'},{scale:1.06,rotationY:0,filter:'brightness(1.35)',duration:4.5,ease:'power3.in'}); }
-    const cinematic=document.getElementById('cinematicUi');
-    cinematic.style.opacity='0';
-    camera.position.set(0,.6,10);
-    group.scale.set(.38,.38,.38);
-    coreLight.intensity=8;
-    const tl=gsap.timeline();
-    tl.to(camera.position,{z:4.15,duration:4.6,ease:'power3.in'},0)
-      .to(group.scale,{x:3.7,y:3.7,z:3.7,duration:4.6,ease:'power3.in'},0)
-      .to(coreLight,{intensity:420,duration:4.6,ease:'power4.in'},0)
-      .to(group.rotation,{x:group.rotation.x+Math.PI*5,y:group.rotation.y+Math.PI*7,z:group.rotation.z+Math.PI*3,duration:4.6,ease:'power2.in'},0)
-      .to(group.position,{duration:4.6,onUpdate:function(){
-        const q=this.progress(), shake=Math.pow(q,2)*.72;
-        group.position.x=(Math.random()-.5)*shake;
-        group.position.y=-.7+(Math.random()-.5)*shake;
-        group.position.z=(Math.random()-.5)*shake*.6;
-      }},0)
-      .to(flash,{opacity:1,duration:.12,ease:'power4.in',onComplete:()=>{
-        cinematic.style.opacity='1';
-        camera.position.set(0,.6,10);
-        group.position.set(0,-.7,0);
-        group.scale.set(1,1,1);
-      }},4.6)
-      .to(flash,{opacity:0,duration:.85,ease:'power2.out'},4.75);
-    spawnEnhanceBurst('#ffffff',260,.34,.115,2.0);
-    spawnEnhanceBurst(baseColor,180,.25,.085,1.7);
-    return;
-  }
-
-  if(card){
-    const vars={DESTROYED:{x:0,rotation:-2,scale:.94},CRITICAL:{x:0,rotation:1.5,scale:1.04},SUCCESS:{x:0,rotation:0,scale:1.025},PITY_SUCCESS:{x:0,rotation:0,scale:1.05},FAILED:{x:0,rotation:0,scale:.96},SHIELD_SAVED:{x:0,rotation:0,scale:1.03},HOLD:{x:0,rotation:0,scale:.98}}[status]||{};
-    gsap.fromTo(card,{scale:1,rotation:0,x:0},{...vars,duration:.28,ease:'back.out(2)',yoyo:true,repeat:1});
-  }
-
-  // 파괴: 원본처럼 코어가 사라지고 3D 조각이 대폭발
-  if(status==='DESTROYED'){
-    outer.visible=false; core.visible=false;
-    coreLight.color.set('#ff1600'); coreLight.intensity=220;
-    screenShake(.55,.72); impactFlash(1);
-    spawnEnhanceBurst('#ff1800',180,.34,.10,1.35);
-    spawnEnhanceBurst('#ffb000',110,.24,.065,1.0);
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(.7,.065,12,96),new THREE.MeshBasicMaterial({color:0xff2500,transparent:true,opacity:1,blending:THREE.AdditiveBlending}));
-    ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
-    gsap.fromTo(ring.scale,{x:.15,y:.15,z:.15},{x:8,y:8,z:8,duration:.72,ease:'power3.out'});
-    gsap.to(ring.material,{opacity:0,duration:.72,onComplete:()=>sceneState.scene.remove(ring)});
-    const shards=new THREE.Group(),arr=[];
-    for(let i=0;i<250;i++){
-      const m=new THREE.Mesh(new THREE.BoxGeometry(.07+Math.random()*.28,.07+Math.random()*.32,.07+Math.random()*.28),new THREE.MeshStandardMaterial({color:baseColor,emissive:'#ff2200',emissiveIntensity:5,transparent:true,opacity:1}));
-      const a=Math.random()*Math.PI*2, z=Math.random()*2-1, r=Math.sqrt(1-z*z), sp=.22+Math.random()*.62;
-      m.userData={vx:Math.cos(a)*r*sp,vy:z*sp,vz:Math.sin(a)*r*sp}; shards.add(m);arr.push(m);
-    }
-    sceneState.scene.add(shards);
-    const proxy={v:0};
-    gsap.to(proxy,{v:1,duration:1.05,ease:'power2.out',onUpdate:()=>arr.forEach(m=>{m.position.x+=m.userData.vx;m.position.y+=m.userData.vy-.012;m.position.z+=m.userData.vz;m.rotation.x+=.18;m.rotation.y+=.22;m.material.opacity=1-proxy.v}),onComplete:()=>sceneState.scene.remove(shards)});
-    return;
-  }
-
+  const finish=()=>{ renderEnhanceCard(); };
   if(status==='CRITICAL'){
-    coreLight.color.set('#fff2a8'); coreLight.intensity=320;
-    screenShake(.38,.55); impactFlash(.98);
-    spawnEnhanceBurst('#ffffff',150,.28,.095,1.2);
-    spawnEnhanceBurst(baseColor,120,.24,.075,1.25);
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(.9,.055,12,96),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:1,blending:THREE.AdditiveBlending}));
-    ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
-    gsap.fromTo(ring.scale,{x:.1,y:.1,z:.1},{x:7,y:7,z:7,duration:.7,ease:'power4.out'});
-    gsap.to(ring.material,{opacity:0,duration:.7,onComplete:()=>sceneState.scene.remove(ring)});
-    gsap.fromTo(group.scale,{x:.3,y:.3,z:.3},{x:2.05,y:2.05,z:2.05,duration:.34,ease:'back.out(3)',yoyo:true,repeat:1});
-    gsap.to(group.rotation,{z:group.rotation.z+Math.PI*2,duration:.65,ease:'power2.out'});
-    gsap.to(coreLight,{intensity:30,duration:.8,delay:.18,ease:'power2.out'});
-    return;
+    scene.classList.add('status-critical'); cardBurst('#ffffff',110,390); cardBurst(color,90,310);
+    gsap.fromTo(glow,{scale:.5,opacity:.05},{scale:2.3,opacity:.35,duration:.75,ease:'power2.out',yoyo:true,repeat:1});
+    gsap.fromTo(card,{rotateY:-150,scale:.45,opacity:.15},{rotateY:18,scale:1.12,opacity:1,duration:.48,ease:'back.out(1.8)',yoyo:true,repeat:1,onComplete:finish});
+    gsap.to(card,{rotateY:360,duration:.85,ease:'power2.out'});
+    impactFlash(.85); return;
   }
-
-  if(status==='SUCCESS' || status==='PITY_SUCCESS'){
-    const pity=status==='PITY_SUCCESS';
-    coreLight.color.set(baseColor); coreLight.intensity=pity?190:120;
-    screenShake(pity?.22:.13,pity?.38:.24); impactFlash(pity?.72:.4);
-    spawnEnhanceBurst(baseColor,pity?110:70,pity?.22:.15,.07,pity?1:.7);
-    gsap.fromTo(group.scale,{x:.62,y:.62,z:.62},{x:pity?1.7:1.5,y:pity?1.7:1.5,z:pity?1.7:1.5,duration:.23,ease:'back.out(2.8)',yoyo:true,repeat:1});
-    gsap.to(group.rotation,{z:group.rotation.z+(pity?Math.PI:Math.PI*.55),duration:.45,ease:'power2.out'});
-    if(pity){
-      const ring=new THREE.Mesh(new THREE.TorusGeometry(1.1,.045,12,96),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.95,blending:THREE.AdditiveBlending}));
-      ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
-      gsap.fromTo(ring.scale,{x:.2,y:.2,z:.2},{x:5,y:5,z:5,duration:.72,ease:'power3.out'});
-      gsap.to(ring.material,{opacity:0,duration:.72,onComplete:()=>sceneState.scene.remove(ring)});
-    }
-    return;
+  if(status==='SUCCESS'||status==='PITY_SUCCESS'){
+    scene.classList.add('status-success'); cardBurst(color,status==='PITY_SUCCESS'?105:70,status==='PITY_SUCCESS'?340:260);
+    if(status==='PITY_SUCCESS')cardBurst('#fff',70,300);
+    gsap.fromTo(glow,{scale:.65,opacity:.04},{scale:1.8,opacity:status==='PITY_SUCCESS'?.3:.2,duration:.55,ease:'power2.out',yoyo:true,repeat:1});
+    gsap.fromTo(card,{rotateY:-95,rotateZ:-5,scale:.58,opacity:.25},{rotateY:0,rotateZ:0,scale:1.05,opacity:1,duration:.55,ease:'back.out(1.9)',onComplete(){gsap.to(card,{scale:1,duration:.24,ease:'power2.out',onComplete:finish})}});
+    gsap.to(card.querySelector('.card-shine'),{x:'150%',duration:1.0,ease:'power2.inOut',delay:.18});
+    impactFlash(status==='PITY_SUCCESS'?.65:.35); return;
   }
-
-  if(status==='FAILED'){
-    coreLight.color.set('#ff3b3b'); coreLight.intensity=105;
-    screenShake(.24,.36); impactFlash(.5); spawnEnhanceBurst('#ff3030',65,.13,.06,.7);
-    gsap.fromTo(group.rotation,{z:-.12},{z:.12,duration:.045,yoyo:true,repeat:9,ease:'sine.inOut'});
-    gsap.fromTo(group.scale,{x:1.12,y:.86,z:1.12},{x:.9,y:.9,z:.9,duration:.34,ease:'power2.out'});
-    return;
+  if(status==='FAILED'||status==='HOLD'){
+    scene.classList.add(status==='FAILED'?'status-failed':'status-hold');
+    cardBurst(status==='FAILED'?'#ff4d5d':'#a78bfa',45,190);
+    gsap.fromTo(card,{x:0,rotateZ:0,scale:1.03},{x:-12,rotateZ:-2.4,scale:.98,duration:.055,ease:'sine.inOut',yoyo:true,repeat:9,onComplete:finish});
+    gsap.to(glow,{opacity:.22,duration:.2,yoyo:true,repeat:1});
+    impactFlash(status==='FAILED'?.42:.22); return;
   }
-
   if(status==='SHIELD_SAVED'){
-    coreLight.color.set('#60a5fa'); coreLight.intensity=145;
-    screenShake(.2,.34); impactFlash(.55); spawnEnhanceBurst('#60a5fa',100,.16,.07,.9);
-    const shieldRing=new THREE.Mesh(new THREE.TorusGeometry(1.25,.085,16,96),new THREE.MeshBasicMaterial({color:0x60a5fa,transparent:true,opacity:.95,blending:THREE.AdditiveBlending}));
-    shieldRing.rotation.x=Math.PI/2; sceneState.scene.add(shieldRing);
-    gsap.fromTo(shieldRing.scale,{x:.2,y:.2,z:.2},{x:3.6,y:3.6,z:3.6,duration:.5,ease:'back.out(2)'});
-    gsap.to(shieldRing.material,{opacity:0,duration:.65,onComplete:()=>sceneState.scene.remove(shieldRing)});
-    return;
+    scene.classList.add('status-shield'); cardBurst('#60a5fa',85,280);
+    gsap.fromTo(glow,{scale:.4,opacity:.04},{scale:2,opacity:.28,duration:.5,ease:'back.out(2)',yoyo:true,repeat:1});
+    gsap.fromTo(card,{scale:.76,rotateY:-35},{scale:1.08,rotateY:0,duration:.42,ease:'back.out(2)',yoyo:true,repeat:1,onComplete:finish});
+    impactFlash(.5); return;
   }
-
-  if(status==='HOLD'){
-    coreLight.color.set('#a78bfa'); coreLight.intensity=100;
-    screenShake(.16,.28); impactFlash(.28); spawnEnhanceBurst('#a78bfa',45,.1,.055,.55);
-    gsap.fromTo(group.scale,{x:1.15,y:1.15,z:1.15},{x:.93,y:.93,z:.93,duration:.25,ease:'power2.out'});
-    gsap.to(group.position,{x:.14,duration:.04,yoyo:true,repeat:11,ease:'sine.inOut'});
-    return;
+  if(status==='DESTROYED'){
+    scene.classList.add('status-destroyed'); cardBurst('#ff2638',150,430); cardBurst('#ffb000',80,320);
+    gsap.fromTo(glow,{scale:.4,opacity:.05},{scale:2.6,opacity:.42,duration:.55,ease:'power3.out'});
+    gsap.to(card,{rotateZ:8,scale:.68,opacity:.08,filter:'grayscale(1) brightness(.45)',duration:.72,ease:'power3.in',onComplete:finish});
+    impactFlash(1); return;
   }
-
-  // 일반 대기/기타 결과
-  gsap.fromTo(group.scale,{x:.75,y:.75,z:.75},{x:1.38,y:1.38,z:1.38,duration:.2,ease:'back.out(2)',yoyo:true,repeat:1});
-  gsap.to(group.position,{x:.09,duration:.08,yoyo:true,repeat:5,ease:'sine.inOut'});
+  gsap.fromTo(card,{scale:.82,opacity:.7},{scale:1,opacity:1,duration:.35,ease:'back.out(1.7)',onComplete:finish});
 }
 function loop(){
   requestAnimationFrame(loop);
