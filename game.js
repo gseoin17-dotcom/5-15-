@@ -825,7 +825,7 @@ function finalStageCinematic(status, finish){
   }});
 
   // 3) 절정 직전, 강한 플래시와 링/파티클
-  gsap.delayedCall(2.05,()=>{
+  gsap.delayedCall(0.72,()=>{
     cardBurst(color,150+Math.floor(current*2.8),430+current*10);
     cardBurst('#fff',70+Math.floor(current*1.5),360+current*7);
     gsap.to(glow,{scale:2.6,opacity:.62,duration:.32,ease:'power4.out',yoyo:true,repeat:1});
@@ -834,7 +834,7 @@ function finalStageCinematic(status, finish){
   });
 
   // 4) 마지막 결과가 '팍' 나타나는 순간
-  gsap.delayedCall(destroyed?2.72:2.42,()=>{
+  gsap.delayedCall(destroyed?1.12:0.92,()=>{
     if(destroyed){
       scene.classList.add('final-destroy-impact');
       createFinalCracks(card);
@@ -935,8 +935,8 @@ function animateResult(status, afterFinish=null){
     if(status==='PITY_SUCCESS') cardBurst('#fff',65,290);
     gsap.fromTo(glow,{scale:.7,opacity:.03},{scale:1.65,opacity:status==='PITY_SUCCESS'?.30:.18,duration:.45,ease:'power2.out',yoyo:true,repeat:1});
     // 살짝 들어왔다가 정면에 안착. 회전/투명도는 사용하지 않는다.
-    gsap.fromTo(card,{y:18,scale:.94},{y:-7,scale:1.035,duration:.22,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.28,ease:'back.out(1.8)',onComplete:finish});
+    gsap.fromTo(card,{y:18,scale:.94},{y:-7,scale:1.035,duration:.12,ease:'power2.out',onComplete:()=>{
+      gsap.to(card,{y:0,scale:1,duration:.16,ease:'back.out(1.8)',onComplete:finish});
     }});
     if(shine) gsap.to(shine,{x:'150%',duration:.9,ease:'power2.inOut',delay:.08});
     impactFlash(status==='PITY_SUCCESS'?.55:.28);
@@ -948,8 +948,8 @@ function animateResult(status, afterFinish=null){
     cardBurst('#ffffff',115,380); cardBurst(color,95,300);
     gsap.fromTo(glow,{scale:.55,opacity:.04},{scale:2.2,opacity:.34,duration:.6,ease:'power2.out',yoyo:true,repeat:1});
     // 크리티컬도 과도한 3D 회전 없이 확대/착지로 표현
-    gsap.fromTo(card,{y:24,scale:.86},{y:-13,scale:1.10,duration:.25,ease:'power3.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.38,ease:'elastic.out(1,.55)',onComplete:finish});
+    gsap.fromTo(card,{y:24,scale:.86},{y:-13,scale:1.10,duration:.13,ease:'power3.out',onComplete:()=>{
+      gsap.to(card,{y:0,scale:1,duration:.18,ease:'elastic.out(1,.55)',onComplete:finish});
     }});
     if(shine) gsap.to(shine,{x:'170%',duration:.7,ease:'power2.inOut',delay:.04});
     impactFlash(.72);
@@ -961,8 +961,8 @@ function animateResult(status, afterFinish=null){
     const shakeLevel=Math.max(1,Math.min(4.2,0.65+((state.seasonData[state.currentSeason].prev_level||0)*.075)));
     cardBurst(status==='FAILED'?'#ff4d5d':'#a78bfa',45+Math.floor(shakeLevel*10),180+shakeLevel*55);
     screenShake(.055+shakeLevel*.025,.16+shakeLevel*.035);
-    gsap.to(card,{x:-9*shakeLevel,duration:.045,ease:'sine.inOut',yoyo:true,repeat:8+Math.floor(shakeLevel*2),onComplete:()=>{
-      gsap.to(card,{x:0,duration:.14,ease:'power2.out',onComplete:finish});
+    gsap.to(card,{x:-9*shakeLevel,duration:.045,ease:'sine.inOut',yoyo:true,repeat:3+Math.floor(shakeLevel),onComplete:()=>{
+      gsap.to(card,{x:0,duration:.08,ease:'power2.out',onComplete:finish});
     }});
     gsap.to(glow,{opacity:.20,duration:.16,yoyo:true,repeat:1});
     impactFlash(status==='FAILED'?.38:.20);
@@ -973,8 +973,8 @@ function animateResult(status, afterFinish=null){
     scene.classList.add('status-shield');
     cardBurst('#60a5fa',85,270);
     gsap.fromTo(glow,{scale:.5,opacity:.04},{scale:1.9,opacity:.28,duration:.5,ease:'back.out(1.7)',yoyo:true,repeat:1});
-    gsap.fromTo(card,{y:12,scale:.96},{y:-8,scale:1.055,duration:.2,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.3,ease:'back.out(1.8)',onComplete:finish});
+    gsap.fromTo(card,{y:12,scale:.96},{y:-8,scale:1.055,duration:.12,ease:'power2.out',onComplete:()=>{
+      gsap.to(card,{y:0,scale:1,duration:.16,ease:'back.out(1.8)',onComplete:finish});
     }});
     impactFlash(.42);
     return;
@@ -995,15 +995,15 @@ function animateResult(status, afterFinish=null){
     }});
     impactFlash(1);
     gsap.delayedCall(.22,()=>impactFlash(.9));
-    gsap.delayedCall(.5,()=>{
+    gsap.delayedCall(.28,()=>{
       cardBurst('#ff0000',170,470);
       impactFlash(.82);
       screenShake(.5,.5);
     });
-    gsap.delayedCall(.92,()=>{
-      gsap.to(card,{x:0,y:0,rotation:0,scale:1.09,filter:'brightness(2.5) saturate(2)',duration:.10,ease:'power4.out',onComplete:()=>{
-        gsap.to(card,{scale:.76,filter:'grayscale(1) brightness(.5)',duration:.24,ease:'power4.in',onComplete:()=>{
-          gsap.to(card,{scale:.92,filter:'grayscale(.25) brightness(.72)',duration:.28,ease:'power2.out',onComplete:finish});
+    gsap.delayedCall(.55,()=>{
+      gsap.to(card,{x:0,y:0,rotation:0,scale:1.09,filter:'brightness(2.5) saturate(2)',duration:.07,ease:'power4.out',onComplete:()=>{
+        gsap.to(card,{scale:.76,filter:'grayscale(1) brightness(.5)',duration:.12,ease:'power4.in',onComplete:()=>{
+          gsap.to(card,{scale:.92,filter:'grayscale(.25) brightness(.72)',duration:.14,ease:'power2.out',onComplete:finish});
         }});
       }});
     });
