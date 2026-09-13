@@ -14,6 +14,13 @@
   <div class="shell">
 
     <main class="layout">
+      <aside class="ranking-col">
+        <section class="ranking-panel">
+          <div class="ranking-head"><span>🏆</span><div><h3>전체 랭킹</h3><small>최고 단계 기준</small></div></div>
+          <div id="rankingList" class="ranking-list"></div>
+        </section>
+      </aside>
+
       <aside class="left-col">
 
         <section id="rebirthNotice" class="rebirth-notice hidden">
@@ -120,7 +127,10 @@
         <button id="season1Btn" class="season-btn active">🌌 시즌 1</button>
         <button id="season2Btn" class="season-btn">🌀 시즌 2</button>
       </div>
-      <div class="save-note"></div>
+      <div class="bottom-right-actions">
+        <div class="save-note"></div>
+        <button id="resetBtn" class="reset-btn">↻ 초기화</button>
+      </div>
     </section>
   </div>
 </div>

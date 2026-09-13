@@ -307,6 +307,44 @@ window.addEventListener("keydown",e=>{
   }
 });
 
+function getRankingRows(){
+  const s1=state.seasonData[1], s2=state.seasonData[2];
+  const myBest=Math.max(Number(s1.max_level)||0, Number(s2.max_level)||0);
+  const mySeason=myBest===Number(s2.max_level)&&myBest>0?2:1;
+  const myScore=myBest*1000000 + (Number(state.points)||0);
+  const bots=[
+    {name:"자이온마스터",best:35,season:1,score:35000042},
+    {name:"냄새의신",best:34,season:1,score:34000018},
+    {name:"블랙홀지온",best:31,season:2,score:31000120},
+    {name:"강화장인",best:28,season:1,score:28000990},
+    {name:"지온초보자",best:22,season:2,score:22000450}
+  ];
+  const rows=[...bots,{name:"나",best:myBest,season:mySeason,score:myScore,isMe:true}];
+  rows.sort((a,b)=>b.best-a.best || b.score-a.score);
+  return rows;
+}
+function renderRanking(){
+  const el=document.getElementById("rankingList"); if(!el) return;
+  const rows=getRankingRows();
+  el.innerHTML=rows.map((r,i)=>{
+    const medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1).padStart(2,"0");
+    return `<div class="rank-row ${r.isMe?"me":""}">
+      <span class="rank-num">${medal}</span>
+      <div class="rank-name"><b>${r.name}</b><small>시즌 ${r.season}</small></div>
+      <strong class="rank-level">${r.best}단계</strong>
+    </div>`;
+  }).join("");
+}
+function resetGame(){
+  if(!confirm("정말 모든 게임 진행도를 초기화할까요?\n돈, 포인트, 강화 단계, 업적, 칭호가 모두 초기화됩니다.")) return;
+  localStorage.removeItem("jion_smell_game_v3");
+  state=clone(INITIAL);
+  revivePromptOpen=false;
+  const prompt=document.getElementById("revivePrompt"); if(prompt) prompt.remove();
+  render();
+  showToast("↻ 게임 데이터가 초기화되었습니다.");
+}
+
 function render(){
   const d=data(), l=level(), max=maxLevel(), s2=isS2();
   document.getElementById("money").textContent=formatGoldCompact(money());
@@ -338,6 +376,7 @@ function render(){
   renderSceneText();
   renderEnhanceCard();
   renderEquippedTitle();
+  renderRanking();
 }
 function renderSceneText(){
   const d=data(), l=level(), max=maxLevel(), s2=isS2(), status=state.seasonData[state.currentSeason].status;
@@ -574,6 +613,7 @@ document.getElementById("sellBtn").onclick=sell;
 document.getElementById("rebirthBtn").onclick=rebirth;
 document.getElementById("season1Btn").onclick=()=>switchSeason(1);
 document.getElementById("season2Btn").onclick=()=>switchSeason(2);
+document.getElementById("resetBtn").onclick=resetGame;
 
 /* --------------------------- Three.js scene --------------------------- */
 function initScene(){

@@ -593,3 +593,28 @@ body::before{
 .status-destroyed .card-art{filter:saturate(1.45) contrast(1.12);}
 @keyframes destroyPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(2.2)}}
 .status-destroyed .enhance-card{animation:destroyPulse .18s steps(2,end) 5;}
+
+/* ===== V10.2 롤백 + 랭킹 / 초기화 UI ===== */
+.layout{grid-template-columns:2.15fr 3.15fr 6.7fr;gap:18px;}
+.ranking-col{min-width:0;padding:18px 0;}
+.ranking-panel{position:relative;overflow:hidden;padding:18px;border:1px solid rgba(255,255,255,.17);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));box-shadow:inset 0 1px rgba(255,255,255,.20),0 20px 60px rgba(0,0,0,.25);backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%);}
+.ranking-panel::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.13),transparent 30%,transparent 70%,rgba(255,255,255,.04));}
+.ranking-head{position:relative;display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.10);}
+.ranking-head>span{font-size:27px;filter:drop-shadow(0 0 12px rgba(250,204,21,.45));}
+.ranking-head h3{margin:0;font-size:17px;color:#fff;}
+.ranking-head small{display:block;margin-top:2px;font-size:10px;color:#94a3b8;}
+.ranking-list{position:relative;display:flex;flex-direction:column;gap:7px;}
+.rank-row{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:7px;padding:9px 8px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.045);}
+.rank-row.me{border-color:rgba(250,204,21,.35);background:linear-gradient(135deg,rgba(250,204,21,.13),rgba(255,255,255,.045));box-shadow:0 0 18px rgba(250,204,21,.08);}
+.rank-num{text-align:center;font-weight:900;font-size:12px;color:#cbd5e1;}
+.rank-name{min-width:0;}
+.rank-name b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;}
+.rank-name small{display:block;margin-top:2px;color:#64748b;font-size:9px;}
+.rank-level{font-size:11px;color:#fde68a;white-space:nowrap;}
+.bottom-right-actions{display:flex;align-items:center;gap:8px;}
+.reset-btn{border:1px solid rgba(248,113,113,.28);border-radius:13px;padding:10px 15px;color:#fecaca;background:linear-gradient(145deg,rgba(239,68,68,.14),rgba(255,255,255,.045));font-weight:800;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.18);transition:.2s;}
+.reset-btn:hover{transform:translateY(-1px);background:rgba(239,68,68,.20);border-color:rgba(248,113,113,.48);}
+.reset-btn:active{transform:scale(.97);}
+@media (max-width:1100px){.layout{grid-template-columns:1fr 1.7fr;}.ranking-col{grid-column:1;grid-row:1;}.left-col{grid-column:1;grid-row:2;}.right-col{grid-column:2;grid-row:1 / span 2;}}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}.ranking-col,.left-col,.right-col{grid-column:auto;grid-row:auto;}.ranking-col{padding:0;}.three-wrap{height:580px;}}
+@media (max-width:560px){.bottom-right-actions{width:100%;justify-content:space-between;}.reset-btn{flex:0 0 auto;}.save-note{flex:1;}}
