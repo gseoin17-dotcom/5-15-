@@ -322,14 +322,15 @@ function renderEnhanceCard(){
   card.style.setProperty('--card',d.color); card.style.setProperty('--card2',d.color); card.style.setProperty('--card3',s2?'#10051d':'#071122');
   document.getElementById('cardSeason').textContent=s2?'SEASON 2 • REBIRTH':'SEASON 1 • ORIGIN';
   document.getElementById('cardRarity').textContent=rarity;
-  document.getElementById('cardLevel').textContent='+'+l;
   card.className='enhance-card';
   card.dataset.level=String(l);
   card.dataset.season=s2?'2':'1';
   card.dataset.tier=String(d.tier||1);
   const art=document.getElementById('cardArt');
   if(art){ art.dataset.level=String(l); art.dataset.season=s2?'2':'1'; renderCardDesign(art,l,s2,d); }
-  document.getElementById('cardStageLabel').textContent=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
+  const stageText=(s2?'환생 ':'')+l+'단계'+(l===max?' • MAX':'');
+  document.getElementById('cardStageLabel').textContent=stageText;
+  document.getElementById('cardSideStage').textContent=stageText;
   document.getElementById('cardName').textContent=d.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'');
   document.getElementById('cardDesc').textContent=d.desc;
   document.getElementById('cardPrice').textContent=formatGold(Number(d.price));

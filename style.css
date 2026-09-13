@@ -569,3 +569,43 @@ body::before{
   .card-stats small { font-size:9px; }
   .card-stats b { font-size:13px; }
 }
+
+
+/* V9.6 - title compact + left stage label + remove card +level */
+.selected-title-name{
+  font-size:clamp(13px,1.45vw,18px) !important;
+  line-height:1.15 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  overflow-wrap:normal !important;
+  word-break:normal !important;
+  max-height:none !important;
+}
+.selected-title-obtain{font-size:8px !important;line-height:1.3 !important;margin-top:6px !important;}
+.card-side-stage{
+  position:absolute;
+  left:-48px;
+  top:50%;
+  transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  font-size:13px;
+  font-weight:950;
+  letter-spacing:1.5px;
+  color:rgba(255,255,255,.92);
+  text-shadow:0 0 14px var(--card),0 2px 8px rgba(0,0,0,.7);
+  padding:12px 6px;
+  border-left:2px solid color-mix(in srgb,var(--card) 70%,white);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.07));
+  z-index:8;
+}
+.card-stage-label{display:none !important;}
+.art-core span{display:none !important;}
+@media(max-width:900px){
+  .selected-title-name{font-size:14px !important;}
+  .card-side-stage{left:-38px;font-size:11px;padding:9px 4px;}
+}
+@media(max-width:620px){
+  .card-side-stage{left:-31px;font-size:10px;letter-spacing:1px;}
+}
