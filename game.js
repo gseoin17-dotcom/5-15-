@@ -393,11 +393,16 @@ function renderCardDesign(art,l,s2,d){
 function renderEquippedTitle(){
   const t=state.selectedTitle, th=THEMES[t]||["#a78bfa","#6d28d9","#111827","🏷️"], style=STYLES[t]||"title-style-default";
   const el=document.getElementById("equippedTitle");
+  const ach=Object.values(ACH).find(a=>a.title===t);
+  const how=t===DEFAULT_TITLE?"업적을 달성하면 새로운 칭호를 획득할 수 있습니다.":(ach?`획득 방법 · ${ach.desc}`:"획득 조건이 등록되지 않은 칭호입니다.");
   el.className=`equipped-title title-design ${style}`;
-  el.style.background=`linear-gradient(135deg,${th[2]},${th[1]}88,#020617)`;
+  el.style.setProperty('--title-main',th[0]);
+  el.style.setProperty('--title-sub',th[1]);
+  el.style.setProperty('--title-dark',th[2]);
+  el.style.background=`linear-gradient(135deg,${th[2]},${th[1]}99 52%,#020617)`;
   el.style.border=`1px solid ${th[0]}`;
-  el.style.boxShadow=`0 0 22px ${th[0]}35,inset 0 1px rgba(255,255,255,.12)`;
-  el.innerHTML=`<div class="selected-title-label" style="color:${th[0]}">EQUIPPED TITLE</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div>`;
+  el.style.boxShadow=`0 0 30px ${th[0]}55, 0 12px 34px rgba(0,0,0,.45), inset 0 1px rgba(255,255,255,.2)`;
+  el.innerHTML=`<div class="title-energy-line"></div><div class="selected-title-label" style="color:${th[0]}">✦ EQUIPPED TITLE ✦</div><div class="selected-title-name" style="color:${th[0]}">${th[3]} ${t}</div><div class="selected-title-how">${how}</div>`;
 }
 
 /* --------------------------- MODALS --------------------------- */
