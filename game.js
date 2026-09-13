@@ -577,42 +577,164 @@ function buildObject(){
   sceneState.outer=model;
   sceneState.core=model.children.find(x=>x.userData && x.userData.isCore) || model;
 }
+function spawnEnhanceBurst(color, count=70, power=0.16, size=0.07, life=0.9){
+  if(!sceneState) return;
+  const burst=new THREE.Group(), arr=[];
+  const c=new THREE.Color(color);
+  for(let i=0;i<count;i++){
+    const m=new THREE.Mesh(
+      new THREE.IcosahedronGeometry(size*(.45+Math.random()*1.15),0),
+      new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.95,blending:THREE.AdditiveBlending})
+    );
+    const a=Math.random()*Math.PI*2, z=Math.random()*2-1, r=Math.sqrt(1-z*z);
+    m.position.set(0,0,0);
+    m.userData={vx:Math.cos(a)*r*power*(.65+Math.random()), vy:z*power*(.65+Math.random()), vz:Math.sin(a)*r*power*(.65+Math.random()), spin:(Math.random()-.5)*.25};
+    burst.add(m); arr.push(m);
+  }
+  sceneState.scene.add(burst);
+  const proxy={v:0};
+  gsap.to(proxy,{v:1,duration:life,ease:'power2.out',onUpdate:()=>{
+    arr.forEach(m=>{
+      m.position.x+=m.userData.vx;
+      m.position.y+=m.userData.vy;
+      m.position.z+=m.userData.vz;
+      m.userData.vx*=.985; m.userData.vy*=.985; m.userData.vz*=.985;
+      m.rotation.x+=m.userData.spin; m.rotation.y+=m.userData.spin*1.3;
+      m.material.opacity=.95*(1-proxy.v);
+    });
+  },onComplete:()=>sceneState.scene.remove(burst)});
+}
+function screenShake(power=0.12, duration=.28){
+  if(!sceneState)return;
+  const {camera}=sceneState;
+  const base={x:0,y:.6,z:10};
+  const shake={n:0};
+  gsap.to(shake,{n:1,duration,ease:'power2.out',onUpdate:()=>{
+    const fall=1-shake.n;
+    camera.position.x=base.x+(Math.random()-.5)*power*fall;
+    camera.position.y=base.y+(Math.random()-.5)*power*fall;
+  },onComplete:()=>{camera.position.set(base.x,base.y,base.z)}});
+}
+function impactFlash(opacity=.75){
+  const flash=document.getElementById('flashOverlay');
+  if(!flash)return;
+  flash.style.opacity='0';
+  gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
+}
 function animateResult(status){
   if(!sceneState)return;
   buildObject();
   const {group,camera,coreLight,outer,core}=sceneState;
-  const flash=document.getElementById("flashOverlay");
-  const max=maxLevel(), l=level(), final=(l===max&&["SUCCESS","CRITICAL","PITY_SUCCESS"].includes(status));
+  const flash=document.getElementById('flashOverlay');
+  const max=maxLevel(), l=level(), final=(l===max&&['SUCCESS','CRITICAL','PITY_SUCCESS'].includes(status));
+  const baseColor=data().color;
   gsap.killTweensOf([group.scale,group.position,camera.position,coreLight,flash]);
   group.scale.set(.9,.9,.9); group.position.set(0,-.7,0);
-  if(status==="DESTROYED"){
-    outer.visible=false; core.visible=false; coreLight.color.set("#ff0000"); coreLight.intensity=100;
-    flash.style.opacity="0";
-    const shards=new THREE.Group(); const arr=[];
-    for(let i=0;i<110;i++){
-      const m=new THREE.Mesh(new THREE.BoxGeometry(.12+Math.random()*.25,.12+Math.random()*.25,.12+Math.random()*.25),
-        new THREE.MeshStandardMaterial({color:data().color,emissive:"#ff2200",emissiveIntensity:2,transparent:true}));
-      m.userData={vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,vz:(Math.random()-.5)*.35};
+
+  // 결과마다 완전히 다른 강도의 타격감을 준다.
+  if(status==='DESTROYED'){
+    outer.visible=false; core.visible=false;
+    coreLight.color.set('#ff1600'); coreLight.intensity=180;
+    screenShake(.48,.65); impactFlash(.95);
+    spawnEnhanceBurst('#ff1800',150,.28,.095,1.25);
+    spawnEnhanceBurst('#ffb000',80,.18,.055,.9);
+    const ring=new THREE.Mesh(
+      new THREE.TorusGeometry(.65,.055,12,96),
+      new THREE.MeshBasicMaterial({color:0xff2500,transparent:true,opacity:1,blending:THREE.AdditiveBlending})
+    );
+    ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
+    gsap.to(ring.scale,{x:7,y:7,z:7,duration:.65,ease:'power3.out'});
+    gsap.to(ring.material,{opacity:0,duration:.65,onComplete:()=>sceneState.scene.remove(ring)});
+    const shards=new THREE.Group(), arr=[];
+    for(let i=0;i<180;i++){
+      const m=new THREE.Mesh(
+        new THREE.BoxGeometry(.07+Math.random()*.25,.07+Math.random()*.3,.07+Math.random()*.25),
+        new THREE.MeshStandardMaterial({color:baseColor,emissive:'#ff2200',emissiveIntensity:5,transparent:true,opacity:1})
+      );
+      const a=Math.random()*Math.PI*2, sp=.18+Math.random()*.5;
+      m.userData={vx:Math.cos(a)*sp,vy:(Math.random()-.35)*sp,vz:Math.sin(a)*sp};
       shards.add(m);arr.push(m);
     }
     sceneState.scene.add(shards);
-    gsap.to(shards.scale,{x:6,y:6,z:6,duration:.8,ease:"power2.out",onUpdate:()=>{
-      arr.forEach(s=>{s.position.x+=s.userData.vx;s.position.y+=s.userData.vy;s.position.z+=s.userData.vz;s.material.opacity=Math.max(0,1-gsap.getProperty(shards.scale,"x")/6);});
+    gsap.to(shards.scale,{x:5.5,y:5.5,z:5.5,duration:.85,ease:'power3.out',onUpdate:()=>{
+      arr.forEach(m=>{m.position.x+=m.userData.vx;m.position.y+=m.userData.vy;m.position.z+=m.userData.vz;m.rotation.x+=.15;m.rotation.y+=.19;m.material.opacity=Math.max(0,1-gsap.getProperty(shards.scale,'x')/5.5);});
     },onComplete:()=>sceneState.scene.remove(shards)});
     return;
   }
+
+  if(status==='CRITICAL'){
+    coreLight.color.set('#fff2a8'); coreLight.intensity=280;
+    screenShake(.32,.5); impactFlash(.9);
+    spawnEnhanceBurst('#ffffff',120,.24,.09,1.05);
+    spawnEnhanceBurst(baseColor,100,.2,.075,1.15);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(1.0,.045,12,96),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.95,blending:THREE.AdditiveBlending}));
+    ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
+    gsap.fromTo(ring.scale,{x:.25,y:.25,z:.25},{x:5.5,y:5.5,z:5.5,duration:.55,ease:'power4.out'});
+    gsap.to(ring.material,{opacity:0,duration:.55,onComplete:()=>sceneState.scene.remove(ring)});
+    gsap.fromTo(group.scale,{x:.45,y:.45,z:.45},{x:1.8,y:1.8,z:1.8,duration:.28,ease:'back.out(3)',yoyo:true,repeat:1});
+    gsap.to(coreLight,{intensity:40,duration:.7,delay:.12,ease:'power2.out'});
+    return;
+  }
+
+  if(status==='SUCCESS' || status==='PITY_SUCCESS'){
+    coreLight.color.set(baseColor); coreLight.intensity=status==='PITY_SUCCESS'?180:105;
+    screenShake(status==='PITY_SUCCESS'?.18:.1,status==='PITY_SUCCESS'?.32:.2);
+    impactFlash(status==='PITY_SUCCESS'?.65:.3);
+    spawnEnhanceBurst(baseColor,status==='PITY_SUCCESS'?95:55,status==='PITY_SUCCESS'?.19:.13,.065,status==='PITY_SUCCESS'?.85:.55);
+    gsap.fromTo(group.scale,{x:.72,y:.72,z:.72},{x:1.48,y:1.48,z:1.48,duration:.2,ease:'back.out(2.6)',yoyo:true,repeat:1});
+    gsap.to(coreLight,{intensity:14,duration:.45,delay:.08,ease:'power2.out'});
+    if(status==='PITY_SUCCESS'){
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(1.15,.035,12,96),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending}));
+      ring.rotation.x=Math.PI/2; sceneState.scene.add(ring);
+      gsap.fromTo(ring.scale,{x:.3,y:.3,z:.3},{x:4,y:4,z:4,duration:.65,ease:'power3.out'});
+      gsap.to(ring.material,{opacity:0,duration:.65,onComplete:()=>sceneState.scene.remove(ring)});
+    }
+    return;
+  }
+
+  if(status==='FAILED'){
+    coreLight.color.set('#ff4b4b'); coreLight.intensity=90;
+    screenShake(.22,.32); impactFlash(.45);
+    spawnEnhanceBurst('#ff3030',55,.11,.06,.65);
+    gsap.fromTo(group.rotation,{z:-.08},{z:.08,duration:.055,yoyo:true,repeat:7,ease:'sine.inOut'});
+    gsap.fromTo(group.scale,{x:1.08,y:.92,z:1.08},{x:.9,y:.9,z:.9,duration:.3,ease:'power2.out'});
+    return;
+  }
+
+  if(status==='SHIELD_SAVED'){
+    coreLight.color.set('#60a5fa'); coreLight.intensity=120;
+    screenShake(.18,.3); impactFlash(.5);
+    spawnEnhanceBurst('#60a5fa',85,.14,.065,.8);
+    const shieldRing=new THREE.Mesh(new THREE.TorusGeometry(1.25,.075,16,96),new THREE.MeshBasicMaterial({color:0x60a5fa,transparent:true,opacity:.9,blending:THREE.AdditiveBlending}));
+    shieldRing.rotation.x=Math.PI/2; sceneState.scene.add(shieldRing);
+    gsap.fromTo(shieldRing.scale,{x:.4,y:.4,z:.4},{x:2.8,y:2.8,z:2.8,duration:.35,ease:'back.out(2)'});
+    gsap.to(shieldRing.material,{opacity:0,duration:.5,onComplete:()=>sceneState.scene.remove(shieldRing)});
+    return;
+  }
+
+  // 유지: 강한 충격은 있지만 단계는 그대로.
+  if(status==='HOLD'){
+    coreLight.color.set('#a78bfa'); coreLight.intensity=85;
+    screenShake(.13,.25); impactFlash(.22);
+    spawnEnhanceBurst('#a78bfa',38,.09,.055,.5);
+    gsap.fromTo(group.scale,{x:1.12,y:1.12,z:1.12},{x:.94,y:.94,z:.94,duration:.22,ease:'power2.out'});
+    gsap.to(group.position,{x:.12,duration:.045,yoyo:true,repeat:9,ease:'sine.inOut'});
+    return;
+  }
+
   if(final){
-    document.getElementById("cinematicUi").style.opacity="0";
+    document.getElementById('cinematicUi').style.opacity='0';
     camera.position.set(0,.6,10); group.scale.set(.5,.5,.5);
-    gsap.to(camera.position,{z:4.2,duration:4.8,ease:"power3.in"});
-    gsap.to(group.scale,{x:3.5,y:3.5,z:3.5,duration:4.8,ease:"power3.in"});
-    gsap.to(coreLight,{intensity:200,duration:4.8,ease:"power4.in",onComplete:()=>{
-      flash.style.opacity="1"; document.getElementById("cinematicUi").style.opacity="1";
-      setTimeout(()=>{flash.style.opacity="0"; camera.position.set(0,.6,10);},200);
+    screenShake(.28,1.0); spawnEnhanceBurst('#ffffff',220,.32,.11,1.7);
+    gsap.to(camera.position,{z:3.6,duration:4.2,ease:'power3.in'});
+    gsap.to(group.scale,{x:4.5,y:4.5,z:4.5,duration:4.2,ease:'power3.in'});
+    gsap.to(coreLight,{intensity:420,duration:4.2,ease:'power4.in',onComplete:()=>{
+      flash.style.opacity='1'; document.getElementById('cinematicUi').style.opacity='1';
+      setTimeout(()=>{flash.style.opacity='0'; camera.position.set(0,.6,10);},260);
     }});
   }else{
-    gsap.fromTo(group.scale,{x:.75,y:.75,z:.75},{x:1.35,y:1.35,z:1.35,duration:.18,ease:"back.out(2)",yoyo:true,repeat:1});
-    gsap.to(group.position,{x:.08,duration:.08,yoyo:true,repeat:5,ease:"sine.inOut"});
+    gsap.fromTo(group.scale,{x:.75,y:.75,z:.75},{x:1.35,y:1.35,z:1.35,duration:.18,ease:'back.out(2)',yoyo:true,repeat:1});
+    gsap.to(group.position,{x:.08,duration:.08,yoyo:true,repeat:5,ease:'sine.inOut'});
   }
 }
 function loop(){
