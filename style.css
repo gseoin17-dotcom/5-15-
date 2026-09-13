@@ -417,3 +417,31 @@ body::before{
 /* V9 animation stability: GSAP controls the card transform exclusively. */
 .enhance-card{transform:translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0);}
 .enhance-card:hover{transform:translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0);}
+
+/* V10 — cinematic enhancement overhaul */
+.equipped-title.title-docked-left{
+  left:18px !important;
+  top:22px !important;
+  transform:none !important;
+  width:250px !important;
+  min-height:74px !important;
+  z-index:140 !important;
+}
+.enhance-card-scene{z-index:100 !important;}
+.enhance-card-wrap{z-index:120;}
+.ritual-vfx{position:absolute;inset:0;z-index:60;pointer-events:none;opacity:0;overflow:hidden;}
+.ritual-ring{position:absolute;left:50%;top:50%;width:330px;height:330px;border:1px solid rgba(255,255,255,.38);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 35px rgba(140,100,255,.3),inset 0 0 30px rgba(255,255,255,.08);}
+.rr1{animation:ritualSpin 5s linear infinite}.rr2{width:470px;height:210px;transform:translate(-50%,-50%) rotate(45deg);animation:ritualSpinReverse 7s linear infinite}.rr3{width:230px;height:500px;transform:translate(-50%,-50%) rotate(-30deg);animation:ritualSpin 4.5s linear infinite}
+.ritual-beam{position:absolute;left:50%;top:-20%;width:2px;height:140%;transform:translateX(-50%);background:linear-gradient(to bottom,transparent,#fff,rgba(130,90,255,.8),transparent);box-shadow:0 0 25px #fff,0 0 70px rgba(130,90,255,.9);opacity:.55;}
+@keyframes ritualSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes ritualSpinReverse{to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.ritual-message{letter-spacing:1.5px !important;text-shadow:0 0 18px currentColor,0 2px 10px rgba(0,0,0,.8) !important;}
+.card-cracks{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;}
+.crack{position:absolute;display:block;width:2px;background:linear-gradient(to bottom,transparent,#fff 18%,#ff3347 50%,transparent);box-shadow:0 0 8px #ff3347;transform-origin:top center;}
+.c1{height:55%;left:48%;top:5%;transform:rotate(18deg)}.c2{height:42%;left:51%;top:42%;transform:rotate(-55deg)}.c3{height:37%;left:48%;top:49%;transform:rotate(110deg)}.c4{height:32%;left:53%;top:28%;transform:rotate(70deg)}.c5{height:26%;left:44%;top:54%;transform:rotate(-105deg)}
+.card-shard{position:absolute;z-index:180;pointer-events:none;transform-origin:center;clip-path:polygon(50% 0,100% 35%,72% 100%,10% 70%);opacity:1;}
+.status-ritual .enhance-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 0 45px rgba(170,120,255,.35),0 28px 70px rgba(0,0,0,.55);}
+.status-destroyed .enhance-card{border-color:rgba(255,40,55,.95);box-shadow:0 0 70px rgba(255,20,35,.55),inset 0 0 35px rgba(255,0,30,.22),0 25px 65px rgba(0,0,0,.55);}
+.status-critical .enhance-card{box-shadow:0 0 80px rgba(255,255,255,.65),0 0 150px rgba(180,90,255,.5),inset 0 0 30px rgba(255,255,255,.2);}
+.status-success .enhance-card{box-shadow:0 0 55px color-mix(in srgb,var(--card) 50%,transparent),0 25px 70px rgba(0,0,0,.5);}
+@media(max-width:900px){.equipped-title.title-docked-left{left:12px !important;top:14px !important;width:220px !important;transform:scale(.88) !important;transform-origin:top left;}.enhance-card-wrap{width:min(340px,60%)} }

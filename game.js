@@ -141,52 +141,131 @@ function rewardPoints(lvl){
   const r=pointReward(lvl); state.points+=r; state.pointsEarnedTotal+=r; state.lastPointReward=r;
 }
 function enhance(){
-  const d=state.seasonData[state.currentSeason], curr=d.level, max=maxLevel(), cost=enhanceCost(curr);
+  if(enhancing) return;
+  const d=state.seasonData[state.currentSeason], curr=d.level, max=maxLevel(), cost=enhanceCost(curr), s2=isS2();
   if(curr>=max){ render(); return; }
   if(d.money<cost){ d.status="NOT_ENOUGH_MONEY"; showToast("강화 비용 부족!"); render(); return; }
   d.money-=cost; d.prev_level=curr; state.enhanceAttempts++;
 
-  // 개발자 모드에서는 강화 결과가 항상 성공합니다.
-  // 일반 강화처럼 비용은 차감되며, 개발자 모드는 저장되지 않습니다.
+  // 결과를 먼저 계산하되 실제 단계 공개는 화려한 강화 연출이 끝난 뒤 진행한다.
+  let finalLevel=curr, status="HOLD";
   if(devMode){
-    d.level++;
-    d.status="SUCCESS";
-    d.pity_count=0;
-    d.max_level=Math.max(d.max_level,d.level);
-    state.enhanceSuccesses++;
-    rewardPoints(d.level);
+    finalLevel=curr+1; status="SUCCESS";
   }else if(d.pity_count>=PITY_MAX-1){
-    d.level++; d.status="PITY_SUCCESS"; d.pity_count=0;
-    d.max_level=Math.max(d.max_level,d.level); rewardPoints(d.level);
+    finalLevel=curr+1; status="PITY_SUCCESS";
   }else{
-    const [sp,downP,dp,holdP]=PROB[isS2()][curr] || [5,40,50,5];
+    const [sp,downP,dp,holdP]=PROB[s2][curr] || [5,40,50,5];
     const r=Math.random()*100, success=sp, down=success+downP, destroy=down+dp;
     if(r<success){
       d.pity_count=0;
-      if(Math.random()<CRITICAL_RATE && curr+2<=max){
-        d.level+=2; d.status="CRITICAL"; state.enhanceSuccesses++; state.criticalCount++;
-      }else{
-        d.level++; d.status="SUCCESS"; state.enhanceSuccesses++;
-      }
-      rewardPoints(d.level);
+      if(Math.random()<CRITICAL_RATE && curr+2<=max){ finalLevel=curr+2; status="CRITICAL"; }
+      else { finalLevel=curr+1; status="SUCCESS"; }
     }else if(r<down){
-      d.pity_count++; if(curr>0)d.level--; d.status="FAILED"; state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
+      d.pity_count++; if(curr>0) finalLevel=curr-1; status="FAILED";
     }else if(r<destroy){
-      if(d.shield>0){
-        d.shield--; d.pity_count++; d.status="SHIELD_SAVED"; state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
-      }else{
-        d.pity_count++; d.level=0; d.status="DESTROYED"; state.enhanceFailures++; state.destroyCount++; d.tears=Math.min(60,d.tears+2);
-      }
+      if(d.shield>0){ d.shield--; d.pity_count++; finalLevel=curr; status="SHIELD_SAVED"; }
+      else { d.pity_count++; finalLevel=0; status="DESTROYED"; }
     }else{
-      d.pity_count++; d.status="HOLD"; state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
+      d.pity_count++; finalLevel=curr; status="HOLD";
     }
-    d.max_level=Math.max(d.max_level,d.level);
   }
-  const warps=isS2()?[5,10,15,20]:[10,15,20,25,30];
+
+  // 통계/보상은 공개 시점에 확정한다. 중복 클릭도 차단한다.
+  pendingEnhance={season:state.currentSeason,fromLevel:curr,finalLevel,status,max,elite:(s2?finalLevel>=24:finalLevel>=34)};
+  enhancing=true;
+  d.status="ENHANCING";
+  d.level=curr;
+  render();
+  playEnhancementRitual(pendingEnhance);
+}
+
+function commitPendingEnhance(){
+  if(!pendingEnhance) return;
+  const p=pendingEnhance, d=state.seasonData[p.season];
+  d.level=p.finalLevel; d.status=p.status;
+  if(p.status==="SUCCESS"||p.status==="CRITICAL"||p.status==="PITY_SUCCESS"){
+    state.enhanceSuccesses++;
+    if(p.status==="CRITICAL") state.criticalCount++;
+    d.pity_count=0;
+    rewardPoints(d.level);
+  }else if(p.status==="FAILED"){
+    state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
+  }else if(p.status==="SHIELD_SAVED"){
+    state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
+  }else if(p.status==="DESTROYED"){
+    state.enhanceFailures++; state.destroyCount++; d.tears=Math.min(60,d.tears+2);
+  }else if(p.status==="HOLD"){
+    state.enhanceFailures++; d.tears=Math.min(60,d.tears+1);
+  }
+  d.max_level=Math.max(d.max_level,d.level);
+  const warps=isS2()? [5,10,15,20] : [10,15,20,25,30];
   const key=isS2()?"unlocked_season2_warps":"unlocked_warps";
   for(const w of warps) if(d.level>=w) d[key][w]=true;
-  checkAchievements(); save(); render(); animateResult(d.status);
+  checkAchievements(); save(); render();
+  enhancing=false; pendingEnhance=null;
 }
+
+function ritualText(status){
+  const map={
+    SUCCESS:"우주 에너지가 카드에 집중됩니다…",
+    CRITICAL:"⚡ 한계를 돌파하는 초월 에너지 감지…",
+    PITY_SUCCESS:"✨ 가오가 임계점에 도달했습니다…",
+    FAILED:"불안정한 에너지가 흔들립니다…",
+    HOLD:"에너지가 충돌하며 고정됩니다…",
+    SHIELD_SAVED:"🛡️ 방어막이 마지막 순간에 전개됩니다…",
+    DESTROYED:"💥 카드 코어가 한계치를 초과했습니다…"
+  };
+  return map[status]||"에너지를 모으는 중…";
+}
+function showRitualMessage(text){
+  const el=document.getElementById('cardResult'); if(!el)return;
+  el.textContent=text; el.classList.add('ritual-message');
+  gsap.fromTo(el,{opacity:.2,scale:.82},{opacity:1,scale:1,duration:.45,ease:'power2.out'});
+}
+function playEnhancementRitual(p){
+  const scene=document.getElementById('enhanceCardScene'), card=document.getElementById('enhanceCard'), wrap=document.getElementById('enhanceCardWrap'), glow=document.getElementById('cardStatusGlow'), flash=document.getElementById('flashOverlay'), vfx=document.getElementById('ritualVfx');
+  if(!scene||!card||!wrap)return;
+  gsap.killTweensOf([scene,card,wrap,glow,flash,vfx]);
+  const color=(GAME_DATA.SMELL_DB[String(p.season===2)][String(p.fromLevel)]||data()).color;
+  scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield','status-ritual');
+  scene.classList.add('status-ritual');
+  gsap.set([card,wrap],{x:0,y:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1});
+  gsap.set(glow,{scale:.5,opacity:.04,background:color});
+  if(vfx) gsap.set(vfx,{opacity:0,scale:.55,rotation:0});
+  showRitualMessage(ritualText(p.status));
+
+  const elite=p.elite;
+  const duration=elite?4.8:2.35;
+  const tl=gsap.timeline();
+  tl.to(glow,{opacity:elite?.28:.14,scale:elite?2.2:1.45,duration:.55,ease:'power2.out'})
+    .to(vfx,{opacity:1,scale:1,duration:.45,ease:'power3.out'},'<')
+    .to(vfx,{rotation:elite?180:90,duration:duration*.38,ease:'none'},'>')
+    .to(card,{scale:elite?1.07:1.025,duration:duration*.24,ease:'power2.inOut'},'<')
+    .to(card,{scale:elite?0.97:1,duration:duration*.22,ease:'power2.inOut'});
+
+  // 높은 단계는 중간 연출을 길게 끌고, 마지막에 결과를 폭발적으로 공개한다.
+  if(elite){
+    tl.call(()=>{showRitualMessage('◆ 차원 에너지 압축 중…'); cardBurst(color,90,300); screenShake(.07,.35);},null,'+=.25')
+      .to(glow,{opacity:.55,scale:2.8,duration:.7,ease:'power3.inOut',yoyo:true,repeat:1})
+      .to(card,{y:-10,scale:1.13,duration:.5,ease:'power2.out'},'<')
+      .to(card,{y:0,scale:1.01,duration:.55,ease:'elastic.out(1,.5)'})
+      .call(()=>{showRitualMessage('★★★ 최종 판정 ★★★'); cardBurst('#fff',150,430); impactFlash(.55); screenShake(.14,.45);})
+      .to(vfx,{scale:1.8,opacity:.2,duration:.4,ease:'power3.out'})
+      .call(()=>revealPendingResult(p));
+  }else{
+    tl.call(()=>{showRitualMessage('◆ 강화 판정 중…'); cardBurst(color,55,220);},null,'+=.18')
+      .to(glow,{opacity:.22,scale:1.8,duration:.45,ease:'power2.inOut',yoyo:true,repeat:1})
+      .call(()=>revealPendingResult(p));
+  }
+}
+function revealPendingResult(p){
+  if(!pendingEnhance || !enhancing)return;
+  const d=state.seasonData[p.season];
+  commitPendingEnhance();
+  // 결과는 확정 후 전용 연출로 크게 보여준다.
+  animateResult(p.status,{reveal:true});
+}
+
 function sell(){
   const d=state.seasonData[state.currentSeason], l=d.level;
   if(l===0) return;
@@ -262,7 +341,8 @@ function render(){
     `• 유지 확률: <b class="hold">${p[3]}%</b>`;
 
   const eb=document.getElementById("enhanceBtn"), sb=document.getElementById("sellBtn");
-  eb.disabled=(l>=max); sb.disabled=(l===0);
+  eb.disabled=(l>=max || enhancing); sb.disabled=(l===0 || enhancing);
+  if(enhancing) eb.textContent="⏳ 강화 진행 중..."; else eb.textContent="🔥 강화하기";
   sb.textContent=`💰 판매하기  +${formatGold(Number(d.price))}`;
 
   document.getElementById("season1Btn").classList.toggle("active",!s2);
@@ -286,6 +366,7 @@ function renderSceneText(){
   document.getElementById("costText").textContent="필요 강화 비용: "+formatGold(enhanceCost(l,s2));
   const st=document.getElementById("statusText");
   const labels={
+    ENHANCING:"⏳ ENHANCING... (우주 에너지를 모으는 중) ⏳",
     READY:s2?"REBIRTH READY - 블랙홀 차원 에너지가 집결합니다":"READY - 우주 에너지가 차분히 집중됩니다",
     SUCCESS:"✨ COSMIC SUCCESS (강화 성공) ✨",
     CRITICAL:"⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡",
@@ -297,7 +378,7 @@ function renderSceneText(){
     NOT_ENOUGH_MONEY:"💰 강화 비용 부족"
   };
   st.textContent=labels[status]||status;
-  const colors={READY:"#38bdf8",SUCCESS:d.color,CRITICAL:"#fff",PITY_SUCCESS:"#fde68a",SHIELD_SAVED:"#60a5fa",DESTROYED:"#f00",FAILED:"#64748b",HOLD:"#94a3b8",NOT_ENOUGH_MONEY:"#f87171"};
+  const colors={ENHANCING:"#f8fafc",READY:"#38bdf8",SUCCESS:d.color,CRITICAL:"#fff",PITY_SUCCESS:"#fde68a",SHIELD_SAVED:"#60a5fa",DESTROYED:"#f00",FAILED:"#64748b",HOLD:"#94a3b8",NOT_ENOUGH_MONEY:"#f87171"};
   st.style.color=colors[status]||"#38bdf8";
   const shouldShake=l>=15 || (l===max && ["SUCCESS","CRITICAL","PITY_SUCCESS"].includes(status));
   ["mainTitle","descText","priceText","pointText","costText"].forEach(id=>document.getElementById(id).classList.toggle("shaking-text",shouldShake));
@@ -673,7 +754,27 @@ function impactFlash(opacity=.75){
   flash.style.opacity='0';
   gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
 }
-function animateResult(status){
+
+function setFlashColor(color){
+  const flash=document.getElementById('flashOverlay'); if(!flash)return;
+  flash.style.background=color;
+}
+function createCardCracks(){
+  const c=document.getElementById('cardCracks'); if(!c)return;
+  c.innerHTML='<span class="crack c1"></span><span class="crack c2"></span><span class="crack c3"></span><span class="crack c4"></span><span class="crack c5"></span>';
+  gsap.fromTo(c,{opacity:0,scale:.8},{opacity:1,scale:1,duration:.18});
+}
+function createCardShards(color='#ff2638',count=22){
+  const scene=document.getElementById('enhanceCardScene'); if(!scene)return;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('i'); s.className='card-shard'; s.style.background=color; s.style.boxShadow=`0 0 14px ${color}`;
+    s.style.left='50%'; s.style.top='50%'; s.style.width=(5+Math.random()*14)+'px'; s.style.height=(5+Math.random()*22)+'px';
+    scene.appendChild(s);
+    const a=Math.random()*Math.PI*2, d=130+Math.random()*300;
+    gsap.to(s,{x:Math.cos(a)*d,y:Math.sin(a)*d,rotation:Math.random()*720-360,scale:.2,opacity:0,duration:.7+Math.random()*.8,ease:'power3.out',onComplete:()=>s.remove()});
+  }
+}
+function animateResult(status, options={}){
   const scene=document.getElementById('enhanceCardScene');
   const card=document.getElementById('enhanceCard');
   const wrap=document.getElementById('enhanceCardWrap');
@@ -689,6 +790,7 @@ function animateResult(status){
 
   renderEnhanceCard();
   const color=data().color;
+  const elite=(isS2()?level()>=24:level()>=34);
   glow.style.background=color;
   glow.style.opacity='.10';
   wrap.style.transform='translate3d(0,0,0)';
@@ -702,6 +804,22 @@ function animateResult(status){
     gsap.set(wrap,{x:0,y:0,rotation:0,scale:1,opacity:1});
     renderEnhanceCard();
   };
+
+  if(status==='DESTROYED'){
+    scene.classList.add('status-destroyed');
+    setFlashColor('#ff1028');
+    createCardCracks();
+    cardBurst('#ff1838',190,480); cardBurst('#ff6b00',100,350);
+    gsap.fromTo(glow,{scale:.35,opacity:.05},{scale:2.8,opacity:.48,duration:.5,ease:'power3.out',yoyo:true,repeat:1});
+    screenShake(.24,.7);
+    gsap.timeline()
+      .to(card,{scale:1.08,rotation:-1.5,duration:.16,ease:'power2.out'})
+      .to(card,{scale:1.02,rotation:1.2,duration:.13})
+      .call(()=>{setFlashColor('#ff1028'); impactFlash(.9); createCardShards('#ff2638',28);})
+      .to(card,{scale:.92,filter:'brightness(.45) saturate(1.5)',duration:.22,ease:'power2.in'})
+      .to(card,{scale:1,rotation:0,filter:'brightness(.92)',duration:.42,ease:'power2.out',onComplete:finish});
+    return;
+  }
 
   if(status==='SUCCESS'||status==='PITY_SUCCESS'){
     scene.classList.add('status-success');
