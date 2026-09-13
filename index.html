@@ -44,7 +44,6 @@
           <button class="glass-btn" data-modal="shop">🛒 상점</button>
           <button class="glass-btn" data-modal="tears">💧 눈물</button>
           <button class="glass-btn" data-modal="achievements">🏆 업적</button>
-          <button class="glass-btn" data-modal="cards">🃏 강화 카드</button>
         </div>
 
         <hr>
@@ -59,6 +58,22 @@
       <section class="right-col">
         <div id="threeWrap" class="three-wrap">
           <canvas id="threeCanvas"></canvas>
+          <div id="enhanceCard" class="enhance-card" aria-label="현재 강화 카드">
+            <div class="card-shine"></div>
+            <div class="card-top"><span id="cardSeason">SEASON 1</span><span id="cardTier">COMMON</span></div>
+            <div class="card-art">
+              <div class="card-orbit orbit-a"></div><div class="card-orbit orbit-b"></div><div class="card-orbit orbit-c"></div>
+              <div class="card-core"><span id="cardLevel">+0</span></div>
+              <div class="card-spark s1"></div><div class="card-spark s2"></div><div class="card-spark s3"></div>
+            </div>
+            <div class="card-info">
+              <div class="card-stage" id="cardStage">0단계</div>
+              <div class="card-name" id="cardName">무취 지온의 공간</div>
+              <div class="card-desc" id="cardDesc"></div>
+              <div class="card-meta"><span>VALUE <b id="cardPrice">0</b></span><span>POINT <b id="cardPoint">0</b></span></div>
+            </div>
+            <div class="card-bottom"><span id="cardRank">NORMAL</span><span id="cardNext">NEXT +1</span></div>
+          </div>
           <div class="equipped-title title-design title-style-default" id="equippedTitle">
             <div class="selected-title-label">EQUIPPED TITLE</div>
             <div class="selected-title-name">🏷️ 칭호 없음</div>

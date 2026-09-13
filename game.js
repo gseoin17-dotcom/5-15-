@@ -317,39 +317,8 @@ function openModal(kind){
   if(kind==="shop") c.innerHTML=shopHTML();
   if(kind==="tears") c.innerHTML=tearsHTML();
   if(kind==="achievements") c.innerHTML=achievementsHTML();
-  if(kind==="cards") c.innerHTML=cardsHTML();
   m.classList.remove("hidden");
   bindModal(kind);
-}
-
-function cardsHTML(){
-  const s2=isS2();
-  const current=level();
-  const max=maxLevel();
-  const all=[];
-  for(let i=0;i<=max;i++){
-    const d=DB[s2][i];
-    if(!d) continue;
-    const unlocked=i<=current;
-    const tier=Math.min(6,d.tier||1);
-    const rarity=["COMMON","COMMON","RARE","EPIC","LEGEND","MYTHIC"][tier-1]||"MYTHIC";
-    const pct=Math.round((i/max)*100);
-    const point=pointReward(i);
-    const cost=i<max?enhanceCost(i,s2):0;
-    const shape=i===0?'orb':i<6?'gem':i<12?'core':i<20?'ring':i<28?'nova':'relic';
-    all.push(`<article class="level-card ${unlocked?'is-unlocked':'is-locked'} tier-${tier}" style="--card-accent:${d.color}">
-      <div class="card-top"><span class="card-rarity">${rarity}</span><span class="card-stage">${s2?'S2':'S1'} · ${i}</span></div>
-      <div class="card-art"><div class="card-orbit orbit-a"></div><div class="card-orbit orbit-b"></div><div class="card-shape ${shape}"></div><div class="card-shine"></div><span class="card-level">${i}</span></div>
-      <div class="card-body"><h3>${d.name}</h3><p>${d.desc}</p><div class="card-stats"><span>💰 ${formatGold(Number(d.price))}</span><span>⭐ +${point.toLocaleString('ko-KR')}P</span></div>${i<max?`<div class="card-cost">강화 비용 <b>${formatGold(cost)}</b></div>`:'<div class="card-cost final-card">★ MAX STAGE ★</div>'}</div>
-      <div class="card-lock">${unlocked?'UNLOCKED':'🔒 LOCKED'}</div>
-      <div class="card-progress"><i style="width:${pct}%"></i></div>
-    </article>`);
-  }
-  return `<div class="cards-modal">
-    <div class="cards-head"><div><div class="eyebrow">ZION ARCHIVE · COLLECTION</div><h2>🃏 ${s2?'시즌 2':'시즌 1'} 강화 카드 도감</h2><p>각 단계가 하나의 레어 카드가 됩니다. 현재 ${current}단계 · ${max}단계까지 수집 가능</p></div><div class="collection-badge"><b>${current+1}</b><span>/ ${max+1} 카드</span></div></div>
-    <div class="card-filter"><span class="active">전체</span><span>해금 ${current+1}</span><span>잠금 ${max-current}</span><span>최종 단계 ★</span></div>
-    <div class="level-card-grid">${all.join('')}</div>
-  </div>`;
 }
 function closeModal(){ document.getElementById("modal").classList.add("hidden"); }
 function shopHTML(){
@@ -596,6 +565,26 @@ function makeLevelModel(level, color, season2){
   g.userData.isModel=true;
   return g;
 }
+function updateEnhanceCard(){
+  const card=document.getElementById('enhanceCard'); if(!card)return;
+  const d=data(), l=level(), s2=isS2();
+  const tierNames=['COMMON','RARE','EPIC','LEGEND','MYTHIC','TRANSCENDENT','ABSOLUTE'];
+  const rank=tierNames[Math.min(6,d.tier||1)-1];
+  const root=document.documentElement;
+  root.style.setProperty('--card-accent', d.color || '#67e8f9');
+  document.getElementById('cardSeason').textContent=s2?'SEASON 2 · REBIRTH':'SEASON 1';
+  document.getElementById('cardTier').textContent=rank;
+  document.getElementById('cardLevel').textContent='+'+l;
+  document.getElementById('cardStage').textContent=(s2?'환생 ':'')+l+'단계';
+  document.getElementById('cardName').textContent=(d.name||'').replace(/^.*?\s*:\s*/,'');
+  document.getElementById('cardDesc').textContent=d.desc||'';
+  document.getElementById('cardPrice').textContent=fmt(d.price||0);
+  document.getElementById('cardPoint').textContent=fmt(POINTS[l]||0);
+  document.getElementById('cardRank').textContent=rank+' · '+(s2?'REBIRTH':'ORIGINAL');
+  document.getElementById('cardNext').textContent=l>=maxLevel()?'MAX LEVEL':'NEXT +'+(l+1);
+  card.dataset.tier=String(d.tier||1); card.dataset.season=s2?'2':'1';
+  card.classList.remove('card-pulse'); void card.offsetWidth; card.classList.add('card-pulse');
+}
 function buildObject(){
   const {group}=sceneState;
   while(group.children.length)group.remove(group.children[0]);
@@ -607,6 +596,7 @@ function buildObject(){
   sceneState.coreLight.intensity=12 + l*.55;
   sceneState.outer=model;
   sceneState.core=model.children.find(x=>x.userData && x.userData.isCore) || model;
+  updateEnhanceCard();
 }
 function spawnEnhanceBurst(color, count=70, power=0.16, size=0.07, life=0.9){
   if(!sceneState) return;
@@ -655,6 +645,13 @@ function impactFlash(opacity=.75){
 function animateResult(status){
   if(!sceneState)return;
   buildObject();
+  const card=document.getElementById('enhanceCard');
+  const canvas=document.getElementById('threeCanvas');
+  if(card){
+    card.classList.remove('result-success','result-fail','result-destroy','result-critical','result-shield','result-hold','result-final');
+    card.classList.add({SUCCESS:'result-success',PITY_SUCCESS:'result-success',FAILED:'result-fail',DESTROYED:'result-destroy',CRITICAL:'result-critical',SHIELD_SAVED:'result-shield',HOLD:'result-hold'}[status]||'');
+  }
+  if(canvas) canvas.style.opacity='0';
   const {group,camera,coreLight,outer,core}=sceneState;
   const flash=document.getElementById('flashOverlay');
   const max=maxLevel(), l=level(), final=(l===max&&['SUCCESS','CRITICAL','PITY_SUCCESS'].includes(status));
@@ -662,8 +659,9 @@ function animateResult(status){
   gsap.killTweensOf([group.scale,group.position,group.rotation,camera.position,coreLight,flash]);
   group.scale.set(.88,.88,.88); group.position.set(0,-.7,0);
 
-  // 마지막 강화: 예전 Streamlit 버전의 5초 시네마틱을 브라우저판으로 재현
+  // 마지막 강화: 카드가 화면을 가득 채우는 5초 시네마틱
   if(final){
+    if(card){ card.classList.add('result-final'); gsap.fromTo(card,{scale:.72,rotationY:-18,filter:'brightness(.7)'},{scale:1.06,rotationY:0,filter:'brightness(1.35)',duration:4.5,ease:'power3.in'}); }
     const cinematic=document.getElementById('cinematicUi');
     cinematic.style.opacity='0';
     camera.position.set(0,.6,10);
@@ -690,6 +688,11 @@ function animateResult(status){
     spawnEnhanceBurst('#ffffff',260,.34,.115,2.0);
     spawnEnhanceBurst(baseColor,180,.25,.085,1.7);
     return;
+  }
+
+  if(card){
+    const vars={DESTROYED:{x:0,rotation:-2,scale:.94},CRITICAL:{x:0,rotation:1.5,scale:1.04},SUCCESS:{x:0,rotation:0,scale:1.025},PITY_SUCCESS:{x:0,rotation:0,scale:1.05},FAILED:{x:0,rotation:0,scale:.96},SHIELD_SAVED:{x:0,rotation:0,scale:1.03},HOLD:{x:0,rotation:0,scale:.98}}[status]||{};
+    gsap.fromTo(card,{scale:1,rotation:0,x:0},{...vars,duration:.28,ease:'back.out(2)',yoyo:true,repeat:1});
   }
 
   // 파괴: 원본처럼 코어가 사라지고 3D 조각이 대폭발
