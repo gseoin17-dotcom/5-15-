@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>지온냄새 강화하기 - v2</title>
+  <meta name="theme-color" content="#070b16">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="shell">
+
+    <main class="layout">
+      <aside class="left-col">
+
+        <h4 id="modeTitle" class="section-title"></h4>
+        <hr>
+
+        <div class="info-grid">
+          <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
+          <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong><small id="nextReward"></small></div>
+          <div class="mini-stat"><div>💧 눈물</div><strong id="tears"></strong></div>
+          <div class="mini-stat"><div>✨ 지온이의 가오</div><strong id="pity"></strong></div>
+          <div class="mini-stat"><div>🛡️ 방지권</div><strong id="shield"></strong></div>
+        </div>
+
+        <hr>
+
+        <h4 class="prob-title">📊 현재 강화 확률 (<span id="probLevel">0</span>단계)</h4>
+        <div id="probBox" class="prob-box"></div>
+
+        <hr>
+
+        <div class="menu-grid">
+          <button class="glass-btn" data-modal="shop">🛒 상점</button>
+          <button class="glass-btn" data-modal="tears">💧 눈물</button>
+          <button class="glass-btn" data-modal="achievements">🏆 업적</button>
+        </div>
+
+        <hr>
+
+        <h4 class="control-title"></h4>
+        <div class="action-grid">
+          <button id="enhanceBtn" class="glass-btn action-primary">🔥 강화하기</button>
+          <button id="sellBtn" class="glass-btn">💰 판매하기</button>
+        </div>
+      </aside>
+
+      <section class="right-col">
+        <div id="threeWrap" class="three-wrap card-stage">
+          <canvas id="threeCanvas"></canvas>
+          <div class="equipped-title title-design title-style-default" id="equippedTitle">
+            
+            <div class="selected-title-name">🏷️ 칭호 없음</div>
+          </div>
+
+          <div id="enhanceCardScene" class="enhance-card-scene">
+            <canvas class="card-bg-particles" id="cardBgParticles"></canvas>
+            <div class="card-particles" id="cardParticles"></div>
+            <div class="enhance-card-wrap" id="enhanceCardWrap">
+              <div class="card-3d-layer" id="card3dLayer">
+              <article class="enhance-card" id="enhanceCard">
+                <div class="card-glass"></div>
+                <div class="card-topline">
+                  <span id="cardSeason">SEASON 1</span>
+                  <span id="cardRarity">RARE</span>
+                </div>
+                <div class="card-art" id="cardArt">
+                  <div class="art-grid"></div>
+                  <div class="art-orbit orbit-a"></div>
+                  <div class="art-orbit orbit-b"></div>
+                  <div class="art-orbit orbit-c"></div>
+                  <div class="art-core" id="cardCore"><span id="cardLevel">+0</span></div>
+                  <div class="art-spark spark-1"></div><div class="art-spark spark-2"></div><div class="art-spark spark-3"></div>
+                </div>
+                <div class="card-stage-label" id="cardStageLabel">0단계</div>
+                <h2 id="cardName">무취 지온의 공간</h2>
+                <p id="cardDesc">아직은 아무 냄새도 안 남.</p>
+                <div class="card-result" id="cardResult">READY</div>
+                <div class="card-stats">
+                  <div><small>예상 가치</small><b id="cardPrice">0원</b></div>
+                  <div><small>획득 포인트</small><b id="cardPoints">0P</b></div>
+                  <div><small>강화 비용</small><b id="cardCost">0원</b></div>
+                </div>
+                <div class="card-bottom">
+                  <span id="cardSerial">JION • S1 • 000</span>
+                  <span id="cardTier">TIER I</span>
+                </div>
+                <div class="card-shine"></div>
+              </article>
+              </div>
+            </div>
+            <div class="card-status-glow" id="cardStatusGlow"></div>
+          </div>
+
+          <div id="cinematicUi" class="cinematic-ui hidden-ui">
+            <div id="statusText" class="status-header">READY</div>
+            <div id="mainTitle" class="title-tier-1"></div>
+            <div id="descText" class="desc-text"></div>
+            <div id="priceText" class="price-text"></div>
+            <div id="pointText" class="point-text"></div>
+            <div id="costText" class="cost-text"></div>
+          </div>
+          <div id="flashOverlay"></div>
+        </div>
+      </section>
+    </main>
+
+    <section class="bottom-bar">
+      <div class="season-buttons">
+        <button id="season1Btn" class="season-btn active">🌌 시즌 1</button>
+        <button id="season2Btn" class="season-btn">🌀 시즌 2</button>
+      </div>
+      <div id="season2Guide" class="season2-guide hidden">↓ 시즌 2를 눌러 새로운 차원으로 이동하세요! ↓</div>
+      <div class="save-note"></div>
+      <button id="resetBtn" class="reset-btn">↻ 초기화</button>
+    </section>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <button id="closeModal" class="close-btn">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
