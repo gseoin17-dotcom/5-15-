@@ -431,7 +431,7 @@ body::before{
 @keyframes cardDestroy{0%{transform:scale(1) rotate(0);opacity:1}20%{transform:scale(1.08) rotate(-2deg);filter:brightness(2)}100%{transform:scale(.62) rotate(8deg);opacity:.08;filter:grayscale(1) brightness(.5)}}
 @keyframes cardShield{0%{transform:scale(.78);filter:brightness(.7)}35%{transform:scale(1.08);filter:brightness(1.7)}100%{transform:scale(1)}}
 .card-status-glow{position:absolute;width:360px;height:360px;border-radius:50%;background:var(--glow,#8b5cf6);filter:blur(75px);opacity:.12;transition:.3s;pointer-events:none;}
-.card-particles{position:absolute;inset:-18%;pointer-events:none;overflow:visible;z-index:20}.card-particle{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 7px currentColor,0 0 16px currentColor,0 0 30px currentColor;opacity:0;will-change:transform,opacity;filter:brightness(1.35) saturate(1.35)}.card-particle.particle-star{width:7px!important;height:7px!important;background:currentColor;clip-path:polygon(50% 0%,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0% 50%,39% 38%);box-shadow:0 0 9px currentColor,0 0 22px currentColor,0 0 40px currentColor}.card-particle.particle-diamond{border-radius:1px;transform:rotate(45deg);box-shadow:0 0 8px currentColor,0 0 20px currentColor,0 0 34px currentColor}.card-particle.particle-streak{border-radius:999px;background:linear-gradient(to bottom,currentColor,transparent);box-shadow:0 0 8px currentColor,0 0 18px currentColor;transform-origin:50% 0}.card-particle.particle-dot{border-radius:50%}
+.card-bg-particles{position:absolute;inset:-24%;pointer-events:none;overflow:visible;z-index:1;isolation:isolate}.card-particles{display:none}.card-bg-particle{position:absolute;left:50%;top:50%;width:var(--size,5px);height:var(--size,5px);background:currentColor;opacity:0;transform:translate(-50%,-50%);filter:drop-shadow(0 0 5px currentColor) drop-shadow(0 0 14px currentColor) drop-shadow(0 0 28px currentColor);will-change:transform,opacity}.card-bg-particle.dot{border-radius:50%}.card-bg-particle.diamond{border-radius:2px;transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 8px currentColor,0 0 22px currentColor}.card-bg-particle.star{clip-path:polygon(50% 0%,61% 36%,98% 38%,69% 59%,79% 100%,50% 75%,21% 100%,31% 59%,2% 38%,39% 36%);background:currentColor;box-shadow:0 0 10px currentColor,0 0 30px currentColor}.card-bg-particle.streak{height:calc(var(--size,5px)*3.8);width:calc(var(--size,5px)*.48);border-radius:999px;background:linear-gradient(to bottom,transparent,currentColor 20%,#fff 48%,currentColor 70%,transparent);box-shadow:0 0 10px currentColor,0 0 24px currentColor}.enhance-card-wrap{position:relative;z-index:5}.enhance-card{position:relative;z-index:6}.card-status-glow{z-index:2}
 .hidden-ui{display:none!important}
 @media(max-width:900px){.enhance-card-wrap{width:min(330px,62%)}.three-wrap.card-stage{min-height:580px}.equipped-title{transform:scale(.88);transform-origin:top right}}
 
@@ -640,10 +640,17 @@ body::before{
 #enhanceCardScene.status-failed #enhanceCard{box-shadow:0 0 42px rgba(239,68,68,.28),0 28px 55px rgba(0,0,0,.42)!important}
 #enhanceCardScene.status-hold #enhanceCard{box-shadow:0 0 38px rgba(167,139,250,.28),0 28px 55px rgba(0,0,0,.42)!important}
 
-/* V12 결과별 파티클 색상/화려한 폭발 강화 */
-.status-success #cardParticles{filter:drop-shadow(0 0 14px #22c55e)}
-.status-failed #cardParticles{filter:drop-shadow(0 0 14px #f97316)}
-.status-hold #cardParticles{filter:drop-shadow(0 0 14px #ffffff)}
-.status-critical #cardParticles{filter:drop-shadow(0 0 18px #facc15)}
-.status-shield #cardParticles{filter:drop-shadow(0 0 18px #3b82f6)}
-.status-destroyed #cardParticles{filter:drop-shadow(0 0 20px #ef4444)}
+/* 결과별 카드 뒤 전용 파티클 색상 */
+#enhanceCardScene.status-success .card-bg-particle{color:#22c55e}
+#enhanceCardScene.status-critical .card-bg-particle{color:#facc15}
+#enhanceCardScene.status-failed .card-bg-particle{color:#f97316}
+#enhanceCardScene.status-hold .card-bg-particle{color:#ffffff}
+#enhanceCardScene.status-shield .card-bg-particle{color:#3b82f6}
+#enhanceCardScene.status-destroyed .card-bg-particle{color:#ef4444}
+.card-bg-particles::before,.card-bg-particles::after{content:"";position:absolute;left:50%;top:50%;width:120px;height:120px;border:2px solid currentColor;border-radius:50%;transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none;filter:drop-shadow(0 0 12px currentColor)}
+#enhanceCardScene.status-success .card-bg-particles::before{color:#22c55e}
+#enhanceCardScene.status-critical .card-bg-particles::before{color:#facc15}
+#enhanceCardScene.status-failed .card-bg-particles::before{color:#f97316}
+#enhanceCardScene.status-hold .card-bg-particles::before{color:#fff}
+#enhanceCardScene.status-shield .card-bg-particles::before{color:#3b82f6}
+#enhanceCardScene.status-destroyed .card-bg-particles::before{color:#ef4444}
