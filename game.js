@@ -329,65 +329,6 @@ window.addEventListener("keydown",e=>{
   }
 });
 
-
-/* V11 dashboard renderer */
-function renderDashboardUI(){
-  const d=data(), l=level(), max=maxLevel(), s2=isS2();
-  const maxXp=5000;
-  const xp=Math.round((l/max)*maxXp);
-  const next= l>=max ? maxXp : Math.max(100,Math.round(((l+1)/max)*maxXp));
-  const xpEl=document.getElementById('profileXp'); if(xpEl) xpEl.style.width=Math.min(100,(xp/Math.max(1,next))*100)+'%';
-  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-  set('profileLevel',`Lv. ${l}`); set('profileXpText',`${xp.toLocaleString('ko-KR')} / ${next.toLocaleString('ko-KR')}`); set('profileNext',l>=max?'MAX 단계':'다음 단계');
-  set('topMoney',formatGoldCompact(money())); set('topTears',`${tears()} / 60`); set('topPoints',`${state.points.toLocaleString('ko-KR')}P`);
-  set('tearsBtnCount',tears()); set('shieldBtnText',`보유 ${shield()}개`); set('enhanceCostText',l>=max?'MAX 단계':`필요 골드 : ${formatGold(enhanceCost(l,s2))}`);
-
-  const titleName=d.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'');
-  set('roadTitle',`${l}단계 · ${titleName}`); set('roadCount',`${l+1} / ${max+1}`);
-  set('detailStage',`${l}단계 : ${titleName}`); set('detailDesc',d.desc); set('detailPrice',formatGold(Number(d.price))); set('detailPoints',pointReward(l).toLocaleString('ko-KR')+'P'); set('detailCost',l>=max?'MAX':formatGold(enhanceCost(l,s2)));
-  const [rarity]=cardMeta(d.tier); set('detailRarity',`${rarity} ♛`);
-
-  const grid=document.getElementById('progressGrid');
-  if(grid){
-    const wanted=new Set();
-    for(let n=Math.max(0,l-2);n<=Math.min(max,l+2);n++) wanted.add(n);
-    [0,1,2,3,4,5,max-1,max].forEach(n=>{if(n>=0&&n<=max)wanted.add(n)});
-    const nums=[...wanted].sort((a,b)=>a-b);
-    grid.innerHTML=nums.map(n=>{
-      const sd=(GAME_DATA.SMELL_DB[s2?'true':'false'][n]||GAME_DATA.SMELL_DB[s2?'true':'false'][0]);
-      const [rar]=cardMeta(sd.tier);
-      const locked=n>l;
-      const current=n===l;
-      return `<div class="stage-card ${current?'current ':''}${locked?'locked':''}" style="--stage-color:${sd.color}" data-stage-card="${n}">
-        <div class="sc-top"><span>${n}</span><span class="sc-rarity">${rar}</span></div>
-        <div class="sc-orb"><span class="sc-orb-level">+${n}</span></div>
-        <div class="sc-name">${sd.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'')}</div>
-        ${locked?'<div class="sc-lock">🔒</div>':''}
-      </div>`;
-    }).join('');
-    grid.querySelectorAll('[data-stage-card]').forEach(el=>el.onclick=()=>{
-      const n=Number(el.dataset.stageCard);
-      if(n>l){showToast('🔒 아직 도달하지 않은 단계입니다.');return;}
-      const dd=GAME_DATA.SMELL_DB[s2?'true':'false'][n];
-      set('detailStage',`${n}단계 : ${dd.name.replace(/^환생\s+\d+단계\s*:\s*/,'').replace(/^\d+단계\s*:\s*/,'')}`);
-      set('detailDesc',dd.desc); set('detailPrice',formatGold(Number(dd.price))); set('detailPoints',pointReward(n).toLocaleString('ko-KR')+'P'); set('detailRarity',`${cardMeta(dd.tier)[0]} ♛`);
-    });
-  }
-  const status=state.seasonData[state.currentSeason].status;
-  const labels={READY:'강화 대기 중',SUCCESS:`${l}단계 강화 성공`,CRITICAL:`${l}단계 크리티컬!`,PITY_SUCCESS:'가오 발동 · 강화 성공',SHIELD_SAVED:'방지권 발동 · 단계 보존',DESTROYED:'강화 실패 · 파괴',FAILED:`${l}단계 강화 실패`,HOLD:`${l}단계 유지`,NOT_ENOUGH_MONEY:'골드 부족'};
-  set('recentLog',labels[status]||'강화 기록 업데이트 완료');
-  document.getElementById('season1Btn')?.classList.toggle('active',!s2); document.getElementById('season2Btn')?.classList.toggle('active',s2);
-  document.getElementById('bottomS1')?.classList.toggle('active',!s2); document.getElementById('bottomS2')?.classList.toggle('active',s2);
-}
-
-function useShieldQuick(){
-  const d=state.seasonData[state.currentSeason];
-  if(shield()<=0){showToast('🛡️ 방지권이 없습니다.');return;}
-  if(d.shieldArmed){d.shieldArmed=false;showToast('🛡️ 방지권 사용 예약을 취소했습니다.');}
-  else{d.shieldArmed=true;showToast('🛡️ 다음 강화에 방지권이 적용됩니다.');}
-  save();render();
-}
-
 function render(){
   const d=data(), l=level(), max=maxLevel(), s2=isS2();
   document.getElementById("money").textContent=formatGoldCompact(money());
@@ -430,7 +371,6 @@ function render(){
   renderSceneText();
   renderEnhanceCard();
   renderEquippedTitle();
-  renderDashboardUI();
 }
 function renderSceneText(){
   const d=data(), l=level(), max=maxLevel(), s2=isS2(), status=state.seasonData[state.currentSeason].status;
@@ -678,10 +618,6 @@ document.getElementById("enhanceBtn").onclick=enhance;
 document.getElementById("sellBtn").onclick=sell;
 document.getElementById("season1Btn").onclick=()=>switchSeason(1);
 document.getElementById("season2Btn").onclick=()=>switchSeason(2);
-document.getElementById("bottomS1")?.addEventListener("click",()=>switchSeason(1));
-document.getElementById("bottomS2")?.addEventListener("click",()=>switchSeason(2));
-document.getElementById("shieldBtn")?.addEventListener("click",useShieldQuick);
-document.getElementById("topReset")?.addEventListener("click",resetGame);
 
 /* --------------------------- Three.js scene --------------------------- */
 function initScene(){
