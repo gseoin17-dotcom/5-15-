@@ -639,3 +639,40 @@ body::before{
 #enhanceCardScene.status-success #enhanceCard{box-shadow:0 0 45px rgba(34,197,94,.38),0 28px 55px rgba(0,0,0,.42)!important}
 #enhanceCardScene.status-failed #enhanceCard{box-shadow:0 0 42px rgba(239,68,68,.28),0 28px 55px rgba(0,0,0,.42)!important}
 #enhanceCardScene.status-hold #enhanceCard{box-shadow:0 0 38px rgba(167,139,250,.28),0 28px 55px rgba(0,0,0,.42)!important}
+
+
+/* V11 강화 결과 구분 강화: 성공/유지/하락/방지권/파괴를 한눈에 보이게 */
+#enhanceCardScene.status-success .card-result,
+#enhanceCardScene.status-critical .card-result,
+#enhanceCardScene.status-failed .card-result,
+#enhanceCardScene.status-hold .card-result,
+#enhanceCardScene.status-shield .card-result,
+#enhanceCardScene.status-destroyed .card-result{
+  position:relative;
+  z-index:20;
+  font-size:18px;
+  font-weight:1000;
+  letter-spacing:1.5px;
+  padding:7px 10px;
+  border-radius:12px;
+  background:rgba(2,6,23,.48);
+  border:1px solid rgba(255,255,255,.22);
+  transform-origin:center;
+}
+#enhanceCardScene.status-success .card-result{color:#4ade80!important;text-shadow:0 0 10px #22c55e,0 0 28px #22c55e;animation:resultSuccessPop .7s ease-out infinite alternate}
+#enhanceCardScene.status-critical .card-result{color:#fde047!important;text-shadow:0 0 12px #fff,0 0 35px #facc15;animation:resultCriticalPop .32s ease-in-out infinite alternate}
+#enhanceCardScene.status-failed .card-result{color:#f87171!important;text-shadow:0 0 12px #ef4444;animation:resultFailedDrop .55s ease-in-out infinite alternate}
+#enhanceCardScene.status-hold .card-result{color:#c4b5fd!important;text-shadow:0 0 12px #8b5cf6;animation:resultHoldPulse 1s ease-in-out infinite}
+#enhanceCardScene.status-shield .card-result{color:#93c5fd!important;text-shadow:0 0 12px #3b82f6,0 0 30px #60a5fa;animation:resultShieldPop .5s ease-out infinite alternate}
+#enhanceCardScene.status-destroyed .card-result{color:#ff4d5d!important;text-shadow:0 0 12px #ef4444,0 0 35px #ff0000;animation:resultDestroyFlash .18s steps(2,end) infinite}
+@keyframes resultSuccessPop{from{transform:scale(.94);filter:brightness(1)}to{transform:scale(1.08);filter:brightness(1.35)}}
+@keyframes resultCriticalPop{from{transform:scale(.92) rotate(-1deg)}to{transform:scale(1.14) rotate(1deg)}}
+@keyframes resultFailedDrop{from{transform:translateY(-2px) scale(1)}to{transform:translateY(5px) scale(.94)}}
+@keyframes resultHoldPulse{0%,100%{opacity:.62;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
+@keyframes resultShieldPop{from{transform:scale(.94)}to{transform:scale(1.1)}}
+@keyframes resultDestroyFlash{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.12)}}
+
+#enhanceCardScene.status-shield .enhance-card{box-shadow:0 0 55px rgba(96,165,250,.7),0 0 130px rgba(59,130,246,.38),inset 0 0 35px rgba(147,197,253,.18)!important}
+#enhanceCardScene.status-critical .enhance-card{box-shadow:0 0 70px rgba(250,204,21,.85),0 0 160px rgba(245,158,11,.48),inset 0 0 40px rgba(255,255,255,.2)!important}
+#enhanceCardScene.status-failed .enhance-card{box-shadow:0 0 55px rgba(239,68,68,.55),0 0 110px rgba(239,68,68,.25),inset 0 0 30px rgba(239,68,68,.16)!important}
+#enhanceCardScene.status-hold .enhance-card{box-shadow:0 0 48px rgba(167,139,250,.5),0 0 110px rgba(139,92,246,.25),inset 0 0 30px rgba(196,181,253,.12)!important}
