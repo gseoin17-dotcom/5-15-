@@ -429,7 +429,7 @@ function renderEnhanceCard(){
   document.getElementById('cardSerial').textContent=`JION • ${s2?'S2':'S1'} • ${String(l).padStart(2,'0')}`;
   document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
   const status=state.seasonData[state.currentSeason].status;
-  const labels={READY:'준비 완료',SUCCESS:'✦ 강화 성공',CRITICAL:'✦✦ 크리티컬 성공',PITY_SUCCESS:'✦ 특별 성공',SHIELD_SAVED:'◈ 방지권 사용',DESTROYED:'✕ 파괴',FAILED:'▼ 하락',HOLD:'◆ 유지',NOT_ENOUGH_MONEY:'골드 부족'};
+  const labels={READY:'준비 완료',SUCCESS:'✦ 강화 성공',CRITICAL:'✦✦ 크리티컬 성공',PITY_SUCCESS:'✦ 피티 성공',SHIELD_SAVED:'◈ 방지권 사용',DESTROYED:'✕ 파괴',FAILED:'▼ 하락',HOLD:'◆ 유지',NOT_ENOUGH_MONEY:'재화 부족'};
   const result=document.getElementById('cardResult'); result.textContent=labels[status]||status;
   const scene=document.getElementById('enhanceCardScene');
   scene.style.setProperty('--glow',d.color);
@@ -439,72 +439,22 @@ function renderEnhanceCard(){
   else if(status==='HOLD')scene.classList.add('status-hold');
   else if(status==='DESTROYED')scene.classList.add('status-destroyed');
   else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');
-  result.style.color=status==='DESTROYED'?'#ef4444':status==='FAILED'?'#f97316':status==='HOLD'?'#ffffff':status==='CRITICAL'?'#facc15':status==='SHIELD_SAVED'?'#3b82f6':'#22c55e';
+  result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
 }
-function resizeCardParticleCanvas(){
-  const c=document.getElementById('cardBgParticles');
-  const scene=document.getElementById('enhanceCardScene');
-  if(!c||!scene)return;
-  const r=scene.getBoundingClientRect();
-  const dpr=Math.min(window.devicePixelRatio||1,1.5);
-  c.width=Math.max(1,Math.floor(r.width*dpr));
-  c.height=Math.max(1,Math.floor(r.height*dpr));
-  c.style.width=r.width+'px'; c.style.height=r.height+'px';
-  const ctx=c.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  c._ctx=ctx; c._dpr=dpr; c._w=r.width; c._h=r.height;
-}
-const cardParticleEngine={items:[],raf:0,last:0,max:150};
-function cardBurst(color='#ffffff', count=42, power=240){
-  const c=document.getElementById('cardBgParticles'); if(!c)return;
-  if(!c._ctx)resizeCardParticleCanvas();
-  const ctx=c._ctx; if(!ctx)return;
-  const n=Math.min(count,55);
-  const cx=c._w/2, cy=c._h/2;
-  for(let i=0;i<n;i++){
-    if(cardParticleEngine.items.length>=cardParticleEngine.max) cardParticleEngine.items.shift();
-    const a=Math.random()*Math.PI*2;
-    const speed=power*(.55+Math.random()*.75);
-    cardParticleEngine.items.push({
-      x:cx+(Math.random()-.5)*20,y:cy+(Math.random()-.5)*20,
-      vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
-      life:.42+Math.random()*.42,max:.42+Math.random()*.42,
-      size:2+Math.random()*4.5,color,
-      type:Math.random()<.16?1:Math.random()<.28?2:0,
-      rot:Math.random()*Math.PI,vr:(Math.random()-.5)*8
-    });
+function cardBurst(color='#ffffff', count=70, power=260){
+  const box=document.getElementById('cardParticles'); if(!box)return;
+  box.innerHTML='';
+  const frag=document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const p=document.createElement('i'); p.className='card-particle'; p.style.color=color;
+    const a=Math.random()*Math.PI*2, dist=power*(.35+Math.random()*.75);
+    p.dataset.dx=Math.cos(a)*dist; p.dataset.dy=Math.sin(a)*dist;
+    p.style.width=p.style.height=(2+Math.random()*6)+'px'; frag.appendChild(p);
   }
-  if(!cardParticleEngine.raf){cardParticleEngine.last=performance.now();cardParticleEngine.raf=requestAnimationFrame(updateCardParticles);}
-}
-function updateCardParticles(now){
-  const c=document.getElementById('cardBgParticles');
-  const e=cardParticleEngine, ctx=c?c._ctx:null;
-  if(!c||!ctx){e.raf=0;return;}
-  const dt=Math.min(.032,(now-e.last)/1000); e.last=now;
-  ctx.clearRect(0,0,c._w,c._h);
-  for(let i=e.items.length-1;i>=0;i--){
-    const p=e.items[i]; p.life-=dt;
-    if(p.life<=0){e.items.splice(i,1);continue;}
-    p.vx*=Math.pow(.985,dt*60); p.vy*=Math.pow(.985,dt*60); p.vy+=95*dt;
-    p.x+=p.vx*dt; p.y+=p.vy*dt; p.rot+=p.vr*dt;
-    const alpha=Math.min(1,p.life/.12)*Math.min(1,(p.max-p.life)/.08);
-    ctx.globalAlpha=alpha*.92; ctx.fillStyle=p.color;
-    if(p.type===1){
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore();
-    }else if(p.type===2){
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillRect(-p.size*.35,-p.size*1.9,p.size*.7,p.size*3.8);ctx.restore();
-    }else{
-      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
-    }
-  }
-  ctx.globalAlpha=1;
-  if(e.items.length) e.raf=requestAnimationFrame(updateCardParticles); else e.raf=0;
-}
-window.addEventListener('resize',()=>resizeCardParticleCanvas());
-
-function clearBackgroundParticles(){
-  const box=document.getElementById('cardBgParticles');
-  if(box) gsap.killTweensOf(box.querySelectorAll('*')), box.innerHTML='';
+  box.appendChild(frag);
+  [...box.children].forEach((p,i)=>{
+    gsap.fromTo(p,{x:0,y:0,scale:.2,opacity:0},{x:+p.dataset.dx,y:+p.dataset.dy,scale:1.4,opacity:1,duration:.18+Math.random()*.22,delay:i*.004,ease:'power3.out',onComplete(){gsap.to(p,{opacity:0,duration:.55,ease:'power2.out'})}});
+  });
 }
 
 function renderCardDesign(art,l,s2,d){
@@ -903,6 +853,7 @@ function finalStageCinematic(status, finish){
 
   // 결과 종류와 상관없이 같은 타이밍으로 에너지를 모으고 긴장감을 만듭니다.
   cardBurst(color,110+Math.floor(current*2),300+current*7);
+  cardBurst('#ffffff',45+Math.floor(current),220+current*5);
   gsap.to(glow,{scale:1.5+power*.3,opacity:.3,duration:1.05,ease:'power2.inOut'});
   gsap.to(card,{scale:1.018,duration:.85,ease:'sine.inOut',yoyo:true,repeat:1});
 
@@ -913,6 +864,7 @@ function finalStageCinematic(status, finish){
 
   gsap.delayedCall(1.85,()=>{
     cardBurst(color,150+Math.floor(current*2.5),420+current*9);
+    cardBurst('#ffffff',65+Math.floor(current*1.3),340+current*6);
     gsap.to(glow,{scale:2.65,opacity:.62,duration:.32,ease:'power4.out',yoyo:true,repeat:1});
     impactFlash(destroyed?.92:.72);
     screenShake(destroyed?.42:.25,.42);
@@ -1018,19 +970,20 @@ function animateResult(status, afterFinish=null){
     // 성공: 충전 → 정적 → 폭발 → 카드 돌진 → 결과 팝업의 5단 연출
     gsap.set(card,{scale:.88,filter:'brightness(.72) saturate(1.25)'});
     gsap.set(glow,{scale:.25,opacity:.02});
-    cardBurst('#22c55e',90+(level()*2),260+level()*6);
+    cardBurst(isPity?'#fde68a':'#22c55e',90+(level()*2),260+level()*6);
+    cardBurst('#ffffff',35+level(),190+level()*4);
     gsap.to(glow,{scale:1.9,opacity:isPity?.38:.28,duration:.42,ease:'power3.out'});
     gsap.to(card,{scale:1.035,filter:'brightness(1.45) saturate(1.6)',duration:.52,ease:'power2.inOut',yoyo:true,repeat:1});
     if(shine) gsap.to(shine,{x:'170%',opacity:1,duration:.7,ease:'power3.inOut',delay:.18});
     gsap.delayedCall(.42,()=>{
       impactFlash(isPity?.65:.48); screenShake(isPity?.12:.075,.18);
-      cardBurst('#22c55e',70+level(),310+level()*7);
+      cardBurst(isPity?'#ffffff':'#4ade80',70+level(),310+level()*7);
     });
     gsap.delayedCall(.78,()=>{
       gsap.to(card,{y:-22,scale:1.13,duration:.16,ease:'power4.out'});
       impactFlash(isPity?.9:.68);
       screenShake(isPity?.2:.13,.22);
-      cardBurst('#22c55e',110+level(),390+level()*8);
+      cardBurst(isPity?'#fef3c7':'#86efac',110+level(),390+level()*8);
     });
     gsap.delayedCall(1.02,()=>{
       gsap.to(card,{y:0,scale:1,duration:.48,ease:'elastic.out(1,.38)',onComplete:finish});
@@ -1042,11 +995,11 @@ function animateResult(status, afterFinish=null){
     scene.classList.add('status-critical');
     // 크리티컬: 화면을 한 번 멈춘 듯 만들었다가 초대형 에너지 폭발
     gsap.set(card,{scale:.82,filter:'brightness(.65) saturate(1.5)'});
-    cardBurst('#facc15',220,430);
+    cardBurst('#ffffff',130,390); cardBurst('#facc15',110,340); cardBurst('#fb923c',55,250);
     gsap.to(glow,{scale:2.35,opacity:.48,duration:.52,ease:'power4.out'});
     gsap.to(card,{scale:1.045,filter:'brightness(1.8) saturate(2)',duration:.5,ease:'sine.inOut',yoyo:true,repeat:1});
     if(shine) gsap.to(shine,{x:'190%',opacity:1,duration:.52,ease:'power4.out'});
-    gsap.delayedCall(.48,()=>{impactFlash(.95);screenShake(.22,.25);cardBurst('#facc15',220,470);});
+    gsap.delayedCall(.48,()=>{impactFlash(.95);screenShake(.22,.25);cardBurst('#fff',150,430);cardBurst('#facc15',120,390);});
     gsap.delayedCall(.76,()=>gsap.to(card,{y:-28,scale:1.18,duration:.14,ease:'power4.out'}));
     gsap.delayedCall(.92,()=>gsap.to(card,{y:0,scale:1,duration:.52,ease:'elastic.out(1,.32)',onComplete:finish}));
     return;
@@ -1059,14 +1012,15 @@ function animateResult(status, afterFinish=null){
     // 하락/유지: 에너지 역류 → 연속 충격 → 카드 흔들림 → 결과 공개
     gsap.set(card,{scale:1.025,filter:failed?'brightness(.9) saturate(1.2)':'brightness(.95) saturate(.9)'});
     gsap.set(glow,{scale:1.25,opacity:.08});
-    cardBurst(failed?'#f97316':'#ffffff',65+Math.floor(shakeLevel*14),230+shakeLevel*65);
+    cardBurst(failed?'#ef4444':'#a78bfa',65+Math.floor(shakeLevel*14),230+shakeLevel*65);
+    cardBurst('#ffffff',20+Math.floor(shakeLevel*5),150+shakeLevel*35);
     gsap.to(glow,{scale:.55,opacity:.28,duration:.3,ease:'power3.in',yoyo:true,repeat:2});
     const shakeObj={x:0,y:0,r:0};
     gsap.to(shakeObj,{x:failed?7.5*shakeLevel:3.5*shakeLevel,y:failed?3.2*shakeLevel:1.8*shakeLevel,r:failed?1.8*shakeLevel:.7*shakeLevel,duration:.72,ease:'rough({template:"none",strength:1,points:20,taper:"none",randomize:true,clamp:false})',onUpdate:()=>{
       gsap.set(card,{x:(Math.random()-.5)*shakeObj.x,y:(Math.random()-.5)*shakeObj.y,rotation:(Math.random()-.5)*shakeObj.r});
     }});
-    gsap.delayedCall(.32,()=>{impactFlash(failed?.46:.24);screenShake(failed?.14:.06,.2);cardBurst(failed?'#f97316':'#ffffff',50+Math.floor(shakeLevel*10),200+shakeLevel*50);});
-    gsap.delayedCall(.66,()=>{impactFlash(failed?.32:.18);cardBurst('#f97316',55,210);});
+    gsap.delayedCall(.32,()=>{impactFlash(failed?.46:.24);screenShake(failed?.14:.06,.2);cardBurst(failed?'#f87171':'#c4b5fd',50+Math.floor(shakeLevel*10),200+shakeLevel*50);});
+    gsap.delayedCall(.66,()=>{impactFlash(failed?.32:.18);cardBurst('#ffffff',30,170);});
     gsap.to(card,{filter:failed?'brightness(.62) saturate(.65)':'brightness(.82) saturate(.7)',duration:.58,ease:'power2.in'});
     gsap.delayedCall(.82,()=>gsap.to(card,{x:0,y:0,rotation:0,scale:failed?.97:1,duration:.26,ease:'power3.out'}));
     gsap.delayedCall(1.02,()=>gsap.to(card,{scale:1,duration:.25,ease:'back.out(1.8)',onComplete:finish}));
@@ -1075,7 +1029,7 @@ function animateResult(status, afterFinish=null){
 
   if(status==='SHIELD_SAVED'){
     scene.classList.add('status-shield');
-    cardBurst('#3b82f6',150,360);
+    cardBurst('#60a5fa',85,270);
     gsap.fromTo(glow,{scale:.5,opacity:.04},{scale:1.9,opacity:.28,duration:.5,ease:'back.out(1.7)',yoyo:true,repeat:1});
     gsap.fromTo(card,{y:12,scale:.96},{y:-8,scale:1.055,duration:.2,ease:'power2.out',onComplete:()=>{
       gsap.to(card,{y:0,scale:1,duration:.3,ease:'back.out(1.8)',onComplete:finish});
@@ -1087,7 +1041,9 @@ function animateResult(status, afterFinish=null){
   if(status==='DESTROYED'){
     scene.classList.add('status-destroyed');
     // 강렬한 파괴 연출: 연속 플래시 → 고속 진동 → 폭발 파티클 → 균열 → 붕괴
-    cardBurst('#ef4444',320,620);
+    cardBurst('#ff1838',230,520);
+    cardBurst('#ff8a00',130,430);
+    cardBurst('#ffffff',75,360);
     createFinalCracks(card);
     createFinalShards('#ff2638',72);
     const shakeObj={x:0,y:0,r:0};
@@ -1098,7 +1054,7 @@ function animateResult(status, afterFinish=null){
     impactFlash(1);
     gsap.delayedCall(.22,()=>impactFlash(.9));
     gsap.delayedCall(.5,()=>{
-      cardBurst('#ef4444',240,540);
+      cardBurst('#ff0000',170,470);
       impactFlash(.82);
       screenShake(.5,.5);
     });
