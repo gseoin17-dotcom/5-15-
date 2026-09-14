@@ -411,24 +411,17 @@ function renderCardDesign(art,l,s2,d){
   const key=`${s2?'S2':'S1'}-${l}`;
   if(art.dataset.designKey===key)return;
   art.dataset.designKey=key;
+  art.classList.add('three-d-art');
   art.querySelectorAll('.dynamic-card-design').forEach(e=>e.remove());
-  const frag=document.createDocumentFragment();
-  const add=(cls,style='')=>{const e=document.createElement('i');e.className='dynamic-card-design '+cls;if(style)e.style.cssText=style;frag.appendChild(e);};
-  // Every level gets a distinct silhouette language, not just a color swap.
-  const type=l%10;
-  const count=Math.min(12,2+Math.floor(l/4));
-  if(type===0){ add('design-crown'); for(let i=0;i<3;i++)add('design-ring',`--i:${i}`); }
-  else if(type===1){ add('design-diamond'); add('design-cross'); }
-  else if(type===2){ add('design-hex'); for(let i=0;i<6;i++)add('design-node',`--i:${i}`); }
-  else if(type===3){ add('design-reactor'); for(let i=0;i<4;i++)add('design-orbit',`--i:${i}`); }
-  else if(type===4){ add('design-blade'); for(let i=0;i<5;i++)add('design-blade',`--i:${i}`); }
-  else if(type===5){ add('design-portal'); add('design-portal-inner'); }
-  else if(type===6){ add('design-prism'); add('design-prism-core'); }
-  else if(type===7){ add('design-gear'); for(let i=0;i<8;i++)add('design-tooth',`--i:${i}`); }
-  else if(type===8){ add('design-sun'); for(let i=0;i<8;i++)add('design-ray',`--i:${i}`); }
-  else { add('design-singularity'); add('design-singularity-ring'); }
-  for(let i=0;i<count;i++) add('design-particle',`--i:${i};--n:${count}`);
-  art.appendChild(frag);
+  const el=document.createElement('div');
+  el.className=`dynamic-card-design odor-3d-design ${s2?'odor-s2':'odor-s1'} odor-${s2?l+35:l}`;
+  el.setAttribute('aria-hidden','true');
+  el.innerHTML=`
+    <span class="odor-side"></span>
+    <span class="odor-front"><span class="odor-highlight"></span><span class="odor-coremark"></span></span>
+    <span class="odor-vapor vapor-a"></span><span class="odor-vapor vapor-b"></span><span class="odor-vapor vapor-c"></span>
+  `;
+  art.appendChild(el);
 }
 
 function renderEquippedTitle(){
