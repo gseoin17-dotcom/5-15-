@@ -63,7 +63,10 @@ function loadState(){
     if(!saved) return clone(INITIAL);
     const s=Object.assign(clone(INITIAL),saved);
     s.seasonData=Object.assign(clone(INITIAL.seasonData),saved.seasonData||{});
-    for(const k of [1,2]) s.seasonData[k]=Object.assign(clone(INITIAL.seasonData[k]),s.seasonData[k]||{});
+    for(const k of [1,2]) {
+      s.seasonData[k]=Object.assign(clone(INITIAL.seasonData[k]),s.seasonData[k]||{});
+      s.seasonData[k].reviveTickets=Math.max(0,Math.min(1,Number(s.seasonData[k].reviveTickets)||0));
+    }
     s.achievements=Object.assign(clone(INITIAL.achievements),saved.achievements||{});
     return s;
   }catch(e){ return clone(INITIAL); }
@@ -502,6 +505,7 @@ function openModal(kind){
 function closeModal(){ document.getElementById("modal").classList.add("hidden"); }
 function shopHTML(){
   const l=level(), s2=isS2(), sh=shield(), moneyCost=shieldMoneyCost(l), pointCost=shieldPointCost(l), reviveMoney=reviveMoneyCost(l), revivePoint=revivePointCost(l);
+  const reviveMinLevel=30, reviveLocked=l<reviveMinLevel;
   const minShield=s2?16:20;
   const d=state.seasonData[state.currentSeason];
   const warpLevels=s2?[5,10,15,20]:[10,15,20,25,30];
@@ -516,15 +520,16 @@ function shopHTML(){
       </div>
     </div>`;
   }).join("");
-  return `<div class="modal-head shop"><h2>🛒 상점</h2></div>
+  return `<div class="modal-head shop"><h2>🛒 상점</h2><p>방지권과 워프권을 💰 돈 또는 ⭐ 포인트로 구매할 수 있습니다.</p></div>
     <div class="shop-grid"><div class="flat-item"><div>💰 보유 금액</div><b>${formatGold(money())}</b></div><div class="flat-item"><div>⭐ 보유 포인트</div><b>${state.points.toLocaleString("ko-KR")}P</b></div></div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #f472b6">
       <h3 style="color:#f472b6">💖 부활권</h3>
-      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>구매 가능 단계:</b> 30단계 이상<br><b>보유:</b> ${d.reviveTickets||0} / 1개<br><b>현재 단계:</b> ${l}단계 · 단계가 높을수록 가격 상승<br><b>💰 돈 가격:</b> ${formatGold(reviveMoney)}<br><b>⭐ 포인트 가격:</b> ${revivePoint.toLocaleString("ko-KR")}P</div>
+      <div class="modal-meta">강화가 파괴되었을 때 1회 사용하여 파괴 직전 단계로 부활합니다.<br><b>보유:</b> ${Number(d.reviveTickets)||0} / 1개<br><b>구매 가능:</b> 30단계 이상<br><b>현재 단계:</b> ${l}단계 · 단계가 높을수록 가격 상승<br><b>💰 돈 가격:</b> ${formatGold(reviveMoney)}<br><b>⭐ 포인트 가격:</b> ${revivePoint.toLocaleString("ko-KR")}</div>
       <div class="two-buttons">
-        <button class="glass-btn" data-buy-revive="money" ${(l<30 || money()<reviveMoney || (d.reviveTickets||0)>=1)?"disabled":""}>💰 돈으로 구매</button>
-        <button class="glass-btn" data-buy-revive="point" ${(l<30 || state.points<revivePoint || (d.reviveTickets||0)>=1)?"disabled":""}>⭐ 포인트로 구매</button>
+        <button class="glass-btn" data-buy-revive="money" ${(reviveLocked||money()<reviveMoney || (Number(d.reviveTickets)||0)>=1)?"disabled":""}>💰 돈으로 구매</button>
+        <button class="glass-btn" data-buy-revive="point" ${(reviveLocked||state.points<revivePoint || (Number(d.reviveTickets)||0)>=1)?"disabled":""}>⭐ 포인트로 구매</button>
       </div>
+    </div>${reviveLocked?"<div class=\"revive-none\">🔒 부활권은 30단계부터 구매할 수 있습니다.</div>":""}
     </div>
     <div class="modal-section flat-panel" style="margin-top:12px;border-left:4px solid #60a5fa">
       <h3 style="color:#60a5fa">🛡️ 파괴 방지권</h3>
@@ -569,8 +574,8 @@ function bindModal(kind){
   document.querySelectorAll("[data-buy-revive]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyRevive, d=state.seasonData[state.currentSeason], l=level();
     const cost=type==="money" ? reviveMoneyCost(l) : revivePointCost(l);
-    if(l<30){showToast("💖 부활권은 30단계 이상부터 구매할 수 있습니다.");return;}
-    if((d.reviveTickets||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
+    if(l<30){showToast("🔒 부활권은 30단계부터 구매할 수 있습니다.");return;}
+    if((Number(d.reviveTickets)||0)>=1){showToast("부활권은 최대 1개까지 보유할 수 있습니다.");return;}
     if(type==="money"){
       if(money()<cost){showToast("금액이 부족합니다.");return;}
       setMoney(money()-cost);
@@ -578,7 +583,7 @@ function bindModal(kind){
       if(state.points<cost){showToast("포인트가 부족합니다.");return;}
       state.points-=cost; state.pointsSpentTotal+=cost;
     }
-    d.reviveTickets=1; render(); save(); openModal("shop"); showToast(`💖 부활권 구매 완료! ${type==="money"?"💰":"⭐"} ${type==="money"?formatGold(cost):cost.toLocaleString("ko-KR")+"P"}`);
+    d.reviveTickets=Math.min(1,(Number(d.reviveTickets)||0)+1); save(); render(); openModal("shop"); showToast(`💖 부활권 구매 완료! ${type==="money"?"💰":"⭐"} ${type==="money"?formatGold(cost):cost.toLocaleString("ko-KR")+"P"}`);
   });
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>{
     const type=b.dataset.buyShield,l=level(), min=isS2()?16:20,cost=type==="money"?shieldMoneyCost(l):shieldPointCost(l);
@@ -604,7 +609,7 @@ function bindModal(kind){
     save(); render(); closeModal(); showToast(`눈물 기적 100% 성공! ${add}단계 상승!`);
   };
   const ts=document.getElementById("titleSelect");
-  if(ts) ts.onchange=()=>{setTitle(ts.value);closeModal();};
+  if(ts) ts.onchange=()=>{setTitle(ts.value);closeModal();showToast(`🏷️ ${ts.value} 칭호 장착 완료!`);};
 }
 document.getElementById("closeModal").onclick=closeModal;
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal();});
@@ -961,41 +966,64 @@ function animateResult(status, afterFinish=null){
 
   if(status==='SUCCESS'||status==='PITY_SUCCESS'){
     scene.classList.add('status-success');
-    cardBurst(color,status==='PITY_SUCCESS'?100:65,status==='PITY_SUCCESS'?320:240);
-    if(status==='PITY_SUCCESS') cardBurst('#fff',65,290);
-    gsap.fromTo(glow,{scale:.7,opacity:.03},{scale:1.65,opacity:status==='PITY_SUCCESS'?.30:.18,duration:.45,ease:'power2.out',yoyo:true,repeat:1});
-    // 살짝 들어왔다가 정면에 안착. 회전/투명도는 사용하지 않는다.
-    gsap.fromTo(card,{y:18,scale:.94},{y:-7,scale:1.035,duration:.22,ease:'power2.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.28,ease:'back.out(1.8)',onComplete:finish});
-    }});
-    if(shine) gsap.to(shine,{x:'150%',duration:.9,ease:'power2.inOut',delay:.08});
-    impactFlash(status==='PITY_SUCCESS'?.55:.28);
+    const isPity=status==='PITY_SUCCESS';
+    // 성공: 충전 → 정적 → 폭발 → 카드 돌진 → 결과 팝업의 5단 연출
+    gsap.set(card,{scale:.88,filter:'brightness(.72) saturate(1.25)'});
+    gsap.set(glow,{scale:.25,opacity:.02});
+    cardBurst(isPity?'#fde68a':'#22c55e',90+(level()*2),260+level()*6);
+    cardBurst('#ffffff',35+level(),190+level()*4);
+    gsap.to(glow,{scale:1.9,opacity:isPity?.38:.28,duration:.42,ease:'power3.out'});
+    gsap.to(card,{scale:1.035,filter:'brightness(1.45) saturate(1.6)',duration:.52,ease:'power2.inOut',yoyo:true,repeat:1});
+    if(shine) gsap.to(shine,{x:'170%',opacity:1,duration:.7,ease:'power3.inOut',delay:.18});
+    gsap.delayedCall(.42,()=>{
+      impactFlash(isPity?.65:.48); screenShake(isPity?.12:.075,.18);
+      cardBurst(isPity?'#ffffff':'#4ade80',70+level(),310+level()*7);
+    });
+    gsap.delayedCall(.78,()=>{
+      gsap.to(card,{y:-22,scale:1.13,duration:.16,ease:'power4.out'});
+      impactFlash(isPity?.9:.68);
+      screenShake(isPity?.2:.13,.22);
+      cardBurst(isPity?'#fef3c7':'#86efac',110+level(),390+level()*8);
+    });
+    gsap.delayedCall(1.02,()=>{
+      gsap.to(card,{y:0,scale:1,duration:.48,ease:'elastic.out(1,.38)',onComplete:finish});
+    });
     return;
   }
 
   if(status==='CRITICAL'){
     scene.classList.add('status-critical');
-    cardBurst('#ffffff',115,380); cardBurst(color,95,300);
-    gsap.fromTo(glow,{scale:.55,opacity:.04},{scale:2.2,opacity:.34,duration:.6,ease:'power2.out',yoyo:true,repeat:1});
-    // 크리티컬도 과도한 3D 회전 없이 확대/착지로 표현
-    gsap.fromTo(card,{y:24,scale:.86},{y:-13,scale:1.10,duration:.25,ease:'power3.out',onComplete:()=>{
-      gsap.to(card,{y:0,scale:1,duration:.38,ease:'elastic.out(1,.55)',onComplete:finish});
-    }});
-    if(shine) gsap.to(shine,{x:'170%',duration:.7,ease:'power2.inOut',delay:.04});
-    impactFlash(.72);
+    // 크리티컬: 화면을 한 번 멈춘 듯 만들었다가 초대형 에너지 폭발
+    gsap.set(card,{scale:.82,filter:'brightness(.65) saturate(1.5)'});
+    cardBurst('#ffffff',130,390); cardBurst('#facc15',110,340); cardBurst('#fb923c',55,250);
+    gsap.to(glow,{scale:2.35,opacity:.48,duration:.52,ease:'power4.out'});
+    gsap.to(card,{scale:1.045,filter:'brightness(1.8) saturate(2)',duration:.5,ease:'sine.inOut',yoyo:true,repeat:1});
+    if(shine) gsap.to(shine,{x:'190%',opacity:1,duration:.52,ease:'power4.out'});
+    gsap.delayedCall(.48,()=>{impactFlash(.95);screenShake(.22,.25);cardBurst('#fff',150,430);cardBurst('#facc15',120,390);});
+    gsap.delayedCall(.76,()=>gsap.to(card,{y:-28,scale:1.18,duration:.14,ease:'power4.out'}));
+    gsap.delayedCall(.92,()=>gsap.to(card,{y:0,scale:1,duration:.52,ease:'elastic.out(1,.32)',onComplete:finish}));
     return;
   }
 
   if(status==='FAILED'||status==='HOLD'){
     scene.classList.add(status==='FAILED'?'status-failed':'status-hold');
-    const shakeLevel=Math.max(1,Math.min(4.2,0.65+((state.seasonData[state.currentSeason].prev_level||0)*.075)));
-    cardBurst(status==='FAILED'?'#ff4d5d':'#a78bfa',45+Math.floor(shakeLevel*10),180+shakeLevel*55);
-    screenShake(.055+shakeLevel*.025,.16+shakeLevel*.035);
-    gsap.to(card,{x:-9*shakeLevel,duration:.045,ease:'sine.inOut',yoyo:true,repeat:8+Math.floor(shakeLevel*2),onComplete:()=>{
-      gsap.to(card,{x:0,duration:.14,ease:'power2.out',onComplete:finish});
+    const failed=status==='FAILED';
+    const shakeLevel=Math.max(1,Math.min(4.8,0.75+((state.seasonData[state.currentSeason].prev_level||0)*.085)));
+    // 하락/유지: 에너지 역류 → 연속 충격 → 카드 흔들림 → 결과 공개
+    gsap.set(card,{scale:1.025,filter:failed?'brightness(.9) saturate(1.2)':'brightness(.95) saturate(.9)'});
+    gsap.set(glow,{scale:1.25,opacity:.08});
+    cardBurst(failed?'#ef4444':'#a78bfa',65+Math.floor(shakeLevel*14),230+shakeLevel*65);
+    cardBurst('#ffffff',20+Math.floor(shakeLevel*5),150+shakeLevel*35);
+    gsap.to(glow,{scale:.55,opacity:.28,duration:.3,ease:'power3.in',yoyo:true,repeat:2});
+    const shakeObj={x:0,y:0,r:0};
+    gsap.to(shakeObj,{x:failed?7.5*shakeLevel:3.5*shakeLevel,y:failed?3.2*shakeLevel:1.8*shakeLevel,r:failed?1.8*shakeLevel:.7*shakeLevel,duration:.72,ease:'rough({template:"none",strength:1,points:20,taper:"none",randomize:true,clamp:false})',onUpdate:()=>{
+      gsap.set(card,{x:(Math.random()-.5)*shakeObj.x,y:(Math.random()-.5)*shakeObj.y,rotation:(Math.random()-.5)*shakeObj.r});
     }});
-    gsap.to(glow,{opacity:.20,duration:.16,yoyo:true,repeat:1});
-    impactFlash(status==='FAILED'?.38:.20);
+    gsap.delayedCall(.32,()=>{impactFlash(failed?.46:.24);screenShake(failed?.14:.06,.2);cardBurst(failed?'#f87171':'#c4b5fd',50+Math.floor(shakeLevel*10),200+shakeLevel*50);});
+    gsap.delayedCall(.66,()=>{impactFlash(failed?.32:.18);cardBurst('#ffffff',30,170);});
+    gsap.to(card,{filter:failed?'brightness(.62) saturate(.65)':'brightness(.82) saturate(.7)',duration:.58,ease:'power2.in'});
+    gsap.delayedCall(.82,()=>gsap.to(card,{x:0,y:0,rotation:0,scale:failed?.97:1,duration:.26,ease:'power3.out'}));
+    gsap.delayedCall(1.02,()=>gsap.to(card,{scale:1,duration:.25,ease:'back.out(1.8)',onComplete:finish}));
     return;
   }
 
