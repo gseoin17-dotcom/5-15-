@@ -1,135 +1,231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>지온냄새 강화하기 - v2</title>
-  <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 밀실 방탈출 탐색기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { background-color: #090d16; color: #fff; font-family: sans-serif; }
+        #canvas-container {
+            width: 100%;
+            height: 450px;
+            position: relative;
+            background-color: #000;
+        }
+        #room-3d-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            display: block;
+        }
+        #room-3d-canvas:active { cursor: grabbing; }
+    </style>
 </head>
-<body>
-<div class="app">
-  <div class="shell">
+<body class="p-6">
 
-    <main class="layout">
-      <aside class="left-col">
-
-        <h4 id="modeTitle" class="section-title"></h4>
-        <hr>
-
-        <div class="info-grid">
-          <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
-          <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong><small id="nextReward"></small></div>
-          <div class="mini-stat"><div>💧 눈물</div><strong id="tears"></strong></div>
-          <div class="mini-stat"><div>✨ 지온이의 가오</div><strong id="pity"></strong></div>
-          <div class="mini-stat"><div>🛡️ 방지권</div><strong id="shield"></strong></div>
-        </div>
-
-        <hr>
-
-        <h4 class="prob-title">📊 현재 강화 확률 (<span id="probLevel">0</span>단계)</h4>
-        <div id="probBox" class="prob-box"></div>
-
-        <hr>
-
-        <div class="menu-grid">
-          <button class="glass-btn" data-modal="shop">🛒 상점</button>
-          <button class="glass-btn" data-modal="tears">💧 눈물</button>
-          <button class="glass-btn" data-modal="achievements">🏆 업적</button>
-        </div>
-
-        <hr>
-
-        <h4 class="control-title"></h4>
-        <div class="action-grid">
-          <button id="enhanceBtn" class="glass-btn action-primary">🔥 강화하기</button>
-          <button id="sellBtn" class="glass-btn">💰 판매하기</button>
-        </div>
-      </aside>
-
-      <section class="right-col">
-        <div id="threeWrap" class="three-wrap card-stage">
-          <canvas id="threeCanvas"></canvas>
-          <div class="equipped-title title-design title-style-default" id="equippedTitle">
-            
-            <div class="selected-title-name">🏷️ 칭호 없음</div>
-          </div>
-
-          <div id="enhanceCardScene" class="enhance-card-scene">
-            <canvas class="card-bg-particles" id="cardBgParticles"></canvas>
-            <div class="card-particles" id="cardParticles"></div>
-            <div class="enhance-card-wrap" id="enhanceCardWrap">
-              <div class="card-3d-layer" id="card3dLayer">
-              <article class="enhance-card" id="enhanceCard">
-                <div class="card-glass"></div>
-                <div class="card-topline">
-                  <span id="cardSeason">SEASON 1</span>
-                  <span id="cardRarity">RARE</span>
-                </div>
-                <div class="card-art" id="cardArt">
-                  <div class="art-grid"></div>
-                  <div class="art-orbit orbit-a"></div>
-                  <div class="art-orbit orbit-b"></div>
-                  <div class="art-orbit orbit-c"></div>
-                  <div class="art-core" id="cardCore"><span id="cardLevel">+0</span></div>
-                  <div class="art-spark spark-1"></div><div class="art-spark spark-2"></div><div class="art-spark spark-3"></div>
-                </div>
-                <div class="card-stage-label" id="cardStageLabel">0단계</div>
-                <h2 id="cardName">무취 지온의 공간</h2>
-                <p id="cardDesc">아직은 아무 냄새도 안 남.</p>
-                <div class="card-result" id="cardResult">READY</div>
-                <div class="card-stats">
-                  <div><small>예상 가치</small><b id="cardPrice">0원</b></div>
-                  <div><small>획득 포인트</small><b id="cardPoints">0P</b></div>
-                  <div><small>강화 비용</small><b id="cardCost">0원</b></div>
-                </div>
-                <div class="card-bottom">
-                  <span id="cardSerial">JION • S1 • 000</span>
-                  <span id="cardTier">TIER I</span>
-                </div>
-                <div class="card-shine"></div>
-              </article>
-              </div>
+    <div class="max-w-4xl mx-auto space-y-4">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-emerald-400">3D 밀실 탐색 & 방탈출</h1>
+                <p class="text-xs text-slate-400">마우스 드래그: 시점 회전 | 물체 클릭: 단서 조사 및 파괴</p>
             </div>
-            <div class="card-status-glow" id="cardStatusGlow"></div>
-          </div>
-
-          <div id="cinematicUi" class="cinematic-ui hidden-ui">
-            <div id="statusText" class="status-header">READY</div>
-            <div id="mainTitle" class="title-tier-1"></div>
-            <div id="descText" class="desc-text"></div>
-            <div id="priceText" class="price-text"></div>
-            <div id="pointText" class="point-text"></div>
-            <div id="costText" class="cost-text"></div>
-          </div>
-          <div id="flashOverlay"></div>
+            <div class="text-right">
+                <span class="text-xs text-slate-400">현재 보유 위력</span>
+                <div id="player-power" class="text-lg font-bold text-amber-400">150 WP</div>
+            </div>
         </div>
-      </section>
-    </main>
 
-    <section class="bottom-bar">
-      <div class="season-buttons">
-        <button id="season1Btn" class="season-btn active">🌌 시즌 1</button>
-        <button id="season2Btn" class="season-btn">🌀 시즌 2</button>
-      </div>
-      <div id="season2Guide" class="season2-guide hidden">↓ 시즌 2를 눌러 새로운 차원으로 이동하세요! ↓</div>
-      <div class="save-note"></div>
-      <button id="resetBtn" class="reset-btn">↻ 초기화</button>
-    </section>
-  </div>
-</div>
+        <!-- 3D 캔버스 영역 -->
+        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+            <div id="canvas-container">
+                <canvas id="room-3d-canvas"></canvas>
+                <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded text-xs border border-white/10">
+                    STATUS: <span text-emerald-400 font-bold>3D ENGINE ONLINE</span>
+                </div>
+            </div>
 
-<div id="toast" class="toast"></div>
+            <!-- 하단 인터랙션 컨트롤러 -->
+            <div class="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-950">
+                <div>
+                    <h3 id="target-name" class="font-bold text-emerald-400">오브젝트를 선택하세요</h3>
+                    <p id="target-desc" class="text-xs text-slate-400 mt-1">방 안에서 빛나는 3D 도형을 클릭하면 조사가 시작됩니다.</p>
+                </div>
+                <button id="btn-action" disabled class="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed">
+                    오브젝트 파괴 / 해제
+                </button>
+            </div>
+        </div>
 
-<div id="modal" class="modal hidden">
-  <div class="modal-box">
-    <button id="closeModal" class="close-btn">×</button>
-    <div id="modalContent"></div>
-  </div>
-</div>
+        <!-- 로그 출력 창 -->
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <h4 class="text-xs font-bold text-slate-400 mb-2">탐색 실시간 로그</h4>
+            <div id="log-box" class="text-xs font-mono text-slate-300 space-y-1 h-24 overflow-y-auto bg-slate-950 p-2 rounded">
+                <p class="text-slate-500">> SYSTEM: 3D 방탈출 공간 로딩이 완료되었습니다.</p>
+            </div>
+        </div>
+    </div>
 
-<script src="game.js"></script>
+    <script>
+        let scene, camera, renderer;
+        let interactiveMeshes = [];
+        let selectedMesh = null;
+        let isDragging = false;
+        let prevMousePos = { x: 0, y: 0 };
+        const playerPower = 150;
+
+        // 3D 방 안의 오브젝트 데이터
+        const roomObjects = [
+            { id: 'vent', name: '붉은 봉인 환기구', powerReq: 50, shape: 'box', size: [1.5, 1.5, 0.3], pos: [0, 1.5, -4.8], color: 0xef4444 },
+            { id: 'turret', name: '청색 자동 방어포', powerReq: 120, shape: 'cylinder', size: [0.5, 0.5, 1.5, 16], pos: [-3, -0.5, -3], color: 0x3b82f6 },
+            { id: 'lock', name: '황색 전자 자물쇠', powerReq: 200, shape: 'box', size: [0.8, 1.2, 0.3], pos: [3, 0, -3.5], color: 0xeab308 },
+            { id: 'door', name: '보랏빛 탈출 강철문', powerReq: 300, shape: 'box', size: [2.5, 4, 0.3], pos: [0, -0.5, -4.9], color: 0xa855f7 }
+        ];
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            const canvas = document.getElementById('room-3d-canvas');
+
+            // 1. Scene & Camera
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a);
+
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 0, 3);
+
+            // 2. Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+
+            // 3. Light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x10b981, 1.5, 20);
+            pointLight.position.set(0, 2, 2);
+            scene.add(pointLight);
+
+            // 4. Room Wireframe (벽면 표현)
+            const roomGeo = new THREE.BoxGeometry(10, 7, 10);
+            const roomMat = new THREE.MeshBasicMaterial({ color: 0x334155, wireframe: true });
+            const roomMesh = new THREE.Mesh(roomGeo, roomMat);
+            scene.add(roomMesh);
+
+            // 5. 3D Interactive Objects 생성
+            roomObjects.forEach(data => {
+                let geo;
+                if (data.shape === 'box') geo = new THREE.BoxGeometry(...data.size);
+                else if (data.shape === 'cylinder') geo = new THREE.CylinderGeometry(...data.size);
+
+                const mat = new THREE.MeshStandardMaterial({
+                    color: data.color,
+                    roughness: 0.3,
+                    metalness: 0.5,
+                    emissive: data.color,
+                    emissiveIntensity: 0.3
+                });
+
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(...data.pos);
+                mesh.userData = { ...data, cleared: false };
+
+                scene.add(mesh);
+                interactiveMeshes.push(mesh);
+            });
+
+            // 마우스 이벤트: 회전 (Drag)
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                prevMousePos = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => isDragging = false);
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - prevMousePos.x;
+                const deltaY = e.clientY - prevMousePos.y;
+
+                camera.rotation.y -= deltaX * 0.005;
+                camera.rotation.x -= deltaY * 0.005;
+                camera.rotation.x = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, camera.rotation.x));
+
+                prevMousePos = { x: e.clientX, y: e.clientY };
+            });
+
+            // 마우스 이벤트: 오브젝트 클릭 선택 (Raycasting)
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+                const y = -((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+
+                const intersects = raycaster.intersectObjects(interactiveMeshes);
+                if (intersects.length > 0) {
+                    selectObject(intersects[0].object);
+                }
+            });
+
+            // 리사이즈 처리
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            // 애니메이션 루프
+            function render() {
+                requestAnimationFrame(render);
+                interactiveMeshes.forEach(m => {
+                    if (!m.userData.cleared) m.rotation.y += 0.01;
+                });
+                renderer.render(scene, camera);
+            }
+            render();
+        }
+
+        function selectObject(mesh) {
+            selectedMesh = mesh;
+            const data = mesh.userData;
+
+            document.getElementById('target-name').innerText = data.name;
+            document.getElementById('target-desc').innerText = `필요 악취 위력: ${data.powerReq} WP | 상태: ${data.cleared ? '파괴됨' : '작동 중'}`;
+            document.getElementById('btn-action').disabled = data.cleared;
+
+            addLog(`3D 오브젝트 선택: [${data.name}] (요구 위력: ${data.powerReq})`);
+        }
+
+        document.getElementById('btn-action').onclick = () => {
+            if (!selectedMesh) return;
+            const data = selectedMesh.userData;
+
+            if (playerPower >= data.powerReq) {
+                data.cleared = true;
+                selectedMesh.material.color.setHex(0x475569);
+                selectedMesh.material.emissive.setHex(0x000000);
+                
+                addLog(`[성공] ${data.name}을(를) 파괴했습니다!`);
+                alert(`${data.name} 파괴 성공!`);
+                document.getElementById('btn-action').disabled = true;
+            } else {
+                addLog(`[실패] 위력이 부족합니다. (현재: ${playerPower} / 필요: ${data.powerReq})`);
+                alert('위력이 부족합니다!');
+            }
+        };
+
+        function addLog(msg) {
+            const box = document.getElementById('log-box');
+            const p = document.createElement('p');
+            p.innerText = `> ${msg}`;
+            box.appendChild(p);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
