@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>지온냄새 강화하기 - V17.15</title>
+  <meta name="theme-color" content="#070b16">
+  <link rel="stylesheet" href="style.css?v=17.14">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <div id="stageBackdrop" class="stage-backdrop" data-level="0" data-pattern="0" aria-hidden="true">
+    <i class="stage-bg-orb orb-a"></i>
+    <i class="stage-bg-orb orb-b"></i>
+    <i class="stage-bg-orb orb-c"></i>
+    <i class="stage-bg-pattern"></i>
+    <i class="stage-bg-horizon"></i>
+  </div>
+  <div class="shell">
+
+    <header class="topbar">
+      <div class="brand-block brand-logo brand-logo-plain">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.15">
+          <span class="brand-main">지온냄새</span>
+          <span class="brand-accent">강화하기</span>
+          <span class="brand-version">V17.15</span>
+        </h1>
+      </div>
+      <button id="resetBtn" class="reset-btn header-reset-btn" type="button">↻ 초기화</button>
+    </header>
+
+    <main class="layout">
+      <aside class="left-col">
+
+        <h4 id="modeTitle" class="section-title"></h4>
+        <hr>
+
+        <div class="info-grid">
+          <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
+          <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong></div>
+          <div class="mini-stat"><div id="tearsLabel">💧 눈물</div><strong id="tears"></strong></div>
+          <div class="mini-stat"><div id="pityLabel">✨ 지온이의 가오</div><strong id="pity"></strong></div>
+          <div class="mini-stat"><div>🛡️ 방지권</div><strong id="shield"></strong></div>
+          <div class="mini-stat combo-stat"><div id="comboLabel">🔥 연속 콤보</div><strong id="combo">0 COMBO</strong><small id="comboBonus">2연속부터 포인트 보너스</small></div>
+          <div class="mini-stat aux-stat"><div id="auxLabel">🧪 장착 보조</div><strong id="auxActive">없음</strong><small id="auxHint">상점에서 장착 가능</small></div>
+        </div>
+
+        <hr>
+
+        <h4 class="prob-title">📊 현재 강화 확률 (<span id="probLevel">0</span>단계)</h4>
+        <div id="probBox" class="prob-box"></div>
+
+        <hr>
+
+        <div class="menu-grid">
+          <button class="glass-btn" data-modal="shop">🛒 상점</button>
+          <button class="glass-btn" data-modal="tears">💧 눈물</button>
+          <button class="glass-btn" data-modal="bonuses">🎯 보너스</button>
+        </div>
+
+        <hr>
+
+        <h4 class="control-title"></h4>
+        <div class="action-grid" id="mainActionGrid">
+          <button id="enhanceBtn" class="glass-btn action-primary" type="button">강화하기</button>
+          <button id="sellBtn" class="glass-btn action-primary" type="button">판매하기</button>
+        </div>
+        <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">☠️ 광폭 강화 · 35단계 해금</button>
+        <div id="berserkInfo" class="berserk-info">35~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~6단계 랜덤 상승</div>
+        <div id="runModifierBar" class="run-modifier-bar hidden"></div>
+      </aside>
+
+      <section class="right-col">
+        <div id="threeWrap" class="three-wrap card-stage">
+
+          <div id="enhanceCardScene" class="enhance-card-scene">
+            <canvas class="card-bg-particles" id="cardBgParticles"></canvas>
+            <div class="card-particles" id="cardParticles"></div>
+            <div class="enhance-card-wrap" id="enhanceCardWrap">
+              <div class="stage-tremor-layer" id="stageTremorLayer">
+              <div class="card-result-motion-layer" id="cardResultMotionLayer">
+              <div class="card-3d-layer" id="card3dLayer">
+              <article class="enhance-card" id="enhanceCard">
+                <div class="card-glass"></div>
+                <div class="card-topline">
+                  <span id="cardRoute">JION CORE • 0–55</span>
+                  <span id="cardRarity">RARE</span>
+                </div>
+                <div class="card-art" id="cardArt">
+                  <div class="art-grid"></div>
+                  <div class="art-lens"></div>
+                  <div class="art-scan"></div>
+                  <div class="art-engraving engraving-a">JION</div>
+                  <div class="art-engraving engraving-b">CORE//55</div>
+                  <div class="art-holo-hud"><span>CORE LINK</span><i></i><b>ACTIVE</b></div>
+                  <div class="art-orbit orbit-a"></div>
+                  <div class="art-orbit orbit-b"></div>
+                  <div class="art-orbit orbit-c"></div>
+                  <div class="art-core" id="cardCore"><span id="cardLevel">+0</span></div>
+                  <div class="art-spark spark-1"></div><div class="art-spark spark-2"></div><div class="art-spark spark-3"></div>
+                  <div class="boss-stage-overlay hidden" id="bossStageOverlay">
+                    <div class="boss-stage-badge" id="bossStageBadge"></div>
+                    <div class="boss-stage-copy" id="bossStageCopy"></div>
+                  </div>
+                </div>
+                <div class="card-stage-label" id="cardStageLabel">0단계</div>
+                <h2 id="cardName">무취 지온의 공간</h2>
+                <p id="cardDesc">아직은 아무 냄새도 안 남.</p>
+                <div class="card-result" id="cardResult">READY</div>
+                <div class="card-stats">
+                  <div><small>예상 가치</small><b id="cardPrice">0원</b></div>
+                  <div><small>획득 포인트</small><b id="cardPoints">0P</b></div>
+                  <div><small>강화 비용</small><b id="cardCost">0원</b></div>
+                </div>
+                <div class="card-bottom">
+                  <span id="cardSerial">JION • CORE • 00</span>
+                  <span id="cardTier">TIER I</span>
+                </div>
+                <div class="card-shine"></div>
+              </article>
+              </div>
+              </div>
+              </div>
+            </div>
+            <div class="card-status-glow" id="cardStatusGlow"></div>
+          </div>
+
+          <div id="cinematicUi" class="cinematic-ui hidden-ui">
+            <div id="statusText" class="status-header">READY</div>
+            <div id="mainTitle" class="title-tier-1"></div>
+            <div id="descText" class="desc-text"></div>
+            <div id="priceText" class="price-text"></div>
+            <div id="pointText" class="point-text"></div>
+            <div id="costText" class="cost-text"></div>
+          </div>
+          <div id="flashOverlay"></div>
+        </div>
+
+      </section>
+    </main>
+
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="게임 메뉴">
+  <div class="modal-box">
+    <button id="closeModal" class="close-btn" type="button" aria-label="닫기">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+
+<script id="jion-first-paint-bootstrap">
+(function(){
+  'use strict';
+  const MAX=55, PITY_TARGET=2, TEARS_MAX=80, SHIELD_MAX=5;
+  const DB={0:['무취 지온의 공간','아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.',0],1:['스쳐가는 지온냄새','버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.',500],2:['은은한 지온냄새','체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.',800],3:['습한 지온냄새','사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.',1200],4:['진득한 지온냄새','여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.',1900],5:['자극적인 지온냄새','지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.',3000]};
+  const PROB={0:[100,0,0,0],1:[100,0,0,0],2:[100,0,0,0],3:[96,4,0,0],4:[96,4,0,0],5:[91,9,0,0],6:[91,7.5,1.5,0],7:[91,4.5,4.5,0],8:[86,9.5,4.5,0],9:[81,14.5,4.5,0],10:[81,14.5,4.5,0],11:[76,14.5,4.5,5],12:[71,14.5,4.5,10],13:[71,14.5,6.5,8],14:[66,14.5,9.5,10],15:[61,19.5,9.5,10],16:[61,17.5,11.5,10],17:[56,19.5,14.5,10],18:[51,19.5,16.5,13],19:[51,19.5,19.5,10],20:[46,21.5,22.5,10],21:[41,24.5,24.5,10],22:[41,22.5,26.5,10],23:[41,19.5,29.5,10],24:[41,17.5,31.5,10],25:[36,24.5,29.5,10],26:[51,19.5,24.5,5],27:[41,24.5,29.5,5],28:[31,29.5,34.5,5],29:[21,34.5,39.5,5],30:[16,34.5,44.5,5],31:[13,34.5,47.5,5],32:[11,34.5,49.5,5],33:[9,36.5,49.5,5],34:[6,39.5,49.5,5],35:[38,39,18,5],36:[36.8,39.1,19.1,5],37:[35.5,39.2,20.3,5],38:[34.2,39.4,21.4,5],39:[33,39.4,22.6,5],40:[31.8,39.4,23.8,5],41:[30.5,39.6,24.9,5],42:[29.2,39.8,26,5],43:[28,39.8,27.2,5],44:[26.8,39.8,28.4,5],45:[25.5,40,29.5,5],46:[24.2,40.2,30.6,5],47:[23,40.2,31.8,5],48:[21.8,40.2,33,5],49:[20.5,40.4,34.1,5],50:[19.2,40.6,35.2,5],51:[18,40.6,36.4,5],52:[16.8,40.7,37.5,5],53:[15.5,40.8,38.7,5],54:[14.2,41,39.8,5],55:[100,0,0,0]};
+  const COST={0:100,1:150,2:250,3:400,4:650,5:1000,6:1400,7:1900,8:2600,9:3500,10:4700,11:6100,12:8400,13:11500,14:15500,15:21000,16:28500,17:39000,18:53000,19:72000,20:100000,21:135000,22:180000,23:240000,24:315000,25:420000,26:550000,27:725000,28:950000,29:1250000,30:1650000,31:2200000,32:2900000,33:3850000,34:5000000,35:6500000,36:8500000,37:11000000,38:14500000,39:19000000,40:25000000,41:32500000,42:42500000,43:55000000,44:72500000,45:95000000,46:125000000,47:165000000,48:215000000,49:285000000,50:375000000,51:500000000,52:650000000,53:850000000,54:1100000000};
+  const REWARD={1:100,2:150,3:200,4:300,5:500,6:700,7:900,8:1200,9:1500,10:2000,11:2500,12:3000,13:3500,14:4000,15:5000,16:6000,17:7000,18:8000,19:9000,20:10000,21:12000,22:14000,23:16000,24:18000,25:20000,26:23000,27:26000,28:30000,29:35000,30:40000,31:45000,32:50000,33:60000,34:70000,35:80000,36:90000,37:105000,38:120000,39:135000,40:150000,41:165000,42:180000,43:195000,44:210000,45:225000,46:240000,47:255000,48:270000,49:285000,50:300000,51:315000,52:330000,53:345000,54:360000,55:375000};
+  const fullDB={};
+  function el(id){return document.getElementById(id)}
+  function set(id,val){const n=el(id);if(n)n.textContent=val}
+  function money(v){try{let n=BigInt(String(v||0));const u=['','만','억','조','경','해','자','양','구','간','정','재','극'];let a=[],i=0;while(n>0n&&i<u.length){const r=n%10000n;if(r)a.unshift(Number(r).toLocaleString('ko-KR')+u[i]);n/=10000n;i++}return a.slice(0,2).join(' ')||'0'}catch(e){return '0'}}
+  function load(){try{return JSON.parse(localStorage.getItem('jion_smell_game_v3')||'null')||{}}catch(e){return {}}}
+  function paint(){
+    const s=load(),r=s.runData||{},lvl=Math.max(0,Math.min(MAX,Number(r.level)||0));
+    const points=Math.max(0,Number(s.points)||0),tears=Math.max(0,Number(r.tears)||0),pity=Math.max(0,Number(r.pity_count)||0),shield=Math.max(0,Number(r.shield)||0),combo=Math.max(0,Number(r.combo)||0);
+    set('money',money(r.money||50000));set('points',points.toLocaleString('ko-KR')+'P');set('tears',tears+' / '+TEARS_MAX+'개');set('pity',pity>=PITY_TARGET?'다음 강화 확정':'천장까지 '+(PITY_TARGET-pity)+'회');set('shield',shield+' / '+SHIELD_MAX+'개');set('combo',combo+' COMBO');
+    const p=PROB[lvl]||[100,0,0,0],box=el('probBox');if(box)box.innerHTML='<div class="prob-row success-row"><span><i></i>성공</span><b class="success">'+p[0]+'%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">'+p[1]+'%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">'+p[2]+'%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">'+p[3]+'%</b></div><div class="prob-critical '+(lvl>=50?'disabled-critical':'')+'">'+(lvl>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률')+' <b>'+(lvl>=50?'0':'5')+'%</b></div>';
+    const pl=el('probLevel');if(pl)pl.textContent=String(lvl);
+    set('cardLevel','+'+lvl);set('cardStageLabel',lvl+'단계'+(lvl===MAX?' • MAX':''));set('cardSerial','JION • CORE • '+String(lvl).padStart(2,'0'));set('cardPoints',(REWARD[lvl]||0).toLocaleString('ko-KR')+'P');
+    const cost=lvl>=MAX?'MAX':money(BigInt(COST[lvl]||100)*50n/100n)+'원';set('cardCost',cost);
+    const eb=el('enhanceBtn');if(eb)eb.textContent=lvl===54?'👑 길게 눌러 FINAL 강화':lvl>=55?'55단계 MAX':'강화하기';
+    document.documentElement.dataset.jionBootstrap='painted';
+  }
+  paint();
+  requestAnimationFrame(paint);
+  setTimeout(paint,25);setTimeout(paint,100);
+})();
+</script>
+<script src="game.js?v=17.14"></script>
+</body>
+</html>
