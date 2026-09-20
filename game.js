@@ -159,8 +159,8 @@ function pointReward(lvl){ if(lvl<=0)return 0; return Number(POINTS[String(lvl)]
 function dbPrice(a,b){ const lvl=b===undefined?Number(a):Number(b); return toMoneyInt(DB[String(lvl)]?.price||0); }
 function warpPointCost(lvl){ return Math.round(pointReward(lvl)*23); }
 function warpMoneyCost(lvl){ return (dbPrice(lvl)*115n+99n)/100n; }
-function shieldPointCost(lvl){ return Math.round(pointReward(lvl)*4.25); }
-function shieldMoneyCost(lvl){ const scaled=(baseEnhanceCost(lvl)*255n+99n)/100n; return scaled>42500n?scaled:42500n; }
+function shieldPointCost(lvl){ return Math.round(pointReward(lvl)*4.0); }
+function shieldMoneyCost(lvl){ const scaled=(baseEnhanceCost(lvl)*225n+99n)/100n; return scaled>42500n?scaled:42500n; }
 function auxMoneyCost(key){
   const item=AUX_ITEMS[key],l=Math.min(level(),MAX_LEVEL-1),base=baseEnhanceCost(l);
   const raw=base*BigInt(item?.moneyMult||1),v=(raw*102n+99n)/100n,floor=3800n;
@@ -170,8 +170,22 @@ function auxPointCost(key){
   const item=AUX_ITEMS[key],target=Math.min(level()+1,MAX_LEVEL);
   return Math.max(120,Math.round(pointReward(target)*(item?.pointMult||1)*1.02));
 }
-function effectiveProbabilities(base,itemKey=activeAuxItem(),opts={}){
+function finalBalanceProbabilities(base,lvl=level()){
   let [success,down,destroy,hold]=base.map(Number);
+  const l=Math.max(0,Number(lvl)||0);
+  let soften=0;
+  if(l>=50&&l<=54) soften=2;
+  else if(l>=45) soften=1.5;
+  else if(l>=35) soften=1;
+  if(soften>0){
+    const moved=Math.min(destroy,soften);
+    destroy-=moved;
+    hold+=moved;
+  }
+  return [success,down,destroy,hold];
+}
+function effectiveProbabilities(base,itemKey=activeAuxItem(),opts={}){
+  let [success,down,destroy,hold]=finalBalanceProbabilities(base,opts.level ?? level());
   const shiftToSuccess=(amount)=>{let add=Math.min(amount,100-success);success+=add;for(const name of ['destroy','down','hold']){if(add<=0)break;const cur=name==='destroy'?destroy:name==='down'?down:hold,used=Math.min(cur,add);add-=used;if(name==='destroy')destroy-=used;else if(name==='down')down-=used;else hold-=used;}};
   if(itemKey==='luck')shiftToSuccess(10);
   else if(itemKey==='freeze'){hold+=down;down=0;} else if(itemKey==='volatile'){destroy=Math.max(0,100-success);down=0;hold=0;}
@@ -887,6 +901,7 @@ function openModal(kind){
   if(kind==="shop")c.innerHTML=shopHTML();
   else if(kind==="tears")c.innerHTML=tearsHTML();
   else if(kind==="bonuses")c.innerHTML=bonusesHTML();
+  else if(kind==="stats")c.innerHTML=statsHTML();
   else return;
   m.classList.remove("hidden","is-closing");
   c.classList.remove("modalContent-enter");
@@ -909,6 +924,51 @@ function shopHTML(){
   return `<div class="modal-head shop shop-hero"><div class="shop-hero-icon">🛒</div><div><h2>지온 상점</h2><p>0~55 강화에 필요한 보호 장비, 보조 아이템과 워프를 구매하세요.</p></div></div><div class="shop-wallet"><div class="wallet-card money"><small>보유 금액</small><b>${formatGold(money())}</b></div><div class="wallet-card point"><small>보유 포인트</small><b>${state.points.toLocaleString('ko-KR')}P</b></div><div class="wallet-card gaoh"><small>현재 지온이의 가오</small><b>${pityNow} / ${Math.max(1,PITY_MAX-1)}</b></div></div><div class="modal-section shop-section shield-section"><div class="section-heading"><div><span>🛡️</span><div><small>PROTECTION</small><h3>파괴 방지권</h3></div></div><b>${sh} / ${SHIELD_MAX}</b></div><p class="section-copy">파괴 결과를 한 번 막아주는 안전장치입니다. ${minShield}단계부터 구매할 수 있습니다.</p><div class="shield-price-grid"><div><small>💰 돈 가격</small><b>${formatGold(moneyCost)}</b></div><div><small>⭐ 포인트 가격</small><b>${pointCost.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn money-buy" data-buy-shield="money" ${(l<minShield||sh>=SHIELD_MAX||money()<moneyCost)?'disabled':''}>💰 돈으로 구매</button><button class="glass-btn point-buy" data-buy-shield="point" ${(l<minShield||sh>=SHIELD_MAX||state.points<pointCost)?'disabled':''}>⭐ 포인트로 구매</button></div></div><div class="modal-section shop-section aux-section"><div class="section-heading"><div><span>🧪</span><div><small>BOOST ITEMS</small><h3>강화 보조 아이템</h3></div></div><b>최대 9개</b></div><p class="section-copy">강화 보조 아이템은 장착 후 실제 발동 조건이 나올 때까지 유지됩니다. 원하면 직접 장착 해제할 수 있습니다.</p><div class="aux-item-grid">${auxCards}</div></div><div class="modal-section shop-section warp-section"><div class="section-heading"><div><span>🚀</span><div><small>STAGE WARP</small><h3>워프권</h3></div></div><b>${l}단계</b></div><p class="section-copy">한 번 도달했던 주요 체크포인트로 즉시 이동합니다. 45단계 워프도 포함됩니다.</p><div class="warp-list">${warps}</div></div>`;
 }
 function tearsHTML(){const l=level(),limit=TEARS_USE_LIMIT;return `<div class="modal-head tear"><h2>💧 눈물</h2><p>눈물 20개를 사용해 1~3단계를 확정적으로 올립니다.</p><p class="tear-limit-notice">⚠️ ${limit}단계부터 지온의 눈물을 사용할 수 없습니다.</p></div><div class="flat-panel"><div style="font-size:11px;color:#94a3b8">보유 눈물</div><div style="font-size:24px;font-weight:900;color:#38bdf8">${tears()} <span style="font-size:13px;color:#94a3b8">/ ${TEARS_MAX}</span></div><div class="modal-meta">사용 조건: <b>20개</b> · 상승 범위: <b>+1 ~ +3</b>${l>=limit?`<br><b class="tear-disabled-copy">현재 ${l}단계 · 사용 불가</b>`:''}</div><button class="glass-btn" id="useTears" ${l>=limit||tears()<20||l>=MAX_LEVEL?'disabled':''}>${l>=limit?`${limit}단계부터 사용 불가`:'눈물 기적 가동'}</button></div>`;}
+
+function statsHTML(){
+  const d=state.runData;
+  const attempts=Math.max(0,Number(state.enhanceAttempts)||0);
+  const successes=Math.max(0,Number(state.enhanceSuccesses)||0);
+  const failures=Math.max(0,Number(state.enhanceFailures)||0);
+  const destroys=Math.max(0,Number(state.destroyCount)||0);
+  const criticals=Math.max(0,Number(state.criticalCount)||0);
+  const sells=Math.max(0,Number(state.sellCount)||0);
+  const warps=Math.max(0,Number(state.warpUses)||0);
+  const bestCombo=Math.max(Number(d.best_combo)||0,Number(d.combo)||0);
+  const successRate=attempts?successes/attempts*100:0;
+  const failRate=attempts?failures/attempts*100:0;
+  const destroyRate=attempts?destroys/attempts*100:0;
+  const critRate=successes?criticals/successes*100:0;
+  const earned=Math.max(0,Number(state.pointsEarnedTotal)||0);
+  const spent=Math.max(0,Number(state.pointsSpentTotal)||0);
+  const progress=Math.max(0,Math.min(100,(Number(d.max_level)||0)/MAX_LEVEL*100));
+  const fmtPct=v=>`${v.toFixed(v>=10?1:2)}%`;
+  const fmtNum=v=>Math.round(Number(v)||0).toLocaleString('ko-KR');
+  const finalReached=(Number(d.max_level)||0)>=MAX_LEVEL;
+  return `<div class="modal-head stats-head"><div class="stats-head-icon">📈</div><div><h2>플레이 통계</h2><p>현재 세이브의 강화 기록을 한눈에 확인합니다.</p></div></div>
+    <div class="stats-hero">
+      <div class="stats-stage-ring" style="--stats-progress:${progress.toFixed(1)}%"><div><small>MAX STAGE</small><b>${d.max_level} / ${MAX_LEVEL}</b><span>${finalReached?'FINAL COMPLETE':'진행 '+progress.toFixed(1)+'%'}</span></div></div>
+      <div class="stats-hero-copy"><small>CURRENT RUN</small><h3>${level()}단계 · ${DB[String(level())]?.name?.replace(/^\d+단계\s*:\s*/,'')||'지온 캡슐'}</h3><p>현재 콤보 <b>${d.combo||0}</b> · 최고 콤보 <b>${bestCombo}</b> · 보유 금액 <b>${formatGold(money())}</b></p></div>
+    </div>
+    <div class="stats-section-title"><span>⚙️</span><div><small>ENHANCEMENT</small><b>강화 기록</b></div></div>
+    <div class="stats-grid stats-grid-4">
+      <article><small>총 강화 시도</small><b>${fmtNum(attempts)}</b></article>
+      <article><small>강화 성공</small><b class="stats-good">${fmtNum(successes)}</b><span>${fmtPct(successRate)}</span></article>
+      <article><small>실패/유지/파괴</small><b>${fmtNum(failures)}</b><span>${fmtPct(failRate)}</span></article>
+      <article><small>파괴 횟수</small><b class="stats-danger">${fmtNum(destroys)}</b><span>${fmtPct(destroyRate)}</span></article>
+      <article><small>크리티컬</small><b class="stats-gold">${fmtNum(criticals)}</b><span>성공 중 ${fmtPct(critRate)}</span></article>
+      <article><small>최고 콤보</small><b>${fmtNum(bestCombo)}</b><span>현재 ${fmtNum(d.combo||0)}</span></article>
+      <article><small>판매 횟수</small><b>${fmtNum(sells)}</b></article>
+      <article><small>워프 사용</small><b>${fmtNum(warps)}</b></article>
+    </div>
+    <div class="stats-section-title"><span>⭐</span><div><small>POINT ECONOMY</small><b>포인트 기록</b></div></div>
+    <div class="stats-grid stats-grid-3">
+      <article><small>누적 획득</small><b class="stats-gold">${fmtNum(earned)}P</b></article>
+      <article><small>누적 사용</small><b>${fmtNum(spent)}P</b></article>
+      <article><small>현재 보유</small><b class="stats-good">${fmtNum(state.points)}P</b></article>
+    </div>
+    `;
+}
 
 function bonusesHTML(){
   const d=state.runData,counts=stageBonusCounts(d);

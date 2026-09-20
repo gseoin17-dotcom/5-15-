@@ -3583,3 +3583,27 @@ body.action-locked #card3dLayer{
 @media (prefers-reduced-motion:reduce){
   #enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]){animation:none !important;}
 }
+
+
+/* =========================================================
+   V17.47 · STATS SCREEN + FINAL BALANCE POLISH
+   ========================================================= */
+.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+.menu-grid .stats-menu-btn{border-color:rgba(96,165,250,.28);}
+.stats-head{display:flex;align-items:center;gap:13px;border-left:4px solid #60a5fa !important;}
+.stats-head-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:25px;background:linear-gradient(145deg,rgba(96,165,250,.20),rgba(167,139,250,.12));border:1px solid rgba(147,197,253,.20);box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 24px rgba(96,165,250,.10);}
+.stats-hero{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:18px;padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(145deg,rgba(96,165,250,.08),rgba(167,139,250,.07),rgba(255,255,255,.025));box-shadow:inset 0 1px rgba(255,255,255,.06);}
+.stats-stage-ring{width:126px;height:126px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(#60a5fa 0 var(--stats-progress),rgba(255,255,255,.08) var(--stats-progress) 100%);box-shadow:0 0 32px rgba(96,165,250,.15);position:relative;}
+.stats-stage-ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#0b1220;border:1px solid rgba(255,255,255,.08);}
+.stats-stage-ring>div{position:relative;z-index:1;text-align:center;display:grid;gap:2px;}
+.stats-stage-ring small,.stats-hero-copy small,.stats-section-title small,.stats-grid article small,.balance-current small{font-size:9px;letter-spacing:.12em;color:#94a3b8;}
+.stats-stage-ring b{font-size:21px;color:#fff;}.stats-stage-ring span{font-size:9px;color:#93c5fd;font-weight:800;}
+.stats-hero-copy h3{margin:3px 0 7px;font-size:21px;color:#fff;}.stats-hero-copy p{margin:0;color:#cbd5e1;font-size:12px;line-height:1.6;}.stats-hero-copy p b{color:#fff;}
+.stats-section-title{display:flex;align-items:center;gap:9px;margin:17px 2px 8px;}.stats-section-title>span{font-size:19px}.stats-section-title>div{display:grid;gap:1px}.stats-section-title b{font-size:14px;color:#f8fafc;}
+.stats-grid{display:grid;gap:8px}.stats-grid-4{grid-template-columns:repeat(4,minmax(0,1fr));}.stats-grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.stats-grid article{min-width:0;padding:12px 10px;border-radius:13px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:inset 0 1px rgba(255,255,255,.05);display:grid;gap:4px;}
+.stats-grid article b{font-size:17px;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stats-grid article span{font-size:9px;color:#94a3b8}.stats-grid .stats-good{color:#67e8f9}.stats-grid .stats-danger{color:#fca5a5}.stats-grid .stats-gold{color:#fde68a}
+.balance-final-panel{padding:14px;border-radius:16px;border:1px solid rgba(250,204,21,.16);background:linear-gradient(145deg,rgba(250,204,21,.055),rgba(96,165,250,.04),rgba(255,255,255,.02));}
+.balance-current{padding-bottom:11px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);display:grid;gap:4px}.balance-current b{font-size:13px;color:#fff;line-height:1.5;}
+.balance-rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.balance-rule-grid span{padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);font-size:10px;color:#cbd5e1;line-height:1.45}.balance-rule-grid b{color:#fde68a;}
+@media(max-width:760px){.stats-hero{grid-template-columns:1fr;text-align:center}.stats-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid-3{grid-template-columns:1fr}.balance-rule-grid{grid-template-columns:1fr}.stats-hero-copy h3{font-size:18px}}
