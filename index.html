@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>지온냄새 강화하기 - V17.15</title>
+  <title>지온냄새 강화하기 - V17.45</title>
   <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css?v=17.14">
+  <link rel="stylesheet" href="style.css?v=17.45">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -21,10 +21,10 @@
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.15">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.45">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.15</span>
+          <span class="brand-version">V17.45</span>
         </h1>
       </div>
       <button id="resetBtn" class="reset-btn header-reset-btn" type="button">↻ 초기화</button>
@@ -56,7 +56,7 @@
         <div class="menu-grid">
           <button class="glass-btn" data-modal="shop">🛒 상점</button>
           <button class="glass-btn" data-modal="tears">💧 눈물</button>
-          <button class="glass-btn" data-modal="bonuses">🎯 보너스</button>
+          <button class="glass-btn" data-modal="bonuses">🎯 선택</button>
         </div>
 
         <hr>
@@ -84,20 +84,31 @@
               <article class="enhance-card" id="enhanceCard">
                 <div class="card-glass"></div>
                 <div class="card-topline">
-                  <span id="cardRoute">JION CORE • 0–55</span>
-                  <span id="cardRarity">RARE</span>
+                  <span id="cardRoute">JION ODOR CAPSULE • 0–55</span>
+                  <span id="cardRarity">SEALED</span>
                 </div>
-                <div class="card-art" id="cardArt">
+                <div class="card-art odor-capsule-art" id="cardArt">
                   <div class="art-grid"></div>
                   <div class="art-lens"></div>
                   <div class="art-scan"></div>
-                  <div class="art-engraving engraving-a">JION</div>
-                  <div class="art-engraving engraving-b">CORE//55</div>
-                  <div class="art-holo-hud"><span>CORE LINK</span><i></i><b>ACTIVE</b></div>
-                  <div class="art-orbit orbit-a"></div>
-                  <div class="art-orbit orbit-b"></div>
-                  <div class="art-orbit orbit-c"></div>
-                  <div class="art-core" id="cardCore"><span id="cardLevel">+0</span></div>
+                  <div class="capsule-back-glow"></div>
+                  <div class="capsule-side-gauge gauge-left"><i></i><i></i><i></i></div>
+                  <div class="capsule-side-gauge gauge-right"><i></i><i></i><i></i></div>
+                  <div class="capsule-shell">
+                    <div class="capsule-rim capsule-rim-top"></div>
+                    <div class="capsule-rim capsule-rim-bottom"></div>
+                    <div class="capsule-liquid" id="capsuleLiquid"></div>
+                    <div class="capsule-bubbles"><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="capsule-vapor"></div>
+                    <div class="art-orbit orbit-a"></div>
+                    <div class="art-orbit orbit-b"></div>
+                    <div class="art-orbit orbit-c"></div>
+                    <div class="art-core capsule-core" id="cardCore"><span id="cardLevel">+0</span></div>
+                    <div class="capsule-warning">ODOR SEALED</div>
+                  </div>
+                  <div class="art-engraving engraving-a">ODOR</div>
+                  <div class="art-engraving engraving-b">CAPSULE//55</div>
+                  <div class="art-holo-hud"><span>SMELL LINK</span><i></i><b>ACTIVE</b></div>
                   <div class="art-spark spark-1"></div><div class="art-spark spark-2"></div><div class="art-spark spark-3"></div>
                   <div class="boss-stage-overlay hidden" id="bossStageOverlay">
                     <div class="boss-stage-badge" id="bossStageBadge"></div>
@@ -114,7 +125,7 @@
                   <div><small>강화 비용</small><b id="cardCost">0원</b></div>
                 </div>
                 <div class="card-bottom">
-                  <span id="cardSerial">JION • CORE • 00</span>
+                  <span id="cardSerial">JION • CAPSULE • 00</span>
                   <span id="cardTier">TIER I</span>
                 </div>
                 <div class="card-shine"></div>
@@ -182,6 +193,6 @@
   setTimeout(paint,25);setTimeout(paint,100);
 })();
 </script>
-<script src="game.js?v=17.14"></script>
+<script src="game.js?v=17.45"></script>
 </body>
 </html>

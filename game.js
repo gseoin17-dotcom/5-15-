@@ -1,4 +1,4 @@
-/* 지온냄새 강화하기 V17.14 · POLISH / QA / PERFORMANCE */
+/* 지온냄새 강화하기 V17.45 · RESTORED CARD DESIGN + CURRENT FINAL CINEMATIC */
 const GAME_DATA = {"POINT_REWARD_TABLE":{"1":100,"2":150,"3":200,"4":300,"5":500,"6":700,"7":900,"8":1200,"9":1500,"10":2000,"11":2500,"12":3000,"13":3500,"14":4000,"15":5000,"16":6000,"17":7000,"18":8000,"19":9000,"20":10000,"21":12000,"22":14000,"23":16000,"24":18000,"25":20000,"26":23000,"27":26000,"28":30000,"29":35000,"30":40000,"31":45000,"32":50000,"33":60000,"34":70000,"35":80000,"36":90000,"37":105000,"38":120000,"39":135000,"40":150000,"41":165000,"42":180000,"43":195000,"44":210000,"45":225000,"46":240000,"47":255000,"48":270000,"49":285000,"50":300000,"51":315000,"52":330000,"53":345000,"54":360000,"55":375000,"56":390000,"57":405000,"58":420000,"59":435000,"60":450000},"SMELL_DB":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":500,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":800,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":1200,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":1900,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":4100,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":5700,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":7900,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":11000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":15000,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":20000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":26000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":34000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":45000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":60000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":76000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":97000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":125000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":155000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":200000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":260000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":340000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":440000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":575000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":750000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":955000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":1200000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":1550000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":1950000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":2500000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":3150000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":4000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":5000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":6350000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":8000000,"color":"#ffffff","tier":6},"36":{"name":"36단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":10000000,"color":"#00ffff","tier":6},"37":{"name":"37단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":12500000,"color":"#ffffff","tier":6},"38":{"name":"38단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":16000000,"color":"#ffaa00","tier":6},"39":{"name":"39단계 : 차원왜곡 자이온 타임루프 찌든내","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":20000000,"color":"#9b2c2c","tier":6},"40":{"name":"40단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":25000000,"color":"#38a169","tier":6},"41":{"name":"41단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":31500000,"color":"#805ad5","tier":6},"42":{"name":"42단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":40000000,"color":"#e53e3e","tier":6},"43":{"name":"43단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":50000000,"color":"#ff4500","tier":6},"44":{"name":"44단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":63500000,"color":"#0088ff","tier":6},"45":{"name":"45단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":80000000,"color":"#cbd5e1","tier":6},"46":{"name":"46단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":105000000,"color":"#319795","tier":6},"47":{"name":"47단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":135000000,"color":"#f59e0b","tier":6},"48":{"name":"48단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":175000000,"color":"#7000ff","tier":6},"49":{"name":"49단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":230000000,"color":"#00ff66","tier":6},"50":{"name":"50단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":300000000,"color":"#ff00ea","tier":6},"51":{"name":"51단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":415000000,"color":"#ccff00","tier":6},"52":{"name":"52단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":570000000,"color":"#ff6600","tier":6},"53":{"name":"53단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":790000000,"color":"#00f0ff","tier":6},"54":{"name":"54단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":1100000000,"color":"#ffe600","tier":6},"55":{"name":"55단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":1500000000,"color":"#ff00aa","tier":6},"56":{"name":"56단계 : 자이온트랜스센던탈 앱솔루트 가디언","desc":"차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.","price":2200000000,"color":"#ffffff","tier":6},"57":{"name":"57단계 : 하이퍼 자이온 디바인 코어","desc":"자이온이라는 존재 자체가 우주의 신성한 법칙으로 등용한 상태.","price":3200000000,"color":"#7b00ff","tier":6},"58":{"name":"58단계 : 자이온옴니버스 마스터피스 악취","desc":"모든 평행세계를 통틀어 단 하나만 존재하는 완벽한 걸작 악취.","price":4700000000,"color":"#00ffff","tier":6},"59":{"name":"59단계 : 이터널 제네시스 울티마자이온s","desc":"우주의 탄생과 종말을 영원히 반복하게 만드는 궁극의 고리.","price":6850000000,"color":"#ff4500","tier":6},"60":{"name":"60단계 : ★심플 성지온★","desc":"문일중 3학년 5반의 냄새를 담당하는 그저 GOA.T","price":10000000000,"color":"#ffffff","tier":6}},"PROB_TABLE":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[96.0,4.0,0.0,0.0],"4":[96.0,4.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[91.0,7.5,1.5,0.0],"7":[91.0,4.5,4.5,0.0],"8":[86.0,9.5,4.5,0.0],"9":[81.0,14.5,4.5,0.0],"10":[81.0,14.5,4.5,0.0],"11":[76.0,14.5,4.5,5.0],"12":[71.0,14.5,4.5,10.0],"13":[71.0,14.5,6.5,8.0],"14":[66.0,14.5,9.5,10.0],"15":[61.0,19.5,9.5,10.0],"16":[61.0,17.5,11.5,10.0],"17":[56.0,19.5,14.5,10.0],"18":[51.0,19.5,16.5,13.0],"19":[51.0,19.5,19.5,10.0],"20":[46.0,21.5,22.5,10.0],"21":[41.0,24.5,24.5,10.0],"22":[41.0,22.5,26.5,10.0],"23":[41.0,19.5,29.5,10.0],"24":[41.0,17.5,31.5,10.0],"25":[36.0,24.5,29.5,10.0],"26":[51.0,19.5,24.5,5.0],"27":[41.0,24.5,29.5,5.0],"28":[31.0,29.5,34.5,5.0],"29":[21.0,34.5,39.5,5.0],"30":[16.0,34.5,44.5,5.0],"31":[13.0,34.5,47.5,5.0],"32":[11.0,34.5,49.5,5.0],"33":[9.0,36.5,49.5,5.0],"34":[6.0,39.5,49.5,5.0],"35":[38.0,39.0,18.0,5.0],"36":[36.8,39.1,19.1,5.0],"37":[35.5,39.2,20.3,5.0],"38":[34.2,39.4,21.4,5.0],"39":[33.0,39.4,22.6,5.0],"40":[31.8,39.4,23.8,5.0],"41":[30.5,39.6,24.9,5.0],"42":[29.2,39.8,26.0,5.0],"43":[28.0,39.8,27.2,5.0],"44":[26.8,39.8,28.4,5.0],"45":[25.5,40.0,29.5,5.0],"46":[24.2,40.2,30.6,5.0],"47":[23.0,40.2,31.8,5.0],"48":[21.8,40.2,33.0,5.0],"49":[20.5,40.4,34.1,5.0],"50":[19.2,40.6,35.2,5.0],"51":[18.0,40.6,36.4,5.0],"52":[16.8,40.7,37.5,5.0],"53":[15.5,40.8,38.7,5.0],"54":[14.2,41.0,39.8,5.0],"55":[13.0,41.0,41.0,5.0],"56":[11.8,41.1,42.1,5.0],"57":[10.5,41.2,43.3,5.0],"58":[9.2,41.3,44.5,5.0],"59":[8.0,41.4,45.6,5.0]},"CRITICAL_RATE":0.05,"PITY_MAX":4};
 
 const DB = GAME_DATA.SMELL_DB;
@@ -133,6 +133,13 @@ function shield(){ return state.runData.shield; }
 function pity(){ return state.runData.pity_count; }
 function combo(){ return state.runData.combo||0; }
 function comboMultiplier(v=combo()){ if(v>=10)return 3;if(v>=5)return 2;if(v>=3)return 1.2;if(v>=2)return 1.1;return 1; }
+function comboDestroyProtection(v=combo(), destroyChance=null){
+  const comboCount=Math.max(0, Number(v)||0);
+  if(comboCount < 5) return 0;
+  const reduction = comboCount;
+  if(destroyChance===null || destroyChance===undefined) return reduction;
+  return Math.min(Math.max(0, Number(destroyChance)||0), reduction);
+}
 function stageBonusCounts(d=state.runData){const c={stable:0,fury:0,merchant:0};for(const st of MILESTONE_STAGES){const k=d.stageChoices?.[st];if(c[k]!==undefined)c[k]++;}return c;}
 function stagePointMultiplier(d=state.runData){return 1+stageBonusCounts(d).merchant*.10;}
 function stageSellPercent(d=state.runData){return 100+stageBonusCounts(d).merchant*15;}
@@ -169,6 +176,14 @@ function effectiveProbabilities(base,itemKey=activeAuxItem(),opts={}){
   if(itemKey==='luck')shiftToSuccess(10);
   else if(itemKey==='freeze'){hold+=down;down=0;} else if(itemKey==='volatile'){destroy=Math.max(0,100-success);down=0;hold=0;}
   const stable=stageBonusCounts().stable;if(stable>0){const moved=Math.min(destroy,stable*3);destroy-=moved;hold+=moved;}
+  if(opts.mode!=='berserk'){
+    const comboGuard = comboDestroyProtection(opts.combo ?? combo());
+    if(comboGuard>0){
+      const moved=Math.min(destroy, comboGuard);
+      destroy-=moved;
+      hold+=moved;
+    }
+  }
   if(opts.mode==='berserk'){success=Math.max(1,success-10);destroy=100-success;down=0;hold=0;}
   return [success,down,destroy,hold].map(v=>Math.round(v*10)/10);
 }
@@ -356,112 +371,6 @@ function showTearRoulette(finalGain,done=()=>{}){
   setTimeout(step,150);
 }
 
-function final55ResultMeta(status,resultLevel=level()){
-  const map={
-    SUCCESS:{label:'SUCCESS',sub:'FINAL STAGE 55',copy:'JION CORE COMPLETE',color:'#ffffff'},
-    PITY_SUCCESS:{label:'SUCCESS',sub:'FINAL STAGE 55',copy:'ABSOLUTE LIMIT BREAK',color:'#ffffff'},
-    CRITICAL:{label:'CRITICAL',sub:'FINAL STAGE 55',copy:'COSMIC OVERDRIVE',color:'#ffffff'},
-    FAILED:{label:'DOWN',sub:`${resultLevel} STAGE`,copy:'FINAL ASCENSION FAILED',color:'#ffffff'},
-    DESTROYED:{label:'DESTROYED',sub:'CORE COLLAPSED',copy:'FINAL ASCENSION FAILED',color:'#ffffff'},
-    HOLD:{label:'HOLD',sub:'54 STAGE',copy:'FINAL GATE REMAINS CLOSED',color:'#ffffff'},
-    SHIELD_SAVED:{label:'SHIELD',sub:'54 STAGE',copy:'DESTRUCTION BLOCKED',color:'#ffffff'}
-  };
-  return map[status]||{label:String(status||'RESULT'),sub:`${resultLevel} STAGE`,copy:'FINAL ASCENSION',color:'#ffffff'};
-}
-function playFinal55Cinematic(status,resultLevel=level(),done=()=>{}){
-  document.querySelectorAll('.final55-overlay').forEach(e=>e.remove());
-  const meta=final55ResultMeta(status,resultLevel),overlay=document.createElement('div');
-  overlay.className='final55-overlay final55-blackout final55-ultra final55-rainbow';
-  overlay.style.setProperty('--final55','#ffffff');
-  const dust=Array.from({length:96},(_,i)=>`<i class="final55-dust" style="--i:${i};--x:${(i*37)%100};--y:${(i*61)%100};--d:${(i%16)*.045}s;--h:${(i*47)%360}"></i>`).join('');
-  const rays=Array.from({length:36},(_,i)=>`<i class="final55-ray" style="--i:${i};--h:${(i*29)%360}"></i>`).join('');
-  const glyphs=Array.from({length:18},(_,i)=>`<i class="final55-glyph" style="--i:${i};--h:${(i*43)%360}">${['J','I','O','N','5','5'][i%6]}</i>`).join('');
-  const shards=Array.from({length:32},(_,i)=>`<i class="final55-shard" style="--i:${i};--h:${(i*31)%360}"></i>`).join('');
-  overlay.innerHTML=`
-    <div class="final55-void"></div><div class="final55-rainbow-aurora a1"></div><div class="final55-rainbow-aurora a2"></div>
-    <div class="final55-stars">${dust}</div>
-    <div class="final55-tunnel"></div><div class="final55-prism-disc"></div><div class="final55-glyphs">${glyphs}</div>
-    <div class="final55-core"></div>
-    <div class="final55-gate g1"></div><div class="final55-gate g2"></div><div class="final55-gate g3"></div><div class="final55-gate g4"></div><div class="final55-gate g5"></div>
-    <div class="final55-spectrum-ring sr1"></div><div class="final55-spectrum-ring sr2"></div><div class="final55-spectrum-ring sr3"></div>
-    <div class="final55-rays">${rays}</div><div class="final55-shards">${shards}</div>
-    <div class="final55-scan"></div>
-    <div class="final55-charge-copy"><small>FINAL ASCENSION PROTOCOL</small><b>54 → 55</b><span>PRISMATIC JION CORE // ABSOLUTE LIMIT BREAK</span></div>
-    <div class="final55-shock s1"></div><div class="final55-shock s2"></div><div class="final55-shock s3"></div><div class="final55-shock s4"></div>
-    <div class="final55-impact"></div>
-    <div class="final55-result"><small>FINAL RESULT</small><b>${meta.label}</b><strong>${meta.sub}</strong><span>${meta.copy}</span></div>
-    <div class="final55-card-reveal"><div class="final55-card-aura"></div><div class="final55-card-ring r1"></div><div class="final55-card-ring r2"></div><div class="final55-card-mount"></div></div>
-    <div class="final55-whiteout"></div><div class="final55-chroma"></div><div class="final55-rainbow-flash"></div>`;
-  document.body.appendChild(overlay);
-  const revealMount=overlay.querySelector('.final55-card-mount');
-  const sourceCard=document.getElementById('enhanceCard');
-  if(sourceCard&&revealMount){
-    const cardClone=sourceCard.cloneNode(true);
-    cardClone.id='final55RevealCard';
-    cardClone.classList.add('final55-reveal-card');
-    cardClone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-    revealMount.appendChild(cardClone);
-  }
-  const q=s=>overlay.querySelector(s),qa=s=>overlay.querySelectorAll(s);
-  const core=q('.final55-core'),gates=qa('.final55-gate'),raysEls=qa('.final55-ray'),charge=q('.final55-charge-copy'),result=q('.final55-result'),impact=q('.final55-impact'),whiteout=q('.final55-whiteout'),dustEls=qa('.final55-dust'),scan=q('.final55-scan'),glyphEls=qa('.final55-glyph'),shardEls=qa('.final55-shard'),shocks=qa('.final55-shock'),tunnel=q('.final55-tunnel'),chroma=q('.final55-chroma'),auroras=qa('.final55-rainbow-aurora'),prism=q('.final55-prism-disc'),spectrum=qa('.final55-spectrum-ring'),rainbowFlash=q('.final55-rainbow-flash'),cardReveal=q('.final55-card-reveal'),revealCard=q('.final55-reveal-card'),cardAura=q('.final55-card-aura'),cardRings=qa('.final55-card-ring');
-  gsap.set([core,gates,raysEls,charge,result,impact,whiteout,dustEls,scan,glyphEls,shardEls,shocks,tunnel,chroma,auroras,prism,spectrum,rainbowFlash,cardReveal,cardAura,cardRings],{opacity:0});
-  gsap.set(result,{scale:3.8,filter:'blur(34px)',y:-210});gsap.set(core,{scale:.01});gsap.set(gates,{scale:.04,rotation:-260});gsap.set(raysEls,{scaleY:.01});gsap.set(shocks,{scale:.03});gsap.set(spectrum,{scale:.08,rotation:-160});gsap.set(prism,{scale:.15,rotation:-90});gsap.set(cardReveal,{scale:.08,rotationY:-42,rotationX:24,y:190,z:-900,filter:'blur(28px) brightness(2.2)'});gsap.set(revealCard,{rotationZ:-7});gsap.set(cardRings,{scale:.2});
-  const tl=gsap.timeline({onComplete:()=>gsap.to(overlay,{opacity:0,duration:.55,ease:'power2.in',onComplete:()=>{overlay.remove();done();}})});
-  tl.to({}, {duration:.82})
-    .to(auroras,{opacity:.46,duration:.70,stagger:.08,ease:'sine.out'})
-    .to(tunnel,{opacity:.86,scale:1.30,duration:.72,ease:'power3.out'},'<-.45')
-    .to(dustEls,{opacity:.90,duration:.46,stagger:.0025,ease:'power2.out'},'<-.36')
-    .to(prism,{opacity:.54,scale:1,rotation:0,duration:.72,ease:'expo.out'},'<-.18')
-    .to(spectrum,{opacity:.82,scale:1,rotation:0,duration:.82,stagger:.10,ease:'back.out(1.45)'},'<-.48')
-    .to(glyphEls,{opacity:.80,scale:1,duration:.62,stagger:.022,ease:'back.out(1.7)'},'<-.58')
-    .to(core,{opacity:1,scale:.42,duration:.28,ease:'power4.out'},'<-.28')
-    .to(core,{scale:1.30,duration:.92,ease:'expo.inOut'})
-    .to(gates,{opacity:.96,scale:1,rotation:0,duration:.92,stagger:.055,ease:'back.out(1.9)'},'<-.62')
-    .to(raysEls,{opacity:.88,scaleY:1,duration:.52,stagger:.006,ease:'power3.out'},'<-.42')
-    .to(shardEls,{opacity:.92,scale:1,duration:.52,stagger:.006,ease:'power3.out'},'<-.38')
-    .to(scan,{opacity:1,duration:.08,ease:'power4.out'},'<-.16').to(scan,{opacity:0,duration:.36,ease:'power2.in'})
-    .fromTo(charge,{opacity:0,y:34,scale:.82,filter:'blur(18px)'},{opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.42,ease:'power4.out'},'<-.24')
-    .to(glyphEls,{rotation:'+=360',duration:.88,ease:'power2.inOut'},'<-.12')
-    .to(spectrum,{rotation:'+=240',scale:1.12,duration:.92,ease:'sine.inOut'},'<-.82')
-    .to(core,{scale:1.62,duration:.48,ease:'sine.inOut',yoyo:true,repeat:1},'<-.70')
-    .to(charge,{opacity:.32,scale:.92,duration:.28,ease:'power3.in'},'+=.55')
-    .to(auroras,{opacity:.88,duration:.24,ease:'power4.out'},'<')
-    .to(core,{scale:3.2,opacity:1,duration:.24,ease:'power4.in'},'<')
-    .to(gates,{scale:1.82,rotation:'+=105',opacity:.32,duration:.24,ease:'power4.in'},'<')
-    .to(spectrum,{scale:2.1,rotation:'+=130',opacity:1,duration:.22,ease:'power4.in'},'<')
-    .to(raysEls,{opacity:1,scaleY:2.7,duration:.16,ease:'power4.in'},'<')
-    .to(chroma,{opacity:1,duration:.07,ease:'none'},'<')
-    .to(rainbowFlash,{opacity:1,duration:.07,ease:'none'},'<')
-    .to(whiteout,{opacity:1,duration:.075,ease:'none'})
-    .to(shocks,{opacity:1,scale:2.25,duration:.32,stagger:.045,ease:'power4.out'},'<')
-    .to(impact,{opacity:1,scale:1.75,duration:.09,ease:'power4.out'},'<')
-    .to(whiteout,{opacity:0,duration:.25,ease:'power2.out'})
-    .to(rainbowFlash,{opacity:.18,duration:.30},'<')
-    .to(chroma,{opacity:.25,duration:.30},'<')
-    .to([core,gates,raysEls,charge,glyphEls,shardEls,tunnel,prism,spectrum],{opacity:0,duration:.17},'<')
-    .to(result,{opacity:1,scale:1,filter:'blur(0px)',duration:.24,ease:'back.out(4.4)'},'<+.06')
-    .to(cardReveal,{opacity:1,scale:1.18,rotationY:8,rotationX:-4,y:52,z:0,filter:'blur(0px) brightness(1.25)',duration:.44,ease:'expo.out'},'<')
-    .to(cardAura,{opacity:1,scale:1.22,duration:.22,ease:'power4.out'},'<+.03')
-    .to(cardRings,{opacity:.9,scale:1,duration:.42,stagger:.06,ease:'back.out(2.1)'},'<')
-    .to(revealCard,{rotationZ:2,duration:.22,ease:'power3.out'},'<')
-    .to(cardReveal,{scale:1,y:66,rotationY:0,rotationX:0,duration:.42,ease:'elastic.out(1,.38)'})
-    .to(revealCard,{rotationZ:0,duration:.30,ease:'elastic.out(1,.5)'},'<')
-    .to(result,{scale:1.14,duration:.13,ease:'power2.out'},'<-.30')
-    .to(result,{scale:1,duration:.34,ease:'elastic.out(1,.40)'})
-    .to(cardAura,{opacity:.62,scale:1.05,duration:.68,ease:'sine.inOut'},'<-.12')
-    .to(cardRings,{rotation:'+=220',duration:1.1,ease:'sine.inOut'},'<-.62')
-    .to(impact,{opacity:0,scale:3.7,duration:.65,ease:'power3.out'},'<-.56')
-    .to(shocks,{opacity:0,scale:3.5,duration:.64,stagger:.03,ease:'power2.out'},'<-.56')
-    .to(auroras,{opacity:.24,duration:.72,ease:'sine.inOut'},'<-.35')
-    .to(rainbowFlash,{opacity:0,duration:.45},'<')
-    .to(chroma,{opacity:0,duration:.45},'<')
-    .to({}, {duration:2.10});
-  gsap.delayedCall(4.35,()=>{
-    if(!overlay.isConnected)return;
-    gsap.fromTo(overlay,{x:-15,y:8,rotation:-.32},{x:15,y:-8,rotation:.32,duration:.038,repeat:15,yoyo:true,ease:'none',onComplete:()=>gsap.set(overlay,{x:0,y:0,rotation:0})});
-    if(navigator.vibrate)try{navigator.vibrate(status==='DESTROYED'?[90,35,130,35,170,45,220]:[60,25,90,25,120,30,170]);}catch(e){}
-  });
-}
 let pendingDestroySnapshot=null;
 function clearDestroySnapshot(){
   if(!pendingDestroySnapshot)return;
@@ -472,20 +381,20 @@ function captureDestroySnapshot(){
   clearDestroySnapshot();
   const scene=document.getElementById('enhanceCardScene');
   const card=document.getElementById('enhanceCard');
-  if(!scene||!card)return null;
-  const sr=scene.getBoundingClientRect(),cr=card.getBoundingClientRect();
-  if(!cr.width||!cr.height)return null;
+  const art=card?.querySelector('.card-art');
+  if(!scene||!card||!art)return null;
+  const sr=scene.getBoundingClientRect(),ar=art.getBoundingClientRect();
+  if(!ar.width||!ar.height)return null;
   const layer=document.createElement('div');
-  layer.className='destroy-snapshot-layer';
-  layer.style.left=`${cr.left-sr.left}px`;
-  layer.style.top=`${cr.top-sr.top}px`;
-  layer.style.width=`${cr.width}px`;
-  layer.style.height=`${cr.height}px`;
-  const clone=card.cloneNode(true);
+  layer.className='destroy-snapshot-layer destroy-art-layer';
+  layer.style.left=`${ar.left-sr.left}px`;
+  layer.style.top=`${ar.top-sr.top}px`;
+  layer.style.width=`${ar.width}px`;
+  layer.style.height=`${ar.height}px`;
+  const clone=art.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-  clone.classList.add('destroy-visual-card');
-  clone.classList.remove('card-motion-success','card-motion-down','card-motion-destroyed','card-motion-hold','card-motion-critical','card-motion-shield','card-motion-tears');
+  clone.classList.add('destroy-visual-card','destroy-art-only');
   layer.appendChild(clone);
   scene.appendChild(layer);
   pendingDestroySnapshot={layer,card:clone};
@@ -545,6 +454,7 @@ function playDestroyedCardSequence(actualCard,glow,finish,particleColor,commitVi
     return;
   }
   actualCard.style.visibility='hidden';
+  ghost.classList.add('destroy-phase-active');
   addDestroyCracks(ghost,15);
   const core=document.createElement('i');core.className='destruction-core-collapse';layer.appendChild(core);
   const voidRing=document.createElement('i');voidRing.className='destruction-void-ring';scene.appendChild(voidRing);
@@ -631,9 +541,14 @@ function enhance(mode="normal"){
     else{d.pity_count++;d.status="HOLD";state.enhanceFailures++;d.tears=Math.min(TEARS_MAX,d.tears+1);registerEnhanceFailure(d);}
   }
   unlockReachedWarps(d);const newLvl=d.level,isFinalAttempt=curr===MAX_LEVEL-1;if(d.status==="DESTROYED"&&!isFinalAttempt)captureDestroySnapshot();save();
-  const normalPost=()=>animateResult(d.status,()=>runPostEnhanceFlow(curr,newLvl));
-  if(isFinalAttempt){render();playFinal55Cinematic(d.status,newLvl,()=>runPostEnhanceFlow(curr,newLvl));}
-  else if(mode==='berserk'&&berserkGain>0) showBerserkRoulette(berserkGain,normalPost);
+  const normalPost=()=>{
+    const done=()=>runPostEnhanceFlow(curr,newLvl);
+    // 54 → 55 FINAL attempt: every outcome shares the exact same cinematic.
+    // The result is intentionally hidden until the common impact/reveal beat.
+    if(isFinalAttempt&&mode==='normal') animateFinal54To55(d.status,done);
+    else animateResult(d.status,done);
+  };
+  if(mode==='berserk'&&berserkGain>0) showBerserkRoulette(berserkGain,normalPost);
   else normalPost();
 }
 function sell(){if(actionLocked)return;const d=state.runData,l=d.level;if(l===0)return;const basePrice=dbPrice(l),perfume=d.saleBoost>0;let price=basePrice*BigInt(stageSellPercent(d))/100n;if(perfume)price=price*3n/2n;d.saleBoost=0;setMoney(money()+price);state.sellCount++;d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";resetCombo(d);save();render();const tags=[stageBonusCounts(d).merchant?`장사 보너스 +${stageBonusCounts(d).merchant*15}%`:"",perfume?"향수 1.5배":""].filter(Boolean).join(" · ");showToast(`💰 ${l}단계 판매 완료! +${formatGold(price)}${tags?` · ${tags}`:""}`);}
@@ -677,15 +592,15 @@ function render(){
   const pityTarget=Math.max(1,PITY_MAX-1);document.getElementById("tears").textContent=tears()+` / ${TEARS_MAX}개`;document.getElementById("pity").textContent=pity()>=pityTarget?"다음 강화 확정":"천장까지 "+(pityTarget-pity())+"회";
   const comboNow=sd.combo||0,comboEl=document.getElementById("combo"),comboBonus=document.getElementById("comboBonus");
   if(comboEl)comboEl.textContent=comboNow>=10?`⚡ OVER FEVER · ${comboNow}`:comboNow>=5?`🔥 FEVER · ${comboNow}`:`${comboNow} COMBO`;
-  if(comboBonus){const currentMult=comboMultiplier(comboNow),multText=Number.isInteger(currentMult)?String(currentMult):currentMult.toFixed(1);comboBonus.textContent=`포인트 x${multText}`;comboBonus.classList.remove("hidden");}
+  if(comboBonus){const currentMult=comboMultiplier(comboNow),multText=Number.isInteger(currentMult)?String(currentMult):currentMult.toFixed(1),comboGuard=comboDestroyProtection(comboNow),guardText=comboGuard>0?` · 파괴 -${comboGuard}%`:'';comboBonus.textContent=`포인트 x${multText}${guardText}`;comboBonus.classList.remove("hidden");}
   document.body.classList.toggle('combo-fever',comboNow>=5);document.body.classList.toggle('combo-over-fever',comboNow>=10);document.body.classList.toggle("smell-frenzy",comboNow>=5);
   const modBar=document.getElementById('runModifierBar');if(modBar){const counts=stageBonusCounts(sd),tags=[];if(counts.stable)tags.push(`🛡️ 안정 x${counts.stable}`);if(counts.fury)tags.push(`⚡ 폭주 x${counts.fury}`);if(counts.merchant)tags.push(`💰 장사 x${counts.merchant}`);if(sd.feverFree)tags.push('⚡ 다음 강화 무료');modBar.innerHTML=tags.map(t=>`<span>${t}</span>`).join('');modBar.classList.toggle('hidden',!tags.length);}
   const active=activeAuxItem(sd),activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),activeEffects=[];if(active)activeEffects.push(`${AUX_ITEMS[active].icon} ${AUX_ITEMS[active].name}`);if(sd.saleBoost)activeEffects.push("💰 상인의 향수");if(sd.tearBoost)activeEffects.push("💧 눈물 농축액");if(activeEl)activeEl.textContent=activeEffects.length?activeEffects.join(" · "):"없음";if(activeHint){activeHint.textContent=active?"발동 조건이 나올 때까지 장착 유지 · 직접 해제 가능":activeEffects.length?`${activeEffects.length}개 효과 활성화 중`:"상점에서 장착 가능";activeHint.classList.remove("hidden");}
   const modeTitle=document.getElementById("modeTitle"),probTitle=document.querySelector(".prob-title"),probBox=document.getElementById("probBox"),nextReward=document.getElementById("nextReward");
   if(modeTitle){modeTitle.textContent="";modeTitle.classList.add("hidden");}
   if(probTitle)probTitle.innerHTML=`📊 현재 강화 확률 (<span id="probLevel">${l}</span>단계)`;
-  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,activeAuxItem(sd)),auxProbNote=activeAuxItem(sd)?`<div class="prob-aux">${AUX_ITEMS[activeAuxItem(sd)].icon} ${AUX_ITEMS[activeAuxItem(sd)].name} 적용 예정</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
-  if(probBox)probBox.innerHTML=`<div class="prob-row success-row"><span><i></i>성공</span><b class="success">${p[0]}%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">${p[1]}%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">${p[2]}%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">${p[3]}%</b></div><div class="prob-critical ${l>=50?'disabled-critical':''}">${critCopy} <b>${critPct}%</b></div>${auxProbNote}`;
+  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,activeAuxItem(sd)),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboProbNote=comboGuardNow>0?`<div class="prob-aux combo-guard-note">🔥 콤보 안정화 · 파괴 -${comboGuardNow}% → 유지로 전환</div>`:'',auxProbNote=activeAuxItem(sd)?`<div class="prob-aux">${AUX_ITEMS[activeAuxItem(sd)].icon} ${AUX_ITEMS[activeAuxItem(sd)].name} 적용 예정</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
+  if(probBox)probBox.innerHTML=`<div class="prob-row success-row"><span><i></i>성공</span><b class="success">${p[0]}%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">${p[1]}%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">${p[2]}%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">${p[3]}%</b></div><div class="prob-critical ${l>=50?'disabled-critical':''}">${critCopy} <b>${critPct}%</b></div>${comboProbNote}${auxProbNote}`;
   if(nextReward){nextReward.textContent="";nextReward.classList.add("hidden");}
   const sb=document.getElementById("sellBtn");if(sb)sb.textContent="판매하기";syncActionButtons();renderSceneText();renderEnhanceCard();
 }
@@ -694,7 +609,7 @@ function renderSceneText(){
   main.className="title-tier-"+tier;main.textContent=d.name;document.getElementById("descText").textContent=`"${d.desc}"`;
   document.getElementById("priceText").textContent="예상 가치: "+formatGold(dbPrice(l));document.getElementById("pointText").textContent="획득 포인트: "+pointReward(l).toLocaleString("ko-KR")+"P";
   document.getElementById("costText").textContent=l>=MAX_LEVEL?"강화 완성 · FINAL STAGE 55":"필요 강화 비용: "+(effectiveEnhanceCost("normal")===0n?"무료":formatGold(effectiveEnhanceCost("normal")));
-  const st=document.getElementById("statusText"),labels={READY:"READY - 55단계를 향한 냄새 에너지가 집중됩니다",SUCCESS:"✨ COSMIC SUCCESS (강화 성공) ✨",CRITICAL:"⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡",PITY_SUCCESS:"✨ 지온이의 가오 발동! (천장 100% 성공) ✨",SHIELD_SAVED:"🛡️ SHIELD PROTECTED! (파괴 방지권 발동) 🛡️",DESTROYED:"💥 JION CORE DESTROYED (코어 대폭발 붕괴!) 💥",FAILED:"🔻 FAILED (단계 하락) 🔻",HOLD:"🔒 HOLD (단계 유지) 🔒",NOT_ENOUGH_MONEY:"💰 강화 비용 부족"};
+  const st=document.getElementById("statusText"),labels={READY:"READY - 55단계를 향한 냄새 에너지가 집중됩니다",SUCCESS:"✨ COSMIC SUCCESS (강화 성공) ✨",CRITICAL:"⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡",PITY_SUCCESS:"✨ 지온이의 가오 발동! (천장 100% 성공) ✨",SHIELD_SAVED:"🛡️ SHIELD PROTECTED! (파괴 방지권 발동) 🛡️",DESTROYED:"💥 ODOR CAPSULE BREACHED (캡슐 대폭발 붕괴!) 💥",FAILED:"🔻 FAILED (단계 하락) 🔻",HOLD:"🔒 HOLD (단계 유지) 🔒",NOT_ENOUGH_MONEY:"💰 강화 비용 부족"};
   st.textContent=labels[status]||status;const colors={READY:"#38bdf8",SUCCESS:d.color,CRITICAL:"#fff",PITY_SUCCESS:"#fde68a",SHIELD_SAVED:"#60a5fa",DESTROYED:"#f00",FAILED:"#64748b",HOLD:"#94a3b8",NOT_ENOUGH_MONEY:"#f87171"};st.style.color=colors[status]||"#38bdf8";
   const shouldShake=l>=15||(l===MAX_LEVEL&&["SUCCESS","CRITICAL","PITY_SUCCESS"].includes(status));["mainTitle","descText","priceText","pointText","costText"].forEach(id=>document.getElementById(id).classList.toggle("shaking-text",shouldShake));
 }
@@ -707,15 +622,15 @@ function cardMeta(tier){
 function renderEnhanceCard(){
   const d=data(),l=level(),[rarity]=cardMeta(d.tier),card=document.getElementById('enhanceCard');if(!card)return;
   card.style.setProperty('--card',d.color);card.style.setProperty('--card2',d.color);card.style.setProperty('--card3',l>=36?'#160625':'#071122');
-  document.getElementById('cardRoute').textContent='JION CORE • 0–55';document.getElementById('cardRarity').textContent=rarity;document.getElementById('cardLevel').textContent='+'+l;
+  document.getElementById('cardRoute').textContent='JION ODOR CAPSULE • 0–55';document.getElementById('cardRarity').textContent=rarity;document.getElementById('cardLevel').textContent='+'+l;
   card.className='enhance-card';card.dataset.level=String(l);card.dataset.tier=String(d.tier||1);
   const tremor=document.getElementById('stageTremorLayer');if(tremor){const high=l>30;const prog=Math.max(0,Math.min(25,l-30));tremor.classList.toggle('high-stage-tremor',high);const tx=0.18+prog*.055,ty=0.12+prog*.042,tr=0.025+prog*.012;tremor.style.setProperty('--tremor-x',tx.toFixed(2)+'px');tremor.style.setProperty('--tremor-x-neg',(-tx).toFixed(2)+'px');tremor.style.setProperty('--tremor-y',ty.toFixed(2)+'px');tremor.style.setProperty('--tremor-y-neg',(-ty).toFixed(2)+'px');tremor.style.setProperty('--tremor-r',tr.toFixed(3)+'deg');tremor.style.setProperty('--tremor-r-neg',(-tr).toFixed(3)+'deg');tremor.style.setProperty('--tremor-speed',Math.max(.105,.34-prog*.0085).toFixed(3)+'s');}
-  const stageSpec=stageDesignSpec(l);card.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';const art=document.getElementById('cardArt');if(art){art.dataset.level=String(l);art.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';renderCardDesign(art,l,d);}
+  const stageSpec=stageDesignSpec(l);card.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';const art=document.getElementById('cardArt');if(art){art.dataset.level=String(l);art.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';renderCardDesign(art,l,d);updateOdorCapsuleVisual(art,l,d);}
   const bossOverlay=document.getElementById('bossStageOverlay'),bossBadge=document.getElementById('bossStageBadge'),bossCopy=document.getElementById('bossStageCopy'),bossInfo=MILESTONE_BOSS_COPY[stageSpec.milestone];
   if(bossOverlay&&bossBadge&&bossCopy){if(bossInfo){bossOverlay.classList.remove('hidden');bossBadge.textContent=bossInfo.badge;bossCopy.textContent=bossInfo.copy;}else{bossOverlay.classList.add('hidden');bossBadge.textContent='';bossCopy.textContent='';}}
   document.getElementById('cardStageLabel').textContent=l+'단계'+(l===MAX_LEVEL?' • MAX':'');document.getElementById('cardName').textContent=d.name.replace(/^\d+단계\s*:\s*/,'');document.getElementById('cardDesc').textContent=d.desc;
   document.getElementById('cardPrice').textContent=formatGold(dbPrice(l));document.getElementById('cardPoints').textContent=pointReward(l).toLocaleString('ko-KR')+'P';document.getElementById('cardCost').textContent=l>=MAX_LEVEL?'MAX':(effectiveEnhanceCost('normal')===0n?'무료':formatGold(effectiveEnhanceCost('normal')));
-  document.getElementById('cardSerial').textContent=`JION • CORE • ${String(l).padStart(2,'0')}`;document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
+  document.getElementById('cardSerial').textContent=`JION • CAPSULE • ${String(l).padStart(2,'0')}`;document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
   const status=state.runData.status,result=document.getElementById('cardResult');if(result)result.textContent='';
   const scene=document.getElementById('enhanceCardScene');scene.style.setProperty('--glow',d.color);scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');if(status==='SUCCESS'||status==='PITY_SUCCESS'||status==='CRITICAL')scene.classList.add(status==='CRITICAL'?'status-critical':'status-success');else if(status==='FAILED')scene.classList.add('status-failed');else if(status==='HOLD')scene.classList.add('status-hold');else if(status==='DESTROYED')scene.classList.add('status-destroyed');else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');if(result)result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
 }
@@ -748,7 +663,7 @@ const MILESTONE_BOSS_COPY = {
   35:{badge:"TRANSCENDENT THRONE",copy:"초월 왕좌 · 상위 단계 진입"},
   40:{badge:"COSMIC GATE",copy:"40단계 우주 관문 개방"},
   50:{badge:"OMNIVERSE CORE",copy:"50단계 옴니버스 코어 각성"},
-  55:{badge:"INFINITE SUMMIT",copy:"55단계 완성 · FINAL JION CORE"}
+  55:{badge:"INFINITE SUMMIT",copy:"55단계 완성 · FINAL ODOR CAPSULE"}
 };
 
 const STAGE_ART_LIBRARY = {
@@ -926,6 +841,22 @@ function renderCardDesign(art,l,d){
   art.appendChild(frag);
 }
 
+function updateOdorCapsuleVisual(art,l,d){
+  if(!art)return;
+  const normalized=Math.max(0,Math.min(1,l/MAX_LEVEL));
+  const fill=14 + normalized*74;
+  const density=.35 + normalized*.65;
+  const bubbleScale=.8 + normalized*.9;
+  const pulse=1 + normalized*.22;
+  art.style.setProperty('--odor-fill', `${fill.toFixed(1)}%`);
+  art.style.setProperty('--odor-density', density.toFixed(2));
+  art.style.setProperty('--odor-bubble-scale', bubbleScale.toFixed(2));
+  art.style.setProperty('--odor-pulse', pulse.toFixed(3));
+  art.style.setProperty('--odor-glow', titleRgba(d?.color||'#a78bfa', .62));
+  art.style.setProperty('--odor-soft', titleRgba(d?.color||'#a78bfa', .18));
+  art.dataset.intensity=l>=45?'omega':l>=30?'high':l>=15?'mid':'low';
+}
+
 function titleRgba(hex,alpha){
   const h=String(hex||'#64748b').replace('#','');
   const full=h.length===3?h.split('').map(x=>x+x).join(''):h.padEnd(6,'0').slice(0,6);
@@ -1057,7 +988,7 @@ const enhanceButton=document.getElementById("enhanceBtn");
     e?.preventDefault?.();holding=true;completed=false;start=performance.now();enhanceButton.classList.add('final-holding');
     const tick=(now)=>{
       if(!holding)return;const progress=Math.min(1,(now-start)/HOLD_MS);enhanceButton.style.setProperty('--final-hold',String(progress*100));
-      enhanceButton.textContent=progress<1?`👑 FINAL CORE CHARGING ${Math.floor(progress*100)}%`:'⚡ FINAL ASCENSION';
+      enhanceButton.textContent=progress<1?`👑 FINAL CAPSULE CHARGING ${Math.floor(progress*100)}%`:'⚡ FINAL ASCENSION';
       if(progress>=1){holding=false;completed=true;enhanceButton.classList.add('final-hold-complete');finalHoldAuthorized=true;impactFlash(.38);cardBurst('#fde047',82,190);setTimeout(()=>{resetHold(false);enhance('normal');},90);return;}
       raf=requestAnimationFrame(tick);
     };raf=requestAnimationFrame(tick);
@@ -1120,6 +1051,162 @@ function impactFlash(opacity=.75){
   gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
 }
 /* V17.14 QA: removed unused legacy finalStageCinematic path. */
+
+/* V17.38 — 54→55 unified FINAL cinematic (countdown removed).
+   SUCCESS / FAILED / DESTROYED / HOLD / SHIELD_SAVED all use the same
+   anticipation, timing, camera motion, particles and impact. Only after the
+   final impact do we commit the already-calculated result to the screen. */
+function animateFinal54To55(status, afterFinish=null){
+  const scene=document.getElementById('enhanceCardScene');
+  const card=document.getElementById('enhanceCard');
+  const motion=document.getElementById('cardResultMotionLayer')||card;
+  const glow=document.getElementById('cardStatusGlow');
+  const flash=document.getElementById('flashOverlay');
+  const shine=card?.querySelector('.card-shine');
+  if(!scene||!card||!motion){animateResult(status,afterFinish);return;}
+
+  document.querySelectorAll('.final-common-cinematic').forEach(e=>e.remove());
+  clearResultFx();
+  clearDestroySnapshot();
+  gsap.killTweensOf([motion,glow,flash,shine]);
+  if(typeof window.jionCardTiltSettle==='function')window.jionCardTiltSettle();
+
+  // Remove every prior result tint before the FINAL sequence starts so the
+  // animation cannot leak the outcome early.
+  scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield','final-success-impact','final-destroy-impact');
+  scene.classList.add('final-stage-cinematic','final-common-active');
+  card.classList.remove('card-motion-success','card-motion-down','card-motion-destroyed','card-motion-hold','card-motion-critical','card-motion-shield','card-motion-tears');
+
+  const rays=Array.from({length:28},(_,i)=>`<i class="final-common-ray" style="--i:${i}"></i>`).join('');
+  const ticks=Array.from({length:36},(_,i)=>`<i class="final-common-tick" style="--i:${i}"></i>`).join('');
+  const overlay=document.createElement('div');
+  overlay.className='final-common-cinematic';
+  overlay.innerHTML=`
+    <div class="final-common-vignette"></div>
+    <div class="final-common-aurora a1"></div><div class="final-common-aurora a2"></div>
+    <div class="final-common-grid"></div>
+    <div class="final-common-ray-field">${rays}</div>
+    <div class="final-common-gate g1"></div><div class="final-common-gate g2"></div><div class="final-common-gate g3"></div><div class="final-common-gate g4"></div>
+    <div class="final-common-ticks">${ticks}</div>
+    <div class="final-common-core"></div>
+    <div class="final-common-copy">
+      <small>JION ODOR // FINAL PROTOCOL</small>
+      <b>54 → ?</b>
+      <span class="final-common-phase">FINAL CAPSULE LINK</span>
+      <em>결과 신호 차단 · 동기화 진행 중</em>
+      <div class="final-common-meter"><i></i></div>
+    </div>
+    <div class="final-common-whiteout"></div>
+    <div class="final-common-result-stamp"><b></b><span></span><small>FINAL RESULT</small></div>
+  `;
+  scene.appendChild(overlay);
+
+  const gates=overlay.querySelectorAll('.final-common-gate');
+  const rayEls=overlay.querySelectorAll('.final-common-ray');
+  const tickEls=overlay.querySelectorAll('.final-common-tick');
+  const core=overlay.querySelector('.final-common-core');
+  const copy=overlay.querySelector('.final-common-copy');
+  const phase=overlay.querySelector('.final-common-phase');
+  const meter=overlay.querySelector('.final-common-meter i');
+  const whiteout=overlay.querySelector('.final-common-whiteout');
+  const stamp=overlay.querySelector('.final-common-result-stamp');
+  const stampTitle=stamp?.querySelector('b');
+  const stampSub=stamp?.querySelector('span');
+
+  const meta={
+    SUCCESS:['55단계 강화 성공','FINAL ASCENSION COMPLETE','#ffffff'],
+    PITY_SUCCESS:['55단계 강화 성공','지온이의 가오 · FINAL ASCENSION','#ffffff'],
+    FAILED:['강화 하락',`${state.runData.level}단계로 하락`,'#ffffff'],
+    DESTROYED:['캡슐 파괴','0단계로 붕괴','#ffffff'],
+    HOLD:['강화 유지','54단계 유지','#ffffff'],
+    SHIELD_SAVED:['방지권 발동','파괴 방어 · 54단계 유지','#ffffff'],
+    CRITICAL:['55단계 강화 성공','FINAL CRITICAL ASCENSION','#ffffff']
+  }[status]||['강화 결과',String(status||'RESULT'),'#ffffff'];
+
+  let committed=false;
+  const commitResult=()=>{
+    if(committed)return;
+    committed=true;
+    // This is the first moment the player is allowed to see the outcome.
+    render();
+    if(stamp){
+      stamp.style.setProperty('--final-result-color',meta[2]);
+      stamp.classList.add('is-revealed');
+    }
+    if(stampTitle)stampTitle.textContent=meta[0];
+    if(stampSub)stampSub.textContent=meta[1];
+    impactFlash(.98);
+    screenShake(.56,.42);
+    cardBurst('#ffffff',156,330);
+  };
+
+  const cleanup=()=>{
+    gsap.killTweensOf([motion,overlay,...Array.from(gates),...Array.from(rayEls),...Array.from(tickEls),core,copy,meter,whiteout,stamp]);
+    overlay.remove();
+    scene.classList.remove('final-stage-cinematic','final-common-active');
+    gsap.set(motion,{x:0,y:0,z:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'none'});
+    if(glow)gsap.set(glow,{x:0,y:0,scale:.82,opacity:.06});
+    if(typeof afterFinish==='function')afterFinish();
+  };
+
+  gsap.set(motion,{x:0,y:0,z:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'none',transformOrigin:'50% 52%'});
+  if(glow)gsap.set(glow,{scale:.82,opacity:.08,background:'#ffffff',x:0,y:0});
+  if(shine)gsap.set(shine,{x:'-80%'});
+  gsap.set(overlay,{opacity:0});
+  gsap.set(copy,{opacity:0,y:18,scale:.96});
+  gsap.set(gates,{opacity:0,scale:1.58,rotation:-42});
+  gsap.set(rayEls,{opacity:0,scaleY:.08});
+  gsap.set(tickEls,{opacity:0,scaleY:.12});
+  gsap.set(core,{opacity:0,scale:.12});
+  gsap.set(meter,{scaleX:0,transformOrigin:'0 50%'});
+  gsap.set(whiteout,{opacity:0});
+  gsap.set(stamp,{opacity:0,scale:.42,y:18,filter:'blur(12px)'});
+
+  // One shared timeline for every possible FINAL outcome.
+  const tl=gsap.timeline({defaults:{overwrite:'auto'},onComplete:cleanup});
+  tl.to(overlay,{opacity:1,duration:.18,ease:'power2.out'},0)
+    .to(copy,{opacity:1,y:0,scale:1,duration:.40,ease:'power3.out'},.12)
+    .to(gates,{opacity:.78,scale:1,rotation:0,duration:.82,stagger:.07,ease:'power3.out'},.08)
+    .to(tickEls,{opacity:.72,scaleY:1,duration:.46,stagger:.008,ease:'power2.out'},.20)
+    .to(rayEls,{opacity:.34,scaleY:.72,duration:.72,stagger:.012,ease:'power2.out'},.18)
+    .to(core,{opacity:.76,scale:1,duration:.68,ease:'back.out(1.8)'},.28)
+    .to(motion,{y:-7,scale:1.022,duration:.82,ease:'sine.inOut'},.26)
+    .to(meter,{scaleX:1,duration:3.30,ease:'power1.inOut'},.36)
+    .add(()=>{phase.textContent='ODOR CORE PRESSURE';cardBurst('#ffffff',28,100);},1.15)
+    .to(core,{scale:1.18,opacity:.94,duration:.26,yoyo:true,repeat:1,ease:'sine.inOut'},1.18)
+    .to(motion,{y:-12,scale:1.035,duration:.42,ease:'sine.inOut',yoyo:true,repeat:1},1.28)
+    .add(()=>{phase.textContent='DIMENSION LOCK';cardBurst('#ffffff',34,125);},2.05)
+    .to(gates,{rotation:'+=72',scale:.92,duration:.75,ease:'power1.inOut'},1.90)
+    .to(rayEls,{opacity:.58,scaleY:1.02,duration:.64,ease:'power2.inOut'},2.00)
+    .add(()=>{phase.textContent='SEAL BREAK SEQUENCE';cardBurst('#ffffff',42,145);},2.78)
+    .to(core,{scale:1.34,opacity:1,duration:.34,ease:'sine.inOut',yoyo:true,repeat:1},2.80)
+    .to(gates,{scale:.84,duration:.32,ease:'power2.inOut',yoyo:true,repeat:1},2.84)
+    .to(rayEls,{opacity:.82,scaleY:1.28,duration:.34,ease:'power2.inOut',yoyo:true,repeat:1},2.90)
+    .add(()=>{phase.textContent='FINAL PRESSURE MAX';cardBurst('#ffffff',54,175);},3.38)
+    .to(gates,{rotation:'+=150',scale:.70,opacity:1,duration:.54,ease:'power3.in'},3.36)
+    .to(rayEls,{opacity:1,scaleY:1.85,duration:.50,ease:'power3.in'},3.40)
+    .to(tickEls,{opacity:1,scaleY:1.6,duration:.42,ease:'power3.in'},3.42)
+    .to(motion,{y:9,scale:.955,filter:'brightness(.72) saturate(.72)',duration:.25,ease:'power3.in'},3.62)
+    .add(()=>{phase.textContent='RESULT SIGNAL LOCKED';},3.66)
+    .to(whiteout,{opacity:.96,duration:.13,ease:'power4.in'},3.90)
+    .to(core,{scale:.20,opacity:1,duration:.14,ease:'power4.in'},3.90)
+    .add(commitResult,4.04)
+    .to(motion,{y:-22,scale:1.115,filter:'brightness(1.72) saturate(1.18)',duration:.16,ease:'power4.out'},4.04)
+    .to(whiteout,{opacity:0,duration:.24,ease:'power3.out'},4.06)
+    .to(stamp,{opacity:1,scale:1,y:0,filter:'blur(0px)',duration:.22,ease:'back.out(2.9)'},4.05)
+    .to(gates,{scale:1.34,opacity:.20,duration:.40,ease:'power3.out'},4.06)
+    .to(rayEls,{opacity:.12,scaleY:2.35,duration:.42,ease:'power3.out'},4.06)
+    .to(motion,{y:0,scale:1,filter:'none',duration:.48,ease:'elastic.out(1,.48)'},4.20)
+    .to(stamp,{scale:1.045,duration:.13,yoyo:true,repeat:1,ease:'power2.inOut'},4.42)
+    .to(overlay,{opacity:0,duration:.34,ease:'power2.in'},5.08);
+
+  if(glow){
+    gsap.to(glow,{scale:1.45,opacity:.28,duration:1.0,ease:'sine.inOut',yoyo:true,repeat:3});
+  }
+  if(shine){
+    gsap.to(shine,{x:'190%',duration:1.05,delay:2.80,ease:'power2.inOut'});
+  }
+}
 
 function clearResultFx(){
   document.querySelectorAll('.result-fx-layer').forEach(e=>e.remove());
