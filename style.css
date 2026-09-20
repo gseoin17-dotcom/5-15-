@@ -3490,3 +3490,96 @@ body.action-locked #card3dLayer{
 .destroy-snapshot-layer.destroy-art-layer .destroy-visual-card.destroy-art-only .dynamic-card-design{opacity:.90 !important;}
 .destroy-snapshot-layer.destroy-art-layer .destroy-visual-card.destroy-art-only .design-sigil{opacity:.55 !important;}
 .destroy-snapshot-layer.destroy-art-layer .destroy-visual-card.destroy-art-only::after{display:none !important;}
+
+
+/* =========================================================
+   V17.46 · 50~55 RAINBOW CARD BACKGROUND OVERRIDE
+   Restore uploaded card design, but make stage 50~55 card background shift from black to rainbow.
+   ========================================================= */
+#enhanceCard[data-level="50"],
+#enhanceCard[data-level="51"],
+#enhanceCard[data-level="52"],
+#enhanceCard[data-level="53"],
+#enhanceCard[data-level="54"],
+#enhanceCard[data-level="55"]{
+  --rainbow-card-opacity:.24;
+  --rainbow-glow:.22;
+  --rainbow-border:rgba(255,255,255,.22);
+}
+#enhanceCard[data-level="50"]{--rainbow-card-opacity:.22;--rainbow-glow:.18;}
+#enhanceCard[data-level="51"]{--rainbow-card-opacity:.26;--rainbow-glow:.21;}
+#enhanceCard[data-level="52"]{--rainbow-card-opacity:.30;--rainbow-glow:.25;}
+#enhanceCard[data-level="53"]{--rainbow-card-opacity:.34;--rainbow-glow:.29;}
+#enhanceCard[data-level="54"]{--rainbow-card-opacity:.38;--rainbow-glow:.34;}
+#enhanceCard[data-level="55"]{--rainbow-card-opacity:.44;--rainbow-glow:.40;}
+
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]){
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.06) 22%,rgba(22,10,45,.72) 60%,rgba(255,255,255,.08)),
+    linear-gradient(155deg,#1a1031 0%,#120a26 16%,#241048 36%,#0a0b22 52%,#34104f 70%,#151329 100%),
+    conic-gradient(from var(--rainbow-bg-angle,0deg),
+      rgba(255,59,48,var(--rainbow-card-opacity)),
+      rgba(255,159,10,var(--rainbow-card-opacity)),
+      rgba(255,214,10,var(--rainbow-card-opacity)),
+      rgba(48,209,88,var(--rainbow-card-opacity)),
+      rgba(100,210,255,var(--rainbow-card-opacity)),
+      rgba(10,132,255,var(--rainbow-card-opacity)),
+      rgba(94,92,230,var(--rainbow-card-opacity)),
+      rgba(191,90,242,var(--rainbow-card-opacity)),
+      rgba(255,55,95,var(--rainbow-card-opacity)),
+      rgba(255,59,48,var(--rainbow-card-opacity))) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.86),
+    inset 0 -28px 52px rgba(14,6,32,.42),
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 42px rgba(255,59,48,calc(var(--rainbow-glow) * .42)),
+    0 0 72px rgba(48,209,88,calc(var(--rainbow-glow) * .36)),
+    0 0 108px rgba(10,132,255,calc(var(--rainbow-glow) * .34)),
+    0 0 140px rgba(191,90,242,calc(var(--rainbow-glow) * .30)),
+    0 28px 62px rgba(0,0,0,.50) !important;
+  animation:rainbowCardBackgroundShift 6.6s linear infinite;
+}
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-art{
+  background:
+    radial-gradient(circle at 50% 16%,rgba(255,255,255,.18),transparent 17%),
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.10),transparent 24%),
+    conic-gradient(from var(--rainbow-bg-angle,0deg),
+      rgba(255,59,48,calc(var(--rainbow-card-opacity) * .90)),
+      rgba(255,159,10,calc(var(--rainbow-card-opacity) * .84)),
+      rgba(255,214,10,calc(var(--rainbow-card-opacity) * .82)),
+      rgba(48,209,88,calc(var(--rainbow-card-opacity) * .86)),
+      rgba(100,210,255,calc(var(--rainbow-card-opacity) * .88)),
+      rgba(10,132,255,calc(var(--rainbow-card-opacity) * .86)),
+      rgba(94,92,230,calc(var(--rainbow-card-opacity) * .88)),
+      rgba(191,90,242,calc(var(--rainbow-card-opacity) * .92)),
+      rgba(255,55,95,calc(var(--rainbow-card-opacity) * .90)),
+      rgba(255,59,48,calc(var(--rainbow-card-opacity) * .90))),
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03) 18%,rgba(9,10,26,.54) 20%,rgba(11,7,28,.82) 100%) !important;
+  border-color:rgba(255,255,255,.24) !important;
+  box-shadow:
+    inset 0 2px 24px rgba(255,255,255,.11),
+    inset 0 -24px 40px rgba(0,0,0,.30),
+    0 0 24px rgba(255,255,255,.08),
+    0 0 34px rgba(100,210,255,calc(var(--rainbow-glow) * .28)),
+    0 0 44px rgba(191,90,242,calc(var(--rainbow-glow) * .24)),
+    0 18px 30px rgba(0,0,0,.22) !important;
+}
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-art::before{
+  border-color:rgba(255,255,255,.14) !important;
+  box-shadow:inset 0 0 16px rgba(255,255,255,.06),0 0 18px rgba(255,255,255,.04) !important;
+}
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-topline span:last-child,
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-stage-label{
+  background:linear-gradient(90deg,rgba(255,59,48,.24),rgba(255,214,10,.22),rgba(48,209,88,.22),rgba(100,210,255,.22),rgba(94,92,230,.24),rgba(191,90,242,.24),rgba(255,55,95,.24)) !important;
+  border-color:rgba(255,255,255,.30) !important;
+  text-shadow:0 0 14px rgba(255,255,255,.65) !important;
+}
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-glass::after,
+#enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) .card-shine{
+  opacity:.9 !important;
+}
+@property --rainbow-bg-angle{syntax:'<angle>';inherits:false;initial-value:0deg;}
+@keyframes rainbowCardBackgroundShift{to{--rainbow-bg-angle:360deg;}}
+@media (prefers-reduced-motion:reduce){
+  #enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]){animation:none !important;}
+}
