@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.51 Mobile Optimized</title>
+  <title>지온냄새 강화하기 - V17.64</title>
   <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css?v=17.51-mobile">
+  <link rel="stylesheet" href="style.css?v=17.64">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -19,16 +19,23 @@
   </div>
   <div class="shell">
 
+    <nav class="game-mode-tabs" aria-label="게임 화면 선택">
+      <button class="game-mode-tab active" type="button" data-game-view="enhance" aria-selected="true">강화</button>
+      <button class="game-mode-tab" type="button" data-game-view="shop" aria-selected="false">상점</button>
+      <button class="game-mode-tab" type="button" data-game-view="lab" aria-selected="false">연구소</button>
+    </nav>
+
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.51">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.64">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.51</span>
+          <span class="brand-version">V17.64</span>
         </h1>
       </div>
       <div class="header-actions">
         <button id="probTableBtn" class="reset-btn header-prob-btn" type="button" data-modal="probabilities" aria-label="강화 확률표" title="강화 확률표">📊 확률표</button>
+        <button id="statsBtn" class="reset-btn header-stats-btn" type="button" data-modal="stats" aria-label="플레이 통계" title="플레이 통계">📈 통계</button>
         <button id="resetBtn" class="reset-btn header-reset-btn" type="button">↻ 초기화</button>
       </div>
     </header>
@@ -42,11 +49,20 @@
         <div class="info-grid">
           <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
           <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong></div>
-          <div class="mini-stat"><div id="tearsLabel">💧 눈물</div><strong id="tears"></strong></div>
-          <div class="mini-stat"><div id="pityLabel">✨ 지온이의 가오</div><strong id="pity"></strong></div>
-          <div class="mini-stat"><div>🛡️ 방지권</div><strong id="shield"></strong></div>
-          <div class="mini-stat combo-stat"><div id="comboLabel">🔥 연속 콤보</div><strong id="combo">0 COMBO</strong><small id="comboBonus">2연속부터 포인트 보너스</small></div>
-          <div class="mini-stat aux-stat"><div id="auxLabel">🧪 장착 보조</div><strong id="auxActive">없음</strong><small id="auxHint">상점에서 장착 가능</small></div>
+          <div class="mini-stat shield-stat"><div>🛡️ 방지권</div><strong id="shield"></strong><small>상점에서 구매 가능</small></div>
+          <div class="mini-stat aux-stat"><div id="auxLabel">🧪 장착 보조</div><strong id="auxActive">없음</strong><small id="auxHint">연구소에서 장착 가능</small></div>
+          <div id="comboMeter" class="mini-stat combo-stat">
+            <div id="comboLabel">🔥 연속 콤보</div>
+            <strong id="combo">0 COMBO</strong>
+            <div class="combo-track" aria-hidden="true"><i id="comboFill"></i></div>
+            <small id="comboBonus">성공을 이어가면 콤보 보너스가 해금됩니다</small>
+          </div>
+          <div id="frenzyMeter" class="mini-stat frenzy-stat">
+            <div id="frenzyLabel">🔥 냄새 폭주</div>
+            <strong id="frenzyValue">0%</strong>
+            <div class="frenzy-track" aria-hidden="true"><i id="frenzyFill"></i></div>
+            <small id="frenzyHint">실패·파괴 시 충전</small>
+          </div>
         </div>
 
         <hr>
@@ -56,22 +72,13 @@
 
         <hr>
 
-        <div class="menu-grid">
-          <button class="glass-btn" data-modal="shop">🛒 상점</button>
-          <button class="glass-btn" data-modal="tears">💧 눈물</button>
-          <button class="glass-btn" data-modal="bonuses">🎯 선택</button>
-          <button class="glass-btn stats-menu-btn" data-modal="stats">📈 통계</button>
-        </div>
-
-        <hr>
-
         <h4 class="control-title"></h4>
         <div class="action-grid" id="mainActionGrid">
           <button id="enhanceBtn" class="glass-btn action-primary" type="button">강화하기</button>
           <button id="sellBtn" class="glass-btn action-primary" type="button">판매하기</button>
         </div>
-        <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">☠️ 광폭 강화 · 35단계 해금</button>
-        <div id="berserkInfo" class="berserk-info">35~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~6단계 랜덤 상승</div>
+        <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">☠️ 광폭 강화 · 20단계 해금</button>
+        <div id="berserkInfo" class="berserk-info">20~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~6단계 랜덤 상승</div>
         <div id="runModifierBar" class="run-modifier-bar hidden"></div>
       </aside>
 
@@ -79,7 +86,6 @@
         <div id="threeWrap" class="three-wrap card-stage">
 
           <div id="enhanceCardScene" class="enhance-card-scene">
-            <canvas class="card-bg-particles" id="cardBgParticles"></canvas>
             <div class="card-particles" id="cardParticles"></div>
             <div class="enhance-card-wrap" id="enhanceCardWrap">
               <div class="stage-tremor-layer" id="stageTremorLayer">
@@ -155,6 +161,36 @@
       </section>
     </main>
 
+
+    <section id="shopView" class="shop-view hidden" aria-label="지온 상점">
+      <div class="shop-page-shell">
+        <div id="shopPageContent"></div>
+      </div>
+    </section>
+
+    <section id="labView" class="lab-view hidden" aria-label="냄새 연구소">
+      <div class="lab-page-shell">
+        <div class="lab-page-heading">
+          <div>
+            <small>JION ODOR LAB</small>
+            <h2>🔬 냄새 연구소</h2>
+            <p>영구 파츠를 연구하고 실험 보조제를 제작해 강화 장치를 원하는 방식으로 세팅할 수 있습니다.</p>
+          </div>
+          <div class="lab-page-wallet">
+            <span>💰 보유 금액</span>
+            <strong id="labMoneyWallet">0원</strong>
+            <span>⭐ 보유 포인트</span>
+            <strong id="labPointWallet">0P</strong>
+          </div>
+        </div>
+        <div class="lab-machine-summary" id="labMachineSummary"></div>
+        <div class="lab-section-heading"><div><small>PERMANENT PARTS</small><h3>영구 연구 파츠</h3></div><span>구매 즉시 영구 적용</span></div>
+        <div class="lab-parts-grid" id="labPartsGrid"></div>
+        <div class="lab-section-heading lab-consumable-heading"><div><small>EXPERIMENTAL BOOSTERS</small><h3>실험 보조제</h3></div><span>구매 · 장착 · 즉시 사용</span></div>
+        <div class="lab-aux-grid" id="labAuxGrid"></div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -171,10 +207,10 @@
 <script id="jion-first-paint-bootstrap">
 (function(){
   'use strict';
-  const MAX=55, PITY_TARGET=3, TEARS_MAX=80, SHIELD_MAX=5;
+  const MAX=55, SHIELD_MAX=6;
   const DB={0:['무취 지온의 공간','아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.',0],1:['스쳐가는 지온냄새','버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.',500],2:['은은한 지온냄새','체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.',800],3:['습한 지온냄새','사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.',1200],4:['진득한 지온냄새','여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.',1900],5:['자극적인 지온냄새','지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.',3000]};
   const PROB={"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0],"55":[7.0,39.0,49.0,5.0],"56":[6.5,39.0,49.5,5.0],"57":[6.0,39.0,50.0,5.0],"58":[5.5,39.0,50.5,5.0],"59":[5.0,39.0,51.0,5.0]};
-  const COST={0:100,1:150,2:250,3:400,4:650,5:1000,6:1400,7:1900,8:2600,9:3500,10:4700,11:6100,12:8400,13:11500,14:15500,15:21000,16:28500,17:39000,18:53000,19:72000,20:100000,21:135000,22:180000,23:240000,24:315000,25:420000,26:550000,27:725000,28:950000,29:1250000,30:1650000,31:2200000,32:2900000,33:3850000,34:5000000,35:6500000,36:8500000,37:11000000,38:14500000,39:19000000,40:25000000,41:32500000,42:42500000,43:55000000,44:72500000,45:95000000,46:125000000,47:165000000,48:215000000,49:285000000,50:375000000,51:500000000,52:650000000,53:850000000,54:1100000000};
+  const COST={"0":100,"1":100,"2":150,"3":200,"4":350,"5":450,"6":650,"7":950,"8":1300,"9":1800,"10":2400,"11":3200,"12":4200,"13":5600,"14":7500,"15":9600,"16":12000,"17":16000,"18":20000,"19":26000,"20":34000,"21":45000,"22":59000,"23":78000,"24":100000,"25":130000,"26":165000,"27":215000,"28":275000,"29":355000,"30":450000,"31":575000,"32":725000,"33":930000,"34":1200000,"35":1500000,"36":1850000,"37":2400000,"38":3050000,"39":3800000,"40":4850000,"41":6200000,"42":7800000,"43":10000000,"44":12500000,"45":16500000,"46":21500000,"47":28500000,"48":37500000,"49":49000000,"50":68500000,"51":94500000,"52":130000000,"53":185000000,"54":255000000,"55":375000000,"56":550000000,"57":810000000,"58":1200000000,"59":1750000000,"60":1750000000};
   const REWARD={1:100,2:150,3:200,4:300,5:500,6:700,7:900,8:1200,9:1500,10:2000,11:2500,12:3000,13:3500,14:4000,15:5000,16:6000,17:7000,18:8000,19:9000,20:10000,21:12000,22:14000,23:16000,24:18000,25:20000,26:23000,27:26000,28:30000,29:35000,30:40000,31:45000,32:50000,33:60000,34:70000,35:80000,36:90000,37:105000,38:120000,39:135000,40:150000,41:165000,42:180000,43:195000,44:210000,45:225000,46:240000,47:255000,48:270000,49:285000,50:300000,51:315000,52:330000,53:345000,54:360000,55:375000};
   const fullDB={};
   function el(id){return document.getElementById(id)}
@@ -183,8 +219,8 @@
   function load(){try{return JSON.parse(localStorage.getItem('jion_smell_game_v3')||'null')||{}}catch(e){return {}}}
   function paint(){
     const s=load(),r=s.runData||{},lvl=Math.max(0,Math.min(MAX,Number(r.level)||0));
-    const points=Math.max(0,Number(s.points)||0),tears=Math.max(0,Number(r.tears)||0),pity=Math.max(0,Number(r.pity_count)||0),shield=Math.max(0,Number(r.shield)||0),combo=Math.max(0,Number(r.combo)||0);
-    set('money',money(r.money||50000));set('points',points.toLocaleString('ko-KR')+'P');set('tears',tears+' / '+TEARS_MAX+'개');set('pity',pity>=PITY_TARGET?'다음 강화 확정':'천장까지 '+(PITY_TARGET-pity)+'회');set('shield',shield+' / '+SHIELD_MAX+'개');set('combo',combo+' COMBO');
+    const points=Math.max(0,Number(s.points)||0),shield=Math.max(0,Number(r.shield)||0),combo=Math.max(0,Number(r.combo)||0);
+    set('money',money(r.money||50000));set('points',points.toLocaleString('ko-KR')+'P');set('shield',shield+' / '+SHIELD_MAX+'개');set('combo',combo+' COMBO');
     const p=PROB[lvl]||[100,0,0,0],box=el('probBox');if(box)box.innerHTML='<div class="prob-row success-row"><span><i></i>성공</span><b class="success">'+p[0]+'%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">'+p[1]+'%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">'+p[2]+'%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">'+p[3]+'%</b></div><div class="prob-critical '+(lvl>=50?'disabled-critical':'')+'">'+(lvl>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률')+' <b>'+(lvl>=50?'0':'5')+'%</b></div>';
     const pl=el('probLevel');if(pl)pl.textContent=String(lvl);
     set('cardLevel','+'+lvl);set('cardStageLabel',lvl+'단계'+(lvl===MAX?' • MAX':''));set('cardSerial','JION • CORE • '+String(lvl).padStart(2,'0'));set('cardPoints',(REWARD[lvl]||0).toLocaleString('ko-KR')+'P');
@@ -195,6 +231,6 @@
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.51-mobile"></script>
+<script defer src="game.js?v=17.64"></script>
 </body>
 </html>
