@@ -4500,3 +4500,23 @@ html.jion-motion-low .destruction-crack{display:none!important;}
 #sellBtn:disabled{cursor:not-allowed}
 #sellBtn:disabled:not(.action-locked){opacity:.58}
 .run-modifier-bar span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+
+/* ================= V17.75 LAB PRESETS ================= */
+.lab-preset-heading{margin-top:16px}
+.lab-preset-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:4px}
+.lab-preset-card{min-width:0;padding:13px;border:1px solid rgba(96,165,250,.16);border-radius:16px;background:linear-gradient(150deg,rgba(15,23,42,.86),rgba(7,12,24,.94));box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.lab-preset-card.active{border-color:rgba(250,204,21,.38);box-shadow:inset 0 0 0 1px rgba(250,204,21,.06),0 8px 24px rgba(0,0,0,.12)}
+.lab-preset-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.lab-preset-head>div{min-width:0}.lab-preset-head small{display:block;font-size:7px;letter-spacing:1.2px;color:#60a5fa;font-weight:950}.lab-preset-head h3{margin:3px 0 0;font-size:13px;color:#f8fafc}.lab-preset-head>b{flex:0 0 auto;padding:4px 7px;border-radius:8px;background:rgba(148,163,184,.08);font-size:8px;color:#94a3b8}.lab-preset-card.active .lab-preset-head>b{color:#fde68a;background:rgba(245,158,11,.12)}
+.lab-preset-parts{display:flex;align-content:flex-start;flex-wrap:wrap;gap:5px;min-height:48px;margin:10px 0;padding:8px;border-radius:11px;background:rgba(2,6,23,.34);border:1px solid rgba(148,163,184,.08)}.lab-preset-parts span{max-width:100%;padding:4px 6px;border-radius:7px;background:rgba(59,130,246,.08);font-size:8px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lab-preset-parts span.empty{background:transparent;color:#64748b;padding:4px 1px}
+.lab-preset-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.lab-preset-actions .glass-btn{min-height:34px;padding:7px 8px;font-size:9px}.lab-preset-save{border-color:rgba(52,211,153,.24)!important;color:#a7f3d0!important}.lab-preset-load{border-color:rgba(96,165,250,.26)!important;color:#bfdbfe!important}
+@media(max-width:760px){.lab-preset-grid{grid-template-columns:1fr}.lab-preset-parts{min-height:0}}
+html.jion-mobile-perf .lab-preset-card{box-shadow:none}
+
+
+/* ================= V17.76 LAB PRESET NAME / RESET ================= */
+.lab-preset-head h3{max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab-preset-rename{border-color:rgba(168,85,247,.28)!important;color:#e9d5ff!important}
+.lab-preset-reset{border-color:rgba(248,113,113,.28)!important;color:#fecaca!important}
+.lab-preset-reset:not(:disabled):hover{background:rgba(127,29,29,.22)!important}
+@media(max-width:760px){.lab-preset-head h3{max-width:58vw}.lab-preset-actions .glass-btn{min-height:36px}}
