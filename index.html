@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.68</title>
+  <title>지온냄새 강화하기 - V17.73</title>
   <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css?v=17.68">
+  <link rel="stylesheet" href="style.css?v=17.73">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -27,10 +27,10 @@
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.68">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.73">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.68</span>
+          <span class="brand-version">V17.73</span>
         </h1>
       </div>
       <div class="header-actions">
@@ -78,8 +78,10 @@
           <button id="enhanceBtn" class="glass-btn action-primary" type="button">강화하기</button>
           <button id="sellBtn" class="glass-btn action-primary" type="button">판매하기</button>
         </div>
-        <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">☠️ 광폭 강화 · 20단계 해금</button>
-        <div id="berserkInfo" class="berserk-info">20~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~6단계 랜덤 상승</div>
+        <button id="stableBtn" class="glass-btn stable-btn wide" type="button">🛡️ 안정 강화 · 1단계 해금</button>
+        <div id="stableInfo" class="stable-info">1~24단계 전용 · 파괴 확률 60%와 하락 확률 35%를 유지로 전환</div>
+        <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">☠️ 광폭 강화 · 25단계 해금</button>
+        <div id="berserkInfo" class="berserk-info">25~49단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~6단계 랜덤 상승</div>
         <div id="runModifierBar" class="run-modifier-bar hidden"></div>
       </aside>
 
@@ -230,6 +232,6 @@
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.68"></script>
+<script defer src="game.js?v=17.73"></script>
 </body>
 </html>

@@ -4478,3 +4478,25 @@ html.jion-motion-low .card-particle,
 html.jion-motion-low .result-fx-layer,
 html.jion-motion-low .destruction-shard,
 html.jion-motion-low .destruction-crack{display:none!important;}
+
+
+/* V17.70 · stable enhancement + lab effect visibility */
+.stable-btn{margin-top:9px;border-color:rgba(96,165,250,.50)!important;background:linear-gradient(135deg,rgba(30,64,175,.64),rgba(8,22,48,.94))!important;color:#dbeafe!important;box-shadow:inset 0 1px rgba(255,255,255,.14),0 0 0 1px rgba(96,165,250,.11),0 12px 28px rgba(30,64,175,.18)!important;}
+.stable-btn:not(:disabled):hover{background:linear-gradient(135deg,rgba(37,99,235,.78),rgba(12,34,72,.97))!important;box-shadow:inset 0 1px rgba(255,255,255,.18),0 0 24px rgba(96,165,250,.24),0 16px 36px rgba(0,0,0,.28)!important;}
+.stable-info{margin:7px 2px 0;padding:8px 10px;border-radius:10px;border:1px solid rgba(96,165,250,.20);background:rgba(30,58,138,.13);color:#bfdbfe;font-size:11px;line-height:1.55;text-align:center;}
+.stable-info .stable-success-rate{color:#86efac}.stable-info .stable-down-rate{color:#fde68a}.stable-info .stable-destroy-rate{color:#fca5a5}.stable-info .stable-hold-rate{color:#c4b5fd}
+.lab-part-spec.is-inactive{opacity:.72}.lab-part-spec.is-inactive strong{color:#94a3b8!important}.lab-part-spec.is-active{border-color:rgba(52,211,153,.30)!important;background:rgba(6,78,59,.12)!important}
+.lab-live-preview{margin-top:8px;padding:9px 10px;border:1px solid rgba(56,189,248,.20);border-radius:10px;background:rgba(15,23,42,.72);display:grid;gap:3px}.lab-live-preview span{font-size:10px;color:#94a3b8}.lab-live-preview b{font-size:12px;color:#e0f2fe}.lab-live-preview small{font-size:10px;color:#86efac}
+
+/* V17.70 · research audit live deltas */
+.lab-next-preview{margin-top:6px;padding:8px 10px;border:1px solid rgba(250,204,21,.16);border-radius:10px;background:rgba(120,53,15,.08);display:grid;gap:3px}
+.lab-next-preview span{font-size:9px;color:#a8a29e;font-weight:750}
+.lab-next-preview b{font-size:10px;color:#fde68a;line-height:1.45}
+.lab-live-preview b,.lab-live-preview small{line-height:1.45}
+.lab-live-preview small{display:block}
+.lab-part-mode{margin:6px 0 2px;font-size:8.5px;color:#7dd3fc;line-height:1.45;font-weight:750}
+
+/* V17.72 anti-arbitrage sale lock */
+#sellBtn:disabled{cursor:not-allowed}
+#sellBtn:disabled:not(.action-locked){opacity:.58}
+.run-modifier-bar span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
