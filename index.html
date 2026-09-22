@@ -3,9 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.64</title>
+  <title>지온냄새 강화하기 - V17.65</title>
   <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css?v=17.64">
+  <script id="jion-mobile-prepaint">
+  (function(){
+    try{
+      var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;
+      var narrow=window.matchMedia&&window.matchMedia('(max-width: 900px)').matches;
+      if(coarse||narrow) document.documentElement.classList.add('jion-mobile-stable');
+    }catch(e){}
+  })();
+  </script>
+  <link rel="stylesheet" href="style.css?v=17.65">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -27,10 +36,10 @@
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.64">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.65">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.64</span>
+          <span class="brand-version">V17.65</span>
         </h1>
       </div>
       <div class="header-actions">
@@ -231,6 +240,6 @@
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.64"></script>
+<script defer src="game.js?v=17.65"></script>
 </body>
 </html>
