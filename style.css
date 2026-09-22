@@ -4391,3 +4391,90 @@ html.jion-motion-low .modalContent-enter,html.jion-motion-low .value-pop,html.ji
     line-height:15px!important;
   }
 }
+
+
+/* V17.68 — stronger graphics tier separation */
+html.jion-graphics-high .enhance-card{
+  box-shadow:inset 0 1px rgba(255,255,255,.28),0 30px 75px rgba(0,0,0,.48),0 0 48px color-mix(in srgb,var(--card) 18%,transparent)!important;
+}
+html.jion-graphics-high .stage-bg-orb{opacity:.72!important;}
+html.jion-graphics-high .card-particles{display:block!important;}
+
+html.jion-graphics-medium .app,
+html.jion-graphics-medium .three-wrap.card-stage{background-attachment:scroll!important;}
+html.jion-graphics-medium .glass-btn,
+html.jion-graphics-medium .reset-btn,
+html.jion-graphics-medium .modal-box,
+html.jion-graphics-medium .toast{
+  backdrop-filter:blur(8px) saturate(118%)!important;
+  -webkit-backdrop-filter:blur(8px) saturate(118%)!important;
+}
+html.jion-graphics-medium .enhance-card{
+  box-shadow:inset 0 1px rgba(255,255,255,.18),0 20px 46px rgba(0,0,0,.40),0 0 24px color-mix(in srgb,var(--card) 10%,transparent)!important;
+}
+html.jion-graphics-medium .stage-bg-orb{filter:blur(16px)!important;opacity:.46!important;}
+html.jion-graphics-medium .stage-bg-pattern{opacity:.42!important;}
+html.jion-graphics-medium .capsule-back-glow{filter:blur(8px)!important;opacity:.58!important;}
+html.jion-graphics-medium .art-lens{opacity:.38!important;animation-duration:22s!important;}
+html.jion-graphics-medium .art-scan{opacity:.26!important;animation-duration:8s!important;}
+html.jion-graphics-medium .card-shine{opacity:.42!important;}
+html.jion-graphics-medium .dynamic-card-design{opacity:.62!important;}
+html.jion-graphics-medium .boss-stage-badge,
+html.jion-graphics-medium .boss-stage-copy{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+
+html.jion-graphics-low .glass-btn,
+html.jion-graphics-low .reset-btn,
+html.jion-graphics-low .modal,
+html.jion-graphics-low .modal-box,
+html.jion-graphics-low .toast,
+html.jion-graphics-low .boss-stage-badge,
+html.jion-graphics-low .boss-stage-copy{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html.jion-graphics-low .stage-bg-orb,
+html.jion-graphics-low .stage-bg-pattern,
+html.jion-graphics-low .stage-bg-horizon,
+html.jion-graphics-low .art-lens,
+html.jion-graphics-low .art-scan,
+html.jion-graphics-low .art-spark,
+html.jion-graphics-low .capsule-vapor,
+html.jion-graphics-low .capsule-bubbles,
+html.jion-graphics-low .card-shine,
+html.jion-graphics-low .dynamic-card-design,
+html.jion-graphics-low .card-particles,
+html.jion-graphics-low .result-fx-layer,
+html.jion-graphics-low .final-common-cinematic{display:none!important;}
+html.jion-graphics-low .enhance-card{
+  box-shadow:0 12px 28px rgba(0,0,0,.38)!important;
+  filter:none!important;
+}
+html.jion-graphics-low .card-glass,
+html.jion-graphics-low .capsule-back-glow,
+html.jion-graphics-low .card-status-glow{filter:none!important;}
+html.jion-graphics-low .capsule-back-glow{opacity:.20!important;}
+html.jion-graphics-low .card-art .dynamic-card-design{mix-blend-mode:normal!important;}
+html.jion-graphics-low .modal-box{filter:none!important;box-shadow:0 16px 42px rgba(0,0,0,.45)!important;}
+html.jion-graphics-low .modal.is-open{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+
+/* Motion LOW: no continuous decorative motion and no costly transition filters. */
+html.jion-motion-low *,
+html.jion-motion-low *::before,
+html.jion-motion-low *::after{scroll-behavior:auto!important;}
+html.jion-motion-low .stage-bg-orb,
+html.jion-motion-low .stage-backdrop::before,
+html.jion-motion-low .card-art::after,
+html.jion-motion-low .art-core::after,
+html.jion-motion-low .capsule-liquid,
+html.jion-motion-low .smell-frenzy .enhance-card,
+html.jion-motion-low .final-common-aurora,
+html.jion-motion-low #enhanceCard:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]){animation:none!important;}
+html.jion-motion-low .enhance-card,
+html.jion-motion-low .card-result-motion-layer,
+html.jion-motion-low .stage-tremor-layer{will-change:auto!important;}
+html.jion-motion-low .modal-box{transition:opacity .12s ease!important;transform:none!important;filter:none!important;}
+html.jion-motion-low .modal{transition:opacity .12s ease,visibility .12s ease!important;}
+html.jion-motion-low .card-particle,
+html.jion-motion-low .result-fx-layer,
+html.jion-motion-low .destruction-shard,
+html.jion-motion-low .destruction-crack{display:none!important;}
