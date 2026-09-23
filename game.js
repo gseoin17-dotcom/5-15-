@@ -1,5 +1,5 @@
-/* 지온냄새 강화하기 V17.76 · LAB PRESET NAMES/RESET · WARP SALE LOCK REMOVED · DEVELOPER MODE RESTORED */
-const GAME_DATA = {"POINT_REWARD_TABLE":{"1":100,"2":150,"3":200,"4":300,"5":500,"6":700,"7":900,"8":1200,"9":1500,"10":2000,"11":2500,"12":3000,"13":3500,"14":4000,"15":5000,"16":6000,"17":7000,"18":8000,"19":9000,"20":10000,"21":12000,"22":14000,"23":16000,"24":18000,"25":20000,"26":23000,"27":26000,"28":30000,"29":35000,"30":40000,"31":45000,"32":50000,"33":60000,"34":70000,"35":80000,"36":90000,"37":105000,"38":120000,"39":135000,"40":150000,"41":165000,"42":180000,"43":195000,"44":210000,"45":225000,"46":240000,"47":255000,"48":270000,"49":285000,"50":300000,"51":315000,"52":330000,"53":345000,"54":360000,"55":375000,"56":390000,"57":405000,"58":420000,"59":435000,"60":450000},"SMELL_DB":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":500,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":800,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":1200,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":1900,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":4100,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":5700,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":7900,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":11000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":15000,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":20000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":26000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":34000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":45000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":60000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":76000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":97000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":125000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":155000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":200000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":260000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":340000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":440000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":575000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":750000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":955000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":1200000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":1550000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":1950000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":2500000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":3150000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":4000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":5000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":6350000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":8000000,"color":"#ffffff","tier":6},"36":{"name":"36단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":10000000,"color":"#00ffff","tier":6},"37":{"name":"37단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":12500000,"color":"#ffffff","tier":6},"38":{"name":"38단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":16000000,"color":"#ffaa00","tier":6},"39":{"name":"39단계 : 차원왜곡 자이온 타임루프 찌든내","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":20000000,"color":"#9b2c2c","tier":6},"40":{"name":"40단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":25000000,"color":"#38a169","tier":6},"41":{"name":"41단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":31500000,"color":"#805ad5","tier":6},"42":{"name":"42단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":40000000,"color":"#e53e3e","tier":6},"43":{"name":"43단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":50000000,"color":"#ff4500","tier":6},"44":{"name":"44단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":63500000,"color":"#0088ff","tier":6},"45":{"name":"45단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":80000000,"color":"#cbd5e1","tier":6},"46":{"name":"46단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":105000000,"color":"#319795","tier":6},"47":{"name":"47단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":135000000,"color":"#f59e0b","tier":6},"48":{"name":"48단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":175000000,"color":"#7000ff","tier":6},"49":{"name":"49단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":230000000,"color":"#00ff66","tier":6},"50":{"name":"50단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":300000000,"color":"#ff00ea","tier":6},"51":{"name":"51단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":415000000,"color":"#ccff00","tier":6},"52":{"name":"52단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":570000000,"color":"#ff6600","tier":6},"53":{"name":"53단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":790000000,"color":"#00f0ff","tier":6},"54":{"name":"54단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":1100000000,"color":"#ffe600","tier":6},"55":{"name":"55단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":1500000000,"color":"#ff00aa","tier":6},"56":{"name":"56단계 : 자이온트랜스센던탈 앱솔루트 가디언","desc":"차원의 벽을 넘어 초월적인 신위(神威)를 뿜어내는 가디언의 경지.","price":2200000000,"color":"#ffffff","tier":6},"57":{"name":"57단계 : 하이퍼 자이온 디바인 코어","desc":"자이온이라는 존재 자체가 우주의 신성한 법칙으로 등용한 상태.","price":3200000000,"color":"#7b00ff","tier":6},"58":{"name":"58단계 : 자이온옴니버스 마스터피스 악취","desc":"모든 평행세계를 통틀어 단 하나만 존재하는 완벽한 걸작 악취.","price":4700000000,"color":"#00ffff","tier":6},"59":{"name":"59단계 : 이터널 제네시스 울티마자이온s","desc":"우주의 탄생과 종말을 영원히 반복하게 만드는 궁극의 고리.","price":6850000000,"color":"#ff4500","tier":6},"60":{"name":"60단계 : ★심플 성지온★","desc":"문일중 3학년 5반의 냄새를 담당하는 그저 GOA.T","price":10000000000,"color":"#ffffff","tier":6}},"PROB_TABLE":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0],"55":[7.0,39.0,49.0,5.0],"56":[6.5,39.0,49.5,5.0],"57":[6.0,39.0,50.0,5.0],"58":[5.5,39.0,50.5,5.0],"59":[5.0,39.0,51.0,5.0]},"CRITICAL_RATE":0.05};
+/* 지온냄새 강화하기 V17.80 · UNIQUE LAB CORE EFFECTS · COMPACT CORE METRICS · MAX STAGE 55 */
+const GAME_DATA = {"POINT_REWARD_TABLE":{"1":100,"2":150,"3":200,"4":300,"5":500,"6":700,"7":900,"8":1200,"9":1500,"10":2000,"11":2500,"12":3000,"13":3500,"14":4000,"15":5000,"16":6000,"17":7000,"18":8000,"19":9000,"20":10000,"21":12000,"22":14000,"23":16000,"24":18000,"25":20000,"26":23000,"27":26000,"28":30000,"29":35000,"30":40000,"31":45000,"32":50000,"33":60000,"34":70000,"35":80000,"36":90000,"37":105000,"38":120000,"39":135000,"40":150000,"41":165000,"42":180000,"43":195000,"44":210000,"45":225000,"46":240000,"47":255000,"48":270000,"49":285000,"50":300000,"51":315000,"52":330000,"53":345000,"54":360000,"55":375000},"SMELL_DB":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":500,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":800,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":1200,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":1900,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":4100,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":5700,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":7900,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":11000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":15000,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":20000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":26000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":34000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":45000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":60000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":76000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":97000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":125000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":155000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":200000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":260000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":340000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":440000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":575000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":750000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":955000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":1200000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":1550000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":1950000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":2500000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":3150000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":4000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":5000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":6350000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":8000000,"color":"#ffffff","tier":6},"36":{"name":"36단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":10000000,"color":"#00ffff","tier":6},"37":{"name":"37단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":12500000,"color":"#ffffff","tier":6},"38":{"name":"38단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":16000000,"color":"#ffaa00","tier":6},"39":{"name":"39단계 : 차원왜곡 자이온 타임루프 찌든내","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":20000000,"color":"#9b2c2c","tier":6},"40":{"name":"40단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":25000000,"color":"#38a169","tier":6},"41":{"name":"41단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":31500000,"color":"#805ad5","tier":6},"42":{"name":"42단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":40000000,"color":"#e53e3e","tier":6},"43":{"name":"43단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":50000000,"color":"#ff4500","tier":6},"44":{"name":"44단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":63500000,"color":"#0088ff","tier":6},"45":{"name":"45단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":80000000,"color":"#cbd5e1","tier":6},"46":{"name":"46단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":105000000,"color":"#319795","tier":6},"47":{"name":"47단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":135000000,"color":"#f59e0b","tier":6},"48":{"name":"48단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":175000000,"color":"#7000ff","tier":6},"49":{"name":"49단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":230000000,"color":"#00ff66","tier":6},"50":{"name":"50단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":300000000,"color":"#ff00ea","tier":6},"51":{"name":"51단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":415000000,"color":"#ccff00","tier":6},"52":{"name":"52단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":570000000,"color":"#ff6600","tier":6},"53":{"name":"53단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":790000000,"color":"#00f0ff","tier":6},"54":{"name":"54단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":1100000000,"color":"#ffe600","tier":6},"55":{"name":"55단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":1500000000,"color":"#ff00aa","tier":6}},"PROB_TABLE":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0]},"CRITICAL_RATE":0.05};
 
 /* V17.49 · MOBILE PERFORMANCE PROFILE
    Keeps desktop visuals intact while reducing GPU/DOM pressure on phones. */
@@ -81,9 +81,9 @@ const CRITICAL_RATE = GAME_DATA.CRITICAL_RATE;
 const POINTS = GAME_DATA.POINT_REWARD_TABLE;
 const MAX_LEVEL = 55;
 const SHIELD_MAX = 6;
-const ENHANCE_COST = {"0":20,"1":20,"2":30,"3":50,"4":70,"5":100,"6":150,"7":200,"8":300,"9":400,"10":500,"11":700,"12":900,"13":1200,"14":1600,"15":2100,"16":2800,"17":3700,"18":4700,"19":6100,"20":7900,"21":10500,"22":13500,"23":18000,"24":23500,"25":30500,"26":40500,"27":52000,"28":65000,"29":83000,"30":110000,"31":140000,"32":175000,"33":225000,"34":290000,"35":370000,"36":470000,"37":610000,"38":765000,"39":970000,"40":1250000,"41":1600000,"42":2000000,"43":2550000,"44":3300000,"45":4300000,"46":5600000,"47":7400000,"48":9900000,"49":13000000,"50":18000000,"51":25000000,"52":34000000,"53":47000000,"54":65000000,"55":65000000,"56":65000000,"57":65000000,"58":65000000,"59":65000000,"60":65000000};
+const WARP_LEVELS = [10,15,20,25,30,35,40,45];
+const ENHANCE_COST = {"0":20,"1":20,"2":30,"3":50,"4":70,"5":100,"6":150,"7":200,"8":300,"9":400,"10":500,"11":700,"12":900,"13":1200,"14":1600,"15":2100,"16":2800,"17":3700,"18":4700,"19":6100,"20":7900,"21":10500,"22":13500,"23":18000,"24":23500,"25":30500,"26":40500,"27":52000,"28":65000,"29":83000,"30":110000,"31":140000,"32":175000,"33":225000,"34":290000,"35":370000,"36":470000,"37":610000,"38":765000,"39":970000,"40":1250000,"41":1600000,"42":2000000,"43":2550000,"44":3300000,"45":4300000,"46":5600000,"47":7400000,"48":9900000,"49":13000000,"50":18000000,"51":25000000,"52":34000000,"53":47000000,"54":65000000};
 
-const LAB_PART_EQUIP_MAX = 9;
 const LEGACY_AUX_TO_RESEARCH = {
   luck:"luckCore",
   freeze:"freezeMatrix",
@@ -91,9 +91,7 @@ const LEGACY_AUX_TO_RESEARCH = {
   perfume:"recoveryCatalyst",
   tear:"frenzyInjector"
 };
-const LEGACY_V13_PRICE = {"0":0,"1":150,"2":400,"3":600,"4":800,"5":3000,"6":3500,"7":6100,"8":10000,"9":20000,"10":35100,"11":160000,"12":350000,"13":1000000,"14":3000000,"15":7500000,"16":14200000,"17":20000000,"18":30000000,"19":47500000,"20":68300000,"21":101000000,"22":160000000,"23":230000000,"24":300000000,"25":400000000,"26":1800000000,"27":2500000000,"28":5500000000,"29":10500000000,"30":20000000000,"31":45000000000,"32":90000000000,"33":200000000000,"34":500000000000,"35":1000000000000,"36":2500000000000,"37":6000000000000,"38":15000000000000,"39":35000000000000,"40":80000000000000,"41":180000000000000,"42":400000000000000,"43":900000000000000,"44":2000000000000000,"45":4500000000000000,"46":10000000000000000,"47":22000000000000000,"48":50000000000000000,"49":120000000000000000,"50":280000000000000000,"51":600000000000000000,"52":1300000000000000000,"53":3000000000000000000,"54":7000000000000000000,"55":15000000000000000000,"56":35000000000000000000,"57":80000000000000000000,"58":200000000000000000000,"59":500000000000000000000,"60":1000000000000000000000};
-const MILESTONE_STAGES = [];
-const STAGE_BONUSES = {};
+const LEGACY_V13_PRICE = {"0":0,"1":150,"2":400,"3":600,"4":800,"5":3000,"6":3500,"7":6100,"8":10000,"9":20000,"10":35100,"11":160000,"12":350000,"13":1000000,"14":3000000,"15":7500000,"16":14200000,"17":20000000,"18":30000000,"19":47500000,"20":68300000,"21":101000000,"22":160000000,"23":230000000,"24":300000000,"25":400000000,"26":1800000000,"27":2500000000,"28":5500000000,"29":10500000000,"30":20000000000,"31":45000000000,"32":90000000000,"33":200000000000,"34":500000000000,"35":1000000000000,"36":2500000000000,"37":6000000000000,"38":15000000000000,"39":35000000000000,"40":80000000000000,"41":180000000000000,"42":400000000000000,"43":900000000000000,"44":2000000000000000,"45":4500000000000000,"46":10000000000000000,"47":22000000000000000,"48":50000000000000000,"49":120000000000000000,"50":280000000000000000,"51":600000000000000000,"52":1300000000000000000,"53":3000000000000000000,"54":7000000000000000000,"55":15000000000000000000};
 const RESEARCH_MAX=5;
 const RESEARCH_DATA={
   catalyst:{icon:"🧬",slot:"CORE",name:"악취 촉매 코어",desc:"강화 성공 확률을 높이는 고농축 촉매 코어.",effect:"성공 확률",unit:"+0.5%p",cost:[3000,9000,27000,80000,240000]},
@@ -105,27 +103,16 @@ const RESEARCH_DATA={
   precision:{icon:"🎯",slot:"OPTIC",name:"정밀 판정 렌즈",desc:"일반 강화의 크리티컬 확률을 높입니다. 안정/광폭 강화에는 적용되지 않으며 50단계부터 크리티컬이 비활성입니다.",effect:"크리티컬",unit:"+1%p",cost:[2800,8400,25200,75600,226800]},
   shieldTech:{icon:"🔧",slot:"SHIELD",name:"방지권 재생 모듈",desc:"방지권 제작 공정을 개선해 돈·포인트 구매 가격을 낮춥니다.",effect:"방지권 가격",unit:"-4%",cost:[2400,7200,21600,64800,194400]},
   warpTech:{icon:"🧭",slot:"WARP",name:"차원 고정 코어",desc:"워프 직후 첫 유료 강화의 성공 확률을 높입니다. 워프 비용이나 판매 금액에는 영향을 주지 않습니다.",effect:"워프 후 성공",unit:"+1.5%p",cost:[3200,9600,28800,86400,259200]},
-  fusion:{icon:"🧪",slot:"FUSION",name:"융합 연산 컨트롤러",desc:"강화 장치의 연산을 통합해 강화 비용을 줄이고 실패 시 폭주 에너지 회수 효율을 높입니다.",effect:"융합 효율",unit:"강화비 -1% · 폭주 +3%",cost:[2100,6300,18900,56700,170100]},
-  luckCore:{icon:"🍀",slot:"LUCK",name:"확률 촉매 코어",desc:"기존 확률 촉매 앰플을 영구 파츠로 통합. 장착 중 강화 성공 확률이 상승합니다.",effect:"성공 확률",unit:"+0.6%p",cost:[3500,10500,31500,94500,283500]},
+  fusion:{icon:"🧪",slot:"FUSION",name:"실드 순환 컨트롤러",desc:"방지권이 발동했을 때 일정 확률로 방지권을 소모하지 않고 재사용할 수 있게 합니다.",effect:"방지권 보존",unit:"+8%",cost:[2100,6300,18900,56700,170100]},
+  luckCore:{icon:"🍀",slot:"LUCK",name:"행운 환급 코어",desc:"강화에 성공하면 실제로 지불한 강화 비용 일부를 즉시 돌려받습니다.",effect:"성공 비용 환급",unit:"+5%",cost:[3500,10500,31500,94500,283500]},
   freezeMatrix:{icon:"🧊",slot:"STABLE",name:"단계 안정 매트릭스",desc:"기존 단계 안정제를 영구 파츠로 통합. 하락 확률 일부를 유지 확률로 바꿉니다.",effect:"하락 방어",unit:"8% 변환",cost:[3200,9600,28800,86400,259200]},
   volatileCore:{icon:"💣",slot:"OUTPUT",name:"고출력 변이 코어",desc:"기존 변이 코어를 영구 파츠로 통합. 일반 강화 성공 시 일정 확률로 +1단계를 추가 획득합니다. 안정/광폭 강화에는 적용되지 않습니다.",effect:"추가 상승",unit:"+4% 확률",cost:[4500,13500,40500,121500,364500]},
-  recoveryCatalyst:{icon:"🛡️",slot:"STABLE",name:"안정 압축 모듈",desc:"안정 강화 전용 압축 회로. 안정 강화의 추가 비용 부담을 줄여 더 자주 사용할 수 있게 합니다.",effect:"안정 강화 비용",unit:"-5%",cost:[2600,7800,23400,70200,210600]},
-  frenzyInjector:{icon:"🔥",slot:"INJECT",name:"폭주 촉진 인젝터",desc:"기존 폭주 촉진제를 영구 파츠로 통합. 실패 계열 판정의 폭주 충전량을 늘립니다.",effect:"폭주 충전",unit:"+7%",cost:[3000,9000,27000,81000,243000]}
+  recoveryCatalyst:{icon:"🛡️",slot:"STABLE",name:"안정 공명 모듈",desc:"안정 강화에 성공했을 때 일정 확률로 콤보를 1회 추가 적립합니다.",effect:"안정 성공 추가 콤보",unit:"+12% 확률",cost:[2600,7800,23400,70200,210600]},
+  frenzyInjector:{icon:"🔥",slot:"INJECT",name:"폭주 연장 인젝터",desc:"냄새 폭주 이벤트가 발동할 때 일정 확률로 효과 지속 횟수를 1회 추가합니다.",effect:"폭주 지속 연장",unit:"+20% 확률",cost:[3000,9000,27000,81000,243000]}
 };
 const FRENZY_MAX=100;
 const FRENZY_EVENT_TYPES=['surge','success','guard','free','points','critical'];
-function emptyStageChoices(){return {};}
 function emptyResearch(){return Object.fromEntries(Object.keys(RESEARCH_DATA).map(key=>[key,0]));}
-function emptyLabPresets(){return [null,null,null];}
-function defaultLabPresetNames(){return ['프리셋 1','프리셋 2','프리셋 3'];}
-function normalizeLabPresetName(value,index){
-  const fallback=defaultLabPresetNames()[index]||`프리셋 ${index+1}`;
-  const name=String(value??'').replace(/[\r\n\t]+/g,' ').trim().slice(0,20);
-  return name||fallback;
-}
-function escapeHTML(value){
-  return String(value??'').replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[ch]));
-}
 function normalizeUiSettings(input){
   const allowed=['high','medium','low'];
   return {
@@ -140,8 +127,8 @@ const INITIAL = {
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
   enhanceSuccesses:0,enhanceFailures:0,criticalCount:0,destroyCount:0,
   uiSettings:normalizeUiSettings({graphics:'high',motion:'high'}),
-  runData:{level:0,prev_level:0,max_level:0,money:"50000",status:"READY",shield:0,reviveTickets:0,combo:0,best_combo:0,last_aux_effect:"",stageChoices:emptyStageChoices(),research:emptyResearch(),equippedParts:[],labPresets:emptyLabPresets(),labPresetNames:defaultLabPresetNames(),frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,
-    unlocked_warps:{10:false,20:false,30:false,40:false,45:false,50:false}}
+  runData:{level:0,prev_level:0,max_level:0,money:"50000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,
+    unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
 let state = loadState();
@@ -149,9 +136,7 @@ applyUserQualitySettings();
 let toastTimer = null;
 let actionLocked = false;
 let currentGameView = "enhance";
-let lastSceneObjectKey = "";
-const feedbackSettings = { sound:false, haptic:false };
-let audioCtx = null;
+let selectedLabPartKey = Object.keys(RESEARCH_DATA)[0] || "catalyst";
 let devMode = false;
 let delPressCount = 0;
 let delPressTimer = null;
@@ -187,13 +172,12 @@ function normalizeRunData(d){
 
   const out=Object.assign(clone(INITIAL.runData),d||{});
   out.money=toMoneyInt(out.money).toString();
-  out.unlocked_warps=Object.assign(clone(INITIAL.runData.unlocked_warps),out.unlocked_warps||{});
+  out.unlocked_warps=Object.fromEntries(WARP_LEVELS.map(w=>[w,!!out.unlocked_warps?.[w]]));
   out.level=Math.max(0,Math.min(MAX_LEVEL,Number(out.level)||0)); out.prev_level=Math.max(0,Math.min(MAX_LEVEL,Number(out.prev_level)||0));
-  out.max_level=Math.max(out.level,Math.min(MAX_LEVEL,Number(out.max_level)||0)); for(const w of [10,20,30,40,45,50]) if(out.max_level>=w||out.level>=w) out.unlocked_warps[w]=true; out.shield=Math.max(0,Math.min(SHIELD_MAX,Number(out.shield)||0));
-  delete out.tears; delete out.pity_count; delete out.feverFree;
+  out.max_level=Math.max(out.level,Math.min(MAX_LEVEL,Number(out.max_level)||0)); for(const w of WARP_LEVELS) if(out.max_level>=w||out.level>=w) out.unlocked_warps[w]=true; out.shield=Math.max(0,Math.min(SHIELD_MAX,Number(out.shield)||0));
+  delete out.tears; delete out.pity_count; delete out.feverFree; delete out.reviveTickets; delete out.stageChoices;
   out.combo=Math.max(0,Number(out.combo)||0); out.best_combo=Math.max(out.combo,Number(out.best_combo)||0);
   if(out.status==='PITY_SUCCESS')out.status='SUCCESS';
-  out.stageChoices=emptyStageChoices();
 
   out.research=Object.assign(emptyResearch(),out.research||{});
   if(Number(out.research.auxlab)>0) out.research.fusion=Math.max(Number(out.research.fusion)||0,Number(out.research.auxlab)||0);
@@ -207,15 +191,9 @@ function normalizeRunData(d){
 
   const validOwned=Object.keys(RESEARCH_DATA).filter(key=>out.research[key]>0);
   const requested=hadExplicitEquipped?d.equippedParts:validOwned;
-  out.equippedParts=[...new Set((requested||[]).filter(key=>RESEARCH_DATA[key]&&out.research[key]>0))].slice(0,LAB_PART_EQUIP_MAX);
-  const presetSource=Array.isArray(out.labPresets)?out.labPresets:emptyLabPresets();
-  out.labPresets=Array.from({length:3},(_,i)=>{
-    const preset=presetSource[i];
-    if(!Array.isArray(preset))return null;
-    return [...new Set(preset.filter(key=>RESEARCH_DATA[key]&&out.research[key]>0))].slice(0,LAB_PART_EQUIP_MAX);
-  });
-  const presetNames=Array.isArray(out.labPresetNames)?out.labPresetNames:defaultLabPresetNames();
-  out.labPresetNames=Array.from({length:3},(_,i)=>normalizeLabPresetName(presetNames[i],i));
+  out.equippedParts=[...new Set((requested||[]).filter(key=>RESEARCH_DATA[key]&&out.research[key]>0))];
+  delete out.labPresets;
+  delete out.labPresetNames;
 
   out.frenzyGauge=Math.max(0,Math.min(FRENZY_MAX,Number(out.frenzyGauge)||0));
   const ev=out.frenzyEvent;if(!ev||!FRENZY_EVENT_TYPES.includes(ev.type)||Number(ev.turns||0)<=0)out.frenzyEvent=null;else out.frenzyEvent={type:ev.type,turns:Math.max(1,Math.min(6,Number(ev.turns)||1)),label:String(ev.label||''),desc:String(ev.desc||'')};
@@ -243,7 +221,7 @@ function cleanRemovedSystems(s){
   delete s.discoveredSmells; delete s.collectionRewards; delete s.tower;
   delete s.achievements; delete s.unlockedTitles; delete s.selectedTitle;
   delete s.raid;
-  if(s.runData){delete s.runData.pity_count;delete s.runData.feverFree;}
+  if(s.runData){delete s.runData.pity_count;delete s.runData.feverFree;delete s.runData.labPresets;delete s.runData.labPresetNames;}
   return s;
 }
 function loadState(){
@@ -264,7 +242,7 @@ function loadState(){
     const maxUnified=Math.min(MAX_LEVEL,Math.max(Number(a.max_level)||0,hadSecond?35+bMax:0)),currentUnified=Math.min(MAX_LEVEL,Number(saved.currentSeason)===2?35+bLevel:(Number(a.level)||0)),src=Number(saved.currentSeason)===2?b:a;
     const legacyAux=mergeInventory(a.auxInventory,b.auxInventory);
     s.runData=normalizeRunData(Object.assign({},src,{level:currentUnified,prev_level:currentUnified,max_level:maxUnified,auxInventory:legacyAux}));
-    const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of [10,20,30,40,45,50])if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
+    const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of WARP_LEVELS)if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
     s.uiSettings=normalizeUiSettings(saved.uiSettings);
     s.schemaVersion=30;return cleanRemovedSystems(s);
   }catch(e){return clone(INITIAL);}
@@ -328,12 +306,11 @@ function comboEffectText(v=combo()){
   const guard=comboDestroyProtection(c);if(guard)parts.push(`파괴 -${guard}%p`);
   return parts.join(' · ')||'성공을 이어가면 콤보 보너스가 해금됩니다';
 }
-function stageBonusCounts(){return {stable:0,fury:0,merchant:0};}
 function researchLevel(key,d=state.runData){return Math.max(0,Math.min(RESEARCH_MAX,Number(d?.research?.[key])||0));}
 function equippedResearchKeys(d=state.runData){
   const src=Array.isArray(d?.equippedParts)?d.equippedParts:[];
   const keys=[...new Set(src.map(String).filter(key=>RESEARCH_DATA[key]&&researchLevel(key,d)>0))];
-  return d?._allowPreviewOvercap?keys:keys.slice(0,LAB_PART_EQUIP_MAX);
+  return keys;
 }
 function isResearchEquipped(key,d=state.runData){return researchLevel(key,d)>0&&equippedResearchKeys(d).includes(String(key));}
 function activeResearchLevel(key,d=state.runData){return isResearchEquipped(key,d)?researchLevel(key,d):0;}
@@ -352,18 +329,16 @@ function criticalRateFor(d=state.runData,lvl=level()){
   return Math.min(.50,r);
 }
 function resetCombo(d=state.runData){ d.combo=0; }
-function baseEnhanceCost(lvl){ return toMoneyInt(ENHANCE_COST[Number(lvl)] ?? ENHANCE_COST[55]); }
+function baseEnhanceCost(lvl){ return toMoneyInt(ENHANCE_COST[Number(lvl)] ?? ENHANCE_COST[MAX_LEVEL-1]); }
 function enhanceCost(lvl){ return baseEnhanceCost(lvl); }
 function effectiveEnhanceCost(mode="normal",d=state.runData){
   let cost=enhanceCost(d.level);
   const comboDiscount=comboCostDiscount(d.combo||0);if(comboDiscount>0)cost=cost*BigInt(100-comboDiscount)/100n;
   if(mode==='stable'){
     cost=(cost*18n+9n)/10n;
-    const stableCut=Math.max(0,100-activeResearchLevel('recoveryCatalyst',d)*5);
-    cost=(cost*BigInt(stableCut)+99n)/100n;
   }
   if(mode==='berserk') cost*=2n;
-  const economy=Math.max(0,100-activeResearchLevel('economy',d)*2-activeResearchLevel('fusion',d));
+  const economy=Math.max(0,100-activeResearchLevel('economy',d)*2);
   cost=(cost*BigInt(economy)+99n)/100n;
   if(frenzyEventIs('free',d)) cost=(cost*50n+99n)/100n;
   return cost;
@@ -394,7 +369,6 @@ function effectiveProbabilities(base,opts={}){
   let [success,down,destroy,hold]=finalBalanceProbabilities(base,opts.level ?? level());
   const shiftToSuccess=(amount)=>{let add=Math.min(amount,100-success);success+=add;for(const name of ['destroy','down','hold']){if(add<=0)break;const cur=name==='destroy'?destroy:name==='down'?down:hold,used=Math.min(cur,add);add-=used;if(name==='destroy')destroy-=used;else if(name==='down')down-=used;else hold-=used;}};
   shiftToSuccess(activeResearchLevel('catalyst',d)*.5);
-  shiftToSuccess(activeResearchLevel('luckCore',d)*.6);
   const warpBoost=Math.max(0,Math.min(RESEARCH_MAX,Number(d.warpBoostLevel)||0))*1.5;if(warpBoost>0)shiftToSuccess(warpBoost);
   const freezeRate=activeResearchLevel('freezeMatrix',d)*.08;if(freezeRate>0&&down>0){const moved=down*freezeRate;down-=moved;hold+=moved;}
   const safety=activeResearchLevel('safety',d)*.5;if(safety>0){const moved=Math.min(destroy,safety);destroy-=moved;hold+=moved;}
@@ -424,8 +398,11 @@ function activateRandomFrenzyEvent(d=state.runData){
     points:{turns:3,label:'⭐ 데이터 폭증',desc:'성공 포인트 x2'},
     critical:{turns:3,label:'💥 임계 공명',desc:'크리티컬 확률 +10%p'}
   }[type];
-  d.frenzyEvent={type,turns:cfg.turns,label:cfg.label,desc:cfg.desc};
-  return {type,label:cfg.label,desc:cfg.desc,turns:cfg.turns,instant:false};
+  const extendChance=activeResearchLevel('frenzyInjector',d)*.20;
+  const extended=extendChance>0&&Math.random()<extendChance;
+  const turns=cfg.turns+(extended?1:0),desc=cfg.desc+(extended?' · 인젝터 연장 +1회':'');
+  d.frenzyEvent={type,turns,label:cfg.label,desc};
+  return {type,label:cfg.label,desc,turns,instant:false};
 }
 function consumeFrenzyEventTurn(previousEvent,d=state.runData){
   if(!previousEvent||!d.frenzyEvent||d.frenzyEvent.type!==previousEvent.type)return;
@@ -444,7 +421,7 @@ function addFrenzyCharge(amount,d=state.runData){
 function frenzyChargeForStatus(status,d=state.runData){
   const gainMap={HOLD:25,FAILED:30,SHIELD_SAVED:38,DESTROYED:50};
   const baseGain=gainMap[status]||0;
-  const chargeMult=1+activeResearchLevel('capacitor',d)*.08+activeResearchLevel('frenzyInjector',d)*.07+activeResearchLevel('fusion',d)*.03;
+  const chargeMult=1+activeResearchLevel('capacitor',d)*.08;
   return baseGain>0?Math.max(1,Math.round(baseGain*chargeMult)):0;
 }
 function updateFrenzyAfterEnhance(status,previousEvent,d=state.runData){
@@ -550,7 +527,7 @@ function registerEnhanceFailure(d){
   if(canPreserve&&chance>0&&Math.random()<chance){d._comboPreserved=true;return true;}
   d._comboPreserved=false;resetCombo(d);return false;
 }
-function unlockReachedWarps(d=state.runData){for(const w of [10,20,30,40,45,50])if(d.max_level>=w||d.level>=w)d.unlocked_warps[w]=true;}
+function unlockReachedWarps(d=state.runData){for(const w of WARP_LEVELS)if(d.max_level>=w||d.level>=w)d.unlocked_warps[w]=true;}
 
 function runPostEnhanceFlow(prevLvl,newLvl,done=()=>{}){
   setActionLocked(false);done();
@@ -763,12 +740,22 @@ function enhance(mode="normal"){
       add+=1;appendAuxEffect("💣 변이 코어 추가 +1단계");
     }
     d.level=Math.min(MAX_LEVEL,d.level+add);d.status=status;d.max_level=Math.max(d.max_level,d.level);state.enhanceSuccesses++;if(isCritical)state.criticalCount++;
-    const mult=registerEnhanceSuccess(d);
+    let mult=registerEnhanceSuccess(d);
+    const stableResonanceLv=activeResearchLevel('recoveryCatalyst',d);
+    if(mode==='stable'&&stableResonanceLv>0&&Math.random()<stableResonanceLv*.12){
+      d.combo=(Number(d.combo)||0)+1;d.best_combo=Math.max(Number(d.best_combo)||0,d.combo);mult=comboMultiplier(d.combo);appendAuxEffect('🛡️ 안정 공명 · 콤보 +1');
+    }
     if(d.last_combo_milestone){appendAuxEffect(`🔥 ${comboTierMeta(d.combo).name} 해금 · ${comboEffectText(d.combo)}`);delete d.last_combo_milestone;}
     rewardPoints(d.level,mult);
   };
   const destroyResult=()=>{
-    if(d.shield>0){d.shield--;d.status="SHIELD_SAVED";state.enhanceFailures++;appendAuxEffect(mode==='berserk'?'☠️ 광폭 폭발 · 방지권 생존':'');}
+    if(d.shield>0){
+      const preserveChance=activeResearchLevel('fusion',d)*.08,preserved=preserveChance>0&&Math.random()<preserveChance;
+      if(!preserved)d.shield--;
+      d.status="SHIELD_SAVED";state.enhanceFailures++;
+      if(preserved)appendAuxEffect('🧪 실드 순환 · 방지권 보존');
+      appendAuxEffect(mode==='berserk'?'☠️ 광폭 폭발 · 방지권 생존':'');
+    }
     else{d.level=0;d.status="DESTROYED";state.enhanceFailures++;state.destroyCount++;appendAuxEffect(mode==='berserk'?'☠️ 광폭 강화 폭발':'');}
     if(registerEnhanceFailure(d))appendAuxEffect('🔗 연쇄 보존 · 콤보 유지');
   };
@@ -787,6 +774,13 @@ function enhance(mode="normal"){
     }
     else if(r<destroy)destroyResult();
     else{d.status="HOLD";state.enhanceFailures++;if(registerEnhanceFailure(d))appendAuxEffect('🔗 연쇄 보존 · 콤보 유지');}
+  }
+  if(['SUCCESS','CRITICAL'].includes(d.status)&&cost>0n){
+    const refundPct=activeResearchLevel('luckCore',d)*5;
+    if(refundPct>0){
+      const refund=(cost*BigInt(refundPct)+99n)/100n;
+      if(refund>0n){setMoney(money()+refund);appendAuxEffect(`🍀 행운 환급 +${formatGold(refund)}`);}
+    }
   }
   if(paidAttempt&&warpBoostAtStart>0)d.warpBoostLevel=0;
   if(d.level===0)d.warpBoostLevel=0;
@@ -844,7 +838,7 @@ function render(){
   const mainStage=document.getElementById("threeWrap"),actionGrid=document.getElementById("mainActionGrid");
   if(mainStage)mainStage.classList.remove("hidden");if(actionGrid)actionGrid.classList.remove("hidden");
   const comboLabel=document.getElementById('comboLabel'),auxLabel=document.getElementById('auxLabel');
-  if(comboLabel)comboLabel.textContent='🔥 연속 콤보';if(auxLabel)auxLabel.textContent='🔬 장착 파츠';
+  if(comboLabel)comboLabel.textContent='🔥 연속 콤보';if(auxLabel)auxLabel.textContent='🔬 연구 효과';
   document.getElementById("money").textContent=formatGoldCompact(money());document.getElementById("points").textContent=state.points.toLocaleString("ko-KR")+"P";document.getElementById("shield").textContent=shield()+` / ${SHIELD_MAX}개`;
   const frenzyMeter=document.getElementById('frenzyMeter'),frenzyFill=document.getElementById('frenzyFill'),frenzyValue=document.getElementById('frenzyValue'),frenzyHint=document.getElementById('frenzyHint'),activeFrenzy=currentFrenzyEvent(sd);
   const frenzyPct=Math.max(0,Math.min(FRENZY_MAX,Number(sd.frenzyGauge)||0));
@@ -859,11 +853,11 @@ function render(){
   if(comboMeter){comboMeter.dataset.comboTier=comboNow>=15?'max':comboNow>=10?'over':comboNow>=5?'fever':comboNow>=2?'chain':'ready';}
   document.body.classList.toggle('combo-fever',comboNow>=5);document.body.classList.toggle('combo-over-fever',comboNow>=10);document.body.classList.toggle('combo-max-fever',comboNow>=15);document.body.classList.toggle("smell-frenzy",comboNow>=5);
   const modBar=document.getElementById('runModifierBar');if(modBar){const tags=[];const ev=currentFrenzyEvent(sd);if(ev)tags.push(`🔥 ${ev.label.replace(/^\S+\s*/,'')} ${ev.turns}회`);if(Number(sd.warpBoostLevel)>0)tags.push(`🧭 워프 보정 · 다음 유료 강화 성공 +${(Number(sd.warpBoostLevel)*1.5).toFixed(1)}%p`);modBar.innerHTML=tags.map(t=>`<span>${t}</span>`).join('');modBar.classList.toggle('hidden',!tags.length);}
-  const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount} / ${LAB_PART_EQUIP_MAX}개`;if(activeHint){activeHint.textContent=equippedCount>=LAB_PART_EQUIP_MAX?"장착 슬롯 가득 참":"연구소에서 파츠 장착 가능";activeHint.classList.remove("hidden");}
+  const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount}개 적용`;if(activeHint){activeHint.textContent='보유 파츠 자유 장착';activeHint.classList.remove('hidden');}
   const modeTitle=document.getElementById("modeTitle"),probTitle=document.querySelector(".prob-title"),probBox=document.getElementById("probBox"),nextReward=document.getElementById("nextReward");
   if(modeTitle){modeTitle.textContent="";modeTitle.classList.add("hidden");}
   if(probTitle)probTitle.innerHTML=`📊 현재 강화 확률 (<span id="probLevel">${l}</span>단계)`;
-  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,{data:sd}),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboSuccessNow=comboSuccessBoost(sd.combo),comboProbNote=(comboGuardNow>0||comboSuccessNow>0)?`<div class="prob-aux combo-guard-note">🔥 콤보 효과${comboSuccessNow?` · 성공 +${comboSuccessNow}%p`:''}${comboGuardNow?` · 파괴 -${comboGuardNow}%p`:''}</div>`:'',labNotes=[],luckLv=activeResearchLevel('luckCore',sd),freezeLv=activeResearchLevel('freezeMatrix',sd);if(luckLv)labNotes.push(`🍀 성공 +${(luckLv*.6).toFixed(1)}%p`);if(freezeLv)labNotes.push(`🧊 하락 ${freezeLv*8}% 유지 전환`);if(Number(sd.warpBoostLevel)>0)labNotes.push(`🧭 워프 보정 성공 +${(Number(sd.warpBoostLevel)*1.5).toFixed(1)}%p`);const auxProbNote=labNotes.length?`<div class="prob-aux">${labNotes.join(' · ')}</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
+  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,{data:sd}),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboSuccessNow=comboSuccessBoost(sd.combo),comboProbNote=(comboGuardNow>0||comboSuccessNow>0)?`<div class="prob-aux combo-guard-note">🔥 콤보 효과${comboSuccessNow?` · 성공 +${comboSuccessNow}%p`:''}${comboGuardNow?` · 파괴 -${comboGuardNow}%p`:''}</div>`:'',labNotes=[],catalystLv=activeResearchLevel('catalyst',sd),freezeLv=activeResearchLevel('freezeMatrix',sd);if(catalystLv)labNotes.push(`🧬 성공 +${(catalystLv*.5).toFixed(1)}%p`);if(freezeLv)labNotes.push(`🧊 하락 ${freezeLv*8}% 유지 전환`);if(Number(sd.warpBoostLevel)>0)labNotes.push(`🧭 워프 보정 성공 +${(Number(sd.warpBoostLevel)*1.5).toFixed(1)}%p`);const auxProbNote=labNotes.length?`<div class="prob-aux">${labNotes.join(' · ')}</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
   if(probBox)probBox.innerHTML=`<div class="prob-row success-row"><span><i></i>성공</span><b class="success">${p[0]}%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">${p[1]}%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">${p[2]}%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">${p[3]}%</b></div><div class="prob-critical ${l>=50?'disabled-critical':''}">${critCopy} <b>${critPct}%</b></div>${comboProbNote}${auxProbNote}`;
   if(nextReward){nextReward.textContent="";nextReward.classList.add("hidden");}
   const sb=document.getElementById("sellBtn");if(sb)sb.textContent="판매하기";syncActionButtons();renderSceneText();renderEnhanceCard();
@@ -1174,9 +1168,9 @@ function closeModal(){
   closeModal._timer=setTimeout(()=>{m.classList.add("hidden");m.classList.remove("is-closing");},230);
 }
 function shopHTML(){
-  const l=level(),sh=shield(),moneyCost=shieldMoneyCost(l),pointCost=shieldPointCost(l),minShield=15,d=state.runData,warpLevels=[10,20,30,40,45,50];
+  const l=level(),sh=shield(),moneyCost=shieldMoneyCost(l),pointCost=shieldPointCost(l),minShield=15,d=state.runData,warpLevels=WARP_LEVELS;
   const warps=warpLevels.map(w=>{const unlocked=!!d.unlocked_warps[w],passed=l>=w,moneyPrice=warpMoneyCost(w,d),pointPrice=warpPointCost(w,d),stateClass=!unlocked?'locked':passed?'passed':'ready',badge=!unlocked?'LOCKED':passed?'PASSED':'READY';return `<div class="warp-card ${stateClass}"><div class="warp-card-top"><div class="warp-target"><span class="warp-icon">${unlocked?'🚀':'🔒'}</span><div><small>TARGET STAGE</small><b>${w}단계 워프</b></div></div><span class="warp-badge">${badge}</span></div><div class="warp-route"><span>현재 +${l}</span><i></i><strong>+${w}</strong></div><div class="warp-costs"><div><small>💰 MONEY</small><b>${formatGold(moneyPrice)}</b></div><div><small>⭐ POINT</small><b>${pointPrice.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn warp-buy money-buy" data-buy-warp="money" data-warp="${w}" ${(!unlocked||passed||money()<moneyPrice)?'disabled':''}>💰 돈으로 워프</button><button class="glass-btn warp-buy point-buy" data-buy-warp="point" data-warp="${w}" ${(!unlocked||passed||state.points<pointPrice)?'disabled':''}>⭐ 포인트로 워프</button></div></div>`;}).join('');
-  return `<div class="modal-head shop shop-hero"><div class="shop-hero-icon">🛒</div><div><h2>지온 상점</h2><p>파괴 방지권과 해금된 체크포인트 워프를 구매할 수 있습니다. 연구소 파츠는 최대 9개까지 장착할 수 있습니다.</p></div></div><div class="shop-wallet"><div class="wallet-card money"><small>보유 금액</small><b>${formatGold(money())}</b></div><div class="wallet-card point"><small>보유 포인트</small><b>${state.points.toLocaleString('ko-KR')}P</b></div></div><div class="modal-section shop-section shield-section"><div class="section-heading"><div><span>🛡️</span><div><small>PROTECTION</small><h3>파괴 방지권</h3></div></div><b>${sh} / ${SHIELD_MAX}</b></div><p class="section-copy">파괴 결과를 한 번 막아주는 안전장치입니다. ${minShield}단계부터 구매할 수 있습니다.</p><div class="shield-price-grid"><div><small>💰 돈 가격</small><b>${formatGold(moneyCost)}</b></div><div><small>⭐ 포인트 가격</small><b>${pointCost.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn money-buy" data-buy-shield="money" ${(l<minShield||sh>=SHIELD_MAX||money()<moneyCost)?'disabled':''}>💰 돈으로 구매</button><button class="glass-btn point-buy" data-buy-shield="point" ${(l<minShield||sh>=SHIELD_MAX||state.points<pointCost)?'disabled':''}>⭐ 포인트로 구매</button></div></div><div class="modal-section shop-section warp-section"><div class="section-heading"><div><span>🚀</span><div><small>STAGE WARP</small><h3>워프권</h3></div></div><b>${l}단계</b></div><p class="section-copy">한 번 도달했던 주요 체크포인트로 즉시 이동합니다. 워프 직후에도 현재 단계 아이템을 바로 판매할 수 있습니다.</p><div class="warp-list">${warps}</div></div>`;
+  return `<div class="modal-head shop shop-hero"><div class="shop-hero-icon">🛒</div><div><h2>지온 상점</h2><p>파괴 방지권과 해금된 체크포인트 워프를 구매할 수 있습니다.</p></div></div><div class="shop-wallet"><div class="wallet-card money"><small>보유 금액</small><b>${formatGold(money())}</b></div><div class="wallet-card point"><small>보유 포인트</small><b>${state.points.toLocaleString('ko-KR')}P</b></div></div><div class="modal-section shop-section shield-section"><div class="section-heading"><div><span>🛡️</span><div><small>PROTECTION</small><h3>파괴 방지권</h3></div></div><b>${sh} / ${SHIELD_MAX}</b></div><p class="section-copy">파괴 결과를 한 번 막아주는 안전장치입니다. ${minShield}단계부터 구매할 수 있습니다.</p><div class="shield-price-grid"><div><small>💰 돈 가격</small><b>${formatGold(moneyCost)}</b></div><div><small>⭐ 포인트 가격</small><b>${pointCost.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn money-buy" data-buy-shield="money" ${(l<minShield||sh>=SHIELD_MAX||money()<moneyCost)?'disabled':''}>💰 돈으로 구매</button><button class="glass-btn point-buy" data-buy-shield="point" ${(l<minShield||sh>=SHIELD_MAX||state.points<pointCost)?'disabled':''}>⭐ 포인트로 구매</button></div></div><div class="modal-section shop-section warp-section"><div class="section-heading"><div><span>🚀</span><div><small>STAGE WARP</small><h3>워프권</h3></div></div><b>${l}단계</b></div><p class="section-copy">한 번 도달했던 주요 체크포인트로 즉시 이동합니다. 워프 직후에도 현재 단계 아이템을 바로 판매할 수 있습니다.</p><div class="warp-list">${warps}</div></div>`;
 }
 
 function renderShopView(){
@@ -1186,234 +1180,108 @@ function renderShopView(){
   bindModal('shop');
 }
 
-function partCurrentText(key,lv){
-  const cfg=RESEARCH_DATA[key];
-  if(!cfg||lv<=0)return '미보유';
-  const n=key==='catalyst' ? `성공 +${(lv*.5).toFixed(1)}%p`
-    : key==='safety' ? `파괴 -${(lv*.5).toFixed(1)}%p · 유지 +${(lv*.5).toFixed(1)}%p`
-    : key==='economy' ? `강화 비용 -${lv*2}%`
-    : key==='insight' ? `성공 포인트 +${lv*4}%`
-    : key==='resale' ? `실패 시 콤보 보존 ${lv*10}%`
-    : key==='capacitor' ? `폭주 충전 +${lv*8}%`
-    : key==='precision' ? `크리티컬 +${lv}%p${level()>=50?' · 현재 단계 비활성':''}`
-    : key==='shieldTech' ? `방지권 가격 -${lv*4}%`
-    : key==='warpTech' ? `워프 후 첫 유료 강화 성공 +${(lv*1.5).toFixed(1)}%p`
-    : key==='fusion' ? `강화비 -${lv}% · 폭주 충전 +${lv*3}%`
-    : key==='luckCore' ? `성공 +${(lv*.6).toFixed(1)}%p`
-    : key==='freezeMatrix' ? `하락 확률의 ${lv*8}%를 유지로 전환`
-    : key==='volatileCore' ? `일반 강화 성공 시 +1단계 ${lv*4}%`
-    : key==='recoveryCatalyst' ? `안정 강화 비용 -${lv*5}%`
-    : key==='frenzyInjector' ? `폭주 충전 +${lv*7}%`
-    : 'Lv.'+lv;
-  return n;
+function researchEffectValueText(key,lv){
+  const n=Math.max(0,Math.min(RESEARCH_MAX,Number(lv)||0));
+  if(key==='catalyst')return `성공 확률 +${(n*.5).toFixed(1)}%p`;
+  if(key==='safety')return `파괴 확률 -${(n*.5).toFixed(1)}%p`;
+  if(key==='economy')return `강화 비용 -${n*2}%`;
+  if(key==='insight')return `성공 포인트 +${n*4}%`;
+  if(key==='resale')return `콤보 보존 ${n*10}%`;
+  if(key==='capacitor')return `폭주 충전 +${n*8}%`;
+  if(key==='precision')return `크리티컬 +${n}%p`;
+  if(key==='shieldTech')return `방지권 가격 -${n*4}%`;
+  if(key==='warpTech')return `워프 후 성공 +${(n*1.5).toFixed(1)}%p`;
+  if(key==='fusion')return `방지권 보존 ${n*8}%`;
+  if(key==='luckCore')return `성공 시 강화비 환급 ${n*5}%`;
+  if(key==='freezeMatrix')return `하락→유지 변환 ${n*8}%`;
+  if(key==='volatileCore')return `추가 +1단계 발동 ${n*4}%`;
+  if(key==='recoveryCatalyst')return `안정 성공 추가 콤보 +1 확률 ${n*12}%`;
+  if(key==='frenzyInjector')return `폭주 지속 +1회 확률 ${n*20}%`;
+  return `Lv.${n}`;
 }
-function previewDataWithPart(key,enabled,d=state.runData){
-  const out=clone(d);
-  out.research=Object.assign(emptyResearch(),d.research||{});
-  out._allowPreviewOvercap=true;
-  const current=equippedResearchKeys(d).filter(v=>v!==String(key));
-  out.equippedParts=enabled&&researchLevel(key,out)>0?[...current,String(key)]:current;
-  return out;
+function researchDeltaText(key,lv){
+  const n=Math.max(0,Math.min(RESEARCH_MAX,Number(lv)||0));
+  const current=n===0?'현재 효과 없음':`현재 ${researchEffectValueText(key,n)}`;
+  if(n>=RESEARCH_MAX)return `${current} · MAX`;
+  return `${current} → Lv.${n+1} ${researchEffectValueText(key,n+1)}`;
 }
-function previewPairForPart(key,equipped,d=state.runData){
-  if(equipped)return {from:previewDataWithPart(key,false,d),to:d,label:'미장착 → 현재'};
-  return {from:d,to:previewDataWithPart(key,true,d),label:equippedPartCount(d)>=LAB_PART_EQUIP_MAX?'현재 → 장착 효과 (슬롯 필요)':'현재 → 장착'};
-}
-function warpPreviewTarget(){
-  const l=level(),targets=[10,20,30,40,45,50];
-  return targets.find(v=>v>l)||50;
-}
-function researchEffectPreviewHTML(key,lv,equipped,d=state.runData){
-  if(lv<=0)return '';
-  const {from,to,label}=previewPairForPart(key,equipped,d),l=Math.min(level(),MAX_LEVEL-1),raw=PROB[String(l)]||[8,40,47,5];
-  const fp=effectiveProbabilities(raw,{data:from,level:l,mode:'normal'}),tp=effectiveProbabilities(raw,{data:to,level:l,mode:'normal'});
-  const pct=v=>(Math.round(Number(v)*10)/10).toFixed(Number(v)%1?1:0)+'%';
-  const moneyPair=(a,b)=>`${formatGold(a)} → ${formatGold(b)}`;
-  const numPair=(a,b,s='')=>`${a.toLocaleString('ko-KR')}${s} → ${b.toLocaleString('ko-KR')}${s}`;
-  let title=label,main='',sub='';
-  if(key==='catalyst'||key==='luckCore'){
-    main=`일반 강화 성공 ${pct(fp[0])} → ${pct(tp[0])}`;sub='증가분만큼 파괴→하락→유지 순으로 확률을 성공 쪽으로 이동';
-  }else if(key==='safety'){
-    main=`파괴 ${pct(fp[2])} → ${pct(tp[2])}`;sub=`유지 ${pct(fp[3])} → ${pct(tp[3])}`;
-  }else if(key==='economy'){
-    main=`일반 강화비 ${moneyPair(effectiveEnhanceCost('normal',from),effectiveEnhanceCost('normal',to))}`;sub=`안정/광폭 강화 비용에도 동일한 ${lv*2}% 절감 적용`;
-  }else if(key==='insight'){
-    const target=Math.min(MAX_LEVEL,l+1),a=Math.round(pointReward(target)*stagePointMultiplier(from)),b=Math.round(pointReward(target)*stagePointMultiplier(to));
-    main=`+${target} 성공 포인트 ${numPair(a,b,'P')}`;sub='콤보 포인트 배율과는 별도로 곱연산';
-  }else if(key==='resale'){
-    const a=activeResearchLevel('resale',from)*10,b=activeResearchLevel('resale',to)*10;
-    main=`실패 시 콤보 보존 ${a}% → ${b}%`;sub='파괴는 제외 · 하락/유지/방지권 생존 시 발동 가능';
-  }else if(key==='recoveryCatalyst'){
-    main=`안정 강화비 ${moneyPair(effectiveEnhanceCost('stable',from),effectiveEnhanceCost('stable',to))}`;sub=`안정 강화 전용 추가 절감 ${activeResearchLevel('recoveryCatalyst',from)*5}% → ${activeResearchLevel('recoveryCatalyst',to)*5}%`;
-  }else if(key==='capacitor'||key==='frenzyInjector'){
-    main=`파괴 충전 +${frenzyChargeForStatus('DESTROYED',from)} → +${frenzyChargeForStatus('DESTROYED',to)}`;sub=`하락 +${frenzyChargeForStatus('FAILED',from)} → +${frenzyChargeForStatus('FAILED',to)} · 유지 +${frenzyChargeForStatus('HOLD',from)} → +${frenzyChargeForStatus('HOLD',to)}`;
-  }else if(key==='precision'){
-    const a=Math.round(criticalRateFor(from,l)*1000)/10,b=Math.round(criticalRateFor(to,l)*1000)/10;
-    main=level()>=50?'현재 단계에서는 크리티컬 비활성':`일반 강화 크리티컬 ${a}% → ${b}%`;sub='안정/광폭 강화 미적용 · 50단계부터 0%로 고정';
-  }else if(key==='shieldTech'){
-    main=`방지권 돈 ${moneyPair(shieldMoneyCost(level(),from),shieldMoneyCost(level(),to))}`;sub=`포인트 ${shieldPointCost(level(),from).toLocaleString('ko-KR')}P → ${shieldPointCost(level(),to).toLocaleString('ko-KR')}P`;
-  }else if(key==='warpTech'){
-    const a=(activeResearchLevel('warpTech',from)*1.5).toFixed(1),b=(activeResearchLevel('warpTech',to)*1.5).toFixed(1);
-    main=`워프 후 첫 유료 강화 성공 보정 +${a}%p → +${b}%p`;sub='워프 가격·판매 금액은 변하지 않음 · 보정은 다음 유료 강화 1회 후 소멸';
-  }else if(key==='fusion'){
-    main=`강화비 ${moneyPair(effectiveEnhanceCost('normal',from),effectiveEnhanceCost('normal',to))}`;sub=`파괴 폭주 충전 +${frenzyChargeForStatus('DESTROYED',from)} → +${frenzyChargeForStatus('DESTROYED',to)}`;
-  }else if(key==='freezeMatrix'){
-    main=`하락 ${pct(fp[1])} → ${pct(tp[1])}`;sub=`유지 ${pct(fp[3])} → ${pct(tp[3])} · 하락 확률의 ${lv*8}% 전환`;
-  }else if(key==='volatileCore'){
-    const a=activeResearchLevel('volatileCore',from)*4,b=activeResearchLevel('volatileCore',to)*4;
-    main=`일반 강화 +1 추가 발동 ${a}% → ${b}%`;sub='안정 강화와 광폭 강화에는 적용되지 않음';
-  }
-  return `<div class="lab-live-preview"><span>${title}</span><b>${main}</b><small>${sub}</small></div>`;
-}
-function nextResearchEffectHTML(key,lv){
-  if(lv<=0||lv>=RESEARCH_MAX)return '';
-  return `<div class="lab-next-preview"><span>다음 업그레이드 Lv.${lv+1}</span><b>${partCurrentText(key,lv+1)}</b></div>`;
-}
-function researchModeNote(key){
-  const map={
-    catalyst:'적용: 일반 · 안정 · 광폭',
-    safety:'적용: 일반 · 안정 / 광폭 미적용',
-    economy:'적용: 일반 · 안정 · 광폭 강화비',
-    insight:'적용: 모든 강화 성공 포인트',
-    resale:'적용: 하락 · 유지 · 방지권 생존 시 콤보 보존',
-    capacitor:'적용: 모든 실패 계열 폭주 충전',
-    precision:'적용: 일반 강화만 / 50단계 이후 비활성',
-    shieldTech:'적용: 상점 방지권 돈·포인트',
-    warpTech:'적용: 워프 후 다음 유료 강화 1회',
-    fusion:'적용: 모든 강화비 · 실패 계열 폭주 충전',
-    luckCore:'적용: 일반 · 안정 · 광폭',
-    freezeMatrix:'적용: 일반 · 안정 / 광폭 미적용',
-    volatileCore:'적용: 일반 강화 성공만',
-    recoveryCatalyst:'적용: 안정 강화 비용',
-    frenzyInjector:'적용: 모든 실패 계열 폭주 충전'
-  };
-  return map[key]||'';
-}
-function labPartsHTML(){
-  const d=state.runData,equippedCount=equippedPartCount(d);
+function labCorePickerHTML(){
+  const d=state.runData;
   return Object.entries(RESEARCH_DATA).map(([key,cfg])=>{
-    const lv=researchLevel(key,d),cost=researchCost(key,d),maxed=lv>=RESEARCH_MAX,equipped=isResearchEquipped(key,d),canBuy=!maxed&&state.points>=cost,canEquip=lv>0&&(equipped||equippedCount<LAB_PART_EQUIP_MAX);
-    const bars=Array.from({length:RESEARCH_MAX},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('');
-    const status=equipped?'장착 중':lv>0?'보유':'미보유';
-    return `<article class="lab-part-card ${lv>0?'installed':''} ${equipped?'equipped':''} ${maxed?'maxed':''}">
-      <div class="lab-part-top"><span class="lab-part-icon">${cfg.icon}</span><div><small>${cfg.slot} PART · LV.${lv}/${RESEARCH_MAX}</small><h3>${cfg.name}</h3></div><b>${status}</b></div>
-      <p>${cfg.desc}</p>
-      <div class="lab-part-mode">${researchModeNote(key)}</div>
-      <div class="lab-part-levels">${bars}</div>
-      <div class="lab-part-spec ${equipped?'is-active':'is-inactive'}"><span>${equipped?'✅ 현재 적용 중':'⏸️ 현재 미적용'}</span><strong>${equipped?partCurrentText(key,lv):`장착 시 ${partCurrentText(key,lv)}`}</strong></div>
-      ${researchEffectPreviewHTML(key,lv,equipped,d)}
-      ${nextResearchEffectHTML(key,lv)}
-      <div class="lab-part-actions">
-        <button class="glass-btn lab-part-buy" data-research-upgrade="${key}" ${canBuy?'':'disabled'}>${maxed?'MAX 업그레이드':`⭐ ${Number(cost).toLocaleString('ko-KR')}P · ${lv?'업그레이드':'구매'}`}</button>
-        <button class="glass-btn lab-part-toggle ${equipped?'is-equipped':''}" data-toggle-part="${key}" ${canEquip?'':'disabled'}>${lv<=0?'구매 필요':equipped?'장착 해제':equippedCount>=LAB_PART_EQUIP_MAX?'9개 장착됨':'장착하기'}</button>
-      </div>
-    </article>`;
+    const lv=researchLevel(key,d),selected=key===selectedLabPartKey,equipped=isResearchEquipped(key,d);
+    return `<button class="lab-core-choice ${selected?'selected':''} ${lv>0?'owned':''} ${equipped?'equipped':''} ${lv>=RESEARCH_MAX?'maxed':''}" type="button" data-lab-select="${key}">
+      <span class="lab-core-choice-icon">${cfg.icon}</span>
+      <span class="lab-core-choice-copy"><small>${cfg.slot}</small><b>${cfg.name}</b><span class="lab-core-choice-desc">${cfg.desc}</span><span class="lab-core-choice-effect">${researchDeltaText(key,lv)}</span></span>
+      <span class="lab-core-choice-level">Lv.${lv}</span>
+    </button>`;
   }).join('');
-}
-function normalizePresetIndex(index){const i=Number(index);return Number.isInteger(i)&&i>=0&&i<3?i:-1;}
-function sameLabPartSet(a,b){
-  const aa=[...(Array.isArray(a)?a:[])].map(String).sort(),bb=[...(Array.isArray(b)?b:[])].map(String).sort();
-  return aa.length===bb.length&&aa.every((v,i)=>v===bb[i]);
-}
-function labPresetHTML(){
-  const d=state.runData,current=equippedResearchKeys(d),presets=Array.isArray(d.labPresets)?d.labPresets:emptyLabPresets();
-  const names=Array.isArray(d.labPresetNames)?d.labPresetNames:defaultLabPresetNames();
-  return presets.map((preset,index)=>{
-    const saved=Array.isArray(preset),parts=saved?preset:[],active=saved&&sameLabPartSet(parts,current);
-    const presetName=escapeHTML(normalizeLabPresetName(names[index],index));
-    const chips=saved?(parts.length?parts.map(key=>{const cfg=RESEARCH_DATA[key];return cfg?`<span title="${escapeHTML(cfg.name)}">${cfg.icon} ${escapeHTML(cfg.name)}</span>`:'';}).join(''):'<span class="empty">장착 파츠 없음</span>'):'<span class="empty">아직 저장되지 않음</span>';
-    return `<article class="lab-preset-card ${active?'active':''}">
-      <div class="lab-preset-head"><div><small>LOADOUT PRESET ${index+1}</small><h3>${presetName}</h3></div><b>${active?'현재 적용 중':saved?`${parts.length}개 저장`:'미저장'}</b></div>
-      <div class="lab-preset-parts">${chips}</div>
-      <div class="lab-preset-actions">
-        <button class="glass-btn lab-preset-save" data-save-lab-preset="${index}">현재 조합 저장</button>
-        <button class="glass-btn lab-preset-load" data-load-lab-preset="${index}" ${saved?'':'disabled'}>${active?'다시 불러오기':'불러오기'}</button>
-        <button class="glass-btn lab-preset-rename" data-rename-lab-preset="${index}">✏️ 이름 변경</button>
-        <button class="glass-btn lab-preset-reset" data-reset-lab-preset="${index}" ${(!saved&&normalizeLabPresetName(names[index],index)===defaultLabPresetNames()[index])?'disabled':''}>↻ 초기화</button>
-      </div>
-    </article>`;
-  }).join('');
-}
-function saveLabPreset(index){
-  const i=normalizePresetIndex(index),d=state.runData;if(i<0)return;
-  d.labPresets=Array.isArray(d.labPresets)?d.labPresets:emptyLabPresets();
-  while(d.labPresets.length<3)d.labPresets.push(null);
-  d.labPresets[i]=[...equippedResearchKeys(d)];
-  save();render();showToast(`💾 ${normalizeLabPresetName(d.labPresetNames?.[i],i)} 저장 완료 · ${d.labPresets[i].length}개 파츠`);
-}
-function loadLabPreset(index){
-  const i=normalizePresetIndex(index),d=state.runData;if(i<0)return;
-  const presets=Array.isArray(d.labPresets)?d.labPresets:emptyLabPresets(),preset=presets[i];
-  const name=normalizeLabPresetName(d.labPresetNames?.[i],i);
-  if(!Array.isArray(preset)){showToast(`${name}에 저장된 조합이 없습니다.`);return;}
-  d.equippedParts=[...new Set(preset.filter(key=>RESEARCH_DATA[key]&&researchLevel(key,d)>0))].slice(0,LAB_PART_EQUIP_MAX);
-  save();render();showToast(`📥 ${name} 불러오기 완료 · ${d.equippedParts.length}/${LAB_PART_EQUIP_MAX} 장착`);
-}
-function renameLabPreset(index){
-  const i=normalizePresetIndex(index),d=state.runData;if(i<0)return;
-  d.labPresetNames=Array.isArray(d.labPresetNames)?d.labPresetNames:defaultLabPresetNames();
-  while(d.labPresetNames.length<3)d.labPresetNames.push(defaultLabPresetNames()[d.labPresetNames.length]);
-  const current=normalizeLabPresetName(d.labPresetNames[i],i);
-  const value=window.prompt(`프리셋 ${i+1} 이름을 입력하세요. (최대 20자)`,current);
-  if(value===null)return;
-  const next=normalizeLabPresetName(value,i);
-  d.labPresetNames[i]=next;
-  save();render();showToast(`✏️ 프리셋 ${i+1} 이름 변경 · ${next}`);
-}
-function resetLabPreset(index){
-  const i=normalizePresetIndex(index),d=state.runData;if(i<0)return;
-  const currentName=normalizeLabPresetName(d.labPresetNames?.[i],i);
-  if(!window.confirm(`${currentName}을(를) 초기화할까요?\n저장된 조합과 이름이 모두 기본값으로 돌아갑니다.`))return;
-  d.labPresets=Array.isArray(d.labPresets)?d.labPresets:emptyLabPresets();
-  while(d.labPresets.length<3)d.labPresets.push(null);
-  d.labPresetNames=Array.isArray(d.labPresetNames)?d.labPresetNames:defaultLabPresetNames();
-  while(d.labPresetNames.length<3)d.labPresetNames.push(defaultLabPresetNames()[d.labPresetNames.length]);
-  d.labPresets[i]=null;
-  d.labPresetNames[i]=defaultLabPresetNames()[i];
-  save();render();showToast(`↻ 프리셋 ${i+1} 초기화 완료`);
 }
 function renderLabView(){
-  const grid=document.getElementById('labPartsGrid');
-  if(!grid)return;
-  const d=state.runData,total=Object.keys(RESEARCH_DATA).reduce((sum,key)=>sum+researchLevel(key,d),0),maxTotal=Object.keys(RESEARCH_DATA).length*RESEARCH_MAX,owned=Object.keys(RESEARCH_DATA).filter(k=>researchLevel(k,d)>0).length,equipped=equippedPartCount(d);
-  const wallet=document.getElementById('labPointWallet'),moneyWallet=document.getElementById('labMoneyWallet');if(wallet)wallet.textContent=state.points.toLocaleString('ko-KR')+'P';if(moneyWallet)moneyWallet.textContent=formatGoldCompact(money());
-  const summary=document.getElementById('labMachineSummary'),warpTarget=warpPreviewTarget();
-  if(summary)summary.innerHTML=`<div><small>장착 파츠</small><b>${equipped} / ${LAB_PART_EQUIP_MAX}</b></div><div><small>보유 파츠</small><b>${owned} / ${Object.keys(RESEARCH_DATA).length}</b></div><div><small>현재 강화비</small><b>${level()>=MAX_LEVEL?'MAX':formatGold(effectiveEnhanceCost('normal',d))}</b></div><div><small>안정 강화 비용</small><b>${level()>=1&&level()<=24?formatGold(effectiveEnhanceCost('stable',d)):'1~24단계 전용'}</b></div><div><small>방지권 돈 가격</small><b>${formatGold(shieldMoneyCost(level(),d))}</b></div><div><small>방지권 포인트</small><b>${shieldPointCost(level(),d).toLocaleString('ko-KR')}P</b></div><div><small>${warpTarget}단계 워프 돈</small><b>${formatGold(warpMoneyCost(warpTarget,d))}</b></div><div><small>${warpTarget}단계 워프 포인트</small><b>${warpPointCost(warpTarget,d).toLocaleString('ko-KR')}P</b></div><div><small>워프 판매 규칙</small><b>워프 직후 즉시 판매 가능</b></div>`;
-  const presetGrid=document.getElementById('labPresetGrid');if(presetGrid)presetGrid.innerHTML=labPresetHTML();
-  grid.innerHTML=labPartsHTML();
+  const picker=document.getElementById('labCorePicker');if(!picker)return;
+  if(!RESEARCH_DATA[selectedLabPartKey])selectedLabPartKey=Object.keys(RESEARCH_DATA)[0];
+  const d=state.runData,key=selectedLabPartKey,cfg=RESEARCH_DATA[key],lv=researchLevel(key,d),cost=researchCost(key,d),maxed=lv>=RESEARCH_MAX,equipped=isResearchEquipped(key,d);
+  const wallet=document.getElementById('labPointWallet');if(wallet)wallet.textContent=state.points.toLocaleString('ko-KR')+'P';
+  picker.innerHTML=labCorePickerHTML();
+  const icon=document.getElementById('labUpgradeIcon'),slot=document.getElementById('labSelectedSlot'),name=document.getElementById('labSelectedName'),desc=document.getElementById('labSelectedDesc'),metric=document.getElementById('labSelectedMetric');
+  if(icon)icon.textContent=cfg.icon;if(slot)slot.textContent=`${cfg.slot} PART · ${cfg.effect}`;if(name)name.textContent=cfg.name;if(desc)desc.textContent=cfg.desc;if(metric)metric.textContent=researchDeltaText(key,lv);
+  const levels=document.getElementById('labSelectedLevels');if(levels)levels.innerHTML=Array.from({length:RESEARCH_MAX},(_,i)=>`<i class="${i<lv?'on':''}"><span>${i+1}</span></i>`).join('');
+  const costEl=document.getElementById('labUpgradeCost'),costHint=document.getElementById('labUpgradeCostHint');
+  if(costEl)costEl.textContent=maxed?'MAX':`${Number(cost||0).toLocaleString('ko-KR')}P`;
+  if(costHint)costHint.textContent=maxed?'최대 Lv.5 강화 완료':state.points<(cost||0)?'포인트가 부족합니다':`보유 ${state.points.toLocaleString('ko-KR')}P`;
+  const btn=document.getElementById('labUpgradeBtn');if(btn){btn.disabled=actionLocked||maxed||state.points<(cost||0);btn.textContent=maxed?'✅ Lv.5 MAX':lv===0?'⭐ 코어 획득 · Lv.1 강화':`⭐ Lv.${lv+1}로 강화`;}
+  const equipBtn=document.getElementById('labEquipBtn');if(equipBtn){equipBtn.disabled=actionLocked||lv<=0;equipBtn.classList.toggle('is-equipped',equipped);equipBtn.textContent=lv<=0?'강화 후 자동 장착':equipped?'장착 해제':'장착하기';}
+  const status=document.getElementById('labUpgradeStatus');if(status&&!document.getElementById('labUpgradeStage')?.classList.contains('upgrading'))status.textContent=maxed?'MAX LEVEL':`${cfg.name} · ${researchEffectValueText(key,lv)} → Lv.${lv+1} ${researchEffectValueText(key,lv+1)}`;
   bindLabButtons();
 }
-function buyLabPart(key){
+function spawnLabUpgradeParticles(icon='✦'){
+  const box=document.getElementById('labUpgradeParticles');if(!box)return;
+  box.innerHTML='';
+  if(motionPreset()==='low'||JION_PERF.reduced)return;
+  const count=JION_PERF.mobile?12:24,frag=document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const p=document.createElement('i');p.textContent=i%5===0?icon:'✦';
+    const a=(Math.PI*2*i/count)+(Math.random()*.28-.14),dist=70+Math.random()*(JION_PERF.mobile?70:130);
+    p.style.setProperty('--px',`${Math.cos(a)*dist}px`);p.style.setProperty('--py',`${Math.sin(a)*dist}px`);p.style.setProperty('--pd',`${.48+Math.random()*.38}s`);p.style.setProperty('--ps',`${.7+Math.random()*.9}`);frag.appendChild(p);
+  }
+  box.appendChild(frag);
+}
+function playLabUpgradeAnimation(cfg,fromLv,toLv,done=()=>{}){
+  const stage=document.getElementById('labUpgradeStage'),core=document.getElementById('labUpgradeCore'),levelUp=document.getElementById('labUpgradeLevelUp'),status=document.getElementById('labUpgradeStatus');
+  if(!stage||!core){done();return;}
+  const low=motionPreset()==='low'||JION_PERF.reduced,duration=low?260:(motionPreset()==='medium'?900:1350);
+  stage.classList.remove('upgrade-success');void stage.offsetWidth;stage.classList.add('upgrading');
+  core.dataset.icon=cfg.icon;if(status)status.textContent=`${cfg.name} 에너지 주입 중...`;
+  if(levelUp){levelUp.textContent=`Lv.${fromLv} → Lv.${toLv}`;levelUp.classList.remove('show');}
+  spawnLabUpgradeParticles(cfg.icon);
+  setTimeout(()=>{stage.classList.add('upgrade-success');if(levelUp){levelUp.textContent=`LEVEL UP · Lv.${toLv}`;levelUp.classList.add('show');}if(status)status.textContent=`강화 성공 · ${cfg.name} Lv.${toLv}`;},Math.max(100,Math.round(duration*.54)));
+  setTimeout(()=>{stage.classList.remove('upgrading','upgrade-success');if(levelUp)levelUp.classList.remove('show');done();},duration);
+}
+function buyLabPart(key=selectedLabPartKey){
+  if(actionLocked)return;
   const cfg=RESEARCH_DATA[key],d=state.runData;if(!cfg)return;
-  d.research=Object.assign(emptyResearch(),d.research||{});
-  d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
+  selectedLabPartKey=key;d.research=Object.assign(emptyResearch(),d.research||{});d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
   const lv=researchLevel(key,d),cost=researchCost(key,d);
-  if(lv>=RESEARCH_MAX||cost===null){showToast('이미 최대 업그레이드 상태입니다.');return;}
+  if(lv>=RESEARCH_MAX||cost===null){showToast('이미 최대 Lv.5 강화 상태입니다.');return;}
   if(state.points<cost){showToast('포인트가 부족합니다.');return;}
   state.points-=cost;state.pointsSpentTotal+=cost;d.research[key]=lv+1;
-  if(lv===0&&equippedPartCount(d)<LAB_PART_EQUIP_MAX)d.equippedParts.push(key);
-  d.equippedParts=equippedResearchKeys(d);
-  save();render();
-  showToast(`${cfg.icon} ${cfg.name} ${lv===0?'구매':'업그레이드'} 완료 · Lv.${lv+1}${lv===0&&isResearchEquipped(key,d)?' · 자동 장착':''}`);
+  if(lv===0&&!d.equippedParts.includes(String(key)))d.equippedParts.push(String(key));
+  d.equippedParts=equippedResearchKeys(d);save();setActionLocked(true);
+  const wallet=document.getElementById('labPointWallet');if(wallet)wallet.textContent=state.points.toLocaleString('ko-KR')+'P';
+  const btn=document.getElementById('labUpgradeBtn');if(btn)btn.disabled=true;
+  playLabUpgradeAnimation(cfg,lv,lv+1,()=>{setActionLocked(false);render();showToast(`${cfg.icon} ${cfg.name} 강화 완료 · Lv.${lv+1}${lv===0?' · 자동 장착':''}`);});
 }
-function toggleLabPart(key){
+function toggleLabPart(key=selectedLabPartKey){
+  if(actionLocked)return;
   const cfg=RESEARCH_DATA[key],d=state.runData;if(!cfg||researchLevel(key,d)<=0)return;
   d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
-  if(isResearchEquipped(key,d)){
-    d.equippedParts=equippedResearchKeys(d).filter(v=>v!==String(key));
-    save();render();showToast(`${cfg.icon} ${cfg.name} 장착 해제 · 효과 즉시 미적용`);
-    return;
-  }
-  if(equippedPartCount(d)>=LAB_PART_EQUIP_MAX){showToast(`연구소 파츠는 최대 ${LAB_PART_EQUIP_MAX}개만 장착할 수 있습니다.`);return;}
-  d.equippedParts.push(String(key));d.equippedParts=equippedResearchKeys(d);save();render();showToast(`${cfg.icon} ${cfg.name} 장착 완료 · 효과 즉시 적용 · ${equippedPartCount(d)}/${LAB_PART_EQUIP_MAX}`);
+  if(isResearchEquipped(key,d))d.equippedParts=equippedResearchKeys(d).filter(v=>v!==String(key));
+  else d.equippedParts.push(String(key));
+  d.equippedParts=equippedResearchKeys(d);save();render();showToast(`${cfg.icon} ${cfg.name} ${isResearchEquipped(key,d)?'장착 완료 · 효과 적용':'장착 해제 · 효과 미적용'}`);
 }
 function bindLabButtons(){
-  document.querySelectorAll('#labView [data-research-upgrade]').forEach(b=>b.onclick=()=>buyLabPart(b.dataset.researchUpgrade));
-  document.querySelectorAll('#labView [data-toggle-part]').forEach(b=>b.onclick=()=>toggleLabPart(b.dataset.togglePart));
-  document.querySelectorAll('#labView [data-save-lab-preset]').forEach(b=>b.onclick=()=>saveLabPreset(b.dataset.saveLabPreset));
-  document.querySelectorAll('#labView [data-load-lab-preset]').forEach(b=>b.onclick=()=>loadLabPreset(b.dataset.loadLabPreset));
-  document.querySelectorAll('#labView [data-rename-lab-preset]').forEach(b=>b.onclick=()=>renameLabPreset(b.dataset.renameLabPreset));
-  document.querySelectorAll('#labView [data-reset-lab-preset]').forEach(b=>b.onclick=()=>resetLabPreset(b.dataset.resetLabPreset));
+  document.querySelectorAll('#labView [data-lab-select]').forEach(b=>b.onclick=()=>{if(actionLocked)return;selectedLabPartKey=b.dataset.labSelect;renderLabView();});
+  const upgrade=document.getElementById('labUpgradeBtn');if(upgrade)upgrade.onclick=()=>buyLabPart(selectedLabPartKey);
+  const equip=document.getElementById('labEquipBtn');if(equip)equip.onclick=()=>toggleLabPart(selectedLabPartKey);
 }
 
 function setGameView(view){
@@ -1430,7 +1298,7 @@ function setGameView(view){
   if(currentGameView==='shop')renderShopView();
   if(currentGameView==='lab')renderLabView();
 }
-function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>연구소 파츠는 최대 9개까지 선택 장착할 수 있습니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
+function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>15개 코어 중 하나를 선택해 포인트로 최대 Lv.5까지 강화합니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
 
 function probabilitiesHTML(){
   const current=level();

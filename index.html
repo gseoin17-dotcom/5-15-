@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.76</title>
+  <title>지온냄새 강화하기 - V17.80</title>
   <meta name="theme-color" content="#070b16">
-  <link rel="stylesheet" href="style.css?v=17.76">
+  <link rel="stylesheet" href="style.css?v=17.80">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -27,10 +27,10 @@
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.76">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.80">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.76</span>
+          <span class="brand-version">V17.80</span>
         </h1>
       </div>
       <div class="header-actions">
@@ -51,7 +51,7 @@
           <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
           <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong></div>
           <div class="mini-stat shield-stat"><div>🛡️ 방지권</div><strong id="shield"></strong><small>상점에서 구매 가능</small></div>
-          <div class="mini-stat aux-stat"><div id="auxLabel">🔬 장착 파츠</div><strong id="auxActive">0 / 9개</strong><small id="auxHint">연구소에서 최대 9개 장착</small></div>
+          <div class="mini-stat aux-stat"><div id="auxLabel">🔬 연구 효과</div><strong id="auxActive">0개 적용</strong><small id="auxHint">보유 파츠 자유 장착</small></div>
           <div id="comboMeter" class="mini-stat combo-stat">
             <div id="comboLabel">🔥 연속 콤보</div>
             <strong id="combo">0 COMBO</strong>
@@ -175,22 +175,56 @@
       <div class="lab-page-shell">
         <div class="lab-page-heading">
           <div>
-            <small>JION ODOR LAB</small>
-            <h2>🔬 냄새 연구소</h2>
-            <p>연구소 파츠를 연구하고 최대 9개까지 선택 장착해 강화 장치를 원하는 방식으로 세팅할 수 있습니다.</p>
+            <small>JION ODOR LAB · CORE ENHANCEMENT</small>
+            <h2>🔬 냄새 연구소 강화</h2>
+            <p>15개의 연구소 코어 중 하나를 선택하고 포인트를 사용해 최대 Lv.5까지 강화합니다.</p>
           </div>
-          <div class="lab-page-wallet">
-            <span>💰 보유 금액</span>
-            <strong id="labMoneyWallet">0원</strong>
+          <div class="lab-page-wallet lab-point-wallet-only">
             <span>⭐ 보유 포인트</span>
             <strong id="labPointWallet">0P</strong>
           </div>
         </div>
-        <div class="lab-machine-summary" id="labMachineSummary"></div>
-        <div class="lab-section-heading lab-preset-heading"><div><small>QUICK LOADOUTS</small><h3>연구소 프리셋</h3></div><span>현재 장착 조합을 3개까지 저장 · 이름 변경 · 개별 초기화</span></div>
-        <div class="lab-preset-grid" id="labPresetGrid"></div>
-        <div class="lab-section-heading"><div><small>EQUIPPABLE LAB PARTS</small><h3>연구소 파츠</h3></div><span>보유 파츠 중 최대 9개 장착</span></div>
-        <div class="lab-parts-grid" id="labPartsGrid"></div>
+
+        <div class="lab-upgrade-layout">
+          <aside class="lab-core-select-panel">
+            <div class="lab-upgrade-section-head"><small>CORE SELECT</small><h3>강화할 코어 선택</h3><span>15 CORE</span></div>
+            <div id="labCorePicker" class="lab-core-picker"></div>
+          </aside>
+
+          <section class="lab-upgrade-machine-panel" aria-label="연구소 코어 강화 장치">
+            <div id="labUpgradeStage" class="lab-upgrade-stage">
+              <div class="lab-stage-grid" aria-hidden="true"></div>
+              <div class="lab-stage-beam beam-a" aria-hidden="true"></div>
+              <div class="lab-stage-beam beam-b" aria-hidden="true"></div>
+              <div class="lab-stage-ring ring-a" aria-hidden="true"></div>
+              <div class="lab-stage-ring ring-b" aria-hidden="true"></div>
+              <div class="lab-stage-ring ring-c" aria-hidden="true"></div>
+              <div id="labUpgradeParticles" class="lab-upgrade-particles" aria-hidden="true"></div>
+              <div id="labUpgradeCore" class="lab-upgrade-core">
+                <span id="labUpgradeIcon">🧬</span>
+                <i></i><i></i><i></i>
+              </div>
+              <div id="labUpgradeFlash" class="lab-upgrade-flash" aria-hidden="true"></div>
+              <div id="labUpgradeLevelUp" class="lab-upgrade-levelup" aria-live="polite"></div>
+            </div>
+
+            <div class="lab-selected-core-title">
+              <small id="labSelectedSlot">CORE PART</small>
+              <h2 id="labSelectedName">악취 촉매 코어</h2>
+              <p id="labSelectedDesc"></p>
+              <div id="labSelectedMetric" class="lab-selected-metric"></div>
+            </div>
+            <div id="labSelectedLevels" class="lab-selected-levels"></div>
+            <div class="lab-upgrade-cost-card">
+              <span>강화 비용</span>
+              <strong id="labUpgradeCost">0P</strong>
+              <small id="labUpgradeCostHint">포인트를 사용합니다</small>
+            </div>
+            <button id="labUpgradeBtn" class="glass-btn lab-upgrade-main-btn" type="button">⭐ 포인트로 강화</button>
+            <button id="labEquipBtn" class="glass-btn lab-equip-main-btn" type="button">장착하기</button>
+            <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
+          </section>
+        </div>
       </div>
     </section>
 
@@ -211,11 +245,9 @@
 (function(){
   'use strict';
   const MAX=55, SHIELD_MAX=6;
-  const DB={0:['무취 지온의 공간','아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.',0],1:['스쳐가는 지온냄새','버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.',500],2:['은은한 지온냄새','체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.',800],3:['습한 지온냄새','사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.',1200],4:['진득한 지온냄새','여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.',1900],5:['자극적인 지온냄새','지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.',3000]};
-  const PROB={"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0],"55":[7.0,39.0,49.0,5.0],"56":[6.5,39.0,49.5,5.0],"57":[6.0,39.0,50.0,5.0],"58":[5.5,39.0,50.5,5.0],"59":[5.0,39.0,51.0,5.0]};
-  const COST={"0":20,"1":20,"2":30,"3":50,"4":70,"5":100,"6":150,"7":200,"8":300,"9":400,"10":500,"11":700,"12":900,"13":1200,"14":1600,"15":2100,"16":2800,"17":3700,"18":4700,"19":6100,"20":7900,"21":10500,"22":13500,"23":18000,"24":23500,"25":30500,"26":40500,"27":52000,"28":65000,"29":83000,"30":110000,"31":140000,"32":175000,"33":225000,"34":290000,"35":370000,"36":470000,"37":610000,"38":765000,"39":970000,"40":1250000,"41":1600000,"42":2000000,"43":2550000,"44":3300000,"45":4300000,"46":5600000,"47":7400000,"48":9900000,"49":13000000,"50":18000000,"51":25000000,"52":34000000,"53":47000000,"54":65000000,"55":65000000,"56":65000000,"57":65000000,"58":65000000,"59":65000000,"60":65000000};
+  const PROB={"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0]};
+  const COST={"0":20,"1":20,"2":30,"3":50,"4":70,"5":100,"6":150,"7":200,"8":300,"9":400,"10":500,"11":700,"12":900,"13":1200,"14":1600,"15":2100,"16":2800,"17":3700,"18":4700,"19":6100,"20":7900,"21":10500,"22":13500,"23":18000,"24":23500,"25":30500,"26":40500,"27":52000,"28":65000,"29":83000,"30":110000,"31":140000,"32":175000,"33":225000,"34":290000,"35":370000,"36":470000,"37":610000,"38":765000,"39":970000,"40":1250000,"41":1600000,"42":2000000,"43":2550000,"44":3300000,"45":4300000,"46":5600000,"47":7400000,"48":9900000,"49":13000000,"50":18000000,"51":25000000,"52":34000000,"53":47000000,"54":65000000};
   const REWARD={1:100,2:150,3:200,4:300,5:500,6:700,7:900,8:1200,9:1500,10:2000,11:2500,12:3000,13:3500,14:4000,15:5000,16:6000,17:7000,18:8000,19:9000,20:10000,21:12000,22:14000,23:16000,24:18000,25:20000,26:23000,27:26000,28:30000,29:35000,30:40000,31:45000,32:50000,33:60000,34:70000,35:80000,36:90000,37:105000,38:120000,39:135000,40:150000,41:165000,42:180000,43:195000,44:210000,45:225000,46:240000,47:255000,48:270000,49:285000,50:300000,51:315000,52:330000,53:345000,54:360000,55:375000};
-  const fullDB={};
   function el(id){return document.getElementById(id)}
   function set(id,val){const n=el(id);if(n)n.textContent=val}
   function money(v){try{let n=BigInt(String(v||0));const u=['','만','억','조','경','해','자','양','구','간','정','재','극'];let a=[],i=0;while(n>0n&&i<u.length){const r=n%10000n;if(r)a.unshift(Number(r).toLocaleString('ko-KR')+u[i]);n/=10000n;i++}return a.slice(0,2).join(' ')||'0'}catch(e){return '0'}}
@@ -234,6 +266,6 @@
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.76"></script>
+<script defer src="game.js?v=17.79"></script>
 </body>
 </html>
