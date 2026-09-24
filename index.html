@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.87</title>
+  <title>지온냄새 강화하기 - V17.91</title>
   <meta name="theme-color" content="#070b16">
   <meta name="description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <link rel="canonical" href="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="지온냄새 강화하기">
-  <meta property="og:title" content="지온냄새 강화하기 - V17.87">
+  <meta property="og:title" content="지온냄새 강화하기 - V17.91">
   <meta property="og:description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <meta property="og:url" content="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail.png">
@@ -20,10 +20,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="지온냄새 강화하기 게임 링크 썸네일">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="지온냄새 강화하기 - V17.87">
+  <meta name="twitter:title" content="지온냄새 강화하기 - V17.91">
   <meta name="twitter:description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail.png">
-  <link rel="stylesheet" href="style.css?v=17.87">
+  <link rel="stylesheet" href="style.css?v=17.91">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -46,14 +46,13 @@
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.87">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.91">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.87</span>
+          <span class="brand-version">V17.91</span>
         </h1>
       </div>
       <div class="header-actions">
-        <button id="probTableBtn" class="reset-btn header-prob-btn" type="button" data-modal="probabilities" aria-label="강화 확률표" title="강화 확률표">📊 확률표</button>
         <button id="graphicsBtn" class="reset-btn header-graphics-btn" type="button" data-modal="graphics" aria-label="그래픽 설정" title="그래픽 설정">🎛️ 그래픽</button>
         <button id="statsBtn" class="reset-btn header-stats-btn" type="button" data-modal="stats" aria-label="플레이 통계" title="플레이 통계">📈 통계</button>
         <button id="resetBtn" class="reset-btn header-reset-btn" type="button">↻ 초기화</button>
@@ -204,7 +203,12 @@
           </div>
         </div>
 
-        <div class="lab-upgrade-layout">
+        <div class="lab-sub-tabs" role="tablist" aria-label="연구소 기능 선택">
+          <button id="labUpgradeModeBtn" class="lab-sub-tab active" type="button" role="tab" aria-selected="true">⚙️ 코어 강화</button>
+          <button id="labFusionModeBtn" class="lab-sub-tab" type="button" role="tab" aria-selected="false">🔬 코어 융합</button>
+        </div>
+
+        <div id="labUpgradeSection" class="lab-upgrade-layout">
           <aside class="lab-core-select-panel">
             <div class="lab-upgrade-section-head"><small>CORE SELECT</small><h3>강화할 코어 선택</h3><span>15 CORE</span></div>
             <div id="labCorePicker" class="lab-core-picker"></div>
@@ -244,6 +248,10 @@
             <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
           </section>
         </div>
+
+        <section id="labFusionSection" class="lab-fusion-panel hidden" aria-label="코어 융합">
+          <div id="labFusionContent"></div>
+        </section>
       </div>
     </section>
 
@@ -291,6 +299,6 @@
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.87"></script>
+<script defer src="game.js?v=17.91"></script>
 </body>
 </html>
