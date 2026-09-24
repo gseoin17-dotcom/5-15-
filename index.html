@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>지온냄새 강화하기 - V17.81</title>
+  <title>지온냄새 강화하기 - V17.87</title>
   <meta name="theme-color" content="#070b16">
   <meta name="description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <link rel="canonical" href="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="지온냄새 강화하기">
-  <meta property="og:title" content="지온냄새 강화하기 - V17.81">
+  <meta property="og:title" content="지온냄새 강화하기 - V17.87">
   <meta property="og:description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <meta property="og:url" content="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail.png">
@@ -20,10 +20,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="지온냄새 강화하기 게임 링크 썸네일">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="지온냄새 강화하기 - V17.81">
+  <meta name="twitter:title" content="지온냄새 강화하기 - V17.87">
   <meta name="twitter:description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail.png">
-  <link rel="stylesheet" href="style.css?v=17.81">
+  <link rel="stylesheet" href="style.css?v=17.87">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -41,14 +41,15 @@
       <button class="game-mode-tab active" type="button" data-game-view="enhance" aria-selected="true">강화</button>
       <button class="game-mode-tab" type="button" data-game-view="shop" aria-selected="false">상점</button>
       <button class="game-mode-tab" type="button" data-game-view="lab" aria-selected="false">연구소</button>
+      <button class="game-mode-tab" type="button" data-game-view="storage" aria-selected="false">보관함</button>
     </nav>
 
     <header class="topbar">
       <div class="brand-block brand-logo brand-logo-plain">
-        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.81">
+        <h1 class="brand-title" aria-label="지온냄새 강화하기 V17.87">
           <span class="brand-main">지온냄새</span>
           <span class="brand-accent">강화하기</span>
-          <span class="brand-version">V17.81</span>
+          <span class="brand-version">V17.87</span>
         </h1>
       </div>
       <div class="header-actions">
@@ -68,8 +69,7 @@
         <div class="info-grid">
           <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
           <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong></div>
-          <div class="mini-stat shield-stat"><div>🛡️ 방지권</div><strong id="shield"></strong><small>상점에서 구매 가능</small></div>
-          <div class="mini-stat aux-stat"><div id="auxLabel">🔬 연구 효과</div><strong id="auxActive">0개 적용</strong><small id="auxHint">보유 파츠 자유 장착</small></div>
+          <div class="mini-stat shield-stat shield-stat-wide"><div>🛡️ 방지권</div><strong id="shield"></strong><small>상점에서 구매 가능</small></div>
           <div id="comboMeter" class="mini-stat combo-stat">
             <div id="comboLabel">🔥 연속 콤보</div>
             <strong id="combo">0 COMBO</strong>
@@ -95,6 +95,7 @@
         <div class="action-grid" id="mainActionGrid">
           <button id="enhanceBtn" class="glass-btn action-primary" type="button">강화하기</button>
           <button id="sellBtn" class="glass-btn action-primary" type="button">판매하기</button>
+          <button id="auctionBtn" class="glass-btn action-primary auction-btn" type="button">경매하기</button>
         </div>
         <button id="stableBtn" class="glass-btn stable-btn wide" type="button">🛡️ 안정 강화 · 1단계 해금</button>
         <div id="stableInfo" class="stable-info">1~24단계 전용 · 파괴 확률 60%와 하락 확률 35%를 유지로 전환</div>
@@ -246,6 +247,12 @@
       </div>
     </section>
 
+    <section id="storageView" class="storage-view hidden" aria-label="냄새 보관함">
+      <div class="storage-page-shell">
+        <div id="storagePageContent"></div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -278,12 +285,12 @@
     const pl=el('probLevel');if(pl)pl.textContent=String(lvl);
     set('cardLevel','+'+lvl);set('cardStageLabel',lvl+'단계'+(lvl===MAX?' • MAX':''));set('cardSerial','JION • CORE • '+String(lvl).padStart(2,'0'));set('cardPoints',(REWARD[lvl]||0).toLocaleString('ko-KR')+'P');
     const cost=lvl>=MAX?'MAX':money(BigInt(COST[lvl]||100))+'원';set('cardCost',cost);
-    const eb=el('enhanceBtn');if(eb)eb.textContent=lvl===54?'👑 길게 눌러 FINAL 강화':lvl>=55?'55단계 MAX':'강화하기';
+    const eb=el('enhanceBtn');if(eb)eb.textContent=lvl>=55?'55단계 MAX':'강화하기';
     document.documentElement.dataset.jionBootstrap='painted';
   }
   paint();
 })();
 </script>
-<script defer src="game.js?v=17.81"></script>
+<script defer src="game.js?v=17.87"></script>
 </body>
 </html>

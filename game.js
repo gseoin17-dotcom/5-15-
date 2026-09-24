@@ -1,4 +1,4 @@
-/* 지온냄새 강화하기 V17.81 · PROBABILITY LAB CORE ENHANCEMENT · MAX STAGE 55 */
+/* 지온냄새 강화하기 V17.87 · STORAGE · WARP SALE LOCK · FINAL HOLD · MAX STAGE 55 */
 const GAME_DATA = {"POINT_REWARD_TABLE":{"1":100,"2":150,"3":200,"4":300,"5":500,"6":700,"7":900,"8":1200,"9":1500,"10":2000,"11":2500,"12":3000,"13":3500,"14":4000,"15":5000,"16":6000,"17":7000,"18":8000,"19":9000,"20":10000,"21":12000,"22":14000,"23":16000,"24":18000,"25":20000,"26":23000,"27":26000,"28":30000,"29":35000,"30":40000,"31":45000,"32":50000,"33":60000,"34":70000,"35":80000,"36":90000,"37":105000,"38":120000,"39":135000,"40":150000,"41":165000,"42":180000,"43":195000,"44":210000,"45":225000,"46":240000,"47":255000,"48":270000,"49":285000,"50":300000,"51":315000,"52":330000,"53":345000,"54":360000,"55":375000},"SMELL_DB":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":500,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":800,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":1200,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":1900,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":4100,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":5700,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":7900,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":11000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":15000,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":20000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":26000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":34000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":45000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":60000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":76000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":97000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":125000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":155000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":200000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":260000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":340000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":440000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":575000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":750000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":955000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":1200000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":1550000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":1950000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":2500000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":3150000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":4000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":5000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":6350000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":8000000,"color":"#ffffff","tier":6},"36":{"name":"36단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":10000000,"color":"#00ffff","tier":6},"37":{"name":"37단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":12500000,"color":"#ffffff","tier":6},"38":{"name":"38단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":16000000,"color":"#ffaa00","tier":6},"39":{"name":"39단계 : 차원왜곡 자이온 타임루프 찌든내","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":20000000,"color":"#9b2c2c","tier":6},"40":{"name":"40단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":25000000,"color":"#38a169","tier":6},"41":{"name":"41단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":31500000,"color":"#805ad5","tier":6},"42":{"name":"42단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":40000000,"color":"#e53e3e","tier":6},"43":{"name":"43단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":50000000,"color":"#ff4500","tier":6},"44":{"name":"44단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":63500000,"color":"#0088ff","tier":6},"45":{"name":"45단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":80000000,"color":"#cbd5e1","tier":6},"46":{"name":"46단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":105000000,"color":"#319795","tier":6},"47":{"name":"47단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":135000000,"color":"#f59e0b","tier":6},"48":{"name":"48단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":175000000,"color":"#7000ff","tier":6},"49":{"name":"49단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":230000000,"color":"#00ff66","tier":6},"50":{"name":"50단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":300000000,"color":"#ff00ea","tier":6},"51":{"name":"51단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":415000000,"color":"#ccff00","tier":6},"52":{"name":"52단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":570000000,"color":"#ff6600","tier":6},"53":{"name":"53단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":790000000,"color":"#00f0ff","tier":6},"54":{"name":"54단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":1100000000,"color":"#ffe600","tier":6},"55":{"name":"55단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":1500000000,"color":"#ff00aa","tier":6}},"PROB_TABLE":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[97.0,3.0,0.0,0.0],"4":[94.0,6.0,0.0,0.0],"5":[91.0,9.0,0.0,0.0],"6":[88.0,10.0,1.0,1.0],"7":[85.0,11.0,3.0,1.0],"8":[82.0,12.0,3.0,3.0],"9":[79.0,13.0,5.0,3.0],"10":[76.0,14.0,7.0,3.0],"11":[73.0,15.0,7.0,5.0],"12":[70.0,16.0,9.0,5.0],"13":[67.0,17.0,11.0,5.0],"14":[64.0,18.0,13.0,5.0],"15":[61.0,19.0,15.0,5.0],"16":[58.0,20.0,17.0,5.0],"17":[55.0,21.0,19.0,5.0],"18":[52.0,22.0,21.0,5.0],"19":[49.0,23.0,23.0,5.0],"20":[46.0,24.0,25.0,5.0],"21":[44.0,25.0,26.0,5.0],"22":[42.0,26.0,27.0,5.0],"23":[40.0,27.0,28.0,5.0],"24":[38.0,28.0,29.0,5.0],"25":[36.0,29.0,30.0,5.0],"26":[34.0,30.0,31.0,5.0],"27":[32.0,31.0,32.0,5.0],"28":[30.0,32.0,33.0,5.0],"29":[28.0,33.0,34.0,5.0],"30":[26.0,34.0,35.0,5.0],"31":[24.0,35.0,36.0,5.0],"32":[22.0,36.0,37.0,5.0],"33":[20.0,37.0,38.0,5.0],"34":[18.0,38.0,39.0,5.0],"35":[17.0,39.0,39.0,5.0],"36":[16.5,39.0,39.5,5.0],"37":[16.0,39.0,40.0,5.0],"38":[15.5,39.0,40.5,5.0],"39":[15.0,39.0,41.0,5.0],"40":[14.5,39.0,41.5,5.0],"41":[14.0,39.0,42.0,5.0],"42":[13.5,39.0,42.5,5.0],"43":[13.0,39.0,43.0,5.0],"44":[12.5,39.0,43.5,5.0],"45":[12.0,39.0,44.0,5.0],"46":[11.5,39.0,44.5,5.0],"47":[11.0,39.0,45.0,5.0],"48":[10.5,39.0,45.5,5.0],"49":[10.0,39.0,46.0,5.0],"50":[9.5,39.0,46.5,5.0],"51":[9.0,39.0,47.0,5.0],"52":[8.5,39.0,47.5,5.0],"53":[8.0,39.0,48.0,5.0],"54":[7.5,39.0,48.5,5.0]},"CRITICAL_RATE":0.05};
 
 /* V17.49 · MOBILE PERFORMANCE PROFILE
@@ -121,18 +121,27 @@ function normalizeUiSettings(input){
     motion: allowed.includes(input?.motion)?input.motion:'high'
   };
 }
-
+function normalizeStorageSlots(input){
+  const src=Array.isArray(input)?input:[];
+  return Array.from({length:3},(_,i)=>{
+    const v=src[i];
+    if(!v||!Number(v.level))return null;
+    return {level:Math.max(1,Math.min(MAX_LEVEL,Number(v.level)||1)),storedAt:Number(v.storedAt)||Date.now(),warpSaleLock:Math.max(0,Math.min(2,Number(v.warpSaleLock)||0))};
+  });
+}
 const INITIAL = {
-  schemaVersion:30,
-  enhanceAttempts:0,warpUses:0,sellCount:0,finalClears:0,frenzyTriggers:0,
+  schemaVersion:33,
+  enhanceAttempts:0,warpUses:0,sellCount:0,auctionCount:0,finalClears:0,frenzyTriggers:0,
+  storageCount:0,storageSlots:normalizeStorageSlots(),
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
   enhanceSuccesses:0,enhanceFailures:0,criticalCount:0,destroyCount:0,
   uiSettings:normalizeUiSettings({graphics:'high',motion:'high'}),
-  runData:{level:0,prev_level:0,max_level:0,money:"50000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,
+  runData:{level:0,prev_level:0,max_level:0,money:"50000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,warpSaleLock:0,
     unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
 let state = loadState();
+state.storageSlots=normalizeStorageSlots(state.storageSlots);
 applyUserQualitySettings();
 let toastTimer = null;
 let actionLocked = false;
@@ -198,9 +207,9 @@ function normalizeRunData(d){
 
   out.frenzyGauge=Math.max(0,Math.min(FRENZY_MAX,Number(out.frenzyGauge)||0));
   const ev=out.frenzyEvent;if(!ev||!FRENZY_EVENT_TYPES.includes(ev.type)||Number(ev.turns||0)<=0)out.frenzyEvent=null;else out.frenzyEvent={type:ev.type,turns:Math.max(1,Math.min(6,Number(ev.turns)||1)),label:String(ev.label||''),desc:String(ev.desc||'')};
-  delete out.warpSaleLock; // V17.74: legacy warp sale-lock state is no longer used
+  out.warpSaleLock=Math.max(0,Math.min(2,Number(out.warpSaleLock)||0));
   out.warpBoostLevel=Math.max(0,Math.min(RESEARCH_MAX,Number(out.warpBoostLevel)||0));
-  if(out.level===0)out.warpBoostLevel=0;
+  if(out.level===0){out.warpBoostLevel=0;out.warpSaleLock=0;}
   delete out.pendingFinalEnding;
   delete out.frenzyTurns;
   delete out.randomEvent;
@@ -222,6 +231,7 @@ function cleanRemovedSystems(s){
   delete s.discoveredSmells; delete s.collectionRewards; delete s.tower;
   delete s.achievements; delete s.unlockedTitles; delete s.selectedTitle;
   delete s.raid;
+  delete s.investor; delete s.investorContracts; delete s.investorWins;
   if(s.runData){delete s.runData.pity_count;delete s.runData.feverFree;delete s.runData.labPresets;delete s.runData.labPresetNames;}
   return s;
 }
@@ -230,13 +240,13 @@ function loadState(){
     const saved=JSON.parse(localStorage.getItem("jion_smell_game_v3"));
     if(!saved)return clone(INITIAL);
     if(saved.schemaVersion>=15&&saved.runData){
-      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);s.schemaVersion=30;
+      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);s.schemaVersion=33;
       return cleanRemovedSystems(s);
     }
     if(saved.schemaVersion>=13&&saved.runData){
       const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);
       if(saved.schemaVersion<14)s.runData.money=scaleLegacyMoney(saved.runData.money,s.runData.max_level||s.runData.level).toString();
-      s.schemaVersion=30;return cleanRemovedSystems(s);
+      s.schemaVersion=33;return cleanRemovedSystems(s);
     }
     const s=Object.assign(clone(INITIAL),saved),a=(saved.seasonData||{})[1]||{},b=(saved.seasonData||{})[2]||{};
     const bMax=Math.max(0,Number(b.max_level)||0),bLevel=Math.max(0,Number(b.level)||0),hadSecond=Number(saved.rebirthCount)>0||bMax>0||bLevel>0||Number(saved.currentSeason)===2;
@@ -245,7 +255,7 @@ function loadState(){
     s.runData=normalizeRunData(Object.assign({},src,{level:currentUnified,prev_level:currentUnified,max_level:maxUnified,auxInventory:legacyAux}));
     const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of WARP_LEVELS)if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
     s.uiSettings=normalizeUiSettings(saved.uiSettings);
-    s.schemaVersion=30;return cleanRemovedSystems(s);
+    s.schemaVersion=33;return cleanRemovedSystems(s);
   }catch(e){return clone(INITIAL);}
 }
 function save(){ localStorage.setItem("jion_smell_game_v3",JSON.stringify(state)); }
@@ -349,6 +359,7 @@ function effectiveEnhanceCost(mode="normal",d=state.runData){
 }
 function pointReward(lvl){ if(lvl<=0)return 0; return Number(POINTS[String(lvl)]??(90000+(lvl-36)*15000)); }
 function dbPrice(a,b){ const lvl=b===undefined?Number(a):Number(b); return toMoneyInt(DB[String(lvl)]?.price||0); }
+function playerEnhanceCost(mode='normal',d=state.runData){ return effectiveEnhanceCost(mode,d); }
 function researchDiscountPercent(key,perLevel,d=state.runData){return Math.max(0,100-activeResearchLevel(key,d)*perLevel);}
 function warpPointCost(lvl,d=state.runData){
   return Math.max(1,Math.round(pointReward(lvl)*19.5));
@@ -440,19 +451,21 @@ function formatGold(amount){const n=toMoneyInt(amount);if(n===0n)return "0원";r
 function showToast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600);}
 function setActionLocked(locked){actionLocked=!!locked;document.body.classList.toggle("action-locked",actionLocked);syncActionButtons();}
 function syncActionButtons(){
-  const l=level(),eb=document.getElementById("enhanceBtn"),sb=document.getElementById("sellBtn"),stb=document.getElementById("stableBtn"),bb=document.getElementById("berserkBtn");
+  const l=level(),eb=document.getElementById("enhanceBtn"),sb=document.getElementById("sellBtn"),ab=document.getElementById("auctionBtn"),stb=document.getElementById("stableBtn"),bb=document.getElementById("berserkBtn");
   if(eb){
     eb.disabled=actionLocked||l>=MAX_LEVEL;
+    eb.classList.remove('final-holding','final-hold-complete');
     eb.classList.toggle('final-hold-ready',l===MAX_LEVEL-1&&!actionLocked);
-    if(l===MAX_LEVEL-1) eb.textContent='👑 길게 눌러 FINAL 강화';
-    else if(l>=MAX_LEVEL) eb.textContent='55단계 MAX';
+    if(l>=MAX_LEVEL) eb.textContent='55단계 MAX';
     else eb.textContent='강화하기';
   }
-  if(sb){sb.disabled=actionLocked||l===0;sb.textContent='판매하기';}
+  const warpSaleLocked=Math.max(0,Number(state.runData.warpSaleLock)||0)>0;
+  if(sb){sb.disabled=actionLocked||l===0||warpSaleLocked;sb.textContent='판매하기';}
+  if(ab){ab.disabled=actionLocked||l===0||warpSaleLocked;ab.textContent='경매하기';}
   if(stb){
     const stableAvailable=l>=1&&l<=24;
     stb.disabled=actionLocked||!stableAvailable;
-    stb.textContent=l<1?'🛡️ 안정 강화 · 1단계 해금':l>24?'🛡️ 안정 강화 · 1~24단계 전용':`🛡️ 안정 강화 · ${formatGold(effectiveEnhanceCost('stable'))}`;
+    stb.textContent=l<1?'🛡️ 안정 강화 · 1단계 해금':l>24?'🛡️ 안정 강화 · 1~24단계 전용':`🛡️ 안정 강화 · ${formatGold(playerEnhanceCost('stable'))}`;
   }
   const si=document.getElementById('stableInfo');
   if(si){
@@ -468,7 +481,7 @@ function syncActionButtons(){
   if(bb){
     const available=l>=25&&l<=49;
     bb.disabled=actionLocked||!available;
-    bb.textContent=l<25?'☠️ 광폭 강화 · 25단계 해금':l>49?'☠️ 광폭 강화 · 25~49단계 전용':`☠️ 광폭 강화 · ${formatGold(effectiveEnhanceCost('berserk'))}`;
+    bb.textContent=l<25?'☠️ 광폭 강화 · 25단계 해금':l>49?'☠️ 광폭 강화 · 25~49단계 전용':`☠️ 광폭 강화 · ${formatGold(playerEnhanceCost('berserk'))}`;
   }
   const bi=document.getElementById('berserkInfo');
   if(bi){
@@ -546,7 +559,7 @@ function pruneCardParticles(){
 }
 function cleanupTransientEffects(){
   clearDestroySnapshot();
-  document.querySelectorAll('.berserk-roulette-overlay,.card-draw-overlay,.frenzy-event-overlay,.result-fx-layer,.destruction-shard,.destruction-void-ring').forEach(e=>e.remove());
+  document.querySelectorAll('.berserk-roulette-overlay,.auction-roulette-overlay,.card-draw-overlay,.frenzy-event-overlay,.result-fx-layer,.destruction-shard,.destruction-void-ring').forEach(e=>e.remove());
   pruneCardParticles();
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pruneCardParticles();});
@@ -722,16 +735,17 @@ function enhance(mode="normal"){
   if(actionLocked)return;
   cleanupTransientEffects();
   const d=state.runData,curr=d.level;
-  if(curr===MAX_LEVEL-1&&mode==='normal'&&!finalHoldAuthorized){showToast('👑 FINAL 강화는 강화 버튼을 길게 눌러야 합니다.');return;}
+  if(curr===MAX_LEVEL-1&&mode==='normal'&&!finalHoldAuthorized){showToast('54→55 강화는 강화하기 버튼을 끝까지 꾹 눌러야 합니다.');return;}
   if(mode==='stable'&&(curr<1||curr>24)){showToast('🛡️ 안정 강화는 1~24단계에서만 사용할 수 있습니다.');return;}
   if(mode==='berserk'&&(curr<25||curr>49)){showToast('☠️ 광폭 강화는 25~49단계에서만 사용할 수 있습니다.');return;}
-  const cost=effectiveEnhanceCost(mode,d);
-  const paidAttempt=cost>0n,warpBoostAtStart=Math.max(0,Number(d.warpBoostLevel)||0);
+  const fullCost=effectiveEnhanceCost(mode,d),cost=fullCost;
+  const paidAttempt=fullCost>0n,warpBoostAtStart=Math.max(0,Number(d.warpBoostLevel)||0);
   if(curr>=MAX_LEVEL){render();return;}
   const cash=money();if(cash<cost){d.status="NOT_ENOUGH_MONEY";showToast("강화 비용 부족!");render();return;}
   const prevMax=Number(d.max_level)||0,frenzyEventBefore=currentFrenzyEvent(d)?{...currentFrenzyEvent(d)}:null;
   setActionLocked(true);finalHoldAuthorized=false;setMoney(cash-cost);
   d.prev_level=curr;state.enhanceAttempts++;
+  if(mode==='normal'&&Number(d.warpSaleLock)>0)d.warpSaleLock=Math.max(0,Number(d.warpSaleLock)-1);
   d.last_aux_effect="";let berserkGain=0;
   const appendAuxEffect=(msg)=>{if(!msg)return;d.last_aux_effect=d.last_aux_effect?`${d.last_aux_effect} · ${msg}`:msg;};
   const successResult=(baseAdd=1,status="SUCCESS",isCritical=false)=>{
@@ -787,7 +801,7 @@ function enhance(mode="normal"){
     }
   }
   if(paidAttempt&&warpBoostAtStart>0)d.warpBoostLevel=0;
-  if(d.level===0)d.warpBoostLevel=0;
+  if(d.level===0){d.warpBoostLevel=0;d.warpSaleLock=0;}
   const frenzyEvent=updateFrenzyAfterEnhance(d.status,frenzyEventBefore,d);if(frenzyEvent)appendAuxEffect(`🔥 ${frenzyEvent.label.replace(/^\S+\s*/,'')}`);
   unlockReachedWarps(d);
   const newLvl=d.level,isFinalAttempt=curr===MAX_LEVEL-1,newCardUnlocked=newLvl>prevMax;
@@ -804,7 +818,83 @@ function enhance(mode="normal"){
   };
   if(mode==='berserk'&&berserkGain>0)showBerserkRoulette(berserkGain,normalPost);else normalPost();
 }
-function sell(){if(actionLocked)return;const d=state.runData,l=d.level;if(l===0)return;const basePrice=dbPrice(l);let price=basePrice*BigInt(stageSellPercent(d))/100n;setMoney(money()+price);state.sellCount++;d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;resetCombo(d);save();render();showToast(`💰 ${l}단계 판매 완료! +${formatGold(price)}`);}
+function sell(){if(actionLocked)return;const d=state.runData,l=d.level;if(l===0)return;if(Number(d.warpSaleLock)>0){showToast(`🚀 워프 후 강화하기를 ${Number(d.warpSaleLock)}회 더 해야 판매할 수 있습니다.`);return;}const basePrice=dbPrice(l);let price=basePrice*BigInt(stageSellPercent(d))/100n;setMoney(money()+price);state.sellCount++;d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);save();render();showToast(`💰 ${l}단계 판매 완료! +${formatGold(price)}`);}
+
+/* --------------------------- AUCTION ROULETTE ---------------------------
+   Normal sell and auction are intentionally separate systems.
+   Auction rolls one of six equally-likely refund multipliers against the
+   current card's displayed expected value, then automatically completes sale. */
+const AUCTION_MULTIPLIERS=Object.freeze([50,70,90,110,130,150]);
+function finishAuctionSale(l,price,pct){
+  const d=state.runData;
+  setMoney(money()+price);
+  state.auctionCount=Math.max(0,Number(state.auctionCount)||0)+1;
+  d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);
+  save();render();setActionLocked(false);
+  showToast(`${l}단계 경매 낙찰 · ${pct}% 환급! +${formatGold(price)}`);
+}
+function showAuctionRoulette(l,basePrice,pct,price,done=()=>{}){
+  const motion=motionPreset();
+  if(motion==='low'||JION_PERF.reduced){requestAnimationFrame(done);return;}
+  document.querySelectorAll('.auction-roulette-overlay').forEach(e=>e.remove());
+  const resultIndex=Math.max(0,AUCTION_MULTIPLIERS.indexOf(pct));
+  const overlay=document.createElement('div');
+  overlay.className='auction-roulette-overlay';
+  const labels=AUCTION_MULTIPLIERS.map((v,i)=>`<span class="auction-wheel-label" style="--auction-a:${i*60}deg;--auction-na:${-i*60}deg"><b>${v}%</b></span>`).join('');
+  overlay.innerHTML=`<div class="auction-roulette-box">
+    <small>JION AUCTION HOUSE</small>
+    <div class="auction-roulette-kicker">RANDOM REFUND ROULETTE</div>
+    <div class="auction-wheel-shell">
+      <div class="auction-wheel-pointer" aria-hidden="true"></div>
+      <div class="auction-wheel" id="auctionWheel">${labels}</div>
+      <div class="auction-wheel-hub">₩</div>
+    </div>
+    <div class="auction-roulette-range">50% · 70% · 90% · 110% · 130% · 150%</div>
+    <b class="auction-roulette-result">입찰가 산정 중...</b>
+    <div class="auction-payout-copy"><span>예상가치 ${formatGold(basePrice)}</span><strong>룰렛 결과 대기</strong></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  const wheel=overlay.querySelector('#auctionWheel');
+  const result=overlay.querySelector('.auction-roulette-result');
+  const payout=overlay.querySelector('.auction-payout-copy');
+  const payoutStrong=payout?.querySelector('strong');
+  requestAnimationFrame(()=>{
+    overlay.classList.add('show');
+    requestAnimationFrame(()=>{
+      const spins=motion==='medium'?4:7;
+      const target=spins*360-resultIndex*60;
+      wheel.style.transitionDuration=motion==='medium'?'1.35s':'2.65s';
+      wheel.style.transform=`rotate(${target}deg)`;
+    });
+  });
+  const spinMs=motion==='medium'?1420:2740;
+  setTimeout(()=>{
+    if(!overlay.isConnected){done();return;}
+    overlay.classList.add('locked');
+    if(pct>=130)overlay.classList.add('jackpot');
+    else if(pct<=70)overlay.classList.add('low-result');
+    else if(pct>=110)overlay.classList.add('profit-result');
+    result.textContent=`낙찰 환급률 ${pct}%`;
+    if(payoutStrong)payoutStrong.textContent=`${pct}% → ${formatGold(price)}`;
+    payout.classList.add('show-result');
+    const burstColor=pct>=130?'#facc15':pct>=110?'#34d399':pct<=70?'#fb7185':'#60a5fa';
+    cardBurst(burstColor,pct===150?150:95,pct===150?310:220);impactFlash(pct===150?.52:.28);
+    setTimeout(()=>{
+      overlay.classList.remove('show');
+      setTimeout(()=>{overlay.remove();done();},motion==='medium'?120:190);
+    },motion==='medium'?520:760);
+  },spinMs);
+}
+function auction(){
+  if(actionLocked)return;
+  const d=state.runData,l=d.level;if(l===0)return;
+  if(Number(d.warpSaleLock)>0){showToast(`🚀 워프 후 강화하기를 ${Number(d.warpSaleLock)}회 더 해야 경매할 수 있습니다.`);return;}
+  const basePrice=dbPrice(l);
+  const pct=AUCTION_MULTIPLIERS[Math.floor(Math.random()*AUCTION_MULTIPLIERS.length)];
+  const price=basePrice*BigInt(pct)/100n;
+  setActionLocked(true);
+  showAuctionRoulette(l,basePrice,pct,price,()=>finishAuctionSale(l,price,pct));
+}
 function updateStageBackground(l=level()){
   const bg=document.getElementById('stageBackdrop');
   if(!bg)return;
@@ -838,6 +928,7 @@ function render(){
   const d=data(),sd=state.runData,l=level();
   updateStageBackground(l);
   if(currentGameView==='lab')renderLabView();
+  if(currentGameView==='storage')renderStorageView();
   if(currentGameView==='shop')renderShopView();
   const mainStage=document.getElementById("threeWrap"),actionGrid=document.getElementById("mainActionGrid");
   if(mainStage)mainStage.classList.remove("hidden");if(actionGrid)actionGrid.classList.remove("hidden");
@@ -856,7 +947,7 @@ function render(){
   if(comboFill){const span=Math.max(1,comboMeta.to-comboMeta.from),progress=comboMeta.next?Math.max(0,Math.min(100,((comboNow-comboMeta.from)/span)*100)):100;comboFill.style.width=`${progress}%`;}
   if(comboMeter){comboMeter.dataset.comboTier=comboNow>=15?'max':comboNow>=10?'over':comboNow>=5?'fever':comboNow>=2?'chain':'ready';}
   document.body.classList.toggle('combo-fever',comboNow>=5);document.body.classList.toggle('combo-over-fever',comboNow>=10);document.body.classList.toggle('combo-max-fever',comboNow>=15);document.body.classList.toggle("smell-frenzy",comboNow>=5);
-  const modBar=document.getElementById('runModifierBar');if(modBar){const tags=[];const ev=currentFrenzyEvent(sd);if(ev)tags.push(`🔥 ${ev.label.replace(/^\S+\s*/,'')} ${ev.turns}회`);if(Number(sd.warpBoostLevel)>0)tags.push(`🧭 워프 보정 · 다음 유료 강화 성공 +${(Number(sd.warpBoostLevel)*2).toFixed(1)}%p`);modBar.innerHTML=tags.map(t=>`<span>${t}</span>`).join('');modBar.classList.toggle('hidden',!tags.length);}
+  const modBar=document.getElementById('runModifierBar');if(modBar){const tags=[];const ev=currentFrenzyEvent(sd);if(ev)tags.push(`🔥 ${ev.label.replace(/^\S+\s*/,'')} ${ev.turns}회`);if(Number(sd.warpBoostLevel)>0)tags.push(`🧭 워프 보정 · 다음 유료 강화 성공 +${(Number(sd.warpBoostLevel)*2).toFixed(1)}%p`);if(Number(sd.warpSaleLock)>0)tags.push(`🚀 워프 판매 잠금 · 강화하기 ${2-Number(sd.warpSaleLock)}/2회`);modBar.innerHTML=tags.map(t=>`<span>${t}</span>`).join('');modBar.classList.toggle('hidden',!tags.length);}
   const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount}개 적용`;if(activeHint){activeHint.textContent='보유 파츠 자유 장착';activeHint.classList.remove('hidden');}
   const modeTitle=document.getElementById("modeTitle"),probTitle=document.querySelector(".prob-title"),probBox=document.getElementById("probBox"),nextReward=document.getElementById("nextReward");
   if(modeTitle){modeTitle.textContent="";modeTitle.classList.add("hidden");}
@@ -864,13 +955,13 @@ function render(){
   const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,{data:sd}),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboSuccessNow=comboSuccessBoost(sd.combo),comboProbNote=(comboGuardNow>0||comboSuccessNow>0)?`<div class="prob-aux combo-guard-note">🔥 콤보 효과${comboSuccessNow?` · 성공 +${comboSuccessNow}%p`:''}${comboGuardNow?` · 파괴 -${comboGuardNow}%p`:''}</div>`:'',labNotes=[],catalystLv=activeResearchLevel('catalyst',sd),freezeLv=activeResearchLevel('freezeMatrix',sd);if(catalystLv)labNotes.push(`🧬 성공 +${(catalystLv*.7).toFixed(1)}%p`);if(freezeLv)labNotes.push(`🧊 하락 ${freezeLv*10}% 유지 전환`);if(Number(sd.warpBoostLevel)>0)labNotes.push(`🧭 워프 보정 성공 +${(Number(sd.warpBoostLevel)*2).toFixed(1)}%p`);const auxProbNote=labNotes.length?`<div class="prob-aux">${labNotes.join(' · ')}</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
   if(probBox)probBox.innerHTML=`<div class="prob-row success-row"><span><i></i>성공</span><b class="success">${p[0]}%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">${p[1]}%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">${p[2]}%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">${p[3]}%</b></div><div class="prob-critical ${l>=50?'disabled-critical':''}">${critCopy} <b>${critPct}%</b></div>${comboProbNote}${auxProbNote}`;
   if(nextReward){nextReward.textContent="";nextReward.classList.add("hidden");}
-  const sb=document.getElementById("sellBtn");if(sb)sb.textContent="판매하기";syncActionButtons();renderSceneText();renderEnhanceCard();
+  const sb=document.getElementById("sellBtn");if(sb)sb.textContent="판매하기";const ab=document.getElementById("auctionBtn");if(ab)ab.textContent="경매하기";syncActionButtons();renderSceneText();renderEnhanceCard();
 }
 function renderSceneText(){
   const d=data(),l=level(),status=state.runData.status,tier=Math.min(6,d.tier||1),main=document.getElementById("mainTitle");
   main.className="title-tier-"+tier;main.textContent=d.name;document.getElementById("descText").textContent=`"${d.desc}"`;
   document.getElementById("priceText").textContent="예상 가치: "+formatGold(dbPrice(l));document.getElementById("pointText").textContent="획득 포인트: "+pointReward(l).toLocaleString("ko-KR")+"P";
-  document.getElementById("costText").textContent=l>=MAX_LEVEL?"강화 완성 · FINAL STAGE 55":"필요 강화 비용: "+(effectiveEnhanceCost("normal")===0n?"무료":formatGold(effectiveEnhanceCost("normal")));
+  document.getElementById("costText").textContent=l>=MAX_LEVEL?"강화 완료 · MAX STAGE 55":"필요 강화 비용: "+(playerEnhanceCost("normal")===0n?"무료":formatGold(playerEnhanceCost("normal")));
   const st=document.getElementById("statusText"),labels={READY:"READY - 55단계를 향한 냄새 에너지가 집중됩니다",SUCCESS:"✨ COSMIC SUCCESS (강화 성공) ✨",CRITICAL:"⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡",SHIELD_SAVED:"🛡️ SHIELD PROTECTED! (파괴 방지권 발동) 🛡️",DESTROYED:"💥 ODOR CAPSULE BREACHED (캡슐 대폭발 붕괴!) 💥",FAILED:"🔻 FAILED (단계 하락) 🔻",HOLD:"🔒 HOLD (단계 유지) 🔒",NOT_ENOUGH_MONEY:"💰 강화 비용 부족"};
   st.textContent=labels[status]||status;const colors={READY:"#38bdf8",SUCCESS:d.color,CRITICAL:"#fff",SHIELD_SAVED:"#60a5fa",DESTROYED:"#f00",FAILED:"#64748b",HOLD:"#94a3b8",NOT_ENOUGH_MONEY:"#f87171"};st.style.color=colors[status]||"#38bdf8";
   const shouldShake=l>=15||(l===MAX_LEVEL&&["SUCCESS","CRITICAL"].includes(status));["mainTitle","descText","priceText","pointText","costText"].forEach(id=>document.getElementById(id).classList.toggle("shaking-text",shouldShake));
@@ -891,7 +982,7 @@ function renderEnhanceCard(){
   const bossOverlay=document.getElementById('bossStageOverlay'),bossBadge=document.getElementById('bossStageBadge'),bossCopy=document.getElementById('bossStageCopy'),bossInfo=MILESTONE_BOSS_COPY[stageSpec.milestone];
   if(bossOverlay&&bossBadge&&bossCopy){if(bossInfo){bossOverlay.classList.remove('hidden');bossBadge.textContent=bossInfo.badge;bossCopy.textContent=bossInfo.copy;}else{bossOverlay.classList.add('hidden');bossBadge.textContent='';bossCopy.textContent='';}}
   document.getElementById('cardStageLabel').textContent=l+'단계'+(l===MAX_LEVEL?' • MAX':'');document.getElementById('cardName').textContent=d.name.replace(/^\d+단계\s*:\s*/,'');document.getElementById('cardDesc').textContent=d.desc;
-  document.getElementById('cardPrice').textContent=formatGold(dbPrice(l));document.getElementById('cardPoints').textContent=pointReward(l).toLocaleString('ko-KR')+'P';document.getElementById('cardCost').textContent=l>=MAX_LEVEL?'MAX':(effectiveEnhanceCost('normal')===0n?'무료':formatGold(effectiveEnhanceCost('normal')));
+  document.getElementById('cardPrice').textContent=formatGold(dbPrice(l));document.getElementById('cardPoints').textContent=pointReward(l).toLocaleString('ko-KR')+'P';document.getElementById('cardCost').textContent=l>=MAX_LEVEL?'MAX':(playerEnhanceCost('normal')===0n?'무료':formatGold(playerEnhanceCost('normal')));
   document.getElementById('cardSerial').textContent=`JION • CAPSULE • ${String(l).padStart(2,'0')}`;document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
   const status=state.runData.status,result=document.getElementById('cardResult');if(result)result.textContent='';
   const scene=document.getElementById('enhanceCardScene');scene.style.setProperty('--glow',d.color);scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');if(status==='SUCCESS'||status==='CRITICAL')scene.classList.add(status==='CRITICAL'?'status-critical':'status-success');else if(status==='FAILED')scene.classList.add('status-failed');else if(status==='HOLD')scene.classList.add('status-hold');else if(status==='DESTROYED')scene.classList.add('status-destroyed');else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');if(result)result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
@@ -1301,18 +1392,41 @@ function bindLabButtons(){
 
 function setGameView(view){
   if(actionLocked)return;
-  currentGameView=['enhance','shop','lab'].includes(view)?view:'enhance';
+  currentGameView=['enhance','shop','lab','storage'].includes(view)?view:'enhance';
   closeModal();
-  const main=document.querySelector('main.layout'),shop=document.getElementById('shopView'),lab=document.getElementById('labView');
+  const main=document.querySelector('main.layout'),shop=document.getElementById('shopView'),lab=document.getElementById('labView'),storage=document.getElementById('storageView');
   if(main)main.classList.toggle('hidden',currentGameView!=='enhance');
   if(shop)shop.classList.toggle('hidden',currentGameView!=='shop');
   if(lab)lab.classList.toggle('hidden',currentGameView!=='lab');
+  if(storage)storage.classList.toggle('hidden',currentGameView!=='storage');
   document.body.classList.toggle('shop-view-active',currentGameView==='shop');
   document.body.classList.toggle('lab-view-active',currentGameView==='lab');
+  document.body.classList.toggle('storage-view-active',currentGameView==='storage');
   document.querySelectorAll('[data-game-view]').forEach(btn=>{const active=btn.dataset.gameView===currentGameView;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false');});
   if(currentGameView==='shop')renderShopView();
   if(currentGameView==='lab')renderLabView();
+  if(currentGameView==='storage')renderStorageView();
 }
+function storageHTML(){
+  state.storageSlots=normalizeStorageSlots(state.storageSlots);
+  const d=state.runData,l=level(),full=state.storageSlots.every(Boolean);
+  const current=l>0?`<div class="storage-current-card"><div><small>CURRENT ODOR</small><h3>+${l} · ${DB[String(l)]?.name?.replace(/^\d+단계\s*:\s*/,'')||'지온 냄새'}</h3><p>예상 가치 <b>${formatGold(dbPrice(l))}</b></p></div><button class="glass-btn storage-store-btn" data-storage-store ${full?'disabled':''}>${full?'보관함 가득 참':'현재 냄새 보관'}</button></div>`:`<div class="storage-current-card empty-current"><div><small>CURRENT ODOR</small><h3>현재 보관할 냄새가 없습니다</h3><p>강화한 냄새를 최대 3개까지 보관할 수 있습니다.</p></div></div>`;
+  const slots=state.storageSlots.map((slot,i)=>slot?`<article class="storage-slot filled"><div class="storage-slot-no">SLOT ${i+1}</div><div class="storage-slot-stage">+${slot.level}</div><h3>${DB[String(slot.level)]?.name?.replace(/^\d+단계\s*:\s*/,'')||'보관 냄새'}</h3><p>예상 가치 <b>${formatGold(dbPrice(slot.level))}</b></p><button class="glass-btn" data-storage-withdraw="${i}" ${l>0?'disabled':''}>${l>0?'현재 냄새 처리 후 꺼내기':'꺼내기'}</button></article>`:`<article class="storage-slot empty"><div class="storage-slot-no">SLOT ${i+1}</div><div class="storage-empty-icon">📦</div><h3>빈 보관 슬롯</h3><p>현재 냄새를 이곳에 안전하게 보관할 수 있습니다.</p></article>`).join('');
+  return `<div class="storage-page-heading"><div><small>JION ODOR STORAGE</small><h2>📦 냄새 보관함</h2><p>판매하지 않고 냄새를 맡겨두었다가 나중에 다시 꺼내 강화·판매·경매할 수 있습니다.</p></div><b>${state.storageSlots.filter(Boolean).length} / 3</b></div>${current}<div class="storage-slot-grid">${slots}</div>`;
+}
+function renderStorageView(){const root=document.getElementById('storagePageContent');if(!root)return;root.innerHTML=storageHTML();bindStorageButtons();}
+function storeCurrentCard(){
+  if(actionLocked)return;const l=level();if(l<=0){showToast('보관할 냄새가 없습니다.');return;}
+  state.storageSlots=normalizeStorageSlots(state.storageSlots);const idx=state.storageSlots.findIndex(v=>!v);if(idx<0){showToast('📦 보관함이 가득 찼습니다.');return;}
+  state.storageSlots[idx]={level:l,storedAt:Date.now(),warpSaleLock:Math.max(0,Number(state.runData.warpSaleLock)||0)};state.storageCount=Math.max(0,Number(state.storageCount)||0)+1;
+  const d=state.runData;d.prev_level=l;d.level=0;d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);save();render();renderStorageView();showToast(`📦 ${l}단계 냄새를 SLOT ${idx+1}에 보관했습니다.`);
+}
+function withdrawStoredCard(index){
+  if(actionLocked)return;state.storageSlots=normalizeStorageSlots(state.storageSlots);const i=Number(index),slot=state.storageSlots[i];if(!slot)return;
+  if(level()>0){showToast('현재 냄새를 먼저 판매·경매·보관해야 합니다.');return;}
+  const d=state.runData;d.prev_level=slot.level;d.level=slot.level;d.max_level=Math.max(Number(d.max_level)||0,slot.level);d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=Math.max(0,Number(slot.warpSaleLock)||0);resetCombo(d);unlockReachedWarps(d);state.storageSlots[i]=null;save();render();renderStorageView();showToast(`📦 SLOT ${i+1}에서 ${slot.level}단계 냄새를 꺼냈습니다.`);
+}
+function bindStorageButtons(){document.querySelectorAll('[data-storage-store]').forEach(b=>b.onclick=storeCurrentCard);document.querySelectorAll('[data-storage-withdraw]').forEach(b=>b.onclick=()=>withdrawStoredCard(b.dataset.storageWithdraw));}
 function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>15개 코어마다 서로 다른 성공/유지 확률로 최대 Lv.5까지 강화합니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
 
 function probabilitiesHTML(){
@@ -1354,9 +1468,11 @@ function statsHTML(){
   const destroys=Math.max(0,Number(state.destroyCount)||0);
   const criticals=Math.max(0,Number(state.criticalCount)||0);
   const sells=Math.max(0,Number(state.sellCount)||0);
+  const auctions=Math.max(0,Number(state.auctionCount)||0);
   const warps=Math.max(0,Number(state.warpUses)||0);
   const finalClears=Math.max(0,Number(state.finalClears)||0);
   const frenzyTriggers=Math.max(0,Number(state.frenzyTriggers)||0);
+  const stored=Math.max(0,Number(state.storageCount)||0);
   const bestCombo=Math.max(Number(d.best_combo)||0,Number(d.combo)||0);
   const successRate=attempts?successes/attempts*100:0;
   const failRate=attempts?failures/attempts*100:0;
@@ -1382,8 +1498,10 @@ function statsHTML(){
       <article><small>크리티컬</small><b class="stats-gold">${fmtNum(criticals)}</b><span>성공 중 ${fmtPct(critRate)}</span></article>
       <article><small>최고 콤보</small><b>${fmtNum(bestCombo)}</b><span>현재 ${fmtNum(d.combo||0)}</span></article>
       <article><small>판매 횟수</small><b>${fmtNum(sells)}</b></article>
+      <article><small>경매 횟수</small><b class="stats-gold">${fmtNum(auctions)}</b></article>
       <article><small>워프 사용</small><b>${fmtNum(warps)}</b></article>
       <article><small>FINAL 클리어</small><b class="stats-gold">${fmtNum(finalClears)}</b></article>
+      <article><small>보관 횟수</small><b>${fmtNum(stored)}</b></article>
       <article><small>폭주 발동</small><b>${fmtNum(frenzyTriggers)}</b></article>
     </div>
     <div class="stats-section-title"><span>⭐</span><div><small>POINT ECONOMY</small><b>포인트 기록</b></div></div>
@@ -1417,9 +1535,9 @@ function bindModal(kind){
     if(currentGameView==='shop')setGameView('enhance');else closeModal();setActionLocked(true);
     playWarpAnimation(w,()=>{
       if(type==="money")setMoney(money()-cost);else{state.points-=cost;state.pointsSpentTotal+=cost;}
-      state.warpUses++;const prevWarp=d.level;d.prev_level=prevWarp;d.level=w;d.max_level=Math.max(d.max_level,w);d.status="SUCCESS";d.last_aux_effect="🚀 워프 완료";d.warpBoostLevel=activeResearchLevel('warpTech',d);resetCombo(d);d._warpPrev=prevWarp;
+      state.warpUses++;const prevWarp=d.level;d.prev_level=prevWarp;d.level=w;d.max_level=Math.max(d.max_level,w);d.status="SUCCESS";d.last_aux_effect="🚀 워프 완료";d.warpBoostLevel=activeResearchLevel('warpTech',d);d.warpSaleLock=2;resetCombo(d);d._warpPrev=prevWarp;
       unlockReachedWarps(d);save();render();spawnEnhanceBurst('#22d3ee',90,.18,.06,.70,'add');setTimeout(()=>spawnEnhanceBurst('#a855f7',70,.15,.055,.65,'add'),100);
-    },()=>{const prevWarp=Number(d._warpPrev??w);delete d._warpPrev;save();showToast(`🚀 ${w}단계 워프 완료 · 즉시 판매 가능`);runMilestoneOnly(prevWarp,w,()=>setActionLocked(false));});
+    },()=>{const prevWarp=Number(d._warpPrev??w);delete d._warpPrev;save();showToast(`🚀 ${w}단계 워프 완료 · 판매/경매 전 강화하기 2회 필요`);runMilestoneOnly(prevWarp,w,()=>setActionLocked(false));});
   });
 }
 document.getElementById("closeModal").onclick=closeModal;
@@ -1431,26 +1549,39 @@ setGameView(currentGameView);
 const enhanceButton=document.getElementById("enhanceBtn");
 (function bindFinalHoldEnhance(){
   if(!enhanceButton)return;
-  const HOLD_MS=1500;let holding=false,start=0,raf=0,completed=false;
+  const HOLD_MS=1500;let holding=false,start=0,raf=0;
   const resetHold=(cancelled=false)=>{
     if(raf)cancelAnimationFrame(raf);raf=0;holding=false;start=0;
-    enhanceButton.style.setProperty('--final-hold','0');enhanceButton.classList.remove('final-holding','final-hold-complete');
-    if(cancelled&&level()===MAX_LEVEL-1&&!actionLocked)showToast('👑 FINAL 강화 취소 · 끝까지 길게 눌러주세요.');
+    enhanceButton.style.setProperty('--final-hold','0');
+    enhanceButton.classList.remove('final-holding','final-hold-complete');
+    enhanceButton.textContent=level()>=MAX_LEVEL?'55단계 MAX':'강화하기';
+    if(cancelled&&level()===MAX_LEVEL-1&&!actionLocked)showToast('54→55 강화 취소 · 강화하기 버튼을 끝까지 꾹 눌러주세요.');
   };
   const beginHold=(e)=>{
     if(level()!==MAX_LEVEL-1||actionLocked||enhanceButton.disabled)return;
     if(e?.pointerType&&e.button!==undefined&&e.button!==0)return;
-    e?.preventDefault?.();holding=true;completed=false;start=performance.now();enhanceButton.classList.add('final-holding');
+    e?.preventDefault?.();holding=true;start=performance.now();enhanceButton.classList.add('final-holding');
     const tick=(now)=>{
-      if(!holding)return;const progress=Math.min(1,(now-start)/HOLD_MS);enhanceButton.style.setProperty('--final-hold',String(progress*100));
-      enhanceButton.textContent=progress<1?`👑 FINAL CAPSULE CHARGING ${Math.floor(progress*100)}%`:'⚡ FINAL ASCENSION';
-      if(progress>=1){holding=false;completed=true;enhanceButton.classList.add('final-hold-complete');finalHoldAuthorized=true;impactFlash(.38);cardBurst('#fde047',82,190);setTimeout(()=>{resetHold(false);enhance('normal');},90);return;}
+      if(!holding)return;
+      const progress=Math.min(1,(now-start)/HOLD_MS);
+      enhanceButton.style.setProperty('--final-hold',String(progress*100));
+      // 문구는 항상 "강화하기"로 유지하고 게이지만 채운다.
+      enhanceButton.textContent='강화하기';
+      if(progress>=1){
+        holding=false;enhanceButton.classList.add('final-hold-complete');finalHoldAuthorized=true;
+        impactFlash(.38);cardBurst('#fde047',82,190);
+        setTimeout(()=>{resetHold(false);enhance('normal');},90);return;
+      }
       raf=requestAnimationFrame(tick);
-    };raf=requestAnimationFrame(tick);
+    };
+    raf=requestAnimationFrame(tick);
   };
   const cancelHold=()=>{if(!holding)return;resetHold(true);render();};
   enhanceButton.addEventListener('click',e=>{if(level()===MAX_LEVEL-1){e.preventDefault();return;}enhance('normal');});
-  enhanceButton.addEventListener('pointerdown',beginHold);enhanceButton.addEventListener('pointerup',cancelHold);enhanceButton.addEventListener('pointercancel',cancelHold);enhanceButton.addEventListener('pointerleave',cancelHold);
+  enhanceButton.addEventListener('pointerdown',beginHold);
+  enhanceButton.addEventListener('pointerup',cancelHold);
+  enhanceButton.addEventListener('pointercancel',cancelHold);
+  enhanceButton.addEventListener('pointerleave',cancelHold);
   enhanceButton.addEventListener('keydown',e=>{if(level()===MAX_LEVEL-1&&(e.key===' '||e.key==='Enter')&&!e.repeat)beginHold(e);});
   enhanceButton.addEventListener('keyup',e=>{if(level()===MAX_LEVEL-1&&(e.key===' '||e.key==='Enter'))cancelHold();});
   window.addEventListener('blur',()=>{if(holding)resetHold(false);});
@@ -1458,6 +1589,7 @@ const enhanceButton=document.getElementById("enhanceBtn");
 document.getElementById("stableBtn")?.addEventListener("click",()=>enhance("stable"));
 document.getElementById("berserkBtn")?.addEventListener("click",()=>enhance("berserk"));
 document.getElementById("sellBtn").onclick=sell;
+document.getElementById("auctionBtn")?.addEventListener("click",auction);
 
 /* --------------------------- Lightweight visual compatibility ---------------------------
    V17.14 QA: the legacy Three.js path had no canvas and was never initialized.
@@ -1924,7 +2056,7 @@ function resetGame(){
   if(actionLocked)return;
   const ok=window.confirm?.('현재 진행 상황과 연구소 파츠 데이터까지 모두 초기화할까요?') ?? true;
   if(!ok)return;
-  document.querySelectorAll('.card-draw-overlay,.berserk-roulette-overlay,.frenzy-event-overlay,.warp-fx-overlay,.system-choice-overlay,.result-fx-layer').forEach(e=>e.remove());
+  document.querySelectorAll('.card-draw-overlay,.berserk-roulette-overlay,.auction-roulette-overlay,.frenzy-event-overlay,.warp-fx-overlay,.system-choice-overlay,.result-fx-layer').forEach(e=>e.remove());
   cleanupTransientEffects();
   state=clone(INITIAL);
   save();
