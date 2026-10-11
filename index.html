@@ -23,7 +23,7 @@
   <meta name="twitter:title" content="지온냄새 강화하기 - V17.98">
   <meta name="twitter:description" content="지온냄새를 강화하며 최종 단계에 도전하는 웹 강화 게임. 강화 · 연구소 · 폭주 시스템으로 더 강하고 더 지독하게!">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
-  <link rel="stylesheet" href="style.css?v=17.98.1">
+  <link rel="stylesheet" href="style.css?v=17.99.1">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -134,7 +134,7 @@
         <div class="info-grid">
           <div class="mini-stat"><div>💳 보유 금액</div><strong id="money"></strong></div>
           <div class="mini-stat"><div>⭐ 포인트</div><strong id="points" class="gold"></strong></div>
-          <div class="mini-stat shield-stat shield-stat-wide"><div>🛡️ 방지권</div><strong id="shield"></strong><button id="quickShieldBuyBtn" class="shield-quick-buy" type="button" title="돈으로 방지권 1개 즉시 구매">🛒 바로구매</button><small id="shieldQuickBuyHint">15단계부터 구매 가능</small></div>
+          <div class="mini-stat shield-stat shield-stat-wide"><div>🛡️ 방지권</div><strong id="shield"></strong><div class="shield-quick-actions"><button id="quickShieldBuyBtn" class="shield-quick-buy" type="button" title="돈으로 방지권 1개 즉시 구매">💰 돈 구매</button><button id="quickShieldPointBuyBtn" class="shield-quick-buy shield-point-buy" type="button" title="포인트로 방지권 1개 즉시 구매">⭐ P 구매</button></div><small id="shieldQuickBuyHint">15단계부터 구매 가능</small></div>
           <div id="comboMeter" class="mini-stat combo-stat">
             <div id="comboLabel">🔥 연속 콤보</div>
             <strong id="combo">0 COMBO</strong>
@@ -303,6 +303,12 @@
               <small id="labUpgradeCostHint">포인트를 사용합니다</small>
             </div>
             <button id="labUpgradeBtn" class="glass-btn lab-upgrade-main-btn" type="button">⭐ 포인트로 강화</button>
+            <div id="labTranscendCard" class="lab-transcend-card" aria-label="코어 초월">
+              <div class="lab-transcend-heading"><span>✨ CORE TRANSCEND</span><b id="labTranscendLevel">초월 0 / V</b></div>
+              <p id="labTranscendDescription">Lv.5 코어 강화 완료 시 해금됩니다.</p>
+              <div class="lab-transcend-bottom"><strong id="labTranscendCost">🔒 잠김</strong><span>실패해도 코어·등급 유지</span></div>
+              <button id="labTranscendBtn" class="glass-btn lab-transcend-btn" type="button" disabled>🔒 Lv.5 달성 후 초월</button>
+            </div>
             <button id="labEquipBtn" class="glass-btn lab-equip-main-btn" type="button">장착하기</button>
             <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
           </section>
@@ -432,6 +438,6 @@
   setTimeout(closeScreen,hardTimeout);
 })();
 </script>
-<script defer src="game.js?v=17.98.1"></script>
+<script defer src="game.js?v=17.99.1"></script>
 </body>
 </html>

@@ -93,6 +93,12 @@ const LEGACY_AUX_TO_RESEARCH = {
 };
 const LEGACY_V13_PRICE = {"0":0,"1":150,"2":400,"3":600,"4":800,"5":3000,"6":3500,"7":6100,"8":10000,"9":20000,"10":35100,"11":160000,"12":350000,"13":1000000,"14":3000000,"15":7500000,"16":14200000,"17":20000000,"18":30000000,"19":47500000,"20":68300000,"21":101000000,"22":160000000,"23":230000000,"24":300000000,"25":400000000,"26":1800000000,"27":2500000000,"28":5500000000,"29":10500000000,"30":20000000000,"31":45000000000,"32":90000000000,"33":200000000000,"34":500000000000,"35":1000000000000,"36":2500000000000,"37":6000000000000,"38":15000000000000,"39":35000000000000,"40":80000000000000,"41":180000000000000,"42":400000000000000,"43":900000000000000,"44":2000000000000000,"45":4500000000000000,"46":10000000000000000,"47":22000000000000000,"48":50000000000000000,"49":120000000000000000,"50":280000000000000000,"51":600000000000000000,"52":1300000000000000000,"53":3000000000000000000,"54":7000000000000000000,"55":15000000000000000000};
 const RESEARCH_MAX=5;
+// Lv.5 코어의 독립적인 초월 성장: 실패해도 코어와 초월 등급은 유지됩니다.
+const CORE_TRANSCEND_MAX=5;
+const CORE_TRANSCEND_COST=[200000,550000,1200000,2500000,5000000];
+const CORE_TRANSCEND_SUCCESS=[70,55,42,30,22];
+const CORE_TRANSCEND_BONUS_PER_TIER=.08;
+const CORE_TRANSCEND_ROMAN=['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'];
 const LAB_COST_MULTIPLIER=.55;
 const CORE_FUSION_MIN_LEVEL=5;
 const CORE_FUSION_COST=60000;
@@ -155,13 +161,13 @@ function normalizeFusionLinks(input,research={}){
   return out;
 }
 const INITIAL = {
-  schemaVersion:37,
+  schemaVersion:38,
   enhanceAttempts:0,warpUses:0,sellCount:0,auctionCount:0,finalClears:0,frenzyTriggers:0,
   storageCount:0,storageSlots:normalizeStorageSlots(),
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
   enhanceSuccesses:0,enhanceFailures:0,criticalCount:0,destroyCount:0,
   uiSettings:normalizeUiSettings({graphics:'high',motion:'high'}),
-  runData:{level:0,prev_level:0,max_level:0,money:"100000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],fusionLinks:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,warpSaleLock:0,
+  runData:{level:0,prev_level:0,max_level:0,money:"100000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),coreTranscend:emptyResearch(),equippedParts:[],fusionLinks:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,warpSaleLock:0,
     unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
@@ -230,6 +236,14 @@ function normalizeRunData(d){
   }
   for(const key of Object.keys(RESEARCH_DATA)) out.research[key]=Math.max(0,Math.min(RESEARCH_MAX,Number(out.research[key])||0));
   for(const key of Object.keys(out.research)) if(!RESEARCH_DATA[key]) delete out.research[key];
+  // 구 버전 저장 데이터를 보존하고, Lv.5를 달성한 코어의 초월 기록만 인정합니다.
+  out.coreTranscend=Object.assign(emptyResearch(),out.coreTranscend||{});
+  for(const key of Object.keys(RESEARCH_DATA)){
+    const raw=Number(out.coreTranscend[key]);
+    out.coreTranscend[key]=out.research[key]>=RESEARCH_MAX && Number.isFinite(raw)
+      ?Math.max(0,Math.min(CORE_TRANSCEND_MAX,Math.floor(raw))):0;
+  }
+  for(const key of Object.keys(out.coreTranscend))if(!RESEARCH_DATA[key])delete out.coreTranscend[key];
   delete out.transcend;
 
   const validOwned=Object.keys(RESEARCH_DATA).filter(key=>out.research[key]>0);
@@ -274,13 +288,13 @@ function loadState(){
     const saved=JSON.parse(localStorage.getItem("jion_smell_game_v3"));
     if(!saved)return clone(INITIAL);
     if(saved.schemaVersion>=15&&saved.runData){
-      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);s.schemaVersion=37;
+      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);s.schemaVersion=38;
       return cleanRemovedSystems(s);
     }
     if(saved.schemaVersion>=13&&saved.runData){
       const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);
       if(saved.schemaVersion<14)s.runData.money=scaleLegacyMoney(saved.runData.money,s.runData.max_level||s.runData.level).toString();
-      s.schemaVersion=37;return cleanRemovedSystems(s);
+      s.schemaVersion=38;return cleanRemovedSystems(s);
     }
     const s=Object.assign(clone(INITIAL),saved),a=(saved.seasonData||{})[1]||{},b=(saved.seasonData||{})[2]||{};
     const bMax=Math.max(0,Number(b.max_level)||0),bLevel=Math.max(0,Number(b.level)||0),hadSecond=Number(saved.rebirthCount)>0||bMax>0||bLevel>0||Number(saved.currentSeason)===2;
@@ -289,7 +303,7 @@ function loadState(){
     s.runData=normalizeRunData(Object.assign({},src,{level:currentUnified,prev_level:currentUnified,max_level:maxUnified,auxInventory:legacyAux}));
     const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of WARP_LEVELS)if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
     s.uiSettings=normalizeUiSettings(saved.uiSettings);
-    s.schemaVersion=37;return cleanRemovedSystems(s);
+    s.schemaVersion=38;return cleanRemovedSystems(s);
   }catch(e){return clone(INITIAL);}
 }
 function save(){ localStorage.setItem("jion_smell_game_v3",JSON.stringify(state)); }
@@ -361,7 +375,22 @@ function isResearchEquipped(key,d=state.runData){return researchLevel(key,d)>0&&
 function activeResearchLevel(key,d=state.runData){return Number(d?.level)>=52?0:(isResearchEquipped(key,d)?researchLevel(key,d):0);}
 function fusionLinkForCore(key,d=state.runData){return (Array.isArray(d?.fusionLinks)?d.fusionLinks:[]).find(link=>link?.a===key||link?.b===key)||null;}
 function fusionBonusForCore(key,d=state.runData){const link=fusionLinkForCore(key,d);return link?Math.max(0,Math.min(.30,Number(link.boost)||0)):0;}
-function activeResearchPower(key,d=state.runData){const lv=activeResearchLevel(key,d);return lv>0?lv*(1+fusionBonusForCore(key,d)):0;}
+function coreTranscendLevel(key,d=state.runData){
+  if(researchLevel(key,d)<RESEARCH_MAX)return 0;
+  return Math.max(0,Math.min(CORE_TRANSCEND_MAX,Math.floor(Number(d?.coreTranscend?.[key])||0)));
+}
+function coreTranscendCost(key,d=state.runData){
+  if(researchLevel(key,d)<RESEARCH_MAX)return null;
+  return CORE_TRANSCEND_COST[coreTranscendLevel(key,d)]??null;
+}
+function coreTranscendOdds(key,d=state.runData){
+  return CORE_TRANSCEND_SUCCESS[coreTranscendLevel(key,d)]??null;
+}
+function coreTranscendLabel(rank){return CORE_TRANSCEND_ROMAN[Math.max(0,Number(rank)-1)]||'Ⅴ';}
+function activeResearchPower(key,d=state.runData){
+  const lv=activeResearchLevel(key,d);
+  return lv>0?lv*(1+fusionBonusForCore(key,d))*(1+coreTranscendLevel(key,d)*CORE_TRANSCEND_BONUS_PER_TIER):0;
+}
 function equippedPartCount(d=state.runData){return equippedResearchKeys(d).length;}
 function researchCost(key,d=state.runData){const lv=researchLevel(key,d),cfg=RESEARCH_DATA[key];if(!cfg||lv>=RESEARCH_MAX)return null;const base=Number(cfg.cost[lv]||0);return Math.ceil(base*LAB_COST_MULTIPLIER/100)*100;}
 function labUpgradeOdds(key,lv=researchLevel(key)){const cfg=RESEARCH_DATA[key],idx=Math.max(0,Math.min(RESEARCH_MAX-1,Number(lv)||0));const success=Math.max(0,Math.min(100,Number(cfg?.success?.[idx]??100)));return {success,hold:100-success};}
@@ -529,6 +558,8 @@ function syncActionButtons(){
   }
   const quickBuy=document.getElementById('quickShieldBuyBtn');
   if(quickBuy)quickBuy.disabled=actionLocked||level()<15||shield()>=SHIELD_MAX||money()<shieldMoneyCost(level());
+  const quickPointBuy=document.getElementById('quickShieldPointBuyBtn');
+  if(quickPointBuy)quickPointBuy.disabled=actionLocked||level()<15||shield()>=SHIELD_MAX||state.points<shieldPointCost(level());
   document.querySelectorAll("[data-modal]").forEach(b=>b.disabled=actionLocked);
   document.querySelectorAll("[data-game-view]").forEach(b=>{b.disabled=actionLocked||(b.dataset.gameView==='lab'&&level()>=52);});
   const reset=document.getElementById("resetBtn");if(reset)reset.disabled=actionLocked;
@@ -1035,12 +1066,18 @@ function render(){
   if(comboLabel)comboLabel.textContent='🔥 연속 콤보';if(auxLabel)auxLabel.textContent='🔬 연구 효과';
   document.getElementById("money").textContent=formatGoldCompact(money());document.getElementById("points").textContent=state.points.toLocaleString("ko-KR")+"P";document.getElementById("shield").textContent=shield()+` / ${SHIELD_MAX}개`;
   const quickShieldBtn=document.getElementById('quickShieldBuyBtn');
+  const quickShieldPointBtn=document.getElementById('quickShieldPointBuyBtn');
+  if(quickShieldPointBtn){
+    const costP=shieldPointCost(l);
+    quickShieldPointBtn.disabled=actionLocked||l<15||shield()>=SHIELD_MAX||state.points<costP;
+    quickShieldPointBtn.title=l<15?'15단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`포인트로 즉시 구매: ${costP.toLocaleString('ko-KR')}P`;
+  }
   if(quickShieldBtn){
     const quickCost=shieldMoneyCost(l),allowed=l>=15&&shield()<SHIELD_MAX&&money()>=quickCost;
     quickShieldBtn.disabled=actionLocked||!allowed;
     quickShieldBtn.title=l<15?'15단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`돈으로 즉시 구매: ${formatGold(quickCost)}`;
     const hint=document.getElementById('shieldQuickBuyHint');
-    if(hint)hint.textContent=l<15?'15단계부터 구매 가능':`1개 ${formatGoldCompact(quickCost)} · 돈 결제`;
+    if(hint)hint.textContent=l<15?'15단계부터 구매 가능':`💰 ${formatGoldCompact(quickCost)} / ⭐ ${shieldPointCost(l).toLocaleString('ko-KR')}P`;
   }
   const labTab=document.querySelector('[data-game-view="lab"]');if(labTab){const closed=level()>=52;labTab.disabled=closed;labTab.classList.toggle('system-locked',closed);labTab.textContent=closed?'🔒 연구소':'연구소';}
   const frenzyMeter=document.getElementById('frenzyMeter'),frenzyFill=document.getElementById('frenzyFill'),frenzyValue=document.getElementById('frenzyValue'),frenzyHint=document.getElementById('frenzyHint'),activeFrenzy=currentFrenzyEvent(sd);
@@ -1415,10 +1452,13 @@ function labCorePickerHTML(){
   const d=state.runData;
   return Object.entries(RESEARCH_DATA).map(([key,cfg])=>{
     const lv=researchLevel(key,d),selected=key===selectedLabPartKey,equipped=isResearchEquipped(key,d),fusionLink=fusionLinkForCore(key,d),fusionBoost=fusionBonusForCore(key,d),maxed=lv>=RESEARCH_MAX;
-    return `<button class="lab-core-choice ${selected?'selected':''} ${lv>0?'owned':''} ${equipped?'equipped':''} ${maxed?'maxed':''} ${fusionLink?'fusion-linked':''}" type="button" data-lab-select="${key}">
+    const rank=coreTranscendLevel(key,d),rankMax=rank>=CORE_TRANSCEND_MAX;
+    const rankText=rank?` ✨ 초월 ${coreTranscendLabel(rank)}`:'';
+    const chanceText=!maxed?`다음 강화 · ${labUpgradeOddsText(key,lv)}`:rankMax?'✨ 초월 V 최종 완료':`✨ 다음 초월 ${coreTranscendLabel(rank+1)} · 성공 ${coreTranscendOdds(key,d)}% · ${coreTranscendCost(key,d).toLocaleString('ko-KR')}P`;
+    return `<button class="lab-core-choice ${rank>0?'transcended':maxed?'transcend-ready':''} ${selected?'selected':''} ${lv>0?'owned':''} ${equipped?'equipped':''} ${maxed?'maxed':''} ${fusionLink?'fusion-linked':''}" type="button" data-lab-select="${key}">
       <span class="lab-core-choice-icon">${cfg.icon}</span>
-      <span class="lab-core-choice-copy"><small>${cfg.slot}</small><b>${cfg.name}</b><span class="lab-core-choice-desc">${cfg.desc}</span><span class="lab-core-choice-effect">${researchDeltaText(key,lv)}${fusionLink?` · 🔬 융합 +${Math.round(fusionBoost*100)}%`:''}</span><span class="lab-core-choice-chance">${maxed?'Lv.5 최대 강화 완료':`다음 강화 · ${labUpgradeOddsText(key,lv)}`}</span></span>
-      <span class="lab-core-choice-level">Lv.${lv}</span>
+      <span class="lab-core-choice-copy"><small>${cfg.slot}</small><b>${cfg.name}</b><span class="lab-core-choice-desc">${cfg.desc}</span><span class="lab-core-choice-effect">${researchDeltaText(key,lv)}${fusionLink?` · 🔬 융합 +${Math.round(fusionBoost*100)}%`:''}${rank?` · ✨ 초월 +${rank*8}% 효과`: ''}</span><span class="lab-core-choice-chance">${chanceText}</span></span>
+      <span class="lab-core-choice-level">Lv.${lv}${rankText}</span>
     </button>`;
   }).join('');
 }
@@ -1426,18 +1466,40 @@ function renderLabView(){
   const picker=document.getElementById('labCorePicker');if(!picker)return;
   if(!RESEARCH_DATA[selectedLabPartKey])selectedLabPartKey=Object.keys(RESEARCH_DATA)[0];
   const d=state.runData,key=selectedLabPartKey,cfg=RESEARCH_DATA[key],lv=researchLevel(key,d),cost=researchCost(key,d),maxed=lv>=RESEARCH_MAX,equipped=isResearchEquipped(key,d);
+  const rank=coreTranscendLevel(key,d),rankMax=rank>=CORE_TRANSCEND_MAX,transcendCost=coreTranscendCost(key,d),transcendOdds=coreTranscendOdds(key,d);
   const wallet=document.getElementById('labPointWallet');if(wallet)wallet.textContent=state.points.toLocaleString('ko-KR')+'P';
   picker.innerHTML=labCorePickerHTML();
   const icon=document.getElementById('labUpgradeIcon'),slot=document.getElementById('labSelectedSlot'),name=document.getElementById('labSelectedName'),desc=document.getElementById('labSelectedDesc'),metric=document.getElementById('labSelectedMetric');
-  if(icon)icon.textContent=cfg.icon;if(slot)slot.textContent=`${cfg.slot} PART · ${cfg.effect}`;if(name)name.textContent=cfg.name;if(desc)desc.textContent=cfg.desc;if(metric){const fusionBoost=fusionBonusForCore(key,d);metric.innerHTML=`<b>${researchDeltaText(key,lv)}</b>${fusionBoost?`<span class="lab-fusion-metric">🔬 융합 공명 · 장착 효과 +${Math.round(fusionBoost*100)}%</span>`:''}${maxed?`<span class="lab-next-odds">Lv.5 최대 강화 완료</span>`:`<span class="lab-next-odds">다음 강화 · ${labUpgradeOddsText(key,lv)}</span>`}<span class="lab-prob-schedule">강화 확률표 · ${labUpgradeScheduleText(key)}</span>`;}
+  if(icon)icon.textContent=cfg.icon;
+  if(slot)slot.textContent=`${cfg.slot} PART · ${cfg.effect}`;
+  if(name)name.textContent=cfg.name+(rank?` · ✨ 초월 ${coreTranscendLabel(rank)}`:'');
+  if(desc)desc.textContent=cfg.desc;
+  if(metric){
+    const fusionBoost=fusionBonusForCore(key,d);
+    metric.innerHTML=`<b>${researchDeltaText(key,lv)}</b>${fusionBoost?`<span class="lab-fusion-metric">🔬 융합 공명 · 장착 효과 +${Math.round(fusionBoost*100)}%</span>`:''}${rank?`<span class="lab-transcend-metric">✨ 초월 ${coreTranscendLabel(rank)} · 장착 코어 효과 +${rank*8}%</span>`:''}${maxed?`<span class="lab-next-odds">Lv.5 완료 · 초월 시스템 해금</span>`:`<span class="lab-next-odds">다음 강화 · ${labUpgradeOddsText(key,lv)}</span>`}<span class="lab-prob-schedule">강화 확률표 · ${labUpgradeScheduleText(key)}</span>`;
+  }
   const levels=document.getElementById('labSelectedLevels');if(levels)levels.innerHTML=Array.from({length:RESEARCH_MAX},(_,i)=>`<i class="${i<lv?'on':''}"><span>${i+1}</span></i>`).join('');
+  document.querySelector('.lab-upgrade-cost-card')?.classList.toggle('hidden',maxed);
   const costEl=document.getElementById('labUpgradeCost'),costHint=document.getElementById('labUpgradeCostHint');
   const costLabel=document.getElementById('labUpgradeCostLabel');if(costLabel)costLabel.textContent=maxed?'최대 강화 완료':'강화 비용 · 실패 시에도 소모';
   if(costEl)costEl.textContent=maxed?'MAX':`${Number(cost||0).toLocaleString('ko-KR')}P`;
   if(costHint)costHint.textContent=maxed?`Lv.5에서 강화 종료 · 보유 ${state.points.toLocaleString('ko-KR')}P`:state.points<(cost||0)?'포인트가 부족합니다':`보유 ${state.points.toLocaleString('ko-KR')}P`;
-  const btn=document.getElementById('labUpgradeBtn');if(btn){btn.disabled=actionLocked||maxed||state.points<(cost||0);btn.classList.remove('is-transcend');btn.textContent=maxed?'Lv.5 MAX':lv===0?`⭐ 코어 획득 · Lv.1 강화 (${labUpgradeOddsText(key,lv)})`:`⭐ Lv.${lv+1} 강화 (${labUpgradeOddsText(key,lv)})`;}
+  const btn=document.getElementById('labUpgradeBtn');if(btn){btn.classList.toggle('hidden',maxed);btn.disabled=actionLocked||maxed||state.points<(cost||0);btn.classList.remove('is-transcend');btn.textContent=maxed?'Lv.5 MAX':lv===0?`⭐ 코어 획득 · Lv.1 강화 (${labUpgradeOddsText(key,lv)})`:`⭐ Lv.${lv+1} 강화 (${labUpgradeOddsText(key,lv)})`;}
+  const transcendCard=document.getElementById('labTranscendCard');
+  const transcendLevel=document.getElementById('labTranscendLevel');
+  const transcendDescription=document.getElementById('labTranscendDescription');
+  const transcendCostEl=document.getElementById('labTranscendCost');
+  const transcendBtn=document.getElementById('labTranscendBtn');
+  if(transcendCard){transcendCard.classList.toggle('unlocked',maxed);transcendCard.classList.toggle('hidden',!maxed);}
+  if(transcendLevel)transcendLevel.textContent=rank?`초월 ${coreTranscendLabel(rank)} / V`:'초월 0 / V';
+  if(transcendDescription)transcendDescription.textContent=!maxed?'Lv.5 코어 강화 완료 시 해금됩니다.':rankMax?'모든 초월 완료 · 장착 효과 +40% (최종)':`초월 ${coreTranscendLabel(rank+1)} 도전 · 성공 ${transcendOdds}% · 실패 시 등급 유지 · 1단계당 코어 효과 +8%`;
+  if(transcendCostEl)transcendCostEl.textContent=!maxed?'🔒 잠김':rankMax?'MAX':`${transcendCost.toLocaleString('ko-KR')}P`;
+  if(transcendBtn){
+    transcendBtn.disabled=actionLocked||!maxed||rankMax||state.points<(transcendCost||0);
+    transcendBtn.textContent=!maxed?'🔒 Lv.5 달성 후 초월':rankMax?'✨ 초월 V MAX':`✨ 초월 ${coreTranscendLabel(rank+1)} 도전 · 성공 ${transcendOdds}%`;
+  }
   const equipBtn=document.getElementById('labEquipBtn');if(equipBtn){equipBtn.disabled=actionLocked||lv<=0;equipBtn.classList.toggle('is-equipped',equipped);equipBtn.textContent=lv<=0?'강화 후 자동 장착':equipped?'장착 해제':'장착하기';}
-  const status=document.getElementById('labUpgradeStatus');if(status&&!document.getElementById('labUpgradeStage')?.classList.contains('upgrading'))status.textContent=maxed?`${cfg.name} · Lv.5 MAX`:`${cfg.name} · ${labUpgradeOddsText(key,lv)} · 성공 시 Lv.${lv+1}, 유지 시 Lv.${lv}`;
+  const status=document.getElementById('labUpgradeStatus');if(status&&!document.getElementById('labUpgradeStage')?.classList.contains('upgrading'))status.textContent=maxed?`${cfg.name} · Lv.5 완료 · 초월 ${rank?coreTranscendLabel(rank):'해금'}`:`${cfg.name} · ${labUpgradeOddsText(key,lv)} · 성공 시 Lv.${lv+1}, 유지 시 Lv.${lv}`;
   renderLabFusion();
   bindLabButtons();
   bindLabSubTabs();
@@ -1492,6 +1554,37 @@ function buyLabPart(key=selectedLabPartKey){
     showToast(success?`${cfg.icon} ${cfg.name} 강화 성공 · Lv.${lv+1}${lv===0?' · 자동 장착':''}`:`◆ ${cfg.name} 강화 유지 · Lv.${lv} · 성공 ${odds.success}% / 유지 ${odds.hold}%`);
   });
 }
+function buyLabTranscend(key=selectedLabPartKey){
+  if(actionLocked)return;
+  if(level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');return;}
+  const cfg=RESEARCH_DATA[key],d=state.runData;
+  if(!cfg||researchLevel(key,d)<RESEARCH_MAX){showToast('🔒 코어를 Lv.5까지 강화해야 초월할 수 있습니다.');return;}
+  const rank=coreTranscendLevel(key,d),cost=coreTranscendCost(key,d),odds=coreTranscendOdds(key,d);
+  if(rank>=CORE_TRANSCEND_MAX||cost===null||odds===null){showToast('✨ 이미 최종 초월 V를 달성했습니다.');return;}
+  if(state.points<cost){showToast(`⭐ 초월에 ${cost.toLocaleString('ko-KR')}P가 필요합니다.`);return;}
+  const success=Math.random()*100<odds;
+  state.points-=cost;state.pointsSpentTotal+=cost;
+  d.coreTranscend=Object.assign(emptyResearch(),d.coreTranscend||{});
+  if(success)d.coreTranscend[key]=rank+1;
+  save();setActionLocked(true);
+  const stage=document.getElementById('labUpgradeStage'),levelUp=document.getElementById('labUpgradeLevelUp'),status=document.getElementById('labUpgradeStatus');
+  const duration=(motionPreset()==='low'||JION_PERF.reduced)?260:850;
+  if(stage){stage.classList.remove('upgrade-success','upgrade-hold');void stage.offsetWidth;stage.classList.add('upgrading','transcend-upgrading');}
+  if(status)status.textContent=`✨ ${cfg.name} 초월 판정 중...`;
+  if(levelUp){levelUp.textContent=`TRANSCEND · ${coreTranscendLabel(rank+1)}`;levelUp.classList.remove('show','hold');}
+  spawnLabUpgradeParticles(success?'✦':'◆');
+  setTimeout(()=>{
+    if(stage)stage.classList.add(success?'upgrade-success':'upgrade-hold');
+    if(levelUp){levelUp.textContent=success?`✨ TRANSCEND ${coreTranscendLabel(rank+1)}`:'초월 실패 · 등급 유지';levelUp.classList.toggle('hold',!success);levelUp.classList.add('show');}
+    if(status)status.textContent=success?`✨ ${cfg.name} · 초월 ${coreTranscendLabel(rank+1)} 성공!`:`초월 실패 · 초월 ${rank?coreTranscendLabel(rank):'미달성'} 유지`;
+  },Math.round(duration*.53));
+  setTimeout(()=>{
+    if(stage)stage.classList.remove('upgrading','transcend-upgrading','upgrade-success','upgrade-hold');
+    if(levelUp)levelUp.classList.remove('show','hold');
+    setActionLocked(false);render();
+    showToast(success?`✨ ${cfg.name} 초월 ${coreTranscendLabel(rank+1)} 성공 · 코어 효과 +${(rank+1)*8}%`:`◆ 초월 실패 · ${cost.toLocaleString('ko-KR')}P 소모 · 초월 등급 유지`);
+  },duration);
+}
 function toggleLabPart(key=selectedLabPartKey){
   if(actionLocked)return;
   if(level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');return;}
@@ -1505,6 +1598,7 @@ function bindLabButtons(){
   document.querySelectorAll('#labView [data-lab-select]').forEach(b=>b.onclick=()=>{if(actionLocked)return;selectedLabPartKey=b.dataset.labSelect;renderLabView();});
   const upgrade=document.getElementById('labUpgradeBtn');if(upgrade)upgrade.onclick=()=>buyLabPart(selectedLabPartKey);
   const equip=document.getElementById('labEquipBtn');if(equip)equip.onclick=()=>toggleLabPart(selectedLabPartKey);
+  const transcend=document.getElementById('labTranscendBtn');if(transcend)transcend.onclick=()=>buyLabTranscend(selectedLabPartKey);
 }
 
 function syncLabSubView(){
@@ -1680,7 +1774,7 @@ function withdrawStoredCard(index){
   const d=state.runData;d.prev_level=slot.level;d.level=slot.level;d.max_level=Math.max(Number(d.max_level)||0,slot.level);d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=Math.max(0,Number(slot.warpSaleLock)||0);resetCombo(d);unlockReachedWarps(d);state.storageSlots[i]=null;save();render();setGameView('enhance');showToast(`📦 SLOT ${i+1}에서 ${slot.level}단계 냄새를 꺼냈습니다. · 강화 화면으로 이동`);
 }
 function bindStorageButtons(){document.querySelectorAll('[data-storage-store]').forEach(b=>b.onclick=storeCurrentCard);document.querySelectorAll('[data-storage-withdraw]').forEach(b=>b.onclick=()=>withdrawStoredCard(b.dataset.storageWithdraw));}
-function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>16개 코어마다 서로 다른 성공/유지 확률로 최대 Lv.5까지 강화합니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
+function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>16개 코어를 Lv.5까지 강화한 뒤 포인트를 사용해 초월 V까지 성장시킬 수 있습니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
 
 function probabilityTableHTML(){
   const rows=Array.from({length:55},(_,target)=>{
@@ -1841,6 +1935,7 @@ const enhanceButton=document.getElementById("enhanceBtn");
   window.addEventListener('blur',()=>{if(holding)resetHold(false);});
 })();
 document.getElementById('quickShieldBuyBtn')?.addEventListener('click',()=>purchaseShield('money'));
+document.getElementById('quickShieldPointBuyBtn')?.addEventListener('click',()=>purchaseShield('point'));
 document.getElementById("berserkBtn")?.addEventListener("click",()=>enhance("berserk"));
 document.getElementById("sellBtn").onclick=sell;
 document.getElementById("auctionBtn")?.addEventListener("click",auction);
