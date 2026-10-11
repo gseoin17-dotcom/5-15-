@@ -5230,4 +5230,89 @@ body.auction-screen-hit .app{animation:auctionScreenHit .32s cubic-bezier(.2,.8,
   .final-update-notice.shutdown-notice{padding:12px}.shutdown-notice-card{width:100%;max-height:94vh;border-radius:20px}.shutdown-notice-topline{padding:16px 16px 0}.shutdown-notice-hero{padding:16px 16px 14px;gap:12px}.shutdown-notice-icon{flex-basis:48px;width:48px;height:48px;border-radius:15px;font-size:24px}.shutdown-notice-card h2{font-size:21px}.shutdown-notice-body{padding:0 16px 3px;max-height:64vh}.shutdown-notice-body>p{font-size:13px;line-height:1.78}.shutdown-date-card{padding:17px 15px}.shutdown-date-card strong{font-size:34px}.shutdown-countdown{align-items:flex-start;flex-direction:column;gap:5px}.shutdown-countdown b{font-size:15px}.shutdown-timeline-item{grid-template-columns:37px 1fr;padding:10px}.shutdown-timeline-item>b{width:34px;height:34px}.shutdown-notice-confirm{margin:14px 16px 16px}
 }
 @media(prefers-reduced-motion:reduce){.shutdown-notice-status i{animation:none}}
-\n\n/* ================= V17.98 LAB TRANSCENDENCE ================= */\n.lab-core-choice.transcend-ready{border-color:rgba(250,204,21,.30)}\n.lab-core-choice.transcended{\n  border-color:rgba(192,132,252,.58)!important;\n  box-shadow:inset 0 0 0 1px rgba(216,180,254,.08),0 0 24px rgba(168,85,247,.12)!important;\n}\n.lab-core-choice.transcended .lab-core-choice-level{color:#e9d5ff;text-shadow:0 0 10px rgba(192,132,252,.58)}\n.lab-transcend-metric{display:block;margin-top:5px;color:#e9d5ff;font-weight:950;letter-spacing:.2px}\n.lab-transcend-odds{color:#fde68a!important}\n.lab-upgrade-main-btn.is-transcend{\n  border-color:rgba(192,132,252,.62)!important;\n  color:#f5e8ff!important;\n  background:linear-gradient(135deg,rgba(126,34,206,.34),rgba(88,28,135,.18))!important;\n  box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 26px rgba(168,85,247,.16)!important;\n}\n.lab-upgrade-main-btn.is-transcend:hover{background:linear-gradient(135deg,rgba(147,51,234,.46),rgba(107,33,168,.24))!important}\n.lab-upgrade-stage.transcend-upgrading .lab-upgrade-core{filter:drop-shadow(0 0 22px rgba(192,132,252,.68))}\n.lab-upgrade-stage.transcend-upgrading .lab-stage-ring{border-color:rgba(216,180,254,.54)!important}\n.lab-upgrade-stage.transcend-upgrading .lab-stage-beam{background:linear-gradient(180deg,transparent,rgba(216,180,254,.55),transparent)!important}\n\n\n/* V17.98 balance/UI additions: probability table + late-game system shutdown */\n.header-prob-btn{border-color:rgba(56,189,248,.38);color:#bae6fd;background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(30,64,175,.10));}\n.probability-table-wrap{max-height:min(68vh,720px);overflow:auto;border:1px solid #263449;border-radius:14px;background:#08111f;}\n.probability-table{width:100%;border-collapse:collapse;font-size:12px;min-width:620px;}\n.probability-table th{position:sticky;top:0;z-index:2;padding:11px 10px;background:#111827;border-bottom:1px solid #334155;color:#e2e8f0;text-align:right;}\n.probability-table th:first-child,.probability-table td:first-child{text-align:left;}\n.probability-table td{padding:9px 10px;border-bottom:1px solid rgba(148,163,184,.10);text-align:right;font-variant-numeric:tabular-nums;}\n.probability-table td:first-child b{display:block;color:#f8fafc}.probability-table td:first-child small{display:block;color:#64748b;margin-top:2px;}\n.probability-table .success{color:#38bdf8;font-weight:800}.probability-table .down{color:#facc15;font-weight:800}.probability-table .destroy{color:#fb7185;font-weight:800}.probability-table .hold{color:#94a3b8;font-weight:800}\n.frenzy-stat.system-off{opacity:.55;filter:saturate(.45)}\n.frenzy-stat.system-off .frenzy-track i{width:0!important}\n.game-mode-tab.system-locked{opacity:.42;cursor:not-allowed;}\n@media(max-width:760px){.header-actions{gap:5px}.header-prob-btn{padding-left:9px;padding-right:9px}.probability-table{font-size:11px;min-width:540px}}\n
+\n\n/* ================= V17.98 LAB TRANSCENDENCE ================= */\n.lab-core-choice.transcend-ready{border-color:rgba(250,204,21,.30)}\n.lab-core-choice.transcended{\n  border-color:rgba(192,132,252,.58)!important;\n  box-shadow:inset 0 0 0 1px rgba(216,180,254,.08),0 0 24px rgba(168,85,247,.12)!important;\n}\n.lab-core-choice.transcended .lab-core-choice-level{color:#e9d5ff;text-shadow:0 0 10px rgba(192,132,252,.58)}\n.lab-transcend-metric{display:block;margin-top:5px;color:#e9d5ff;font-weight:950;letter-spacing:.2px}\n.lab-transcend-odds{color:#fde68a!important}\n.lab-upgrade-main-btn.is-transcend{\n  border-color:rgba(192,132,252,.62)!important;\n  color:#f5e8ff!important;\n  background:linear-gradient(135deg,rgba(126,34,206,.34),rgba(88,28,135,.18))!important;\n  box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 26px rgba(168,85,247,.16)!important;\n}\n.lab-upgrade-main-btn.is-transcend:hover{background:linear-gradient(135deg,rgba(147,51,234,.46),rgba(107,33,168,.24))!important}\n.lab-upgrade-stage.transcend-upgrading .lab-upgrade-core{filter:drop-shadow(0 0 22px rgba(192,132,252,.68))}\n.lab-upgrade-stage.transcend-upgrading .lab-stage-ring{border-color:rgba(216,180,254,.54)!important}\n.lab-upgrade-stage.transcend-upgrading .lab-stage-beam{background:linear-gradient(180deg,transparent,rgba(216,180,254,.55),transparent)!important}\n\n\n/* V17.98 balance/UI additions: probability table + late-game system shutdown */\n.header-prob-btn{border-color:rgba(56,189,248,.38);color:#bae6fd;background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(30,64,175,.10));}\n.probability-table-wrap{max-height:min(68vh,720px);overflow:auto;border:1px solid #263449;border-radius:14px;background:#08111f;}\n.probability-table{width:100%;border-collapse:collapse;font-size:12px;min-width:620px;}\n.probability-table th{position:sticky;top:0;z-index:2;padding:11px 10px;background:#111827;border-bottom:1px solid #334155;color:#e2e8f0;text-align:right;}\n.probability-table th:first-child,.probability-table td:first-child{text-align:left;}\n.probability-table td{padding:9px 10px;border-bottom:1px solid rgba(148,163,184,.10);text-align:right;font-variant-numeric:tabular-nums;}\n.probability-table td:first-child b{display:block;color:#f8fafc}.probability-table td:first-child small{display:block;color:#64748b;margin-top:2px;}\n.probability-table .success{color:#38bdf8;font-weight:800}.probability-table .down{color:#facc15;font-weight:800}.probability-table .destroy{color:#fb7185;font-weight:800}.probability-table .hold{color:#94a3b8;font-weight:800}\n.frenzy-stat.system-off{opacity:.55;filter:saturate(.45)}\n.frenzy-stat.system-off .frenzy-track i{width:0!important}\n.game-mode-tab.system-locked{opacity:.42;cursor:not-allowed;}\n@media(max-width:760px){.header-actions{gap:5px}.header-prob-btn{padding-left:9px;padding-right:9px}.probability-table{font-size:11px;min-width:540px}}
+
+/* ================= V17.98 BALANCE & MISCLICK HOTFIX ================= */
+/* 매번 변하는 효과 문구는 고정된 영역 안에서만 표시한다.
+   보정 효과가 생겼다 사라져도 강화/판매/경매 버튼의 좌표가 바뀌지 않는다. */
+#probBox .prob-effect-slot {
+  grid-column: 1 / -1;
+  min-width: 0;
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+  padding: 2px 0;
+}
+#probBox .prob-effect-slot .prob-aux {
+  flex: 0 0 auto;
+  grid-column: auto;
+  margin: 0;
+  padding: 5px 7px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+/* 고정 높이를 유지하여 효과 개수 변경으로 레이아웃이 밀리지 않게 함. */
+#probBox { align-content: start; }
+/* 방지권 보유수 바로 아래에 즉시 구매 버튼 배치 */
+.info-grid .shield-stat-wide {
+  grid-template-columns: minmax(0,1fr) minmax(100px,1.05fr) minmax(0,1fr);
+  grid-template-rows: auto auto;
+  min-height: 84px;
+  row-gap: 5px;
+}
+.info-grid .shield-stat-wide > div:first-child {
+  grid-column: 1; grid-row: 1 / 3;
+}
+.info-grid .shield-stat-wide > strong {
+  grid-column: 2; grid-row: 1;
+}
+.info-grid .shield-stat-wide > .shield-quick-buy {
+  grid-column: 2; grid-row: 2;
+  width: 100%; min-height: 29px;
+  padding: 5px 6px;
+  border: 1px solid rgba(96,165,250,.42);
+  border-radius: 9px;
+  color: #dbeafe;
+  background: linear-gradient(135deg,rgba(59,130,246,.27),rgba(37,99,235,.11));
+  font: inherit; font-weight: 850; font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .18s, border-color .18s;
+}
+.info-grid .shield-stat-wide > .shield-quick-buy:not(:disabled):hover {
+  background: rgba(59,130,246,.39); border-color: rgba(147,197,253,.75);
+}
+.info-grid .shield-stat-wide > .shield-quick-buy:focus-visible {
+  outline: 2px solid #93c5fd; outline-offset: 2px;
+}
+.info-grid .shield-stat-wide > .shield-quick-buy:disabled {
+  opacity: .42; cursor: not-allowed;
+}
+.info-grid .shield-stat-wide > small {
+  grid-column: 3; grid-row: 1 / 3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: right;
+  line-height: 1.35;
+}
+@media (max-width:560px) {
+  .info-grid .shield-stat-wide {
+    grid-template-columns: minmax(0,.9fr) minmax(92px,1fr) minmax(0,1.1fr);
+    min-height: 84px;
+    column-gap: 6px;
+    padding: 8px!important;
+  }
+  .info-grid .shield-stat-wide > .shield-quick-buy {font-size: 10px; min-height: 28px;}
+  #probBox .prob-effect-slot {height: 60px; min-height: 60px; max-height:60px;}
+}
+
+#probBox .prob-effect-empty {
+  display:block; margin:auto 0; text-align:center; color:#64748b; font-size:9px; font-weight:700;
+}
