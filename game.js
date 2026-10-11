@@ -81,6 +81,10 @@ const CRITICAL_RATE = GAME_DATA.CRITICAL_RATE;
 const POINTS = GAME_DATA.POINT_REWARD_TABLE;
 const MAX_LEVEL = 55;
 const SHIELD_MAX = 6;
+// 광폭 강화 난이도 설정: 기존 비용(일반 강화 x2) -> x4,
+// 기존 광폭 성공 확률(일반 성공률 -10%p)의 60%만 적용.
+const BERSERK_COST_MULTIPLIER = 4n;
+const BERSERK_SUCCESS_RATE_FACTOR = 0.60;
 const WARP_LEVELS = [10,15,20,25,30,35,40,45];
 const ENHANCE_COST = {"0":10,"1":10,"2":20,"3":40,"4":50,"5":70,"6":100,"7":140,"8":210,"9":280,"10":350,"11":490,"12":630,"13":840,"14":1120,"15":1470,"16":1960,"17":2590,"18":3290,"19":4270,"20":5530,"21":7350,"22":9450,"23":12600,"24":16450,"25":21350,"26":28350,"27":36400,"28":45500,"29":58100,"30":77000,"31":98000,"32":122500,"33":157500,"34":203000,"35":259000,"36":329000,"37":427000,"38":535500,"39":679000,"40":875000,"41":1120000,"42":1400000,"43":1785000,"44":2310000,"45":3010000,"46":3920000,"47":5180000,"48":6930000,"49":9100000,"50":12600000,"51":17500000,"52":23800000,"53":32900000,"54":45500000};
 
@@ -385,7 +389,7 @@ function enhanceCost(lvl){ return baseEnhanceCost(lvl); }
 function effectiveEnhanceCost(mode="normal",d=state.runData){
   let cost=enhanceCost(d.level);
   const comboDiscount=comboCostDiscount(d.combo||0);if(comboDiscount>0)cost=cost*BigInt(100-comboDiscount)/100n;
-  if(mode==='berserk') cost*=2n;
+  if(mode==='berserk') cost*=BERSERK_COST_MULTIPLIER;
   const economy10=Math.max(0,Math.round((100-activeResearchPower('economy',d)*3.5)*10));
   cost=(cost*BigInt(economy10)+999n)/1000n;
   if(frenzyEventIs('free',d)) cost=(cost*50n+99n)/100n;
@@ -430,7 +434,7 @@ function effectiveProbabilities(base,opts={}){
   }
   if(frenzyEventIs('success',d))shiftToSuccess(10);
   if(frenzyEventIs('guard',d)){const moved=Math.min(destroy,8);destroy-=moved;hold+=moved;}
-  if(opts.mode==='berserk'){success=Math.max(1,success-10);destroy=100-success;down=0;hold=0;}
+  if(opts.mode==='berserk'){success=Math.max(1,Math.round(Math.max(0,success-10)*BERSERK_SUCCESS_RATE_FACTOR*10)/10);destroy=100-success;down=0;hold=0;}
   return [success,down,destroy,hold].map(v=>Math.round(v*10)/10);
 }
 
@@ -519,7 +523,7 @@ function syncActionButtons(){
     else{
       const raw=PROB[String(l)]||[8,40,47,5];
       const bp=effectiveProbabilities(raw,{mode:'berserk'}),berserkAmp=activeResearchPower('berserkAmplifier',state.runData),ampChance=Math.min(100,Math.round(berserkAmp*6));
-      bi.innerHTML=`<b class="berserk-success-rate">성공 ${bp[0]}%</b> · <b class="berserk-destroy-rate">파괴 ${bp[2]}%</b> · 성공 시 <strong>+2~6단계 랜덤 상승</strong>${ampChance?` · <b class="berserk-amp-rate">☢️ 추가 +1 ${ampChance}%</b>`:''}`;
+      bi.innerHTML=`<b class="berserk-success-rate">성공 ${bp[0]}%</b> · <b class="berserk-destroy-rate">파괴 ${bp[2]}%</b> · 비용 일반 강화 ×4 · 성공 시 <strong>+2~6단계 랜덤 상승</strong>${ampChance?` · <b class="berserk-amp-rate">☢️ 추가 +1 ${ampChance}%</b>`:''}`;
     }
   }
   document.querySelectorAll("[data-modal]").forEach(b=>b.disabled=actionLocked);
