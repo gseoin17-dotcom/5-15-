@@ -164,6 +164,15 @@ const INITIAL = {
     unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
+const RESEARCH_V25_RETIRED_COSTS={
+  shieldTech:[2400,7200,21600,64800,194400],
+  saleOptimizer:[2200,6600,19800,59400,178000]
+};
+const JINAM_SAVE_KEY = 'jion_smell_game_v3';
+const JINAM_SAVE_BACKUP_KEY = 'jion_smell_game_v3_backup';
+const JINAM_SAVE_PREIMPORT_KEY = 'jion_smell_game_v3_before_import';
+const JINAM_SAVE_RECOVERY_KEY = 'jion_smell_game_v3_recovery';
+
 let state = loadState();
 // Persist one-time refund marker immediately to prevent duplicate migration after a reload.
 try{
@@ -330,30 +339,30 @@ function applyLabV25Migration(s,saved){
   s.labV25Migrated=true;
   return s;
 }
-const RESEARCH_V25_RETIRED_COSTS={
-  shieldTech:[2400,7200,21600,64800,194400],
-  saleOptimizer:[2200,6600,19800,59400,178000]
-};
+
 // Stable across updates. A second copy survives a damaged primary save in the same origin.
-const JINAM_SAVE_KEY = 'jion_smell_game_v3';
-const JINAM_SAVE_BACKUP_KEY = 'jion_smell_game_v3_backup';
-const JINAM_SAVE_PREIMPORT_KEY = 'jion_smell_game_v3_before_import';
+
 function isJinamSave(value){
   return !!value && typeof value === 'object' && !Array.isArray(value)
     && ((value.runData && typeof value.runData === 'object') || (value.seasonData && typeof value.seasonData === 'object'));
 }
 function readJinamSave(){
-  let primary = null;
-  try{ primary=JSON.parse(localStorage.getItem(JINAM_SAVE_KEY)||'null'); }catch(err){console.warn('[JINAM] Primary save is invalid:',err);}
-  if(isJinamSave(primary))return primary;
-  try{
-    const fallback=JSON.parse(localStorage.getItem(JINAM_SAVE_BACKUP_KEY)||'null');
-    if(isJinamSave(fallback)){
-      localStorage.setItem(JINAM_SAVE_KEY, JSON.stringify(fallback));
-      console.info('[JINAM] Restored local backup.');
-      return fallback;
-    }
-  }catch(err){console.warn('[JINAM] Backup save is unavailable:',err);}
+  // Load keys only after their declarations have been initialized.
+  // Never replace an existing valid save with a default run during startup.
+  const sources=[JINAM_SAVE_KEY,JINAM_SAVE_BACKUP_KEY,JINAM_SAVE_RECOVERY_KEY,JINAM_SAVE_PREIMPORT_KEY];
+  for(const key of sources){
+    try{
+      const raw=localStorage.getItem(key);
+      if(!raw)continue;
+      const candidate=JSON.parse(raw);
+      if(!isJinamSave(candidate))continue;
+      if(key!==JINAM_SAVE_KEY){
+        try{localStorage.setItem(JINAM_SAVE_KEY,raw);}catch(e){console.warn('[JINAM] Recovery found; primary write failed',e);}
+        console.info('[JINAM] Save recovered from',key);
+      }
+      return candidate;
+    }catch(err){console.warn('[JINAM] Cannot read save key',key,err);}
+  }
   return null;
 }
 function loadState(){
@@ -380,15 +389,28 @@ function loadState(){
   }catch(e){return clone(INITIAL);}
 }
 function save(){
-  const serialized=JSON.stringify(state);
+  // Keep the most recent good snapshot separately before replacing the active save.
+  let serialized;
+  try{serialized=JSON.stringify(state);}catch(err){console.error('[JINAM] Cannot serialize save:',err);return false;}
   try{
+    const previous=localStorage.getItem(JINAM_SAVE_KEY);
+    if(previous && previous!==serialized){
+      try{
+        if(isJinamSave(JSON.parse(previous)))localStorage.setItem(JINAM_SAVE_RECOVERY_KEY,previous);
+      }catch(e){console.warn('[JINAM] Previous save backup unavailable',e);}
+    }
     localStorage.setItem(JINAM_SAVE_KEY,serialized);
     try{localStorage.setItem(JINAM_SAVE_BACKUP_KEY,serialized);}catch(err){console.warn('[JINAM] Secondary backup could not be updated:',err);}
+    return true;
   }catch(err){
     console.error('[JINAM] Failed to save game state:',err);
-    if(typeof showToast==='function')showToast('저장에 실패했습니다. 브라우저 저장 공간을 확인해 주세요.');
+    if(typeof showToast==='function')showToast('저장 실패: 브라우저 저장 공간/권한을 확인해 주세요.');
+    return false;
   }
 }
+// Save the current state on tab hide/close as an additional safeguard.
+window.addEventListener('pagehide',()=>{save();},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();});
 
 function graphicsPreset(){ return normalizeUiSettings(state?.uiSettings).graphics; }
 function motionPreset(){ return normalizeUiSettings(state?.uiSettings).motion; }
