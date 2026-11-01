@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>JINAM 2.1 | 냄새 강화 게임</title>
+  <title>JINAM 2.8 | 냄새 강화 게임</title>
   <meta name="theme-color" content="#070b16">
   <meta name="description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <link rel="canonical" href="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="JINAM">
-  <meta property="og:title" content="JINAM 2.1 | 냄새 강화 게임">
+  <meta property="og:title" content="JINAM 2.8 | 냄새 강화 게임">
   <meta property="og:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta property="og:url" content="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
@@ -20,10 +20,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="지냄 강화하기 게임 링크 썸네일">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="JINAM 2.1 | 냄새 강화 게임">
+  <meta name="twitter:title" content="JINAM 2.8 | 냄새 강화 게임">
   <meta name="twitter:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
-  <link rel="stylesheet" href="style.css?v=2.1-no-gates">
+  <link rel="stylesheet" href="style.css?v=2.8-layout">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
       <span class="intro-spark intro-spark-b"></span>
       <span class="intro-spark intro-spark-c"></span>
     </div>
-    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>2.0</span></h1>
+    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>2.8</span></h1>
     <button id="startGameBtn" class="intro-start-btn" type="button">
       <span>게임 시작</span><span aria-hidden="true">→</span>
     </button>
@@ -67,7 +67,7 @@
         </nav>
       </div>
       <div class="brand-block brand-logo brand-logo-centered brand-minimal" aria-label="JINAM">
-        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>2.0</span></span>
+        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>2.8</span></span>
       </div>
     </header>
 
@@ -143,15 +143,7 @@
                     <div class="boss-stage-copy" id="bossStageCopy"></div>
                   </div>
                 </div>
-                <div class="card-stage-label" id="cardStageLabel">0단계</div>
-                <h2 id="cardName">무취 지온의 공간</h2>
-                <p id="cardDesc">아직은 아무 냄새도 안 남.</p>
                 <div class="card-result" id="cardResult"></div>
-                <div class="card-stats">
-                  <div><small>예상 가치</small><b id="cardPrice">0원</b></div>
-                  <div><small>획득 포인트</small><b id="cardPoints">0P</b></div>
-                  <div><small>강화 비용</small><b id="cardCost">0원</b></div>
-                </div>
                 <div class="card-bottom">
                   <span id="cardSerial"></span>
                   <span id="cardTier"></span>
@@ -175,6 +167,19 @@
           </div>
           <div id="flashOverlay"></div>
         </div>
+
+        <section id="jinamCardInfo" class="jinam-card-info" data-level="0" aria-label="현재 카드 정보">
+          <div class="jinam-card-info-content">
+            <span class="card-stage-label" id="cardStageLabel">0단계</span>
+            <h2 id="cardName">무취 지온의 공간</h2>
+            <p id="cardDesc">아직은 아무 냄새도 안 남.</p>
+          </div>
+          <div class="card-stats">
+            <div><small>예상 가치</small><b id="cardPrice">0원</b></div>
+            <div><small>획득 포인트</small><b id="cardPoints">0P</b></div>
+            <div><small>강화 비용</small><b id="cardCost">0원</b></div>
+          </div>
+        </section>
 
         <div class="stage-status-stack" aria-label="강화 상태 패널">
           <div id="shieldPanel" class="stage-status-card shield-side-card" role="group" aria-label="방지권 상태">
@@ -267,7 +272,7 @@
 
         <div id="labUpgradeSection" class="lab-upgrade-layout">
           <aside class="lab-core-select-panel">
-            <div class="lab-upgrade-section-head"><small>CORE SELECT</small><h3>강화할 코어 선택</h3><span>18 CORE</span></div>
+            <div class="lab-upgrade-section-head"><h3>강화할 코어 선택</h3><span>16 CORE</span></div>
             <div id="labCorePicker" class="lab-core-picker"></div>
           </aside>
 
@@ -291,7 +296,6 @@
             <div class="lab-selected-core-title">
               <small id="labSelectedSlot">CORE PART</small>
               <h2 id="labSelectedName">악취 촉매 코어</h2>
-              <p id="labSelectedDesc"></p>
               <div id="labSelectedMetric" class="lab-selected-metric"></div>
             </div>
             <div id="labSelectedLevels" class="lab-selected-levels"></div>
@@ -301,13 +305,7 @@
               <small id="labUpgradeCostHint">포인트를 사용합니다</small>
             </div>
             <button id="labUpgradeBtn" class="glass-btn lab-upgrade-main-btn" type="button">⭐ 포인트로 강화</button>
-            <div id="labTranscendCard" class="lab-transcend-card" aria-label="코어 초월">
-              <div class="lab-transcend-heading"><span>✨ CORE TRANSCEND</span><b id="labTranscendLevel">초월 0 / V</b></div>
-              <p id="labTranscendDescription">Lv.5 코어 강화 완료 시 해금됩니다.</p>
-              <div class="lab-transcend-bottom"><strong id="labTranscendCost">🔒 잠김</strong><span>실패해도 코어·등급 유지</span></div>
-              <button id="labTranscendBtn" class="glass-btn lab-transcend-btn" type="button" disabled>🔒 Lv.5 달성 후 초월</button>
-            </div>
-                        <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
+            <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
           </section>
         </div>
 
@@ -381,7 +379,7 @@
 (function(){
   'use strict';
   // 다음 업데이트 때 이 값만 1.2, 1.3…으로 올리면 화면 전체에 반영됩니다.
-  const VERSION = '2.1';
+  const VERSION = '2.8';
   document.querySelectorAll('[data-jinam-version]').forEach(el=>el.textContent=VERSION);
   document.title = `JINAM ${VERSION} | 냄새 강화 게임`;
   const intro=document.getElementById('gameIntro');
@@ -406,6 +404,6 @@
   // Starting is a real user action; there is no timer or progress/loading screen.
 })();
 </script>
-<script defer src="game.js?v=2.1-no-gates"></script>
+<script defer src="game.js?v=2.8-layout"></script>
 </body>
 </html>

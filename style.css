@@ -7269,3 +7269,478 @@ body.odor-frenzy-active.tear-fever-active .app{background:radial-gradient(circle
   box-shadow:inset 0 1px rgba(255,255,255,.23),0 0 20px rgba(191,90,242,.27) !important;
   white-space:nowrap;
 }
+
+/* ==========================================================
+   JINAM 2.2 — FUSION REFORGED
+   New grade / recipe / resonance growth interface
+   ========================================================== */
+.lab-fusion-panel:has(.fusion-v2){padding:clamp(12px,2vw,23px);border-radius:22px;background:linear-gradient(145deg,rgba(15,23,42,.89),rgba(9,13,29,.95));border:1px solid rgba(167,139,250,.22)}
+.fusion-v2{color:#f8fafc;min-width:0}
+.fusion-v2 .fusion-head{align-items:center;gap:15px;border-bottom:1px solid rgba(167,139,250,.14);padding-bottom:15px}
+.fusion-v2 .fusion-head small{font-size:10px;color:#a5b4fc;letter-spacing:1.5px}
+.fusion-v2 .fusion-head h3{font-size:clamp(21px,2.4vw,30px);font-weight:950;letter-spacing:-.03em;margin:5px 0 8px}
+.fusion-v2 .fusion-head p{font-size:11px;max-width:790px;line-height:1.65;color:#aab9d1}
+.fusion-v2 .fusion-wallet{display:flex;flex-direction:column;gap:3px;align-items:flex-end;padding:11px 14px;border:1px solid rgba(165,180,252,.26);border-radius:15px;background:rgba(17,24,48,.75);white-space:nowrap}
+.fusion-v2 .fusion-wallet span{font-size:10px;color:#94a3b8;font-weight:750}
+.fusion-v2 .fusion-wallet strong{font-size:17px;color:#e0e7ff;font-weight:950;letter-spacing:-.02em}
+.fusion-v2 .fusion-wallet small{font-size:9px;letter-spacing:0;color:#a5b4fc}
+.fusion-instruction{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}
+.fusion-instruction>div{display:flex;align-items:center;gap:10px;min-width:0;padding:11px 12px;border-radius:12px;background:linear-gradient(120deg,rgba(71,85,105,.14),rgba(30,41,59,.37));border:1px solid rgba(148,163,184,.12)}
+.fusion-instruction b{display:grid;place-items:center;width:25px;height:25px;flex:none;border-radius:9px;background:rgba(139,92,246,.18);color:#d8b4fe;font-size:12px}
+.fusion-instruction span{min-width:0;font-size:10px;line-height:1.4;color:#dbe4f2;font-weight:800}
+.fusion-v2-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.77fr);gap:16px;align-items:start}
+.fusion-v2-list{min-width:0}
+.fusion-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:5px 0 10px}
+.fusion-section-heading b{font-size:14px;letter-spacing:-.02em}
+.fusion-section-heading small{font-size:9px;color:#94a3b8;line-height:1.45;text-align:right}
+.fusion-recipe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:21px}
+.fusion-recipe{min-width:0;display:grid;grid-template-columns:35px minmax(0,1fr);gap:9px;text-align:left;align-items:center;padding:10px;border-radius:13px;border:1px solid rgba(167,139,250,.20);background:linear-gradient(145deg,rgba(49,46,94,.35),rgba(15,23,42,.80));color:#f8fafc;cursor:pointer;position:relative;transition:transform .17s,border-color .17s,background .17s}
+.fusion-recipe:not(:disabled):hover{transform:translateY(-2px);border-color:rgba(216,180,254,.72);background:linear-gradient(145deg,rgba(76,29,149,.42),rgba(15,23,42,.82))}
+.fusion-recipe:focus-visible,.fusion-v2 button:focus-visible{outline:2px solid #e9d5ff;outline-offset:3px}
+.fusion-recipe:disabled{opacity:.60;cursor:not-allowed;filter:saturate(.58)}
+.fusion-recipe-icon{width:35px;height:35px;border-radius:10px;display:grid;place-items:center;background:rgba(139,92,246,.20);font-size:19px;grid-row:1/3}
+.fusion-recipe>span:nth-child(2){display:flex;flex-direction:column;gap:2px;min-width:0}
+.fusion-recipe strong{font-size:11px;font-weight:900}
+.fusion-recipe small{font-size:9px;line-height:1.4;color:#c4b5fd}
+.fusion-recipe em{font-size:9px;font-style:normal;color:#94a3b8;line-height:1.4}
+.fusion-recipe>b{grid-column:2;justify-self:start;margin-top:1px;color:#7dd3fc;font-size:8px;background:rgba(56,189,248,.10);border-radius:7px;padding:3px 6px}
+.fusion-recipe:disabled>b{color:#94a3b8;background:rgba(148,163,184,.10)}
+.fusion-v2 .fusion-core-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.fusion-v2 .fusion-core-card{grid-template-columns:34px minmax(0,1fr) auto;border:1px solid rgba(148,163,184,.20);padding:9px;border-radius:12px;background:rgba(15,23,42,.73);min-height:65px;transition:border-color .18s,transform .18s}
+.fusion-v2 .fusion-core-card:not(:disabled):hover{transform:translateY(-1px);border-color:rgba(196,181,253,.65)}
+.fusion-v2 .fusion-core-card.selected{border-color:#e879f9;background:rgba(126,34,206,.25)}
+.fusion-v2 .fusion-core-card.fused{opacity:.5}
+.fusion-v2 .fusion-core-card>span{width:34px;height:34px;font-size:19px}
+.fusion-v2 .fusion-core-card small{font-size:8px}
+.fusion-v2 .fusion-core-card b{font-size:10px}
+.fusion-v2 .fusion-core-card em{font-size:9px;color:#94a3b8}
+.fusion-core-check{font-style:normal;background:#d946ef;color:#fff;border-radius:100px;width:17px;height:17px;display:grid;place-items:center;font-size:11px}
+.fusion-v2 .fusion-machine{position:sticky;top:12px;padding:clamp(14px,1.6vw,20px);border:1px solid rgba(192,132,252,.31);border-radius:21px;background:radial-gradient(ellipse at 50% 12%,rgba(91,33,182,.19),transparent 57%),linear-gradient(155deg,rgba(20,26,55,.96),rgba(8,13,27,.97));box-shadow:0 25px 60px rgba(0,0,0,.2)}
+.fusion-machine-eyebrow{text-align:center;font-size:9px;font-weight:900;color:#a5b4fc;letter-spacing:2.1px}
+.fusion-reactor-visual{position:relative;width:120px;height:120px;margin:14px auto 10px;display:grid;place-items:center}
+.fusion-orbit{position:absolute;inset:9%;border:1px solid rgba(196,181,253,.5);border-radius:50%;box-shadow:0 0 22px rgba(139,92,246,.14)}
+.fusion-orbit.orbit-1{transform:rotateX(63deg) rotate(-30deg);animation:fusionOrbitSpin 8s linear infinite}
+.fusion-orbit.orbit-2{transform:rotateY(63deg) rotate(30deg);border-color:rgba(103,232,249,.42);animation:fusionOrbitSpin2 10s linear infinite}
+.fusion-reactor-core{width:70px;height:70px;display:grid;place-items:center;border-radius:19px;color:#f8fafc;font-size:38px;font-weight:900;transform:rotate(45deg);background:linear-gradient(140deg,rgba(217,70,239,.6),rgba(67,56,202,.8));border:1px solid rgba(240,171,252,.55);box-shadow:0 0 50px rgba(168,85,247,.45),inset 0 1px rgba(255,255,255,.24);animation:fusionCorePulse 2.7s ease-in-out infinite}
+@keyframes fusionCorePulse{0%,100%{filter:brightness(1);box-shadow:0 0 30px rgba(168,85,247,.3)}50%{filter:brightness(1.2);box-shadow:0 0 56px rgba(168,85,247,.5)}}
+@keyframes fusionOrbitSpin{from{transform:rotateX(63deg) rotate(0deg)}to{transform:rotateX(63deg) rotate(360deg)}}
+@keyframes fusionOrbitSpin2{from{transform:rotateY(63deg) rotate(0deg)}to{transform:rotateY(63deg) rotate(-360deg)}}
+.fusion-v2 .fusion-selected-pair{min-height:55px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;border-radius:12px;font-size:10px;background:rgba(2,6,23,.43);padding:10px 8px}
+.fusion-pair-plus{display:inline-block;color:#f0abfc;font-weight:950;font-size:17px;margin:0 4px}
+.fusion-unselected{color:#a5b4fc}
+.fusion-preview{padding:12px;margin-top:10px;border-radius:13px;border:1px solid rgba(192,132,252,.19);background:rgba(91,33,182,.10)}
+.fusion-preview small{display:block;color:#a5b4fc;font-size:9px;font-weight:800}
+.fusion-preview strong{display:block;color:#f5d0fe;font-size:12px;margin:4px 0}
+.fusion-preview p{font-size:10px;line-height:1.6;margin:0;color:#cbd5e1}
+.fusion-v2 .fusion-gauge-wrap{margin-top:18px;height:34px;box-shadow:0 0 15px rgba(167,139,250,.1)}
+.fusion-grade-legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:9px 0 13px}
+.fusion-grade-pill{display:flex;align-items:center;flex-direction:column;gap:3px;text-align:center;padding:7px 4px;background:rgba(15,23,42,.66);border-radius:9px;border:1px solid rgba(148,163,184,.15)}
+.fusion-grade-pill b{font-size:10px}
+.fusion-grade-pill span{font-size:8px;color:#94a3b8;line-height:1.4}
+.fusion-grade-pill.grade-legend b{color:#fbbf24}.fusion-grade-pill.grade-epic b{color:#f0abfc}.fusion-grade-pill.grade-rare b{color:#67e8f9}.fusion-grade-pill.grade-common b{color:#cbd5e1}
+.fusion-v2 .fusion-cost-line{background:rgba(30,41,59,.45);border-color:rgba(196,181,253,.18);padding:11px}
+.fusion-v2 .fusion-cost-line span{font-size:10px}.fusion-v2 .fusion-cost-line b{font-size:14px;color:#f0abfc}.fusion-v2 .fusion-cost-line small{font-size:9px;line-height:1.45;color:#94a3b8}
+.fusion-v2 .fusion-overclock-btn{padding:13px;border-radius:13px;min-height:46px;font-size:12px;font-weight:900;background:linear-gradient(125deg,rgba(139,92,246,.48),rgba(124,58,237,.28))!important}
+.fusion-v2 .fusion-overclock-btn:disabled{opacity:.47}.fusion-v2 .fusion-status{font-size:10px;margin-top:10px}
+.fusion-v2 .fusion-last-result{margin-top:12px;padding:13px;border-radius:12px}.fusion-v2 .fusion-last-result b{font-size:13px}.fusion-v2 .fusion-last-result span{font-size:10px;line-height:1.6}
+.fusion-rules-note{margin:12px 0 0;padding-top:11px;border-top:1px solid rgba(148,163,184,.16);font-size:9px;line-height:1.75;color:#94a3b8}
+.fusion-owned-section{border-top:1px solid rgba(167,139,250,.16);margin-top:21px;padding-top:14px}
+.fusion-owned-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fusion-owned-card{border:1px solid rgba(148,163,184,.24);background:radial-gradient(circle at 100% 0,rgba(148,163,184,.09),transparent 50%),rgba(13,20,37,.76);padding:15px;border-radius:16px;min-width:0}
+.fusion-owned-card.grade-legend{border-color:rgba(251,191,36,.55);background:radial-gradient(circle at 100% 0,rgba(245,158,11,.17),transparent 55%),rgba(13,20,37,.76)}
+.fusion-owned-card.grade-epic{border-color:rgba(217,70,239,.40)}.fusion-owned-card.grade-rare{border-color:rgba(56,189,248,.36)}
+.fusion-owned-head{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.fusion-owned-rank{font-size:9px;color:#c4b5fd;font-weight:900;letter-spacing:.03em}
+.fusion-owned-head h4{margin:5px 0 0;color:#f8fafc;font-size:14px}
+.fusion-owned-bonus{font-size:23px;font-weight:950;color:#e9d5ff;letter-spacing:-.04em;white-space:nowrap}
+.fusion-owned-card.grade-legend .fusion-owned-bonus{color:#fcd34d}
+.fusion-owned-pair{margin:10px 0 6px;color:#cbd5e1;font-size:10px;line-height:1.6}
+.fusion-owned-pair i{font-style:normal;color:#e879f9;padding:0 5px}
+.fusion-owned-synergy{margin:6px 0 12px;color:#d8b4fe;font-size:10px;line-height:1.5;font-weight:700}
+.fusion-growth-progress{height:7px;border-radius:30px;overflow:hidden;background:rgba(2,6,23,.83);border:1px solid rgba(192,132,252,.20)}
+.fusion-growth-progress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#8b5cf6,#e879f9,#fbbf24);transition:width .35s}
+.fusion-owned-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;margin:9px 0 11px;font-size:9px;color:#94a3b8}
+.fusion-owned-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.fusion-growth-btn{border:1px solid rgba(196,181,253,.40);border-radius:11px;padding:9px 8px;background:linear-gradient(120deg,rgba(109,40,217,.50),rgba(76,29,149,.35));color:#fff;font-size:10px;font-weight:900;cursor:pointer}
+.fusion-owned-actions .fusion-reset-btn{font-size:9px;padding:9px 11px;border-radius:11px}
+.fusion-v2 button:disabled{cursor:not-allowed}
+.fusion-v2 .fusion-growth-btn:disabled{opacity:.45}
+@media(max-width:1200px){.fusion-v2-layout{grid-template-columns:minmax(0,1fr) minmax(265px,.83fr);gap:11px}.fusion-recipe-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.fusion-v2-layout{grid-template-columns:1fr}.fusion-v2 .fusion-machine{position:static}.fusion-recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fusion-v2 .fusion-head{flex-direction:row}}
+@media(max-width:640px){.fusion-v2 .fusion-head{flex-direction:column;align-items:stretch}.fusion-v2 .fusion-wallet{align-items:flex-start}.fusion-instruction{gap:5px}.fusion-instruction>div{padding:8px 6px;flex-direction:column;align-items:flex-start;gap:4px}.fusion-instruction span{font-size:9px}.fusion-recipe-grid,.fusion-owned-grid{grid-template-columns:1fr}.fusion-v2 .fusion-core-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fusion-v2 .fusion-core-card{padding:7px;gap:5px;grid-template-columns:26px minmax(0,1fr)}.fusion-v2 .fusion-core-card>span{width:26px;height:26px;font-size:16px}.fusion-v2 .fusion-core-card b{font-size:9px}.fusion-v2 .fusion-core-card em{font-size:8px}.fusion-core-check{position:absolute;right:4px;top:4px}.fusion-section-heading{flex-direction:column;align-items:flex-start;gap:3px}.fusion-section-heading small{text-align:left}}
+@media(prefers-reduced-motion:reduce){.fusion-reactor-visual *{animation:none!important}.fusion-growth-progress i{transition:none}}
+
+
+/* JINAM 2.3 · 융합 조작 및 조건 안내 개선 */
+.fusion-v2 .fusion-core-card.locked,.fusion-v2 .fusion-recipe.locked{opacity:.72;cursor:pointer;filter:saturate(.76);border-style:dashed}
+.fusion-v2 .fusion-core-card.locked:hover,.fusion-v2 .fusion-recipe.locked:hover{opacity:1;filter:none;border-color:rgba(125,211,252,.7);transform:translateY(-1px)}
+.fusion-v2 .fusion-overclock-btn.needs-material{opacity:.83;cursor:pointer;border-style:dashed!important}
+.fusion-v2 .fusion-overclock-btn.needs-material:hover{opacity:1;border-color:rgba(216,180,254,.75)!important}
+.fusion-v2 .fusion-status{min-height:34px;color:#e9d5ff;font-size:11px;font-weight:700;line-height:1.65}
+.fusion-v2 .fusion-last-result.fail{border-color:rgba(251,146,60,.35);background:rgba(124,45,18,.12)}
+
+/* JINAM 2.4 — compact, easy-to-read lab core upgrades */
+#labUpgradeSection.lab-upgrade-layout{grid-template-columns:minmax(260px,.83fr) minmax(0,1.25fr)!important;align-items:start;gap:16px}
+#labUpgradeSection .lab-core-select-panel{padding:16px}
+#labUpgradeSection .lab-core-picker{gap:7px}
+#labUpgradeSection .lab-core-choice.lab-core-simple{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;min-height:64px;border-radius:13px}
+#labUpgradeSection .lab-core-simple .lab-core-choice-icon{height:40px;width:40px;font-size:21px;margin:0}
+#labUpgradeSection .lab-core-simple .lab-core-choice-copy{display:block;min-width:0}
+#labUpgradeSection .lab-core-simple .lab-core-choice-copy b{font-size:12px;line-height:1.45;font-weight:850;white-space:normal;overflow:visible}
+#labUpgradeSection .lab-core-simple .lab-core-choice-effect{display:block;padding:0;border:0;margin-top:4px;font-size:10px;font-weight:700;color:#93c5fd;line-height:1.4}
+#labUpgradeSection .lab-core-simple .lab-core-choice-level{display:flex;flex-direction:column;gap:4px;align-items:flex-end;font-size:12px;color:#e2e8f0;white-space:nowrap}
+#labUpgradeSection .lab-core-simple .lab-core-choice-level small{font-size:9px;color:#d8b4fe}
+#labUpgradeSection .lab-core-simple.maxed .lab-core-choice-level{color:#86efac}
+#labUpgradeSection .lab-core-group-heading{margin:16px 0 7px}
+#labUpgradeSection .lab-core-group-heading:first-child{margin-top:0}
+#labUpgradeSection .lab-upgrade-machine-panel{padding:18px 22px 22px}
+#labUpgradeSection .lab-selected-core-title h2{font-size:22px;line-height:1.3}
+#labUpgradeSection .lab-selected-core-title p{font-size:12px;line-height:1.6;margin-top:6px}
+#labUpgradeSection .lab-selected-core-title small{font-size:10px}
+#labUpgradeSection .lab-selected-metric{max-width:650px;width:100%;padding:14px;border-color:rgba(56,189,248,.22);background:rgba(15,23,42,.52)}
+.core-compare{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);gap:8px;align-items:stretch;text-align:left}
+.core-compare-box{min-width:0;border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px;background:rgba(15,23,42,.65)}
+.core-compare-box.next{background:rgba(16,185,129,.1);border-color:rgba(52,211,153,.32)}
+.core-compare-box small{display:block;color:#94a3b8;font-size:10px;margin-bottom:6px}
+.core-compare-box strong{display:block;font-size:clamp(12px,1.1vw,15px);font-weight:900;color:#f1f5f9;line-height:1.5;overflow-wrap:anywhere}
+.core-compare-box.next strong{color:#6ee7b7}
+.core-compare-arrow{display:grid;place-items:center;font-size:18px;color:#94a3b8}
+.core-upgrade-chance{margin-top:11px;color:#cbd5e1;font-size:11px;line-height:1.5;text-align:center}
+.core-fusion-bonus{margin:9px 0 0;color:#e9d5ff;font-size:10px;font-weight:800}
+#labUpgradeSection .lab-upgrade-cost-card{margin-top:14px;padding:14px 16px}
+#labUpgradeSection .lab-upgrade-cost-card span{font-size:11px}
+#labUpgradeSection #labUpgradeCost{font-size:24px}
+#labUpgradeSection #labUpgradeCostHint{font-size:11px}
+#labUpgradeSection #labUpgradeBtn{min-height:50px;font-size:15px;font-weight:900}
+#labUpgradeSection #labUpgradeStatus{font-size:11px;line-height:1.5;margin-top:9px}
+@media(max-width:950px){#labUpgradeSection.lab-upgrade-layout{grid-template-columns:1fr!important}#labUpgradeSection .lab-core-picker{max-height:480px;overflow:auto}#labUpgradeSection .lab-upgrade-machine-panel{padding:15px}}
+@media(max-width:500px){#labUpgradeSection .lab-core-choice.lab-core-simple{padding:9px;min-height:56px}#labUpgradeSection .lab-core-simple .lab-core-choice-copy b{font-size:11px}#labUpgradeSection .lab-core-simple .lab-core-choice-effect{font-size:9px}.core-compare-box{padding:10px 8px}.core-compare-box strong{font-size:12px}}
+
+
+/* JINAM 2.5 — stationary enhancement card on mouse hover */
+#enhanceCardScene #card3dLayer{transform:none!important;}
+#enhanceCardScene.card-tilting #enhanceCard{transform:none!important;}
+.enhance-card:hover .art-lens{animation-duration:inherit!important;}
+.enhance-card:hover .card-shine{opacity:inherit!important;}
+/* Removed explanatory copy; keep compact, balanced panels. */
+.shop-section .section-heading{margin-bottom:12px;}
+.lab-selected-core-title{gap:7px;}
+#labUpgradeStatus:empty{display:none;}
+.storage-current-card.empty-current{min-height:0;}
+
+
+/* ================================================================
+   JINAM 2.6 — physical capsule card + separate information panel
+   The animated capsule remains in the original card scene; stats and
+   names are displayed in an independent, non-transforming panel.
+   ================================================================ */
+.right-col{
+  grid-template-columns:minmax(0,1fr) clamp(240px,29%,300px)!important;
+  grid-template-rows:auto auto!important;
+  align-content:start!important;
+  gap:14px 16px!important;
+}
+.right-col > .three-wrap.card-stage{
+  grid-column:1!important;
+  grid-row:1!important;
+  height:362px!important;
+  min-height:362px!important;
+  border-radius:24px!important;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 50% 48%,rgba(84,117,159,.14),transparent 60%),linear-gradient(145deg,rgba(17,26,44,.80),rgba(6,10,22,.89))!important;
+}
+.right-col > .three-wrap.card-stage .enhance-card-wrap{
+  aspect-ratio:1.43!important;
+  width:min(455px,calc(100% - 30px))!important;
+  max-width:455px!important;
+  height:auto!important;
+  margin:0 auto!important;
+  left:0!important;
+  top:0!important;
+}
+#enhanceCard{
+  padding:14px!important;
+  border-radius:27px!important;
+}
+#enhanceCard .card-art{
+  height:100%!important;
+  width:100%!important;
+  margin:0!important;
+  border-radius:19px!important;
+}
+#enhanceCard .card-art .capsule-shell{
+  max-height:95%;
+}
+.right-col > .jinam-card-info{
+  grid-column:1!important;
+  grid-row:2!important;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  min-width:0;
+  padding:20px 20px 21px;
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:23px;
+  background:radial-gradient(circle at 98% 0%,color-mix(in srgb,var(--card,#a78bfa) 9%,transparent),transparent 53%),
+             linear-gradient(145deg,rgba(18,27,45,.94),rgba(7,12,26,.96));
+  box-shadow:inset 0 1px rgba(255,255,255,.10),inset 0 0 0 1px rgba(255,255,255,.012),0 15px 36px rgba(0,0,0,.23);
+  isolation:isolate;
+}
+.jinam-card-info::before{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;
+  pointer-events:none;
+}
+.jinam-card-info-content{position:relative;z-index:1;min-width:0}
+.jinam-card-info #cardStageLabel{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  min-width:64px;
+  padding:5px 11px!important;
+  margin:0!important;
+  border-radius:999px!important;
+  border:1px solid color-mix(in srgb,var(--card) 48%,rgba(255,255,255,.24))!important;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--card) 12%,rgba(15,23,42,.86)),rgba(7,12,26,.86))!important;
+  color:#f8fafc!important;
+  -webkit-text-fill-color:#f8fafc!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:0!important;
+  line-height:1.4!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+.jinam-card-info #cardName{
+  display:block;
+  margin:9px 0 5px!important;
+  font-size:clamp(20px,2.1vw,26px)!important;
+  line-height:1.22!important;
+  font-weight:950!important;
+  letter-spacing:-.045em!important;
+  color:#f8fafc!important;
+  overflow-wrap:anywhere;
+  word-break:keep-all;
+}
+.jinam-card-info #cardDesc{
+  margin:0!important;
+  min-height:20px;
+  color:#aebbd1!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+  overflow-wrap:anywhere;
+  word-break:keep-all;
+}
+.jinam-card-info .card-stats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  position:relative;
+  z-index:1;
+}
+.jinam-card-info .card-stats>div{
+  min-width:0;
+  min-height:62px!important;
+  padding:10px 6px!important;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  background:linear-gradient(160deg,rgba(148,163,184,.10),rgba(17,24,39,.68))!important;
+  border:1px solid rgba(148,163,184,.20)!important;
+  border-radius:13px!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 4px 11px rgba(0,0,0,.10)!important;
+}
+.jinam-card-info .card-stats>div:nth-child(2){
+  background:linear-gradient(160deg,color-mix(in srgb,var(--card) 13%,rgba(30,41,59,.36)),rgba(17,24,39,.68))!important;
+  border-color:color-mix(in srgb,var(--card) 24%,rgba(148,163,184,.20))!important;
+}
+.jinam-card-info .card-stats small{
+  margin:0!important;
+  color:#94a3b8!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  line-height:1.35!important;
+  text-align:center;
+}
+.jinam-card-info .card-stats b{
+  color:#f8fafc!important;
+  font-size:clamp(11px,1.15vw,14px)!important;
+  font-weight:950!important;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.jinam-card-info[data-level="55"]{
+  border-color:rgba(192,132,252,.60);
+  background:radial-gradient(circle at 90% 0%,rgba(168,85,247,.20),transparent 60%),
+             linear-gradient(140deg,#1b1236,#101a37 63%,#0e0d20);
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 0 25px rgba(168,85,247,.13),0 15px 36px rgba(0,0,0,.25);
+}
+.jinam-card-info[data-level="55"] #cardStageLabel{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border-color:rgba(250,204,21,.75)!important;
+  background:linear-gradient(120deg,rgba(107,33,168,.87),rgba(14,116,144,.86))!important;
+}
+.right-col > .stage-status-stack{
+  grid-column:2!important;
+  grid-row:1 / span 2!important;
+  align-self:start;
+}
+@media(max-width:1080px){
+  .right-col{grid-template-columns:minmax(0,1fr) 236px!important;gap:12px!important}
+  .right-col > .three-wrap.card-stage{height:332px!important;min-height:332px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{width:min(425px,calc(100% - 18px))!important}
+  .right-col > .jinam-card-info{padding:17px 15px 18px;gap:12px}
+}
+@media(max-width:760px){
+  .right-col{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+  .right-col > .three-wrap.card-stage{grid-column:1!important;grid-row:1!important;height:334px!important;min-height:334px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(440px,calc(100% - 22px))!important;
+    margin:0 auto!important;
+  }
+  .right-col > .jinam-card-info{grid-column:1!important;grid-row:2!important}
+  .right-col > .stage-status-stack{grid-column:1!important;grid-row:3!important}
+}
+@media(max-width:460px){
+  .right-col > .three-wrap.card-stage{height:275px!important;min-height:275px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{width:min(355px,calc(100% - 14px))!important}
+  #enhanceCard{padding:11px!important}
+  .right-col > .jinam-card-info{padding:15px 13px 16px;gap:13px;border-radius:19px}
+  .jinam-card-info #cardName{font-size:21px!important}
+  .jinam-card-info #cardDesc{font-size:10px!important}
+  .jinam-card-info .card-stats{gap:7px!important}
+  .jinam-card-info .card-stats>div{min-height:55px!important;padding:8px 4px!important}
+  .jinam-card-info .card-stats small{font-size:9px!important}
+  .jinam-card-info .card-stats b{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){.jinam-card-info{transition:none!important}}
+
+
+/* ================================================================
+   JINAM 2.6.1 — taller capsule panel / larger capsule / lower UI
+   ================================================================ */
+.shell{padding-top:44px!important}
+@media(max-width:900px){.shell{padding-top:28px!important}}
+@media(max-width:460px){.shell{padding-top:22px!important}}
+
+.right-col{
+  gap:16px 16px!important;
+}
+.right-col > .three-wrap.card-stage{
+  height:430px!important;
+  min-height:430px!important;
+  border-radius:26px!important;
+}
+.right-col > .three-wrap.card-stage .enhance-card-wrap{
+  aspect-ratio:1.36!important;
+  width:min(500px,calc(100% - 20px))!important;
+  max-width:500px!important;
+  transform:translateY(10px) scale(1.06)!important;
+  transform-origin:center top!important;
+}
+#enhanceCard{
+  padding:16px!important;
+  border-radius:30px!important;
+}
+#enhanceCard .card-art{border-radius:22px!important}
+#enhanceCard .card-art .capsule-shell{max-height:98%!important}
+.right-col > .jinam-card-info{
+  margin-top:2px!important;
+}
+
+@media(max-width:1080px){
+  .right-col > .three-wrap.card-stage{
+    height:396px!important;
+    min-height:396px!important;
+  }
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(470px,calc(100% - 12px))!important;
+    max-width:470px!important;
+    transform:translateY(8px) scale(1.05)!important;
+  }
+}
+
+@media(max-width:760px){
+  .right-col > .three-wrap.card-stage{
+    height:388px!important;
+    min-height:388px!important;
+  }
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(470px,calc(100% - 10px))!important;
+    max-width:470px!important;
+    transform:translateY(8px) scale(1.05)!important;
+  }
+}
+
+@media(max-width:460px){
+  .right-col > .three-wrap.card-stage{
+    height:320px!important;
+    min-height:320px!important;
+  }
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(380px,calc(100% - 8px))!important;
+    max-width:380px!important;
+    transform:translateY(6px) scale(1.04)!important;
+  }
+  #enhanceCard{padding:12px!important}
+}
+
+
+/* ================================================================
+   JINAM 2.7 — card backing grows with the enlarged capsule card
+   ================================================================ */
+.right-col > .three-wrap.card-stage{
+  height:525px!important;
+  min-height:525px!important;
+  border-radius:28px!important;
+}
+.right-col > .three-wrap.card-stage .enhance-card-wrap{
+  width:min(510px,calc(100% - 26px))!important;
+  max-width:510px!important;
+  aspect-ratio:1.16!important;
+  transform:translateY(2px) scale(1.055)!important;
+  transform-origin:center center!important;
+}
+#enhanceCard{border-radius:29px!important}
+#enhanceCard .card-art{border-radius:22px!important}
+@media(max-width:1080px){
+  .right-col > .three-wrap.card-stage{height:485px!important;min-height:485px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(465px,calc(100% - 20px))!important;
+    max-width:465px!important;
+    aspect-ratio:1.16!important;
+    transform:translateY(2px) scale(1.04)!important;
+  }
+}
+@media(max-width:760px){
+  .right-col > .three-wrap.card-stage{height:480px!important;min-height:480px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(470px,calc(100% - 24px))!important;
+    max-width:470px!important;
+    aspect-ratio:1.18!important;
+    transform:translateY(0) scale(1.025)!important;
+  }
+}
+@media(max-width:460px){
+  .right-col > .three-wrap.card-stage{height:378px!important;min-height:378px!important}
+  .right-col > .three-wrap.card-stage .enhance-card-wrap{
+    width:min(372px,calc(100% - 24px))!important;
+    max-width:372px!important;
+    aspect-ratio:1.14!important;
+    transform:translateY(0) scale(1.025)!important;
+  }
+}
+
+/* =============================================================
+   JINAM 2.8 - lower the complete game UI, all tabs in one shell.
+   Existing capsule and card dimensions remain unchanged.
+   ============================================================= */
+.shell{padding-top:84px!important}
+@media(max-width:900px){.shell{padding-top:64px!important}}
+@media(max-width:460px){.shell{padding-top:50px!important}}
