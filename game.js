@@ -1,4 +1,4 @@
-/* 지온냄새 강화하기 V17.98 · LAB CONTROLS · SIMPLE SELL FX · MAX STAGE 55 */
+/* 지냄 · MAX STAGE 55 */
 const GAME_DATA = {"POINT_REWARD_TABLE":{"1":400,"2":600,"3":800,"4":1200,"5":2000,"6":2800,"7":3600,"8":4800,"9":6000,"10":8000,"11":10000,"12":12000,"13":14000,"14":16000,"15":20000,"16":24000,"17":28000,"18":32000,"19":36000,"20":40000,"21":48000,"22":56000,"23":64000,"24":72000,"25":80000,"26":92000,"27":104000,"28":120000,"29":140000,"30":160000,"31":180000,"32":200000,"33":240000,"34":280000,"35":320000,"36":360000,"37":420000,"38":480000,"39":540000,"40":600000,"41":660000,"42":720000,"43":780000,"44":840000,"45":900000,"46":960000,"47":1020000,"48":1080000,"49":1140000,"50":1200000,"51":1260000,"52":1320000,"53":1380000,"54":1440000,"55":1500000},"SMELL_DB":{"0":{"name":"0단계 : 무취 지온의 공간","desc":"아직은 아무 냄새도 안 남. 지온이가 씻었나 봄.","price":0,"color":"#4a5568","tier":1},"1":{"name":"1단계 : 스쳐가는 지온냄새","desc":"버스 옆자리에 앉은 지온이가 팔을 들 때 스치듯 나는 가벼운 암내.","price":500,"color":"#718096","tier":1},"2":{"name":"2단계 : 은은한 지온냄새","desc":"체육 시간이 끝난 뒤 지온이가 벗어던진 축축한 양말 냄새.","price":800,"color":"#38a169","tier":1},"3":{"name":"3단계 : 습한 지온냄새","desc":"사흘 동안 빨지 않은 지온이의 후드티 모자에 쩐내.","price":1200,"color":"#276749","tier":1},"4":{"name":"4단계 : 진득한 지온냄새","desc":"여름철 밀폐된 방 안에서 지온이가 뒹굴다 난 땀에 쩐 이불 냄새.","price":1900,"color":"#319795","tier":1},"5":{"name":"5단계 : 자극적인 지온냄새","desc":"지온이가 발가락을 긁은 손으로 코를 슥 만지게 만드는 향.","price":3000,"color":"#2c7a7b","tier":1},"6":{"name":"6단계 : 풍부한 지온냄새","desc":"신발장에 박아둔 지온이의 축구화 속에서 무르익은 발효 냄새.","price":4100,"color":"#3182ce","tier":2},"7":{"name":"7단계 : 압도적인 지온냄새","desc":"지온이가 다녀간 자리마다 코를 찌르는 시큼털털한 체취의 파도.","price":5700,"color":"#2b6cb0","tier":2},"8":{"name":"8단계 : 폭발하는 지온냄새","desc":"일주일 동안 안 감은 지온이 머리통에서 뿜어져 나오는 유분 폭탄.","price":7900,"color":"#805ad5","tier":2},"9":{"name":"9단계 : 시공을 뒤흔드는 지온냄새","desc":"화장실 문을 열자마자 지온이가 남기고 간 흔적의 생생함.","price":11000,"color":"#6b46c1","tier":2},"10":{"name":"10단계 : 치명적인 지온냄새","desc":"맡는 순간 안구실종을 유발하는 지온이의 살인적인 입냄새.","price":15000,"color":"#d69e2e","tier":2},"11":{"name":"11단계 : 환각을 부르는 지온냄새","desc":"썩은 청국장과 지온이의 발냄새가 콜라보를 이뤄 주마등이 스친다.","price":20000,"color":"#b7791f","tier":3},"12":{"name":"12단계 : 공간지배 지온냄새","desc":"방 문을 열기도 전에 복도까지 마중 나온 지온이의 찌든 내음.","price":26000,"color":"#dd6b20","tier":3},"13":{"name":"13단계 : 전성기 지온냄새","desc":"음식물 쓰레기통을 여름볕에 사흘간 방치한 것과 비견되는 향.","price":34000,"color":"#c05621","tier":3},"14":{"name":"14단계 : 신성한 지온냄새","desc":"너무 지독해서 눈물마저 고이게 만드는 지온이의 꼬릿한 기운.","price":45000,"color":"#e53e3e","tier":3},"15":{"name":"15단계 : 오리지널 지온냄새","desc":"하수구 역류 현상과 지온이의 입김이 만나 온 세상이 오염된다.","price":60000,"color":"#9b2c2c","tier":3},"16":{"name":"16단계 : 우주관통 지온냄새","desc":"대기권을 뚫고 오존층마저 뻥 뚫어버리는 지온이의 겨드랑이 폭풍.","price":76000,"color":"#00f0ff","tier":4},"17":{"name":"17단계 : 차원균열 지온냄새","desc":"지온이의 구린내가 너무 독해서 다른 평행세계의 코까지 썩힌다.","price":97000,"color":"#ff00ea","tier":4},"18":{"name":"18단계 : Absolute 지온냄새","desc":"우주 만물의 원소를 전부 지온이의 체취로 치환해버리는 절대악취.","price":125000,"color":"#ffe600","tier":4},"19":{"name":"19단계 : 초월 지온냄새","desc":"인간의 후각 세포를 단번에 파괴하는 초월적인 썩은 내.","price":155000,"color":"#ff0055","tier":4},"20":{"name":"20단계 : 지온이의 정성이 들어간 포근한 집밥 냄새","desc":"지온맘이 끓여준 묵은지 김치찌개... 인 줄 알았으나 지온이 빨래 냄새.","price":200000,"color":"#ffaa00","tier":4},"21":{"name":"21단계 : 지온이의 엄격한 샤우팅 냄새","desc":"안 씻고 버티는 지온이를 잡으려고 지온맘이 휘두른 등짝의 내음.","price":260000,"color":"#ff4500","tier":5},"22":{"name":"22단계 : 지온이의 전설의 흙된장국 냄새","desc":"지온이의 발냄새 원액을 살짝 타서 깊은 맛을 낸 지온맘의 특제 국물.","price":340000,"color":"#ff007f","tier":5},"23":{"name":"23단계 : 지온이의 100년 숙성 원액 냄새","desc":"지온이가 어릴 때부터 모아둔 꼬릿한 때를 장독대에 묻어 숙성시켰다.","price":440000,"color":"#7b00ff","tier":5},"24":{"name":"24단계 : 지온이의 냄새 탈취 스프레이 냄새","desc":"방 안에 쩔어 있는 지온이의 체취를 탈취제로 잡으려다 역관람당함.","price":575000,"color":"#0088ff","tier":5},"25":{"name":"25단계 : 지온이의 대인배적인 냄새","desc":"이런 지온이라도 품에 안아주는 지온맘의 대인배적 냄새 포용력.","price":750000,"color":"#00ffaa","tier":5},"26":{"name":"26단계 : 지온이의 궁극 필살기 냄새","desc":"지온이 방 문을 강제로 열고 환기시키며 뿜어내는 지온맘의 분노.","price":955000,"color":"#ccff00","tier":6},"27":{"name":"27단계 : 지온이의 창조와 냄새","desc":"지온이의 모든 악취를 정화하려다 지온맘마저 구속당한 경지.","price":1200000,"color":"#fffb00","tier":6},"28":{"name":"28단계 : 지온이의 우주창조설 냄새","desc":"우주 전체가 지온이의 발냄새 아래 무릎을 꿇고 헛구역질을 한다.","price":1550000,"color":"#ffffff","tier":6},"29":{"name":"29단계 : 딥다크 지온냄새","desc":"모든 꼬릿한 냄새의 근원이자, 지온이를 낳고 기른 위대한 악취의 여신.","price":1950000,"color":"#ff00aa","tier":6},"30":{"name":"30단계 : 태초의 지온냄새 ","desc":"우주 탄생 이전부터 존재했던 오리지널 태고의 구린내.","price":2500000,"color":"#00ffff","tier":6},"31":{"name":"31단계 : 하이퍼 지온 싱귤래리티","desc":"냄새가 너무 묵직해서 블랙홀처럼 주변 모든 빛과 산소를 빨아들인다.","price":3150000,"color":"#7000ff","tier":6},"32":{"name":"32단계 : 멀티버스 지온 에센스","desc":"모든 평행우주에 존재하는 지온이의 체취가 한곳으로 모이는 중.","price":4000000,"color":"#ff00e1","tier":6},"33":{"name":"33단계 : 인피니티 지온 페트리코","desc":"영원히 끝나지 않는 지온이의 발효 비린내가 온 은하를 뒤덮음.","price":5000000,"color":"#00ff66","tier":6},"34":{"name":"34단계 : 오메가 지온 제네시스","desc":"지온이의 냄새로 우주를 멸망시키고 다시 창조하는 종말의 향기.","price":6350000,"color":"#ff6600","tier":6},"35":{"name":"35단계 : ★디 오리지널 앱솔루트 지온★","desc":"우주 만물을 통틀어 가장 지독하고 완벽한 궁극의 지온 냄새.","price":8000000,"color":"#ffffff","tier":6},"36":{"name":"36단계 : 안드로메다 자이온 암모니아","desc":"안드로메다 은하 전체를 알칼리화시키는 암모니아 폭풍.","price":10000000,"color":"#00ffff","tier":6},"37":{"name":"37단계 : 화이트홀 자이온 하이드로겐","desc":"우주 백색왜성의 폭발과 함께 뿜어져 나오는 순백의 악취.","price":12500000,"color":"#ffffff","tier":6},"38":{"name":"38단계 : 쿼크 글루온 자이온 악취","desc":"소립자 수준에서부터 강하게 결합되어 떨어지지 않는 쿼크급 냄새.","price":16000000,"color":"#ffaa00","tier":6},"39":{"name":"39단계 : 차원왜곡 자이온 타임루프 찌든내","desc":"시간의 흐름마저 썩어버리게 만드는 과거와 미래의 냄새 집합체.","price":20000000,"color":"#9b2c2c","tier":6},"40":{"name":"40단계 : 네메시스 자이온 다크매터","desc":"빛조차 탈출하지 못하고 악취에 붙잡혀 빨려 들어가는 암흑물질.","price":25000000,"color":"#38a169","tier":6},"41":{"name":"41단계 : 메가 블랙홀 자이온 호라이즌","desc":"모든 물리 법칙이 붕괴하고 오직 자이온이의 체취만 남는 경계선.","price":31500000,"color":"#805ad5","tier":6},"42":{"name":"42단계 : 감마선 버스트 자이온 플레어","desc":"우주 끝까지 수십 광년 동안 일직선으로 뻗어 나가는 살인적 악취.","price":40000000,"color":"#e53e3e","tier":6},"43":{"name":"43단계 : 하이퍼노바 자이온 코어 붕괴","desc":"거대 항성이 생을 마감하며 방출하는 전설적인 폭발성 악취.","price":50000000,"color":"#ff4500","tier":6},"44":{"name":"44단계 : 엘더블루 제네시스 자이온","desc":"태초의 우주가 생성되기도 전에 존재했던 푸른빛의 시원(始源) 냄새.","price":63500000,"color":"#0088ff","tier":6},"45":{"name":"45단계 : 카이퍼 자이온 벨트 코스믹 더스트","desc":"태양계 외곽의 얼어붙은 얼음 조각들에 스며든 미지의 원시 악취.","price":80000000,"color":"#cbd5e1","tier":6},"46":{"name":"46단계 : 자이온오르트 클라우드 딥 프리즈","desc":"영원히 녹지 않을 것 같은 극저온 속에서 서서히 발효된 냉동 체취.","price":105000000,"color":"#319795","tier":6},"47":{"name":"47단계 : 태양풍 플라즈마 자이온제트 스트림","desc":"태양 표면에서 뿜어져 나오는 고온다습한 초고속 플라즈마 냄새.","price":135000000,"color":"#f59e0b","tier":6},"48":{"name":"48단계 : 마그네타 자이온자기장 폭풍","desc":"지구상의 모든 나침반을 고장 내고 정신을 아득하게 만드는 자기장.","price":175000000,"color":"#7000ff","tier":6},"49":{"name":"49단계 : 펄서 자이온로테이션 시그널","desc":"일정한 주기로 우주 전체에 강력한 악취 전파를 송출하는 중성자별.","price":230000000,"color":"#00ff66","tier":6},"50":{"name":"50단계 : 웜홀 크로스오버 자이온 디멘션","desc":"시공간의 통로를 열어 다른 차원의 구린내를 실시간으로 끌어온다.","price":300000000,"color":"#ff00ea","tier":6},"51":{"name":"51단계 : 스트링 시스코어 자이온 엠피리어","desc":"초끈이론의 11차원을 진동시키며 울려 퍼지는 궁극의 우주 진동음.","price":415000000,"color":"#ccff00","tier":6},"52":{"name":"52단계 : 센타우루스 자이온 알파 코어","desc":"가장 가까운 별무리의 기운을 통째로 오염시킨 강력한 은하수 향.","price":570000000,"color":"#ff6600","tier":6},"53":{"name":"53단계 : 페가수스 자이온 별자리 네뷸라","desc":"신화 속 날개 든 말의 질주를 따라 온 하늘에 퍼지는 거대 성운 향.","price":790000000,"color":"#00f0ff","tier":6},"54":{"name":"54단계 : 자이온세인트 오메가 얼티밋 에센스","desc":"우주의 수명이 다하는 순간까지 사라지지 않는 불멸의 성스러운 냄새.","price":1100000000,"color":"#ffe600","tier":6},"55":{"name":"55단계 : 코스믹 인피니티 싱귤자이온래리티","desc":"모든 차원과 우주의 모든 존재가 하나로 응축된 무한대의 악취.","price":1500000000,"color":"#ff00aa","tier":6}},"PROB_TABLE":{"0":[100.0,0.0,0.0,0.0],"1":[100.0,0.0,0.0,0.0],"2":[100.0,0.0,0.0,0.0],"3":[100,0.0,0.0,0.0],"4":[97.5,2.5,0.0,0.0],"5":[94.5,5.5,0.0,0.0],"6":[93.5,5.5,0.0,1.0],"7":[90.5,8.5,0.0,1.0],"8":[87.5,9.5,0.0,3.0],"9":[84.5,12.2,0.3,3.0],"10":[81.5,13.2,2.3,3.0],"11":[78.5,14.2,2.3,5.0],"12":[75.5,15.2,4.3,5.0],"13":[72.5,16.2,6.3,5.0],"14":[69.5,17.2,8.3,5.0],"15":[66.5,18.2,10.3,5.0],"16":[64.5,19.2,11.3,5.0],"17":[61.5,20.2,13.3,5.0],"18":[58.5,21.2,15.3,5.0],"19":[55.5,22.2,17.3,5.0],"20":[52.5,23.2,19.3,5.0],"21":[50.5,24.2,20.3,5.0],"22":[48.5,25.2,21.3,5.0],"23":[46.5,26.2,22.3,5.0],"24":[44.5,27.2,23.3,5.0],"25":[42.5,28.2,24.3,5.0],"26":[41.5,29.2,24.3,5.0],"27":[39.5,30.2,25.3,5.0],"28":[37.5,31.2,26.3,5.0],"29":[35.5,32.2,27.3,5.0],"30":[33.5,33.2,28.3,5.0],"31":[31.5,34.2,29.3,5.0],"32":[29.5,35.2,30.3,5.0],"33":[27.5,36.2,31.3,5.0],"34":[25.5,37.2,32.3,5.0],"35":[24.5,38.2,32.3,5.0],"36":[25.0,38.2,31.8,5.0],"37":[24.5,38.2,32.3,5.0],"38":[24.0,38.2,32.8,5.0],"39":[23.5,38.2,33.3,5.0],"40":[23.0,38.2,33.8,5.0],"41":[22.5,38.2,34.3,5.0],"42":[22.0,38.2,34.8,5.0],"43":[21.5,38.2,35.3,5.0],"44":[21.0,38.2,35.8,5.0],"45":[20.5,38.2,36.3,5.0],"46":[21.0,38.2,35.8,5.0],"47":[20.5,38.2,36.3,5.0],"48":[20.0,38.2,36.8,5.0],"49":[19.5,38.2,37.3,5.0],"50":[19.0,38.2,37.8,5.0],"51":[19.0,38.2,37.8,5.0],"52":[18.5,38.2,38.3,5.0],"53":[18.0,38.2,38.8,5.0],"54":[11.0,38.2,45.8,5.0]},"CRITICAL_RATE":0.05};
 
 /* V17.49 · MOBILE PERFORMANCE PROFILE
@@ -19,9 +19,8 @@ const JION_PERF = (()=>{
   return Object.freeze({mobile,lowPower,reduced,coarse,saveData});
 })();
 function perfCount(desktop,mobile,low){
-  const preset=graphicsPreset();
-  if(preset==='low')return Math.max(1,low);
-  if(preset==='medium')return Math.max(1,mobile);
+  if(JION_PERF.lowPower)return Math.max(1,low);
+  if(JION_PERF.mobile)return Math.max(1,mobile);
   return Math.max(1,desktop);
 }
 document.documentElement.classList.toggle('jion-page-hidden',document.hidden);
@@ -80,8 +79,8 @@ const PROB = GAME_DATA.PROB_TABLE;
 const CRITICAL_RATE = GAME_DATA.CRITICAL_RATE;
 const POINTS = GAME_DATA.POINT_REWARD_TABLE;
 const MAX_LEVEL = 55;
-const SHIELD_MAX = 6;
-const WARP_LEVELS = [10,15,20,25,30,35,40,45];
+const SHIELD_MAX = 15;
+const WARP_LEVELS = [20,25,30,35,40,45];
 const ENHANCE_COST = {"0":10,"1":10,"2":20,"3":40,"4":50,"5":70,"6":100,"7":140,"8":210,"9":280,"10":350,"11":490,"12":630,"13":840,"14":1120,"15":1470,"16":1960,"17":2590,"18":3290,"19":4270,"20":5530,"21":7350,"22":9450,"23":12600,"24":16450,"25":21350,"26":28350,"27":36400,"28":45500,"29":58100,"30":77000,"31":98000,"32":122500,"33":157500,"34":203000,"35":259000,"36":329000,"37":427000,"38":535500,"39":679000,"40":875000,"41":1120000,"42":1400000,"43":1785000,"44":2310000,"45":3010000,"46":3920000,"47":5180000,"48":6930000,"49":9100000,"50":12600000,"51":17500000,"52":23800000,"53":32900000,"54":45500000};
 
 const LEGACY_AUX_TO_RESEARCH = {
@@ -101,7 +100,7 @@ const CORE_TRANSCEND_BONUS_PER_TIER=.08;
 const CORE_TRANSCEND_ROMAN=['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'];
 const LAB_COST_MULTIPLIER=.55;
 const CORE_FUSION_MIN_LEVEL=5;
-const CORE_FUSION_COST=60000;
+const CORE_FUSION_COST=300000;
 const CORE_FUSION_RESET_REFUND_RATE=.50;
 const CORE_FUSION_GRADES=[
   {min:47,max:53,name:"PERFECT",boost:.30,label:"완벽 공명"},
@@ -114,7 +113,6 @@ const RESEARCH_DATA={
   safety:{icon:"🛡️",slot:"ARMOR",name:"안정화 실드 플레이트",desc:"파괴 에너지를 흡수해 일부를 유지 판정으로 전환합니다.",effect:"파괴 확률",unit:"-0.9%p",cost:[2500,7500,22000,65000,195000],success:[90,81,71,60,48]},
   economy:{icon:"⚙️",slot:"DRIVE",name:"저전력 압축 터빈",desc:"강화 장치의 에너지 손실을 줄여 강화 비용을 절감합니다.",effect:"강화 비용",unit:"-3.5%",cost:[2000,6000,18000,54000,162000],success:[95,88,79,69,57]},
   insight:{icon:"📡",slot:"SENSOR",name:"냄새 분석 센서",desc:"강화 성공 데이터를 분석해 획득 포인트를 늘립니다.",effect:"성공 포인트",unit:"+7%",cost:[1500,4500,13500,40500,121500],success:[94,87,80,70,59]},
-  resale:{icon:"🔗",slot:"VALVE",name:"연쇄 보존 밸브",desc:"파괴가 아닌 실패·유지·방지권 생존 시 연속 콤보가 끊기지 않을 확률을 높입니다.",effect:"콤보 보존",unit:"+14%",cost:[1800,5400,16000,48000,144000],success:[91,83,73,62,51]},
   capacitor:{icon:"🔥",slot:"FRENZY",name:"폭주 축전기",desc:"실패 에너지 회수 효율을 높여 냄새 폭주 게이지를 더 빠르게 충전합니다.",effect:"폭주 충전",unit:"+12%",cost:[2200,6600,19800,59400,178000],success:[89,80,69,58,46]},
   precision:{icon:"🎯",slot:"OPTIC",name:"정밀 판정 렌즈",desc:"일반 강화의 크리티컬 확률을 높입니다. 광폭 강화에는 적용되지 않으며 50단계부터 크리티컬이 비활성입니다.",effect:"크리티컬",unit:"+1.7%p",cost:[2800,8400,25200,75600,226800],success:[88,78,67,55,43]},
   shieldTech:{icon:"🔧",slot:"SHIELD",name:"방지권 재생 모듈",desc:"방지권 제작 공정을 개선해 돈·포인트 구매 가격을 낮춥니다.",effect:"방지권 가격",unit:"-7%",cost:[2400,7200,21600,64800,194400],success:[93,85,76,65,54]},
@@ -125,7 +123,10 @@ const RESEARCH_DATA={
   volatileCore:{icon:"💣",slot:"OUTPUT",name:"고출력 변이 코어",desc:"기존 변이 코어를 영구 파츠로 통합. 일반 강화 성공 시 일정 확률로 +1단계를 추가 획득합니다. 광폭 강화에는 적용되지 않습니다.",effect:"추가 상승",unit:"+6% 확률",cost:[4500,13500,40500,121500,364500],success:[84,73,61,49,37]},
   recoveryCatalyst:{icon:"💹",slot:"AUCTION",name:"경매 분석 모듈",desc:"경매 낙찰 데이터를 분석해 최종 낙찰 환급률을 직접 높입니다.",effect:"경매 낙찰 보정",unit:"+2%p",cost:[2600,7800,23400,70200,210600],success:[91,84,75,64,50]},
   frenzyInjector:{icon:"🔥",slot:"INJECT",name:"폭주 연장 인젝터",desc:"냄새 폭주 이벤트가 발동할 때 일정 확률로 효과 지속 횟수를 1회 추가합니다.",effect:"폭주 지속 연장",unit:"+25% 확률",cost:[3000,9000,27000,81000,243000],success:[85,74,63,51,39]},
-  berserkAmplifier:{icon:"☢️",slot:"BERSERK",name:"광폭 증폭 코어",desc:"광폭 강화 성공 시 일정 확률로 최종 상승 단계에 +1단계를 추가합니다. 일반 강화에는 적용되지 않습니다.",effect:"광폭 추가 상승",unit:"+6% 확률",cost:[3800,11400,34200,102600,307800],success:[86,75,64,52,41]}
+  berserkAmplifier:{icon:"☢️",slot:"BERSERK",name:"광폭 증폭 코어",desc:"광폭 강화 성공 시 일정 확률로 최종 상승 단계에 +1단계를 추가합니다. 일반 강화에는 적용되지 않습니다.",effect:"광폭 추가 상승",unit:"+6% 확률",cost:[3800,11400,34200,102600,307800],success:[86,75,64,52,41]},
+  saleOptimizer:{icon:"🪙",slot:"MARKET",name:"환금 정제 코어",desc:"일반 판매 금액을 늘립니다. 경매 낙찰 금액은 별도로 계산됩니다.",effect:"일반 판매 수익",unit:"+4%",cost:[2200,6600,19800,59400,178000],success:[93,86,78,68,56]},
+  tearCondenser:{icon:"💧",slot:"TEARS",name:"눈물 집속 코어",desc:"강화 성공 및 크리티컬 시 지냄 눈물 게이지 충전량을 높입니다. 피버 중에는 충전되지 않습니다.",effect:"눈물 충전",unit:"+15%",cost:[2700,8100,24300,72900,218700],success:[90,82,72,61,49]},
+  warpEfficiency:{icon:"🪐",slot:"WARP",name:"차원 절약 코어",desc:"워프권 구매 시 돈과 포인트 가격을 모두 낮춥니다. 차원 고정 코어와 별개의 효과입니다.",effect:"워프 비용",unit:"-6%",cost:[3000,9000,27000,81000,243000],success:[88,79,69,58,46]}
 };
 const FRENZY_MAX=100;
 const FRENZY_EVENT_TYPES=['surge','success','guard','free','points','critical'];
@@ -133,8 +134,8 @@ function emptyResearch(){return Object.fromEntries(Object.keys(RESEARCH_DATA).ma
 function normalizeUiSettings(input){
   const allowed=['high','medium','low'];
   return {
-    graphics: allowed.includes(input?.graphics)?input.graphics:'high',
-    motion: allowed.includes(input?.motion)?input.motion:'high'
+    graphics: 'high',
+    motion: allowed.includes(input?.motion)?input.motion:'medium'
   };
 }
 function normalizeStorageSlots(input){
@@ -161,18 +162,19 @@ function normalizeFusionLinks(input,research={}){
   return out;
 }
 const INITIAL = {
-  schemaVersion:38,
+  schemaVersion:44,
   enhanceAttempts:0,warpUses:0,sellCount:0,auctionCount:0,finalClears:0,frenzyTriggers:0,
   storageCount:0,storageSlots:normalizeStorageSlots(),
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
   enhanceSuccesses:0,enhanceFailures:0,criticalCount:0,destroyCount:0,
-  uiSettings:normalizeUiSettings({graphics:'high',motion:'high'}),
-  runData:{level:0,prev_level:0,max_level:0,money:"100000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),coreTranscend:emptyResearch(),equippedParts:[],fusionLinks:[],frenzyGauge:0,frenzyEvent:null,warpBoostLevel:0,warpSaleLock:0,
+  uiSettings:normalizeUiSettings({graphics:'high',motion:'medium'}),
+  runData:{level:0,prev_level:0,max_level:0,money:"200000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),coreTranscend:emptyResearch(),equippedParts:[],fusionLinks:[],frenzyGauge:0,frenzyEvent:null,tearGauge:0,tearFeverUntil:0,warpBoostLevel:0,warpSaleLock:0,
     unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
 let state = loadState();
 state.storageSlots=normalizeStorageSlots(state.storageSlots);
+autoLowerMotionForStage(state.runData.level);
 applyUserQualitySettings();
 let toastTimer = null;
 let actionLocked = false;
@@ -185,11 +187,13 @@ let fusionGaugeStartedAt=0;
 let fusionGaugeRaf=0;
 let fusionLastResult=null;
 let currentLabSubView='upgrade';
+let currentSettingsPage='home';
 let devMode = false;
 let delPressCount = 0;
 let delPressTimer = null;
 let pendingParticleOverride = null;
 let pendingAnimationOverride = null;
+let finalCinematicActive = false;
 const RESULT_PARTICLE_COLORS = {
   SUCCESS:'#22c55e',
   FAILED:'#f97316',
@@ -199,7 +203,6 @@ const RESULT_PARTICLE_COLORS = {
   SHIELD_SAVED:'#3b82f6',
   TEARS:'#050505'
 };
-function resultParticleColor(status){ return pendingParticleOverride || RESULT_PARTICLE_COLORS[status] || '#ffffff'; }
 
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function toMoneyInt(value){
@@ -220,6 +223,9 @@ function normalizeRunData(d){
 
   const out=Object.assign(clone(INITIAL.runData),d||{});
   out.money=toMoneyInt(out.money).toString();
+  // 2.1: 은퇴한 단계 해금 기록은 지우고 다른 저장 데이터는 유지합니다.
+  delete out.stageUnlocks;
+  delete out.stageGateVersion;
   out.unlocked_warps=Object.fromEntries(WARP_LEVELS.map(w=>[w,!!out.unlocked_warps?.[w]]));
   out.level=Math.max(0,Math.min(MAX_LEVEL,Number(out.level)||0)); out.prev_level=Math.max(0,Math.min(MAX_LEVEL,Number(out.prev_level)||0));
   out.max_level=Math.max(out.level,Math.min(MAX_LEVEL,Number(out.max_level)||0)); for(const w of WARP_LEVELS) if(out.max_level>=w||out.level>=w) out.unlocked_warps[w]=true; out.shield=Math.max(0,Math.min(SHIELD_MAX,Number(out.shield)||0));
@@ -227,6 +233,11 @@ function normalizeRunData(d){
   out.combo=Math.max(0,Number(out.combo)||0); out.best_combo=Math.max(out.combo,Number(out.best_combo)||0);
   if(out.status==='PITY_SUCCESS')out.status='SUCCESS';
 
+  // 1.9 migration: preserve the retired combo core's investment in the new sell core.
+  if(Number(out.research?.resale)>0){out.research=Object.assign({},out.research,{saleOptimizer:Math.max(Number(out.research.saleOptimizer)||0,Number(out.research.resale)||0)});}
+  if(Number(out.coreTranscend?.resale)>0){out.coreTranscend=Object.assign({},out.coreTranscend,{saleOptimizer:Math.max(Number(out.coreTranscend.saleOptimizer)||0,Number(out.coreTranscend.resale)||0)});}
+  if(Array.isArray(out.fusionLinks))out.fusionLinks=out.fusionLinks.map(link=>({...link,a:link.a==='resale'?'saleOptimizer':link.a,b:link.b==='resale'?'saleOptimizer':link.b}));
+  out.equippedParts=Array.isArray(out.equippedParts)?out.equippedParts.map(k=>k==='resale'?'saleOptimizer':k):out.equippedParts;
   out.research=Object.assign(emptyResearch(),out.research||{});
   if(Number(out.research.auxlab)>0) out.research.fusion=Math.max(Number(out.research.fusion)||0,Number(out.research.auxlab)||0);
   delete out.research.auxlab;
@@ -247,14 +258,16 @@ function normalizeRunData(d){
   delete out.transcend;
 
   const validOwned=Object.keys(RESEARCH_DATA).filter(key=>out.research[key]>0);
-  const requested=hadExplicitEquipped?d.equippedParts:validOwned;
-  out.equippedParts=[...new Set((requested||[]).filter(key=>RESEARCH_DATA[key]&&out.research[key]>0))];
+  // V18 Classic: every owned core activates automatically; there is no manual equip button.
+  out.equippedParts=[...validOwned];
   out.fusionLinks=normalizeFusionLinks(out.fusionLinks,out.research);
   delete out.labPresets;
   delete out.labPresetNames;
 
   out.frenzyGauge=Math.max(0,Math.min(FRENZY_MAX,Number(out.frenzyGauge)||0));
-  const ev=out.frenzyEvent;if(!ev||!FRENZY_EVENT_TYPES.includes(ev.type)||Number(ev.turns||0)<=0)out.frenzyEvent=null;else out.frenzyEvent={type:ev.type,turns:Math.max(1,Math.min(6,Number(ev.turns)||1)),label:String(ev.label||''),desc:String(ev.desc||'')};
+  const ev=out.frenzyEvent;if(!ev||!FRENZY_EVENT_TYPES.includes(ev.type)||Number(ev.turns||0)<=0)out.frenzyEvent=null;else out.frenzyEvent={type:ev.type,turns:Math.max(1,Math.min(6,Number(ev.turns)||1)),maxTurns:Math.max(1,Math.min(6,Number(ev.maxTurns)||Number(ev.turns)||1)),label:String(ev.label||''),desc:String(ev.desc||'')};
+  out.tearGauge=Math.max(0,Math.min(100,Number(out.tearGauge)||0));
+  out.tearFeverUntil=Math.max(0,Number(out.tearFeverUntil)||0);
   out.warpSaleLock=Math.max(0,Math.min(2,Number(out.warpSaleLock)||0));
   out.warpBoostLevel=Math.max(0,Math.min(RESEARCH_MAX*1.5,Number(out.warpBoostLevel)||0));
   if(out.level===0){out.warpBoostLevel=0;out.warpSaleLock=0;}
@@ -288,13 +301,13 @@ function loadState(){
     const saved=JSON.parse(localStorage.getItem("jion_smell_game_v3"));
     if(!saved)return clone(INITIAL);
     if(saved.schemaVersion>=15&&saved.runData){
-      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);s.schemaVersion=38;
+      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=44;
       return cleanRemovedSystems(s);
     }
     if(saved.schemaVersion>=13&&saved.runData){
       const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);
       if(saved.schemaVersion<14)s.runData.money=scaleLegacyMoney(saved.runData.money,s.runData.max_level||s.runData.level).toString();
-      s.schemaVersion=38;return cleanRemovedSystems(s);
+      if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=44;return cleanRemovedSystems(s);
     }
     const s=Object.assign(clone(INITIAL),saved),a=(saved.seasonData||{})[1]||{},b=(saved.seasonData||{})[2]||{};
     const bMax=Math.max(0,Number(b.max_level)||0),bLevel=Math.max(0,Number(b.level)||0),hadSecond=Number(saved.rebirthCount)>0||bMax>0||bLevel>0||Number(saved.currentSeason)===2;
@@ -302,68 +315,79 @@ function loadState(){
     const legacyAux=mergeInventory(a.auxInventory,b.auxInventory);
     s.runData=normalizeRunData(Object.assign({},src,{level:currentUnified,prev_level:currentUnified,max_level:maxUnified,auxInventory:legacyAux}));
     const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of WARP_LEVELS)if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
-    s.uiSettings=normalizeUiSettings(saved.uiSettings);
-    s.schemaVersion=38;return cleanRemovedSystems(s);
+    s.uiSettings=normalizeUiSettings(saved.uiSettings);if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';
+    s.schemaVersion=44;return cleanRemovedSystems(s);
   }catch(e){return clone(INITIAL);}
 }
 function save(){ localStorage.setItem("jion_smell_game_v3",JSON.stringify(state)); }
 function graphicsPreset(){ return normalizeUiSettings(state?.uiSettings).graphics; }
 function motionPreset(){ return normalizeUiSettings(state?.uiSettings).motion; }
+function motionPlaybackRate(){
+  const preset=motionPreset();
+  return preset==='high'?1.35:preset==='low'?0.75:1;
+}
+function applyWebAnimationSpeed(){
+  const rate=motionPlaybackRate();
+  try{
+    for(const animation of (document.getAnimations?.()||[])){
+      if(!animation || animation.playbackRate===rate)continue;
+      animation.playbackRate=rate;
+    }
+  }catch(e){}
+}
+let motionSyncQueued=false;
+function queueWebAnimationSpeedSync(){
+  if(motionSyncQueued)return;
+  motionSyncQueued=true;
+  requestAnimationFrame(()=>{motionSyncQueued=false;applyWebAnimationSpeed();});
+}
+function startWebAnimationSpeedObserver(){
+  if(window.__jionMotionSpeedObserverStarted || !window.MutationObserver)return;
+  window.__jionMotionSpeedObserverStarted=true;
+  const observer=new MutationObserver(queueWebAnimationSpeedSync);
+  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+}
+function applyMotionSpeed(){
+  const rate=motionPlaybackRate();
+  // GSAP-powered game effects follow the selected speed as well.
+  try{window.gsap?.globalTimeline?.timeScale?.(rate);}catch(e){}
+  applyWebAnimationSpeed();
+  startWebAnimationSpeedObserver();
+}
 function applyUserQualitySettings(){
   const root=document.documentElement;
   const {graphics,motion}=normalizeUiSettings(state?.uiSettings);
   root.classList.remove('jion-graphics-high','jion-graphics-medium','jion-graphics-low','jion-motion-high','jion-motion-medium','jion-motion-low');
   root.classList.add('jion-graphics-'+graphics,'jion-motion-'+motion);
+  applyMotionSpeed();
 }
 function updateUiSetting(group,value){
   state.uiSettings=normalizeUiSettings(Object.assign({},state.uiSettings,{[group]:value}));
   save();
   applyUserQualitySettings();
 }
+function autoLowerMotionForStage(lvl=level(),previousLevel=null){
+  const next=Math.max(0,Number(lvl)||0),previous=Number(previousLevel);
+  // 50단계부터는 느림(하)이 아니라 보통(중) 모션을 자동 적용한다.
+  if(next>=50 && motionPreset()!=='medium') updateUiSetting('motion','medium');
+  else if(next<50 && Number.isFinite(previous) && previous>=50 && motionPreset()!=='high') updateUiSetting('motion','high');
+}
 function level(){ return state.runData.level; }
 function data(){ return DB[String(level())]||DB["0"]; }
-function maxLevel(){ return MAX_LEVEL; }
 function money(){ return toMoneyInt(state.runData.money); }
 function setMoney(v){ state.runData.money=toMoneyInt(v).toString(); }
 function shield(){ return state.runData.shield; }
 function combo(){ return state.runData.combo||0; }
-function comboMultiplier(v=combo()){
-  const c=Math.max(0,Number(v)||0);
-  if(c>=15)return 3.25;
-  if(c>=10)return 2.5;
-  if(c>=7)return 1.9;
-  if(c>=5)return 1.6;
-  if(c>=3)return 1.3;
-  if(c>=2)return 1.15;
-  return 1;
-}
-function comboSuccessBoost(v=combo()){const c=Math.max(0,Number(v)||0);return c>=15?6:c>=7?2.5:0;}
-function comboCriticalBoost(v=combo()){const c=Math.max(0,Number(v)||0);return c>=15?.11:c>=10?.07:c>=5?.04:0;}
-function comboCostDiscount(v=combo()){const c=Math.max(0,Number(v)||0);return c>=15?18:c>=10?12:c>=5?6:0;}
-function comboDestroyProtection(v=combo(), destroyChance=null){
-  const c=Math.max(0,Number(v)||0);
-  const reduction=c>=15?9:c>=10?6:0;
-  if(destroyChance===null||destroyChance===undefined)return reduction;
-  return Math.min(Math.max(0,Number(destroyChance)||0),reduction);
-}
+function comboMultiplier(v=combo()){ return 1; }
+function comboSuccessBoost(v=combo()){ return 0; }
+function comboCriticalBoost(v=combo()){ return 0; }
+function comboCostDiscount(v=combo()){ return 0; }
+function comboDestroyProtection(v=combo(), destroyChance=null){ return 0; }
 function comboTierMeta(v=combo()){
-  const c=Math.max(0,Number(v)||0);
-  if(c>=15)return {name:'MAX FEVER',next:null,from:15,to:15};
-  if(c>=10)return {name:'OVER FEVER',next:15,from:10,to:15};
-  if(c>=7)return {name:'HOT STREAK',next:10,from:7,to:10};
-  if(c>=5)return {name:'FEVER',next:7,from:5,to:7};
-  if(c>=3)return {name:'CHAIN',next:5,from:3,to:5};
-  if(c>=2)return {name:'WARM UP',next:3,from:2,to:3};
-  return {name:'READY',next:2,from:0,to:2};
+  return {name:'COMBO',next:null,from:0,to:1};
 }
 function comboEffectText(v=combo()){
-  const c=Math.max(0,Number(v)||0),parts=[];
-  const mult=comboMultiplier(c);if(mult>1)parts.push(`포인트 x${Number.isInteger(mult)?mult:mult.toFixed(2).replace(/0$/,'')}`);
-  const success=comboSuccessBoost(c);if(success)parts.push(`성공 +${success}%p`);
-  const crit=comboCriticalBoost(c);if(crit)parts.push(`크리티컬 +${Math.round(crit*100)}%p`);
-  const cost=comboCostDiscount(c);if(cost)parts.push(`비용 -${cost}%`);
-  const guard=comboDestroyProtection(c);if(guard)parts.push(`파괴 -${guard}%p`);
-  return parts.join(' · ')||'성공을 이어가면 콤보 보너스가 해금됩니다';
+  return '연속 성공 횟수';
 }
 function researchLevel(key,d=state.runData){return Math.max(0,Math.min(RESEARCH_MAX,Number(d?.research?.[key])||0));}
 function equippedResearchKeys(d=state.runData){
@@ -372,7 +396,7 @@ function equippedResearchKeys(d=state.runData){
   return keys;
 }
 function isResearchEquipped(key,d=state.runData){return researchLevel(key,d)>0&&equippedResearchKeys(d).includes(String(key));}
-function activeResearchLevel(key,d=state.runData){return Number(d?.level)>=52?0:(isResearchEquipped(key,d)?researchLevel(key,d):0);}
+function activeResearchLevel(key,d=state.runData){return Number(d?.level)>=51?0:(isResearchEquipped(key,d)?researchLevel(key,d):0);}
 function fusionLinkForCore(key,d=state.runData){return (Array.isArray(d?.fusionLinks)?d.fusionLinks:[]).find(link=>link?.a===key||link?.b===key)||null;}
 function fusionBonusForCore(key,d=state.runData){const link=fusionLinkForCore(key,d);return link?Math.max(0,Math.min(.30,Number(link.boost)||0)):0;}
 function coreTranscendLevel(key,d=state.runData){
@@ -397,15 +421,15 @@ function labUpgradeOdds(key,lv=researchLevel(key)){const cfg=RESEARCH_DATA[key],
 function labUpgradeOddsText(key,lv=researchLevel(key)){const o=labUpgradeOdds(key,lv);return `성공 ${o.success}% · 유지 ${o.hold}%`;}
 function labUpgradeScheduleText(key){const cfg=RESEARCH_DATA[key];if(!cfg)return '';return cfg.success.map((v,i)=>`Lv.${i+1} ${v}%/${100-v}%`).join(' · ');}
 function currentFrenzyEvent(d=state.runData){if(Number(d?.level)>=50)return null;const ev=d.frenzyEvent;return ev&&FRENZY_EVENT_TYPES.includes(ev.type)&&Number(ev.turns||0)>0?ev:null;}
-function frenzyActive(d=state.runData){return !!currentFrenzyEvent(d);}
 function frenzyEventIs(type,d=state.runData){return currentFrenzyEvent(d)?.type===type;}
-function stagePointMultiplier(d=state.runData){return (1+activeResearchPower('insight',d)*.07)*(frenzyEventIs('points',d)?2:1);}
-function stageSellPercent(d=state.runData){return 100;}
+function stagePointMultiplier(d=state.runData){return (1+activeResearchPower('insight',d)*.07)*(frenzyEventIs('points',d)?2:1)*(tearFeverActive(d)?2:1);}
+function stageSellPercent(d=state.runData){return Math.max(100,Math.min(160,Math.round(100+activeResearchPower('saleOptimizer',d)*4)));}
 function criticalRateFor(d=state.runData,lvl=level()){
   if(Number(lvl)>=50)return 0;
   let r=CRITICAL_RATE+activeResearchPower('precision',d)*.017;
   r+=comboCriticalBoost(d.combo||0);
   if(frenzyEventIs('critical',d))r+=.10;
+  if(tearFeverActive(d))r+=.05;
   return Math.min(.50,r);
 }
 function resetCombo(d=state.runData){ d.combo=0; }
@@ -418,26 +442,30 @@ function effectiveEnhanceCost(mode="normal",d=state.runData){
   const economy10=Math.max(0,Math.round((100-activeResearchPower('economy',d)*3.5)*10));
   cost=(cost*BigInt(economy10)+999n)/1000n;
   if(frenzyEventIs('free',d)) cost=(cost*50n+99n)/100n;
+  if(tearFeverActive(d)) cost=(cost*70n+99n)/100n;
   return cost;
 }
-const POINT_REWARD_RATE=.40;
+const POINT_REWARD_RATE=.20; // 1~55 단계 보상 기존 대비 약 28.6% 감소
 function basePointReward(lvl){ if(lvl<=0)return 0; return Number(POINTS[String(lvl)]??(90000+(lvl-36)*15000)); }
 function pointReward(lvl){ return Math.max(0,Math.round(basePointReward(lvl)*POINT_REWARD_RATE)); }
 function dbPrice(a,b){ const lvl=b===undefined?Number(a):Number(b); return toMoneyInt(DB[String(lvl)]?.price||0); }
 function playerEnhanceCost(mode='normal',d=state.runData){ return effectiveEnhanceCost(mode,d); }
-function researchDiscountPercent(key,perLevel,d=state.runData){return Math.max(0,100-activeResearchPower(key,d)*perLevel);}
 function warpPointCost(lvl,d=state.runData){
-  return Math.max(1,Math.round(basePointReward(lvl)*21.5));
+  const discount=Math.max(0,Math.min(60,activeResearchPower('warpEfficiency',d)*6));
+  return Math.max(1,Math.round(basePointReward(lvl)*21.5*(100-discount)/100));
 }
 function warpMoneyCost(lvl,d=state.runData){
-  return (dbPrice(lvl)*110n+99n)/100n;
+  const discount10=Math.max(0,Math.min(600,Math.round(activeResearchPower('warpEfficiency',d)*60)));
+  const original=(dbPrice(lvl)*110n+99n)/100n;
+  return (original*BigInt(1000-discount10)+999n)/1000n;
 }
 function shieldPointCost(lvl,d=state.runData,shieldLv=activeResearchPower('shieldTech',d)){
   const pct=Math.max(0,100-Math.max(0,Number(shieldLv)||0)*7);
-  return Math.max(1,Math.round(basePointReward(lvl)*4.2*pct/100)); // 방지권 포인트 가격 2배
+  return Math.max(1,Math.round(basePointReward(lvl)*5.5*pct/100)); // 방지권 포인트 가격 2배
 }
+
 function shieldMoneyCost(lvl,d=state.runData,shieldLv=activeResearchPower('shieldTech',d)){
-  const scaled=(baseEnhanceCost(lvl)*275n+99n)/100n,base=scaled>37500n?scaled:37500n; // 기존 대비 2.5배
+  const scaled=(baseEnhanceCost(lvl)*350n+99n)/100n,base=scaled>50000n?scaled:50000n; // 방지권 가격 추가 인상
   const pct10=Math.max(0,Math.round((100-Math.max(0,Number(shieldLv)||0)*7)*10));
   return (base*BigInt(pct10)+999n)/1000n;
 }
@@ -459,10 +487,15 @@ function effectiveProbabilities(base,opts={}){
   }
   if(frenzyEventIs('success',d))shiftToSuccess(10);
   if(frenzyEventIs('guard',d)){const moved=Math.min(destroy,8);destroy-=moved;hold+=moved;}
+  if(tearFeverActive(d)&&opts.mode!=='berserk'){
+    shiftToSuccess(6);
+    const protectedChance=Math.min(destroy,5);
+    destroy-=protectedChance;hold+=protectedChance;
+  }
   if(opts.mode==='berserk'){
     // 독립 패널티: 일반 강화 상향으로 광폭 강화가 함께 쉬워지지 않도록 축소.
-    // 20단계 기본 20% 내외, 45단계 2~3% 내외 (코어/이벤트에 따라 변동).
-    success=Math.round(Math.max(.7,Math.min(20,(success-14)*.48))*10)/10;
+    // V18 Classic: 성공 확률을 소폭 상향하고 35~48단계 범위에 맞춰 조정.
+    success=Math.round(Math.max(.8,Math.min(21,(success-13)*.50))*10)/10;
     destroy=Math.round((100-success)*10)/10;down=0;hold=0;
   }
   return [success,down,destroy,hold].map(v=>Math.round(v*10)/10);
@@ -482,7 +515,7 @@ function activateRandomFrenzyEvent(d=state.runData){
   const extendChance=Math.min(1,activeResearchPower('frenzyInjector',d)*.25);
   const extended=extendChance>0&&Math.random()<extendChance;
   const turns=cfg.turns+(extended?1:0),desc=cfg.desc+(extended?' · 인젝터 연장 +1회':'');
-  d.frenzyEvent={type,turns,label:cfg.label,desc};
+  d.frenzyEvent={type,turns,maxTurns:turns,label:cfg.label,desc};
   return {type,label:cfg.label,desc,turns,instant:false};
 }
 function consumeFrenzyEventTurn(previousEvent,d=state.runData){
@@ -501,7 +534,7 @@ function addFrenzyCharge(amount,d=state.runData){
   return null;
 }
 function frenzyChargeForStatus(status,d=state.runData){
-  const gainMap={HOLD:25,FAILED:30,SHIELD_SAVED:38,DESTROYED:50};
+  const gainMap={HOLD:20,FAILED:23,SHIELD_SAVED:30,DESTROYED:39};
   const baseGain=gainMap[status]||0;
   const chargeMult=1+activeResearchPower('capacitor',d)*.12;
   return baseGain>0?Math.max(1,Math.round(baseGain*chargeMult)):0;
@@ -511,6 +544,75 @@ function updateFrenzyAfterEnhance(status,previousEvent,d=state.runData){
   consumeFrenzyEventTurn(previousEvent,d);
   if(Number(d.frenzyGauge||0)>=FRENZY_MAX&&!currentFrenzyEvent(d)){d.frenzyGauge=0;return activateRandomFrenzyEvent(d);}
   return addFrenzyCharge(frenzyChargeForStatus(status,d),d);
+}
+const TEAR_MAX=100;
+const TEAR_FEVER_DURATION=20000;
+let tearFeverInterval=null;
+function tearFeverActive(d=state.runData){return Number(d?.tearFeverUntil||0)>Date.now();}
+function tearFeverRemaining(d=state.runData){return Math.max(0,Number(d?.tearFeverUntil||0)-Date.now());}
+function tearChargeForSuccess(status,isCritical=false){
+  if(isCritical||status==='CRITICAL')return 4;
+  if(status==='SUCCESS')return 2;
+  return 0;
+}
+function addTearCharge(amount,d=state.runData){
+  if(amount<=0||tearFeverActive(d))return;
+  d.tearGauge=Math.min(TEAR_MAX,Math.max(0,Number(d.tearGauge)||0)+amount);
+}
+function updateTearAfterEnhance(status,d=state.runData,isCritical=false){
+  addTearCharge(tearChargeForSuccess(status,isCritical)*(1+activeResearchPower('tearCondenser',d)*.15),d);
+}
+function canActivateTearFever(d=state.runData){
+  return !tearFeverActive(d)&&Math.max(0,Number(d?.tearGauge)||0)>=TEAR_MAX;
+}
+function syncTearFeverTicker(){
+  const active=tearFeverActive(state.runData);
+  if(active&&!tearFeverInterval){
+    tearFeverInterval=setInterval(()=>{
+      if(!tearFeverActive(state.runData)){
+        clearInterval(tearFeverInterval);tearFeverInterval=null;
+        state.runData.tearFeverUntil=0;
+        save();showToast('💜 지냄 눈물 피버타임 종료');render();
+      }else{
+        render();
+      }
+    },1000);
+  }else if(!active&&tearFeverInterval){
+    clearInterval(tearFeverInterval);tearFeverInterval=null;
+  }
+}
+function activateTearFever(){
+  const d=state.runData;
+  if(actionLocked){showToast('강화 연출이 끝난 후 다시 눌러주세요.');return;}
+  if(tearFeverActive(d)){showToast('💜 지냄 눈물 피버타임 진행 중');return;}
+  if((Number(d.tearGauge)||0)<TEAR_MAX){showToast(`💜 지냄 눈물 ${Math.floor(d.tearGauge||0)}% · 성공으로 100%를 채우면 발동할 수 있어요`);return;}
+  d.tearGauge=0;
+  d.tearFeverUntil=Date.now()+TEAR_FEVER_DURATION;
+  syncTearFeverTicker();
+  save();
+  showTearFeverIntro();
+  showToast('💜 20초 피버! 포인트×2 · 비용 -30% · 성공 +6%p · 파괴 -5%p · 크리티컬 +5%p');
+  render();
+}
+
+function showTearFeverIntro(){
+  const stage=document.getElementById('threeWrap');
+  if(!stage)return;
+  const old=stage.querySelector('.tear-fever-intro');if(old)old.remove();
+  const effect=document.createElement('div');
+  effect.className='tear-fever-intro';effect.setAttribute('aria-hidden','true');
+  effect.innerHTML='<div class="tear-fever-intro-orbit"></div><div class="tear-fever-intro-copy"><small>AWAKENING · JINAM TEARS</small><strong>💜 FEVER TIME</strong><span>20 SECONDS · POWER UNLEASHED</span></div><div class="tear-fever-intro-sparks"></div>';
+  const particles=effect.querySelector('.tear-fever-intro-sparks');
+  const count=JION_PERF.mobile?15:30;
+  for(let i=0;i<count;i++){
+    const dot=document.createElement('i');
+    dot.style.setProperty('--angle',`${i*360/count}deg`);
+    dot.style.setProperty('--distance',`${75+Math.random()*190}px`);
+    dot.style.setProperty('--delay',`${Math.random()*.28}s`);
+    particles.appendChild(dot);
+  }
+  stage.appendChild(effect);
+  setTimeout(()=>effect.remove(),2100);
 }
 
 function formatMoneyParts(amount){const units=["","만","억","조","경","해","자","양","구","간","정","재","극"];let n=toMoneyInt(amount);if(n<0n)n=-n;const parts=[];let i=0;while(n>0n&&i<units.length){const r=n%10000n;if(r>0n)parts.unshift(r.toLocaleString("ko-KR")+units[i]);n/=10000n;i++;}return parts.slice(0,2);}
@@ -529,52 +631,40 @@ function syncActionButtons(){
   const warpSaleLocked=Math.max(0,Number(state.runData.warpSaleLock)||0)>0;
   if(sb){sb.disabled=actionLocked||l===0||warpSaleLocked;sb.textContent='판매하기';}
   if(ab){
-    const auctionAvailable=l>=10;
+    const auctionAvailable=l>0;
     ab.disabled=actionLocked||!auctionAvailable||warpSaleLocked;
-    ab.textContent=l<10?'🎯 경매하기 · 10단계 해금':'🎯 경매하기';
+    ab.textContent='경매하기';
   }
   const ai=document.getElementById('auctionInfo');
   if(ai){
     const auctionPower=activeResearchPower('recoveryCatalyst',state.runData),auctionBoost=Math.round(auctionPower*2);
-    if(l<10) ai.textContent='10단계부터 사용 가능 · 낙찰 환급률에 따라 판매 금액이 결정됩니다.';
+    if(l===0) ai.textContent='강화한 냄새가 있으면 어느 단계에서든 경매할 수 있습니다.';
     else if(warpSaleLocked) ai.textContent=`워프 후 강화 시도를 ${Math.max(0,Number(state.runData.warpSaleLock)||0)}회 더 해야 경매할 수 있습니다.`;
-    else ai.innerHTML=`10~55단계 사용 가능 · 랜덤 낙찰 환급률${auctionBoost?` · <b>💹 연구소 +${auctionBoost}%p</b>`:''}`;
+    else ai.innerHTML=`단계 제한 없음 · 랜덤 낙찰 환급률${auctionBoost?` · <b>💹 연구소 +${auctionBoost}%p</b>`:''}`;
   }
   if(bb){
-    const available=l>=20&&l<=45;
+    const available=l>=35&&l<=48;
     bb.disabled=actionLocked||!available;
-    bb.textContent=l<20?'☠️ 광폭 강화 · 20단계 해금':l>45?'☠️ 광폭 강화 · 20~45단계 전용':`☠️ 광폭 강화 · ${formatGold(playerEnhanceCost('berserk'))}`;
+    bb.textContent=l<35?'광폭 강화':l>48?'광폭 강화':`광폭 강화`; 
   }
   const bi=document.getElementById('berserkInfo');
   if(bi){
     bi.classList.remove('hidden');
-    if(l<20) bi.textContent='20단계부터 사용 가능 · 성공 시 +2~6단계 랜덤 상승';
-    else if(l>45) bi.textContent='20~45단계에서만 사용 가능 · 성공 시 +2~6단계 랜덤 상승';
+    if(l<35) bi.textContent='35단계부터 사용 가능 · 성공 시 +2~5단계 랜덤 상승';
+    else if(l>48) bi.textContent='35~48단계에서만 사용 가능 · 성공 시 +2~5단계 랜덤 상승';
     else{
       const raw=PROB[String(l)]||[8,40,47,5];
       const bp=effectiveProbabilities(raw,{mode:'berserk'}),berserkAmp=activeResearchPower('berserkAmplifier',state.runData),ampChance=Math.min(100,Math.round(berserkAmp*6));
-      bi.innerHTML=`<b class="berserk-success-rate">성공 ${bp[0]}%</b> · <b class="berserk-destroy-rate">파괴 ${bp[2]}%</b> · 성공 시 <strong>+2~6단계 랜덤 상승</strong>${ampChance?` · <b class="berserk-amp-rate">☢️ 추가 +1 ${ampChance}%</b>`:''}`;
+      bi.innerHTML=`<b class="berserk-success-rate">성공 ${bp[0]}%</b> · <b class="berserk-destroy-rate">파괴 ${bp[2]}%</b> · 성공 시 <strong>+2~5단계 랜덤 상승</strong>${ampChance?` · <b class="berserk-amp-rate">☢️ 추가 +1 ${ampChance}%</b>`:''}`;
     }
   }
   const quickBuy=document.getElementById('quickShieldBuyBtn');
-  if(quickBuy)quickBuy.disabled=actionLocked||level()<15||shield()>=SHIELD_MAX||money()<shieldMoneyCost(level());
+  if(quickBuy)quickBuy.disabled=actionLocked||level()<30||shield()>=SHIELD_MAX||money()<shieldMoneyCost(level());
   const quickPointBuy=document.getElementById('quickShieldPointBuyBtn');
-  if(quickPointBuy)quickPointBuy.disabled=actionLocked||level()<15||shield()>=SHIELD_MAX||state.points<shieldPointCost(level());
+  if(quickPointBuy)quickPointBuy.disabled=actionLocked||level()<30||shield()>=SHIELD_MAX||state.points<shieldPointCost(level());
   document.querySelectorAll("[data-modal]").forEach(b=>b.disabled=actionLocked);
-  document.querySelectorAll("[data-game-view]").forEach(b=>{b.disabled=actionLocked||(b.dataset.gameView==='lab'&&level()>=52);});
+  document.querySelectorAll("[data-game-view]").forEach(b=>{b.disabled=actionLocked||(b.dataset.gameView==='lab'&&level()>=51);});
   const reset=document.getElementById("resetBtn");if(reset)reset.disabled=actionLocked;
-}
-function ensureAudio(){ return null; }function tone(){}function noiseHit(){}function playSound(){}function vibrate(){}
-function feedbackForStatus(status, forcedColor=null){
-  if(motionPreset()==='low'||graphicsPreset()==='low')return;
-  const color=forcedColor||RESULT_PARTICLE_COLORS[status]||'#ffffff';
-  const black=color.toLowerCase()==='#050505'||color.toLowerCase()==='#000000';
-  if(status==='CRITICAL')spawnEnhanceBurst(color,112,.19,.068,.92,black?'normal':'add');
-  else if(status==='DESTROYED')spawnEnhanceBurst(color,150,.23,.078,1.08,black?'normal':'add');
-  else if(status==='SHIELD_SAVED')spawnEnhanceBurst(color,92,.15,.064,.84,black?'normal':'add');
-  else if(status==='FAILED')spawnEnhanceBurst(color,72,.13,.058,.76,black?'normal':'add');
-  else if(status==='HOLD')spawnEnhanceBurst(color,58,.10,.054,.70,black?'normal':'add');
-  else spawnEnhanceBurst(color,86,.15,.060,.82,black?'normal':'add');
 }
 
 
@@ -601,15 +691,9 @@ window.addEventListener('keydown',e=>{
     toggleDevMode();
   }
 });
-function updateFeedbackControls(){}function bindFeedbackControls(){}
 function rewardPoints(lvl,multiplier=1){const r=Math.max(0,Math.round(pointReward(lvl)*multiplier*stagePointMultiplier()));state.points+=r;state.pointsEarnedTotal+=r;state.lastPointReward=r;}
-function registerEnhanceSuccess(d){const prev=d.combo||0;d.combo=prev+1;d.best_combo=Math.max(d.best_combo||0,d.combo);const crossed=[2,3,5,7,10,15].find(t=>prev<t&&d.combo>=t);if(crossed)d.last_combo_milestone=crossed;return comboMultiplier(d.combo);}
-function registerEnhanceFailure(d){
-  const lv=activeResearchPower('resale',d),chance=lv*.14;
-  const canPreserve=d.status!=='DESTROYED'&&(Number(d.combo)||0)>0;
-  if(canPreserve&&chance>0&&Math.random()<chance){d._comboPreserved=true;return true;}
-  d._comboPreserved=false;resetCombo(d);return false;
-}
+function registerEnhanceSuccess(d){d.combo=(d.combo||0)+1;d.best_combo=Math.max(d.best_combo||0,d.combo);delete d.last_combo_milestone;return 1;}
+function registerEnhanceFailure(d){resetCombo(d);return false;}
 function unlockReachedWarps(d=state.runData){for(const w of WARP_LEVELS)if(d.max_level>=w||d.level>=w)d.unlocked_warps[w]=true;}
 
 function runPostEnhanceFlow(prevLvl,newLvl,done=()=>{}){
@@ -618,14 +702,16 @@ function runPostEnhanceFlow(prevLvl,newLvl,done=()=>{}){
 function runMilestoneOnly(prevLvl,newLvl,done=()=>{}){done();}
 
 function pruneCardParticles(){
-  const box=document.getElementById('cardParticles');if(!box)return;
-  const gp=graphicsPreset();
-  const cap=gp==='low'?0:gp==='medium'?(JION_PERF.mobile?14:36):(JION_PERF.lowPower?20:(JION_PERF.mobile?36:120));
-  while(box.childElementCount>cap)box.firstElementChild?.remove();
+  const box=document.getElementById('cardParticles');
+  if(box){
+    const gp=graphicsPreset();
+    const cap=gp==='low'?0:gp==='medium'?(JION_PERF.mobile?14:36):(JION_PERF.lowPower?20:(JION_PERF.mobile?36:120));
+    while(box.childElementCount>cap)box.firstElementChild?.remove();
+  }
 }
 function cleanupTransientEffects(){
   clearDestroySnapshot();
-  document.querySelectorAll('.berserk-roulette-overlay,.auction-roulette-overlay,.card-draw-overlay,.frenzy-event-overlay,.result-fx-layer,.destruction-shard,.destruction-void-ring').forEach(e=>e.remove());
+  document.querySelectorAll('.berserk-roulette-overlay,.auction-roulette-overlay,.frenzy-event-overlay,.result-fx-layer,.destruction-void-ring').forEach(e=>e.remove());
   pruneCardParticles();
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pruneCardParticles();});
@@ -634,7 +720,6 @@ window.addEventListener('pagehide',()=>{pruneCardParticles();},{passive:true});
 function showBerserkRoulette(finalGain,done=()=>{}){
   const gain=Math.max(2,Math.min(6,Number(finalGain)||2));
   const motion=motionPreset();
-  if(motion==='low'){if(typeof done==='function')requestAnimationFrame(done);return;}
   document.querySelectorAll('.berserk-roulette-overlay').forEach(e=>e.remove());
   const overlay=document.createElement('div');
   overlay.className='berserk-roulette-overlay';
@@ -649,20 +734,21 @@ function showBerserkRoulette(finalGain,done=()=>{}){
   requestAnimationFrame(()=>overlay.classList.add('show'));
   const value=overlay.querySelector('#berserkRouletteValue'),result=overlay.querySelector('.berserk-roulette-result'),box=overlay.querySelector('.berserk-roulette-box');
   let tick=0;const sequence=[];
-  for(let i=0;i<(motion==='medium'?8:20);i++)sequence.push(2+((i*3+gain*2+i*i)%5));
+  const tickCount=motion==='high'?5:motion==='medium'?8:20;
+  for(let i=0;i<tickCount;i++)sequence.push(2+((i*3+gain*2+i*i)%5));
   sequence.push(gain);
   const step=()=>{
     if(!overlay.isConnected)return;
     const v=sequence[tick];value.textContent=`+${v}`;
     gsap.fromTo(value,{scale:.74,y:-14,opacity:.45,rotationX:-55},{scale:1,y:0,opacity:1,rotationX:0,duration:.075,ease:'power3.out'});
-    if(tick<sequence.length-1){tick++;setTimeout(step,(motion==='medium'?35:55)+tick*(motion==='medium'?3:7));return;}
+    if(tick<sequence.length-1){tick++;const baseDelay=motion==='high'?20:motion==='medium'?35:55,stepDelay=motion==='high'?2:motion==='medium'?3:7;setTimeout(step,baseDelay+tick*stepDelay);return;}
     overlay.classList.add('locked');result.textContent=`☠ BERSERK +${gain}`;
     cardBurst('#ef4444',gain===6?170:120,gain===6?320:235);impactFlash(gain===6?.68:.38);
     gsap.fromTo(box,{scale:.94},{scale:gain===6?1.09:1.05,duration:.14,ease:'power4.out',yoyo:true,repeat:1});
     gsap.fromTo(value,{scale:1},{scale:gain===6?1.36:1.20,duration:.16,ease:'back.out(2.4)',yoyo:true,repeat:1});
-    setTimeout(()=>{overlay.classList.remove('show');setTimeout(()=>{overlay.remove();done();},motion==='medium'?120:210);},motion==='medium'?260:(gain===6?760:580));
+    setTimeout(()=>{overlay.classList.remove('show');setTimeout(()=>{overlay.remove();done();},motion==='high'?85:motion==='medium'?120:210);},motion==='high'?190:motion==='medium'?260:(gain===6?760:580));
   };
-  setTimeout(step,motion==='medium'?70:150);
+  setTimeout(step,motion==='high'?25:motion==='medium'?70:150);
 }
 
 
@@ -673,9 +759,14 @@ function clearDestroySnapshot(){
   try{pendingDestroySnapshot.layer?.remove();}catch(e){}
   pendingDestroySnapshot=null;
 }
+function removeCloneIds(root){
+  if(root?.id)root.removeAttribute('id');
+  root?.querySelectorAll?.('[id]').forEach(el=>el.removeAttribute('id'));
+  root?.querySelectorAll?.('[aria-live]').forEach(el=>el.removeAttribute('aria-live'));
+}
 function captureDestroySnapshot(){
   clearDestroySnapshot();
-  if(motionPreset()==='low'||graphicsPreset()==='low')return null;
+  if(graphicsPreset()==='low')return null;
   const scene=document.getElementById('enhanceCardScene');
   const card=document.getElementById('enhanceCard');
   const art=card?.querySelector('.card-art');
@@ -689,8 +780,7 @@ function captureDestroySnapshot(){
   layer.style.width=`${ar.width}px`;
   layer.style.height=`${ar.height}px`;
   const clone=art.cloneNode(true);
-  clone.removeAttribute('id');
-  clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+  removeCloneIds(clone);
   clone.classList.add('destroy-visual-card','destroy-art-only');
   layer.appendChild(clone);
   scene.appendChild(layer);
@@ -780,20 +870,18 @@ function playDestroyedCardSequence(actualCard,glow,finish,particleColor,commitVi
   if(glow)gsap.fromTo(glow,{scale:.8,opacity:.08},{scale:2.2,opacity:.65,duration:.16,yoyo:true,repeat:1,ease:'power4.out'});
 }
 
-function showCardDrawReveal(lvl,done=()=>{}){
-  // 신규 최고 단계 카드 획득 연출 제거: 후속 강화 흐름을 즉시 계속한다.
-  done();
-}
-
 function showFrenzyEventOverlay(event,done=()=>{}){
-  const motion=motionPreset();
-  if(!event||motion==='low'){done();return;}
-  document.querySelectorAll('.frenzy-event-overlay').forEach(e=>e.remove());
-  const overlay=document.createElement('div');overlay.className='frenzy-event-overlay';
-  overlay.innerHTML=`<div class="frenzy-event-card"><small>🔥 ODOR FRENZY EVENT</small><h2>${event.label}</h2><p>${event.desc}</p><div>${event.instant?'INSTANT EVENT':`${event.turns||0} ENHANCE CHARGES`}</div></div>`;
-  document.body.appendChild(overlay);requestAnimationFrame(()=>overlay.classList.add('show'));
-  const delay=motion==='medium'?(JION_PERF.mobile?420:560):(JION_PERF.mobile?650:820);
-  setTimeout(()=>{overlay.classList.remove('show');setTimeout(()=>{overlay.remove();done();},140);},delay);
+  // No full-screen interruption: the persistent island carries the frenzy announcement.
+  if(event){
+    const banner=document.getElementById('odorFrenzyBanner');
+    if(banner){
+      banner.classList.remove('frenzy-banner-pop');
+      void banner.offsetWidth; // restart only the short, non-blocking border glow
+      banner.classList.add('frenzy-banner-pop');
+      setTimeout(()=>banner.classList.remove('frenzy-banner-pop'),650);
+    }
+  }
+  done();
 }
 
 let finalHoldAuthorized=false;
@@ -801,13 +889,14 @@ function enhance(mode="normal"){
   if(actionLocked)return;
   cleanupTransientEffects();
   const d=state.runData,curr=d.level;
+  autoLowerMotionForStage(curr);
   if(curr===MAX_LEVEL-1&&mode==='normal'&&!finalHoldAuthorized){showToast('54→55 강화는 강화하기 버튼을 끝까지 꾹 눌러야 합니다.');return;}
-  if(mode==='berserk'&&(curr<20||curr>45)){showToast('☠️ 광폭 강화는 20~45단계에서만 사용할 수 있습니다.');return;}
+  if(mode==='berserk'&&(curr<35||curr>48)){showToast('광폭 강화는 35단계부터 해금되며 35~48단계에서 사용할 수 있습니다.');return;}
   const fullCost=effectiveEnhanceCost(mode,d),cost=fullCost;
   const paidAttempt=fullCost>0n,warpBoostAtStart=Math.max(0,Number(d.warpBoostLevel)||0);
   if(curr>=MAX_LEVEL){render();return;}
   const cash=money();if(cash<cost){d.status="NOT_ENOUGH_MONEY";showToast("강화 비용 부족!");render();return;}
-  const prevMax=Number(d.max_level)||0,frenzyEventBefore=currentFrenzyEvent(d)?{...currentFrenzyEvent(d)}:null;
+  const frenzyEventBefore=currentFrenzyEvent(d)?{...currentFrenzyEvent(d)}:null;
   setActionLocked(true);finalHoldAuthorized=false;setMoney(cash-cost);
   d.prev_level=curr;state.enhanceAttempts++;
   if(Number(d.warpSaleLock)>0)d.warpSaleLock=Math.max(0,Number(d.warpSaleLock)-1);
@@ -816,7 +905,7 @@ function enhance(mode="normal"){
   const successResult=(baseAdd=1,status="SUCCESS",isCritical=false)=>{
     let add=baseAdd;
     if(mode==='berserk'){
-      add=2+Math.floor(Math.random()*5);
+      add=2+Math.floor(Math.random()*4);
       const berserkAmp=activeResearchPower('berserkAmplifier',d);
       if(berserkAmp>0&&Math.random()<Math.min(1,berserkAmp*.06)&&d.level+add<MAX_LEVEL){add+=1;appendAuxEffect('☢️ 광폭 증폭 · 추가 +1단계');}
       berserkGain=add;appendAuxEffect(`☠️ 광폭 +${add}단계`);
@@ -828,8 +917,8 @@ function enhance(mode="normal"){
     }
     d.level=Math.min(MAX_LEVEL,d.level+add);d.status=status;d.max_level=Math.max(d.max_level,d.level);state.enhanceSuccesses++;if(isCritical)state.criticalCount++;
     let mult=registerEnhanceSuccess(d);
-    if(d.last_combo_milestone){appendAuxEffect(`🔥 ${comboTierMeta(d.combo).name} 해금 · ${comboEffectText(d.combo)}`);delete d.last_combo_milestone;}
     rewardPoints(d.level,mult);
+    updateTearAfterEnhance(d.status,d,isCritical);
   };
   const destroyResult=()=>{
     if(d.shield>0){
@@ -839,7 +928,7 @@ function enhance(mode="normal"){
       if(preserved)appendAuxEffect('🧪 실드 순환 · 방지권 보존');
       appendAuxEffect(mode==='berserk'?'☠️ 광폭 폭발 · 방지권 생존':'');
     }
-    else{d.level=0;d.status="DESTROYED";state.enhanceFailures++;state.destroyCount++;appendAuxEffect(mode==='berserk'?'☠️ 광폭 강화 폭발':'');}
+    else{d.level=0;d.status="DESTROYED";state.enhanceFailures++;state.destroyCount++;appendAuxEffect(mode==='berserk'?'광폭 강화 폭발':'');}
     if(registerEnhanceFailure(d))appendAuxEffect('🔗 연쇄 보존 · 콤보 유지');
   };
   if(devMode){
@@ -868,26 +957,29 @@ function enhance(mode="normal"){
   }
   if(paidAttempt&&warpBoostAtStart>0)d.warpBoostLevel=0;
   if(d.level===0){d.warpBoostLevel=0;d.warpSaleLock=0;}
+  autoLowerMotionForStage(d.level,curr);
   const frenzyEvent=updateFrenzyAfterEnhance(d.status,frenzyEventBefore,d);if(frenzyEvent)appendAuxEffect(`🔥 ${frenzyEvent.label.replace(/^\S+\s*/,'')}`);
   unlockReachedWarps(d);
-  const newLvl=d.level,isFinalAttempt=curr===MAX_LEVEL-1,newCardUnlocked=newLvl>prevMax;
+  const newLvl=d.level,isFinalAttempt=curr===MAX_LEVEL-1;
   const finalCleared=isFinalAttempt&&newLvl===MAX_LEVEL&&['SUCCESS','CRITICAL'].includes(d.status);
   if(finalCleared){state.finalClears=Math.max(0,Number(state.finalClears)||0)+1;}
   if(d.status==="DESTROYED"&&!isFinalAttempt)captureDestroySnapshot();save();
   const normalPost=()=>{
     const done=()=>{
-      const afterEvent=()=>{const afterCard=()=>runPostEnhanceFlow(curr,newLvl);if(newCardUnlocked&&!isFinalAttempt)showCardDrawReveal(newLvl,afterCard);else afterCard();};
+      const afterEvent=()=>runPostEnhanceFlow(curr,newLvl);
       if(frenzyEvent)showFrenzyEventOverlay(frenzyEvent,afterEvent);else afterEvent();
     };
-    if(isFinalAttempt&&mode==='normal') animateFinal54To55(d.status,done);
-    else animateResult(d.status,done);
+    if(isFinalAttempt&&mode==='normal'){
+      finalCinematicActive=true;
+      animateFinal54To55(d.status,()=>{finalCinematicActive=false;done();});
+    }else animateResult(d.status,done);
   };
   if(mode==='berserk'&&berserkGain>0)showBerserkRoulette(berserkGain,normalPost);else normalPost();
 }
 function finishNormalSale(l,price){
   const d=state.runData;
   setMoney(money()+price);state.sellCount++;
-  d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);
+  d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);autoLowerMotionForStage(0,l);
   save();render();setActionLocked(false);
   showToast(`💰 ${l}단계 판매 완료! +${formatGold(price)}`);
 }
@@ -914,7 +1006,7 @@ function showSellAnimation(l,price,done=()=>{}){
     result?.classList.remove('sell-result-live');
     done();
   };
-  if(motionMode==='low'||JION_PERF.reduced){
+  if(JION_PERF.reduced){
     cardBurst('#facc15',12,95);impactFlash(.12);
     card.animate?.([{transform:'scale(1)'},{transform:'scale(1.025)'},{transform:'scale(1)'}],{duration:260,easing:'ease-out'});
     setTimeout(finish,280);return;
@@ -923,14 +1015,14 @@ function showSellAnimation(l,price,done=()=>{}){
   const tl=gsap.timeline({defaults:{overwrite:'auto'},onComplete:finish});
   tl.to(motion,{y:7,scale:.982,rotation:-.7,duration:.09,ease:'power2.in'})
     .add(()=>{
-      cardBurst('#facc15',motionMode==='medium'?34:54,170);
+      cardBurst('#facc15',motionMode==='high'?24:motionMode==='medium'?34:54,170);
       impactFlash(.25);
       if(glow)gsap.fromTo(glow,{scale:.80,opacity:.10,background:'#facc15'},{scale:1.58,opacity:.48,duration:.20,yoyo:true,repeat:1,ease:'power2.out'});
       if(priceEl)gsap.fromTo(priceEl,{scale:.98,filter:'brightness(1)'},{scale:1.18,filter:'brightness(1.35)',duration:.14,yoyo:true,repeat:1,ease:'power2.out'});
     })
     .to(motion,{y:-18,scale:1.045,rotation:.8,duration:.16,ease:'back.out(1.7)'})
     .add(()=>{
-      cardBurst('#fde68a',motionMode==='medium'?14:24,105);
+      cardBurst('#fde68a',motionMode==='high'?10:motionMode==='medium'?14:24,105);
       impactFlash(.10);
     },'-=.05')
     .to(motion,{y:3,scale:.998,rotation:-.25,duration:.10,ease:'power2.inOut'})
@@ -954,13 +1046,13 @@ function finishAuctionSale(l,price,pct){
   const d=state.runData;
   setMoney(money()+price);
   state.auctionCount=Math.max(0,Number(state.auctionCount)||0)+1;
-  d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);
+  d.prev_level=l;d.level=0;d.status="READY";d.last_aux_effect="";d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);autoLowerMotionForStage(0,l);
   save();render();setActionLocked(false);
   showToast(`${l}단계 경매 낙찰 · ${pct}% 환급! +${formatGold(price)}`);
 }
 function showAuctionRoulette(l,basePrice,basePct,pct,price,done=()=>{}){
   const motion=motionPreset();
-  if(motion==='low'||JION_PERF.reduced){requestAnimationFrame(done);return;}
+  if(JION_PERF.reduced){requestAnimationFrame(done);return;}
   document.querySelectorAll('.auction-roulette-overlay').forEach(e=>e.remove());
   const resultIndex=Math.max(0,AUCTION_MULTIPLIERS.indexOf(basePct));
   const overlay=document.createElement('div');
@@ -988,13 +1080,13 @@ function showAuctionRoulette(l,basePrice,basePct,pct,price,done=()=>{}){
     overlay.classList.add('show');
     overlay.classList.add('scanning');
     requestAnimationFrame(()=>{
-      const spins=motion==='medium'?5:9;
+      const spins=motion==='high'?3:motion==='medium'?5:9;
       const target=spins*360-resultIndex*60;
-      wheel.style.transitionDuration=motion==='medium'?'1.65s':'3.15s';
+      wheel.style.transitionDuration=motion==='high'?'1.05s':motion==='medium'?'1.65s':'3.15s';
       wheel.style.transform=`rotate(${target}deg)`;
     });
   });
-  const spinMs=motion==='medium'?1730:3260;
+  const spinMs=motion==='high'?1130:motion==='medium'?1730:3260;
   setTimeout(()=>{
     if(!overlay.isConnected){done();return;}
     overlay.classList.remove('scanning');
@@ -1009,13 +1101,13 @@ function showAuctionRoulette(l,basePrice,basePct,pct,price,done=()=>{}){
     cardBurst(burstColor,pct>=150?210:135,pct>=150?380:280);impactFlash(pct>=150?.68:.42);document.body.classList.add('auction-screen-hit');setTimeout(()=>document.body.classList.remove('auction-screen-hit'),360);
     setTimeout(()=>{
       overlay.classList.remove('show');
-      setTimeout(()=>{overlay.remove();done();},motion==='medium'?120:190);
-    },motion==='medium'?720:1050);
+      setTimeout(()=>{overlay.remove();done();},motion==='high'?80:motion==='medium'?120:190);
+    },motion==='high'?410:motion==='medium'?720:1050);
   },spinMs);
 }
 function auction(){
   if(actionLocked)return;
-  const d=state.runData,l=d.level;if(l<10){showToast('🎯 경매는 10단계부터 사용할 수 있습니다.');return;}
+  const d=state.runData,l=d.level;if(l<=0){showToast('🎯 경매할 냄새가 없습니다. 먼저 강화해 주세요.');return;}
   if(Number(d.warpSaleLock)>0){showToast(`🚀 워프 후 강화 시도를 ${Number(d.warpSaleLock)}회 더 해야 경매할 수 있습니다.`);return;}
   const basePrice=dbPrice(l);
   const basePct=AUCTION_MULTIPLIERS[Math.floor(Math.random()*AUCTION_MULTIPLIERS.length)];
@@ -1063,43 +1155,72 @@ function render(){
   const mainStage=document.getElementById("threeWrap"),actionGrid=document.getElementById("mainActionGrid");
   if(mainStage)mainStage.classList.remove("hidden");if(actionGrid)actionGrid.classList.remove("hidden");
   const comboLabel=document.getElementById('comboLabel'),auxLabel=document.getElementById('auxLabel');
-  if(comboLabel)comboLabel.textContent='🔥 연속 콤보';if(auxLabel)auxLabel.textContent='🔬 연구 효과';
+  if(comboLabel)comboLabel.textContent='콤보';if(auxLabel)auxLabel.textContent='🔬 연구 효과';
   document.getElementById("money").textContent=formatGoldCompact(money());document.getElementById("points").textContent=state.points.toLocaleString("ko-KR")+"P";document.getElementById("shield").textContent=shield()+` / ${SHIELD_MAX}개`;
+  const shieldMoneyPrice=document.getElementById('quickShieldMoneyPrice');if(shieldMoneyPrice)shieldMoneyPrice.textContent=formatGoldCompact(shieldMoneyCost(l))+'원';
+  const shieldPointPrice=document.getElementById('quickShieldPointPrice');if(shieldPointPrice)shieldPointPrice.textContent=shieldPointCost(l).toLocaleString('ko-KR')+'P';
   const quickShieldBtn=document.getElementById('quickShieldBuyBtn');
   const quickShieldPointBtn=document.getElementById('quickShieldPointBuyBtn');
   if(quickShieldPointBtn){
     const costP=shieldPointCost(l);
-    quickShieldPointBtn.disabled=actionLocked||l<15||shield()>=SHIELD_MAX||state.points<costP;
-    quickShieldPointBtn.title=l<15?'15단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`포인트로 즉시 구매: ${costP.toLocaleString('ko-KR')}P`;
+    quickShieldPointBtn.disabled=actionLocked||l<30||shield()>=SHIELD_MAX||state.points<costP;
+    quickShieldPointBtn.title=l<30?'30단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`포인트로 즉시 구매: ${costP.toLocaleString('ko-KR')}P`;
   }
   if(quickShieldBtn){
-    const quickCost=shieldMoneyCost(l),allowed=l>=15&&shield()<SHIELD_MAX&&money()>=quickCost;
+    const quickCost=shieldMoneyCost(l),allowed=l>=30&&shield()<SHIELD_MAX&&money()>=quickCost;
     quickShieldBtn.disabled=actionLocked||!allowed;
-    quickShieldBtn.title=l<15?'15단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`돈으로 즉시 구매: ${formatGold(quickCost)}`;
+    quickShieldBtn.title=l<30?'30단계부터 구매할 수 있습니다.':shield()>=SHIELD_MAX?'방지권 최대 보유 수량입니다.':`돈으로 즉시 구매: ${formatGold(quickCost)}`;
     const hint=document.getElementById('shieldQuickBuyHint');
-    if(hint)hint.textContent=l<15?'15단계부터 구매 가능':`💰 ${formatGoldCompact(quickCost)} / ⭐ ${shieldPointCost(l).toLocaleString('ko-KR')}P`;
+    if(hint)hint.textContent=l<30?'30단계부터 구매 가능':shield()>=SHIELD_MAX?'방지권 최대 보유': '빠른 구매 · 버튼 옆 가격 확인';
   }
-  const labTab=document.querySelector('[data-game-view="lab"]');if(labTab){const closed=level()>=52;labTab.disabled=closed;labTab.classList.toggle('system-locked',closed);labTab.textContent=closed?'🔒 연구소':'연구소';}
-  const frenzyMeter=document.getElementById('frenzyMeter'),frenzyFill=document.getElementById('frenzyFill'),frenzyValue=document.getElementById('frenzyValue'),frenzyHint=document.getElementById('frenzyHint'),activeFrenzy=currentFrenzyEvent(sd);
+  const labTab=document.querySelector('[data-game-view="lab"]');if(labTab){const closed=level()>=51;labTab.disabled=closed;labTab.classList.toggle('system-locked',closed);labTab.textContent=closed?'🔒 연구소':'연구소';}
+  const frenzyMeter=document.getElementById('frenzyMeter'),frenzyFill=document.getElementById('frenzyFill'),frenzyValue=document.getElementById('frenzyValue'),frenzyHint=document.getElementById('frenzyHint'),frenzyState=document.getElementById('frenzyState'),frenzyMeta=document.getElementById('frenzyMeta'),activeFrenzy=currentFrenzyEvent(sd);
   const frenzyPct=Math.max(0,Math.min(FRENZY_MAX,Number(sd.frenzyGauge)||0));
   const frenzyClosed=level()>=50;
   if(frenzyClosed){sd.frenzyGauge=0;sd.frenzyEvent=null;}
   if(frenzyFill)frenzyFill.style.width=(frenzyClosed?0:frenzyPct)+'%';
   if(frenzyValue)frenzyValue.textContent=frenzyClosed?'OFF':activeFrenzy?`ACTIVE · ${activeFrenzy.turns}회`:`${Math.round(frenzyPct)}%`;
-  if(frenzyHint)frenzyHint.textContent=frenzyClosed?'50단계부터 냄새 폭주 종료':activeFrenzy?`${activeFrenzy.label.replace(/^\S+\s*/,'')} · ${activeFrenzy.desc}`:'실패·유지·파괴 시 충전 · 100%에서 랜덤 이벤트';
-  if(frenzyMeter){frenzyMeter.classList.toggle('active',!!activeFrenzy&&!frenzyClosed);frenzyMeter.classList.toggle('system-off',frenzyClosed);}document.body.classList.toggle('odor-frenzy-active',!!activeFrenzy&&!frenzyClosed);
-  const comboNow=sd.combo||0,comboEl=document.getElementById("combo"),comboBonus=document.getElementById("comboBonus"),comboFill=document.getElementById("comboFill"),comboMeter=document.getElementById("comboMeter"),comboMeta=comboTierMeta(comboNow);
-  if(comboEl)comboEl.textContent=comboNow>=15?`👑 MAX FEVER · ${comboNow}`:comboNow>=10?`⚡ OVER FEVER · ${comboNow}`:comboNow>=5?`🔥 ${comboMeta.name} · ${comboNow}`:`${comboNow} COMBO`;
-  if(comboBonus){comboBonus.textContent=comboEffectText(comboNow);comboBonus.classList.remove("hidden");}
-  if(comboFill){const span=Math.max(1,comboMeta.to-comboMeta.from),progress=comboMeta.next?Math.max(0,Math.min(100,((comboNow-comboMeta.from)/span)*100)):100;comboFill.style.width=`${progress}%`;}
-  if(comboMeter){comboMeter.dataset.comboTier=comboNow>=15?'max':comboNow>=10?'over':comboNow>=5?'fever':comboNow>=2?'chain':'ready';}
-  document.body.classList.toggle('combo-fever',comboNow>=5);document.body.classList.toggle('combo-over-fever',comboNow>=10);document.body.classList.toggle('combo-max-fever',comboNow>=15);document.body.classList.toggle("smell-frenzy",comboNow>=5);
-  const modBar=document.getElementById('runModifierBar');if(modBar){const tags=[];const ev=currentFrenzyEvent(sd);if(ev)tags.push(`🔥 ${ev.label.replace(/^\S+\s*/,'')} ${ev.turns}회`);if(Number(sd.warpBoostLevel)>0)tags.push(`🧭 워프 보정 · 다음 유료 강화 성공 +${(Number(sd.warpBoostLevel)*2.2).toFixed(1)}%p`);if(Number(sd.warpSaleLock)>0)tags.push(`🚀 워프 판매 잠금 · 강화 시도 ${2-Number(sd.warpSaleLock)}/2회`);modBar.innerHTML=tags.map(t=>`<span>${t}</span>`).join('');modBar.classList.toggle('hidden',!tags.length);}
-  const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount}개 적용`;if(activeHint){activeHint.textContent='보유 파츠 자유 장착';activeHint.classList.remove('hidden');}
+  if(frenzyState)frenzyState.textContent=frenzyClosed?'OFF':activeFrenzy?'ACTIVE':frenzyPct>=100?'READY':'CHARGE';
+  if(frenzyMeta)frenzyMeta.textContent=frenzyClosed?'시스템 종료':activeFrenzy?`${activeFrenzy.turns}회 남음`:'100%에서 발동';
+  if(frenzyHint)frenzyHint.textContent=frenzyClosed?'50단계부터 지냄 폭주 종료':activeFrenzy?`${activeFrenzy.label.replace(/^\S+\s*/,'')} · ${activeFrenzy.desc}`:'실패·유지·파괴 시 충전 · 100%에서 랜덤 이벤트';
+  if(frenzyMeter){frenzyMeter.classList.toggle('active',!!activeFrenzy&&!frenzyClosed);frenzyMeter.classList.toggle('system-off',frenzyClosed);}
+  document.body.classList.toggle('odor-frenzy-active',!!activeFrenzy&&!frenzyClosed);
+  const frenzyBanner=document.getElementById('odorFrenzyBanner');
+  const frenzyBannerTurns=document.getElementById('odorFrenzyTurns');
+  const frenzyBannerBonus=document.getElementById('odorFrenzyBonus');
+  const frenzyBannerFill=document.getElementById('odorFrenzyDurationFill');
+  if(frenzyBanner)frenzyBanner.classList.toggle('show',!!activeFrenzy&&!frenzyClosed);
+  if(frenzyBannerTurns)frenzyBannerTurns.textContent=activeFrenzy?`${activeFrenzy.turns}회`:'0회';
+  if(frenzyBannerBonus)frenzyBannerBonus.textContent=activeFrenzy?`${activeFrenzy.label} · ${activeFrenzy.desc}`:'랜덤 강화 효과 적용 중';
+  if(frenzyBannerFill)frenzyBannerFill.style.width=`${activeFrenzy?Math.round(activeFrenzy.turns/Math.max(1,activeFrenzy.maxTurns||activeFrenzy.turns)*100):0}%`;
+  const tearMeter=document.getElementById('tearMeter'),tearFill=document.getElementById('tearFill'),tearValue=document.getElementById('tearValue'),tearHint=document.getElementById('tearHint'),tearState=document.getElementById('tearState'),tearMeta=document.getElementById('tearMeta'),tearBtn=document.getElementById('tearFeverBtn');
+  const tearGauge=Math.max(0,Math.min(TEAR_MAX,Number(sd.tearGauge)||0)),tearActive=tearFeverActive(sd),tearRemaining=Math.ceil(tearFeverRemaining(sd)/1000);
+  if(tearFill)tearFill.style.width=(tearActive?100:tearGauge)+'%';
+  if(tearValue)tearValue.textContent=tearActive?`FEVER ${tearRemaining}s`:`${Math.round(tearGauge)}%`;
+  if(tearState)tearState.textContent=tearActive?'ACTIVE':tearGauge>=TEAR_MAX?'READY':'CHARGE';
+  if(tearMeta)tearMeta.textContent=tearActive?`${tearRemaining}초 남음`:tearGauge>=TEAR_MAX?'버튼을 눌러 발동':'100% 달성 후 발동';
+  if(tearHint){const bonus=activeResearchPower('tearCondenser',sd)*.15;tearHint.textContent=tearActive?'포인트×2 · 비용 -30% · 성공 +6%p · 파괴 -5%p · 크리티컬 +5%p':bonus>0?`성공 +${(2*(1+bonus)).toFixed(1)}% · 크리티컬 +${(4*(1+bonus)).toFixed(1)}% 충전 · 코어 적용`:'성공 +2% · 크리티컬 +4% 충전 | 20초 동안 5가지 혜택';}
+  if(tearMeter){tearMeter.classList.toggle('active',tearActive);tearMeter.classList.toggle('ready',!tearActive&&tearGauge>=TEAR_MAX);}
+  if(tearBtn){
+    tearBtn.disabled=tearActive;
+    tearBtn.classList.toggle('is-ready',!tearActive&&tearGauge>=TEAR_MAX);
+    tearBtn.classList.toggle('is-charging',!tearActive&&tearGauge<TEAR_MAX);
+    tearBtn.setAttribute('aria-label',tearActive?`피버타임 진행 중 ${tearRemaining}초`:tearGauge>=TEAR_MAX?'지냄 눈물 피버타임 발동':`지냄 눈물 ${Math.round(tearGauge)}퍼센트 충전 중, 눌러서 안내 보기`);
+    tearBtn.textContent=tearActive?`💜 피버타임 진행 중 · ${tearRemaining}s`:tearGauge>=TEAR_MAX?'💜 지금 피버타임 발동!':`💧 충전 중 · ${Math.round(tearGauge)} / 100%`;
+  }
+  document.body.classList.toggle('tear-fever-active',tearActive);
+  const banner=document.getElementById('tearFeverBanner');
+  const timerText=document.getElementById('tearFeverTimer');
+  const durationFill=document.getElementById('tearFeverDurationFill');
+  if(banner)banner.classList.toggle('show',tearActive);
+  if(timerText)timerText.textContent=`${tearRemaining}s`;
+  if(durationFill)durationFill.style.width=`${Math.max(0,tearFeverRemaining(sd)/TEAR_FEVER_DURATION*100)}%`;
+  syncTearFeverTicker();
+  const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount}개 적용`;if(activeHint){activeHint.textContent='강화한 코어 효과 자동 적용';activeHint.classList.remove('hidden');}
   const modeTitle=document.getElementById("modeTitle"),probTitle=document.querySelector(".prob-title"),probBox=document.getElementById("probBox"),nextReward=document.getElementById("nextReward");
   if(modeTitle){modeTitle.textContent="";modeTitle.classList.add("hidden");}
-  if(probTitle)probTitle.innerHTML=`📊 현재 강화 확률 (<span id="probLevel">${l}</span>단계)`;
-  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,{data:sd}),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboSuccessNow=comboSuccessBoost(sd.combo),comboProbNote=(comboGuardNow>0||comboSuccessNow>0)?`<div class="prob-aux combo-guard-note">🔥 콤보 효과${comboSuccessNow?` · 성공 +${comboSuccessNow}%p`:''}${comboGuardNow?` · 파괴 -${comboGuardNow}%p`:''}</div>`:'',labNotes=[],catalystLv=activeResearchPower('catalyst',sd),freezeLv=activeResearchPower('freezeMatrix',sd);if(catalystLv)labNotes.push(`🧬 성공 +${(catalystLv*.8).toFixed(1)}%p`);if(freezeLv)labNotes.push(`🧊 하락 ${Math.round(freezeLv*12)}% 유지 전환`);if(Number(sd.warpBoostLevel)>0)labNotes.push(`🧭 워프 보정 성공 +${(Number(sd.warpBoostLevel)*2.2).toFixed(1)}%p`);const auxProbNote=labNotes.length?`<div class="prob-aux">${labNotes.join(' · ')}</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
+  if(probTitle)probTitle.textContent='📊 현재 강화 확률';
+  const rawP=l>=MAX_LEVEL?[100,0,0,0]:(PROB[String(l)]||[8,40,47,5]),p=effectiveProbabilities(rawP,{data:sd}),comboGuardNow=comboDestroyProtection(sd.combo, rawP[2]),comboSuccessNow=comboSuccessBoost(sd.combo),comboProbNote=(comboGuardNow>0||comboSuccessNow>0)?`<div class="prob-aux combo-guard-note">🔥 콤보 효과${comboSuccessNow?` · 성공 +${comboSuccessNow}%p`:''}${comboGuardNow?` · 파괴 -${comboGuardNow}%p`:''}</div>`:'',labNotes=[],catalystLv=activeResearchPower('catalyst',sd),freezeLv=activeResearchPower('freezeMatrix',sd);if(catalystLv)labNotes.push(`🧬 성공 +${(catalystLv*.8).toFixed(1)}%p`);if(freezeLv)labNotes.push(`🧊 하락 ${Math.round(freezeLv*12)}% 유지 전환`);if(Number(sd.warpBoostLevel)>0)labNotes.push(`🧭 워프 보정 성공 +${(Number(sd.warpBoostLevel)*2.2).toFixed(1)}%p`);if(tearActive&&l<MAX_LEVEL)labNotes.push('💜 눈물 피버 · 성공 +6%p · 파괴 -5%p · 크리티컬 +5%p');const auxProbNote=labNotes.length?`<div class="prob-aux">${labNotes.join(' · ')}</div>`:"",critPct=Math.round(criticalRateFor(sd,l)*1000)/10,critCopy=l>=50?'✦ 50단계 이후 크리티컬 비활성':'✦ 성공 시 크리티컬 확률';
   if(probBox)probBox.innerHTML=`<div class="prob-row success-row"><span><i></i>성공</span><b class="success">${p[0]}%</b></div><div class="prob-row down-row"><span><i></i>하락</span><b class="down">${p[1]}%</b></div><div class="prob-row destroy-row"><span><i></i>파괴</span><b class="destroy">${p[2]}%</b></div><div class="prob-row hold-row"><span><i></i>유지</span><b class="hold">${p[3]}%</b></div><div class="prob-critical ${l>=50?'disabled-critical':''}">${critCopy} <b>${critPct}%</b></div><div class="prob-effect-slot" aria-label="적용 중인 강화 보정 효과">${comboProbNote}${auxProbNote}${(!comboProbNote&&!auxProbNote)?'<span class="prob-effect-empty">추가 보정 효과 없음</span>':''}</div>`;
   if(nextReward){nextReward.textContent="";nextReward.classList.add("hidden");}
   const sb=document.getElementById("sellBtn");if(sb)sb.textContent="판매하기";const ab=document.getElementById("auctionBtn");if(ab)ab.textContent="경매하기";syncActionButtons();renderSceneText();renderEnhanceCard();
@@ -1107,9 +1228,9 @@ function render(){
 function renderSceneText(){
   const d=data(),l=level(),status=state.runData.status,tier=Math.min(6,d.tier||1),main=document.getElementById("mainTitle");
   main.className="title-tier-"+tier;main.textContent=d.name;document.getElementById("descText").textContent=`"${d.desc}"`;
-  document.getElementById("priceText").textContent="예상 가치: "+formatGold(dbPrice(l));document.getElementById("pointText").textContent="획득 포인트: "+pointReward(l).toLocaleString("ko-KR")+"P";
+  document.getElementById("priceText").textContent="예상 가치: "+formatGold(dbPrice(l));document.getElementById("pointText").textContent="획득 포인트: "+Math.round(pointReward(l)*stagePointMultiplier(state.runData)).toLocaleString("ko-KR")+"P";
   document.getElementById("costText").textContent=l>=MAX_LEVEL?"강화 완료 · MAX STAGE 55":"필요 강화 비용: "+(playerEnhanceCost("normal")===0n?"무료":formatGold(playerEnhanceCost("normal")));
-  const st=document.getElementById("statusText"),labels={READY:"READY - 55단계를 향한 냄새 에너지가 집중됩니다",SUCCESS:"✨ COSMIC SUCCESS (강화 성공) ✨",CRITICAL:"⚡ COSMIC CRITICAL HIT!! (+2단계 이상 대성공) ⚡",SHIELD_SAVED:"🛡️ SHIELD PROTECTED! (파괴 방지권 발동) 🛡️",DESTROYED:"💥 ODOR CAPSULE BREACHED (캡슐 대폭발 붕괴!) 💥",FAILED:"🔻 FAILED (단계 하락) 🔻",HOLD:"🔒 HOLD (단계 유지) 🔒",NOT_ENOUGH_MONEY:"💰 강화 비용 부족"};
+  const st=document.getElementById("statusText"),labels={READY:"준비 완료 · 55단계를 향해 냄새 에너지를 모으세요",SUCCESS:"✨ 강화 성공 ✨",CRITICAL:"⚡ 크리티컬! 여러 단계 상승 ⚡",SHIELD_SAVED:"🛡️ 방지권 발동 · 파괴 방어",DESTROYED:"💥 캡슐 파괴",FAILED:"🔻 단계 하락",HOLD:"🔒 단계 유지",NOT_ENOUGH_MONEY:"💰 강화 비용 부족"};
   st.textContent=labels[status]||status;const colors={READY:"#38bdf8",SUCCESS:d.color,CRITICAL:"#fff",SHIELD_SAVED:"#60a5fa",DESTROYED:"#f00",FAILED:"#64748b",HOLD:"#94a3b8",NOT_ENOUGH_MONEY:"#f87171"};st.style.color=colors[status]||"#38bdf8";
   const shouldShake=l>=15||(l===MAX_LEVEL&&["SUCCESS","CRITICAL"].includes(status));["mainTitle","descText","priceText","pointText","costText"].forEach(id=>document.getElementById(id).classList.toggle("shaking-text",shouldShake));
 }
@@ -1128,16 +1249,17 @@ function renderEnhanceCard(){
   const stageSpec=stageDesignSpec(l);card.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';const art=document.getElementById('cardArt');if(art){art.dataset.level=String(l);art.dataset.milestone=stageSpec.milestone?String(stageSpec.milestone):'';renderCardDesign(art,l,d);updateOdorCapsuleVisual(art,l,d);}
   const bossOverlay=document.getElementById('bossStageOverlay'),bossBadge=document.getElementById('bossStageBadge'),bossCopy=document.getElementById('bossStageCopy'),bossInfo=MILESTONE_BOSS_COPY[stageSpec.milestone];
   if(bossOverlay&&bossBadge&&bossCopy){if(bossInfo){bossOverlay.classList.remove('hidden');bossBadge.textContent=bossInfo.badge;bossCopy.textContent=bossInfo.copy;}else{bossOverlay.classList.add('hidden');bossBadge.textContent='';bossCopy.textContent='';}}
-  document.getElementById('cardStageLabel').textContent=l+'단계'+(l===MAX_LEVEL?' • MAX':'');document.getElementById('cardName').textContent=d.name.replace(/^\d+단계\s*:\s*/,'');document.getElementById('cardDesc').textContent=d.desc;
-  document.getElementById('cardPrice').textContent=formatGold(dbPrice(l));document.getElementById('cardPoints').textContent=pointReward(l).toLocaleString('ko-KR')+'P';document.getElementById('cardCost').textContent=l>=MAX_LEVEL?'MAX':(playerEnhanceCost('normal')===0n?'무료':formatGold(playerEnhanceCost('normal')));
+  document.getElementById('cardStageLabel').textContent=l+'단계'+(l===MAX_LEVEL?' MAX':'');document.getElementById('cardName').textContent=d.name.replace(/^\d+단계\s*:\s*/,'');document.getElementById('cardDesc').textContent=d.desc;
+  document.getElementById('cardPrice').textContent=formatGold(dbPrice(l)*BigInt(stageSellPercent(state.runData))/100n);document.getElementById('cardPoints').textContent=Math.round(pointReward(l)*stagePointMultiplier(state.runData)).toLocaleString('ko-KR')+'P';document.getElementById('cardCost').textContent=l>=MAX_LEVEL?'MAX':(playerEnhanceCost('normal')===0n?'무료':formatGold(playerEnhanceCost('normal')));
   document.getElementById('cardSerial').textContent=`JION • CAPSULE • ${String(l).padStart(2,'0')}`;document.getElementById('cardTier').textContent='TIER '+['I','II','III','IV','V','VI'][Math.min(5,(d.tier||1)-1)];
   const status=state.runData.status,result=document.getElementById('cardResult');if(result)result.textContent='';
-  const scene=document.getElementById('enhanceCardScene');scene.style.setProperty('--glow',d.color);scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');if(status==='SUCCESS'||status==='CRITICAL')scene.classList.add(status==='CRITICAL'?'status-critical':'status-success');else if(status==='FAILED')scene.classList.add('status-failed');else if(status==='HOLD')scene.classList.add('status-hold');else if(status==='DESTROYED')scene.classList.add('status-destroyed');else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');if(result)result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
+  const scene=document.getElementById('enhanceCardScene');scene.style.setProperty('--glow',d.color);scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield');
+  if(status==='SUCCESS'||status==='CRITICAL')scene.classList.add(status==='CRITICAL'?'status-critical':'status-success');else if(status==='FAILED')scene.classList.add('status-failed');else if(status==='HOLD')scene.classList.add('status-hold');else if(status==='DESTROYED')scene.classList.add('status-destroyed');else if(status==='SHIELD_SAVED')scene.classList.add('status-shield');if(result)result.style.color=status==='DESTROYED'?'#ff5757':status==='FAILED'?'#cbd5e1':status==='CRITICAL'?'#fff':d.color;
 }
 function cardBurst(color='#ffffff', count=70, power=260){
   const box=document.getElementById('cardParticles'); if(!box)return;
   const gp=graphicsPreset(),mp=motionPreset();
-  if(gp==='low'||mp==='low'||JION_PERF.reduced){pruneCardParticles();return;}
+  if(gp==='low'||JION_PERF.reduced){pruneCardParticles();return;}
   const density=gp==='medium'?.42:1;
   const mobileCap=JION_PERF.lowPower?12:(gp==='medium'?16:28);
   const desktopCap=gp==='medium'?54:160;
@@ -1211,7 +1333,7 @@ const STAGE_ART_LIBRARY = {
 function stageDesignSpec(l){
   const visualLevel=l<=35?l:10+((l-36)%26),base=STAGE_ART_LIBRARY[Math.max(0,Math.min(35,visualLevel))]||STAGE_ART_LIBRARY[0];
   const spec={name:base.name,primary:base.primary,secondary:base.secondary,tertiary:base.tertiary,particles:Math.min(22,base.particles+(l>=36?3:0)),sigil:l>=36?`COSMIC • ${String(l).padStart(2,'0')}`:base.sigil,rune:l>=36?`C-${String(l).padStart(2,'0')}`:base.rune,milestone:[10,20,25,30,35,40,50,55].includes(l)?l:(base.milestone||0),special:base.special||'',rings:2+(l%4),orbits:3+(l%3),teeth:6+(l%4),rays:6+(l%6),blades:5+(l%3),fan:4+(l%5),shards:4+(l%5),seed:l+97};
-  if(l===40)spec.special='ascension';if(l===50)spec.special='overdrive';if(l===55)spec.special='transcendent';if(spec.milestone){spec.rings=Math.max(spec.rings,4);spec.shards=Math.max(spec.shards,6);}return spec;
+  if(l===40)spec.special='ascension';if(l===50)spec.special='overdrive';if(l===55){spec.name='Infinite Prism / Final JINAM';spec.primary='singularity';spec.secondary='rings';spec.tertiary='shards';spec.special='final-55';spec.particles=25;spec.rings=7;spec.shards=12;}if(spec.milestone){spec.rings=Math.max(spec.rings,4);spec.shards=Math.max(spec.shards,6);}return spec;
 }
 function renderCardDesign(art,l,d){
   const key=`CORE-${l}`;
@@ -1327,6 +1449,14 @@ function renderCardDesign(art,l,d){
         add('design-abyss-crown');
         add('design-throne',`opacity:.7;transform:translate(-50%,18px) translateZ(26px) scale(1.08)`);
         break;
+      case 'final-55':
+        add('design-nova-gate');
+        add('design-cathedral-core');
+        add('design-singularity-ring');
+        add('design-radiant-crown');
+        add('final55-permanent-crown');
+        for(let i=0;i<9;i++)add('design-arc',`--i:${i};--final-prism:1`);
+        break;
       case 'transcendent':
         add('design-nova-gate');
         add('design-throne',`opacity:.88;transform:translate(-50%,18px) translateZ(30px) scale(1.16)`);
@@ -1386,16 +1516,48 @@ function titleRgba(hex,alpha){
   }
 })();
 
+/* --------------------------- SETTINGS --------------------------- */
+function settingsHomeHTML(){
+  const items=[
+    ['motion','🎞️','모션 속도','빠름 · 보통 · 느림 설정'],
+    ['probtable','📊','강화 확률표','1~55단계 기본 확률 확인'],
+    ['stats','📈','플레이 통계','강화·자원·이벤트 기록 확인'],
+    ['reset','↻','게임 초기화','저장된 진행 상황 초기화']
+  ];
+  return `<div class="settings-home"><div class="modal-head settings-head"><div class="graphics-head-icon">⚙️</div><div><h2>설정</h2><p>게임 모션과 확률표, 현재 시스템 기준 통계 및 초기화를 관리합니다.</p></div></div><div class="settings-menu-grid">${items.map(([key,icon,title,desc])=>`<button class="settings-menu-item" type="button" data-settings-page="${key}"><span>${icon}</span><div><b>${title}</b><small>${desc}</small></div><i>›</i></button>`).join('')}</div></div>`;
+}
+function settingsResetHTML(){
+  return `<div class="modal-head reset-head"><div class="graphics-head-icon">↻</div><div><h2>게임 초기화</h2><p>현재 진행 상황과 연구소 파츠 데이터를 모두 초기 상태로 되돌립니다.</p></div></div><section class="settings-reset-card"><b>초기화 전 확인</b><p>보유 금액, 포인트, 강화 단계, 통계, 연구소 성장 및 보관함 데이터가 삭제됩니다. 초기화 후에는 되돌릴 수 없습니다.</p><button class="glass-btn settings-reset-confirm" type="button" data-confirm-reset>↻ 게임 데이터 초기화</button></section>`;
+}
+function settingsPageHTML(page='home'){
+  if(page==='home')return settingsHomeHTML();
+  const pages={motion:motionHTML,probtable:probabilityTableHTML,stats:statsHTML,reset:settingsResetHTML};
+  const renderPage=pages[page];if(!renderPage)return settingsHomeHTML();
+  return `<div class="settings-subpage"><button type="button" class="settings-back-btn" data-settings-home>← 설정으로</button>${renderPage()}</div>`;
+}
+function showSettingsPage(page='home'){
+  currentSettingsPage=page;
+  const c=document.getElementById('modalContent');if(!c)return;
+  c.innerHTML=settingsPageHTML(page);
+  bindModal('settings');
+}
+
 /* --------------------------- MODALS --------------------------- */
 function openModal(kind){
   const m=document.getElementById("modal"),c=document.getElementById("modalContent");
+  m.classList.toggle("settings-no-close",kind==="settings");
   if(kind==="shop")c.innerHTML=shopHTML();
   else if(kind==="stats")c.innerHTML=statsHTML();
   else if(kind==="lab")c.innerHTML=researchHTML();
-  else if(kind==="graphics")c.innerHTML=graphicsHTML();
+  else if(kind==="motion")c.innerHTML=motionHTML();
   else if(kind==="probtable")c.innerHTML=probabilityTableHTML();
+  else if(kind==="settings"){currentSettingsPage='home';c.innerHTML=settingsPageHTML('home');}
   else return;
   m.classList.remove("hidden","is-closing");
+  // Show Settings as a selected category while its modal is open.
+  const settingsTab=document.getElementById('settingsBtn');
+  if(settingsTab){settingsTab.classList.toggle('active',kind==='settings');settingsTab.setAttribute('aria-pressed',kind==='settings'?'true':'false');}
+  document.body.classList.toggle('settings-tab-open',kind==='settings');
   c.classList.remove("modalContent-enter");
   void c.offsetWidth;
   c.classList.add("modalContent-enter");
@@ -1406,11 +1568,14 @@ function closeModal(){
   const m=document.getElementById("modal");
   if(!m||(!m.classList.contains("is-open")&&m.classList.contains("hidden")))return;
   m.classList.remove("is-open");m.classList.add("is-closing");
+  document.body.classList.remove('settings-tab-open');
+  const settingsTab=document.getElementById('settingsBtn');
+  if(settingsTab){settingsTab.classList.remove('active');settingsTab.setAttribute('aria-pressed','false');}
   clearTimeout(closeModal._timer);
   closeModal._timer=setTimeout(()=>{m.classList.add("hidden");m.classList.remove("is-closing");},230);
 }
 function shopHTML(){
-  const l=level(),sh=shield(),moneyCost=shieldMoneyCost(l),pointCost=shieldPointCost(l),minShield=15,d=state.runData,warpLevels=WARP_LEVELS;
+  const l=level(),sh=shield(),moneyCost=shieldMoneyCost(l),pointCost=shieldPointCost(l),minShield=30,d=state.runData,warpLevels=WARP_LEVELS;
   const warps=warpLevels.map(w=>{const unlocked=!!d.unlocked_warps[w],passed=l>=w,moneyPrice=warpMoneyCost(w,d),pointPrice=warpPointCost(w,d),stateClass=!unlocked?'locked':passed?'passed':'ready',badge=!unlocked?'LOCKED':passed?'PASSED':'READY';return `<div class="warp-card ${stateClass}"><div class="warp-card-top"><div class="warp-target"><span class="warp-icon">${unlocked?'🚀':'🔒'}</span><div><small>TARGET STAGE</small><b>${w}단계 워프</b></div></div><span class="warp-badge">${badge}</span></div><div class="warp-route"><span>현재 +${l}</span><i></i><strong>+${w}</strong></div><div class="warp-costs"><div><small>💰 MONEY</small><b>${formatGold(moneyPrice)}</b></div><div><small>⭐ POINT</small><b>${pointPrice.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn warp-buy money-buy" data-buy-warp="money" data-warp="${w}" ${(!unlocked||passed||money()<moneyPrice)?'disabled':''}>💰 돈으로 워프</button><button class="glass-btn warp-buy point-buy" data-buy-warp="point" data-warp="${w}" ${(!unlocked||passed||state.points<pointPrice)?'disabled':''}>⭐ 포인트로 워프</button></div></div>`;}).join('');
   return `<div class="shop-wallet shop-wallet-compact"><div class="wallet-card money"><small>보유 금액</small><b>${formatGold(money())}</b></div><div class="wallet-card point"><small>보유 포인트</small><b>${state.points.toLocaleString('ko-KR')}P</b></div></div><div class="modal-section shop-section shield-section"><div class="section-heading"><div><span>🛡️</span><div><small>PROTECTION</small><h3>파괴 방지권</h3></div></div><b>${sh} / ${SHIELD_MAX}</b></div><p class="section-copy">파괴 결과를 한 번 막아주는 안전장치입니다. ${minShield}단계부터 구매할 수 있습니다.</p><div class="shield-price-grid"><div><small>💰 돈 가격</small><b>${formatGold(moneyCost)}</b></div><div><small>⭐ 포인트 가격</small><b>${pointCost.toLocaleString('ko-KR')}P</b></div></div><div class="warp-actions"><button class="glass-btn money-buy" data-buy-shield="money" ${(l<minShield||sh>=SHIELD_MAX||money()<moneyCost)?'disabled':''}>💰 돈으로 구매</button><button class="glass-btn point-buy" data-buy-shield="point" ${(l<minShield||sh>=SHIELD_MAX||state.points<pointCost)?'disabled':''}>⭐ 포인트로 구매</button></div></div><div class="modal-section shop-section warp-section"><div class="section-heading"><div><span>🚀</span><div><small>STAGE WARP</small><h3>워프권</h3></div></div><b>${l}단계</b></div><p class="section-copy">한 번 도달했던 주요 체크포인트로 즉시 이동합니다. 워프 직후에는 판매·경매가 잠기며, 일반 강화하기 버튼을 2회 눌러야 잠금이 해제됩니다.</p><div class="warp-list">${warps}</div></div>`;
 }
@@ -1428,7 +1593,9 @@ function researchEffectValueText(key,lv){
   if(key==='safety')return `파괴 확률 -${(n*.9).toFixed(1)}%p`;
   if(key==='economy')return `강화 비용 -${(n*3.5).toFixed(1).replace('.0','')}%`;
   if(key==='insight')return `성공 포인트 +${n*7}%`;
-  if(key==='resale')return `콤보 보존 ${n*14}%`;
+  if(key==='saleOptimizer')return `일반 판매 수익 +${n*4}%`;
+  if(key==='tearCondenser')return `눈물 충전량 +${n*15}%`;
+  if(key==='warpEfficiency')return `워프권 가격 -${n*6}%`;
   if(key==='capacitor')return `폭주 충전 +${n*12}%`;
   if(key==='precision')return `크리티컬 +${(n*1.7).toFixed(1)}%p`;
   if(key==='shieldTech')return `방지권 가격 -${n*7}%`;
@@ -1448,9 +1615,15 @@ function researchDeltaText(key,lv){
   if(n>=RESEARCH_MAX)return `${current} · Lv.5 MAX`;
   return `${current} → Lv.${n+1} ${researchEffectValueText(key,n+1)}`;
 }
+const RESEARCH_GROUPS=[
+  {title:'강화 · 안정',hint:'확률 · 비용 · 단계 보호',keys:['catalyst','safety','economy','precision','freezeMatrix','volatileCore','berserkAmplifier']},
+  {title:'재화 · 거래',hint:'포인트 · 판매 · 경매 · 워프',keys:['insight','luckCore','saleOptimizer','recoveryCatalyst','shieldTech','warpEfficiency']},
+  {title:'폭주 · 보조',hint:'폭주 · 눈물 · 방지권 · 워프 보정',keys:['capacitor','frenzyInjector','tearCondenser','fusion','warpTech']}
+];
 function labCorePickerHTML(){
   const d=state.runData;
-  return Object.entries(RESEARCH_DATA).map(([key,cfg])=>{
+  return RESEARCH_GROUPS.map(group=>`<div class="lab-core-group-heading"><b>${group.title}</b><small>${group.hint}</small></div>`+group.keys.map(key=>{
+    const cfg=RESEARCH_DATA[key];if(!cfg)return '';
     const lv=researchLevel(key,d),selected=key===selectedLabPartKey,equipped=isResearchEquipped(key,d),fusionLink=fusionLinkForCore(key,d),fusionBoost=fusionBonusForCore(key,d),maxed=lv>=RESEARCH_MAX;
     const rank=coreTranscendLevel(key,d),rankMax=rank>=CORE_TRANSCEND_MAX;
     const rankText=rank?` ✨ 초월 ${coreTranscendLabel(rank)}`:'';
@@ -1460,7 +1633,7 @@ function labCorePickerHTML(){
       <span class="lab-core-choice-copy"><small>${cfg.slot}</small><b>${cfg.name}</b><span class="lab-core-choice-desc">${cfg.desc}</span><span class="lab-core-choice-effect">${researchDeltaText(key,lv)}${fusionLink?` · 🔬 융합 +${Math.round(fusionBoost*100)}%`:''}${rank?` · ✨ 초월 +${rank*8}% 효과`: ''}</span><span class="lab-core-choice-chance">${chanceText}</span></span>
       <span class="lab-core-choice-level">Lv.${lv}${rankText}</span>
     </button>`;
-  }).join('');
+  }).join('')).join('');
 }
 function renderLabView(){
   const picker=document.getElementById('labCorePicker');if(!picker)return;
@@ -1498,7 +1671,6 @@ function renderLabView(){
     transcendBtn.disabled=actionLocked||!maxed||rankMax||state.points<(transcendCost||0);
     transcendBtn.textContent=!maxed?'🔒 Lv.5 달성 후 초월':rankMax?'✨ 초월 V MAX':`✨ 초월 ${coreTranscendLabel(rank+1)} 도전 · 성공 ${transcendOdds}%`;
   }
-  const equipBtn=document.getElementById('labEquipBtn');if(equipBtn){equipBtn.disabled=actionLocked||lv<=0;equipBtn.classList.toggle('is-equipped',equipped);equipBtn.textContent=lv<=0?'강화 후 자동 장착':equipped?'장착 해제':'장착하기';}
   const status=document.getElementById('labUpgradeStatus');if(status&&!document.getElementById('labUpgradeStage')?.classList.contains('upgrading'))status.textContent=maxed?`${cfg.name} · Lv.5 완료 · 초월 ${rank?coreTranscendLabel(rank):'해금'}`:`${cfg.name} · ${labUpgradeOddsText(key,lv)} · 성공 시 Lv.${lv+1}, 유지 시 Lv.${lv}`;
   renderLabFusion();
   bindLabButtons();
@@ -1508,7 +1680,7 @@ function renderLabView(){
 function spawnLabUpgradeParticles(icon='✦'){
   const box=document.getElementById('labUpgradeParticles');if(!box)return;
   box.innerHTML='';
-  if(motionPreset()==='low'||JION_PERF.reduced)return;
+  if(JION_PERF.reduced)return;
   const count=JION_PERF.mobile?12:24,frag=document.createDocumentFragment();
   for(let i=0;i<count;i++){
     const p=document.createElement('i');p.textContent=i%5===0?icon:'✦';
@@ -1520,21 +1692,21 @@ function spawnLabUpgradeParticles(icon='✦'){
 function playLabUpgradeAnimation(cfg,fromLv,toLv,success,done=()=>{}){
   const stage=document.getElementById('labUpgradeStage'),core=document.getElementById('labUpgradeCore'),levelUp=document.getElementById('labUpgradeLevelUp'),status=document.getElementById('labUpgradeStatus');
   if(!stage||!core){done();return;}
-  const low=motionPreset()==='low'||JION_PERF.reduced,duration=low?260:(motionPreset()==='medium'?900:1350);
+  const motion=motionPreset(),duration=JION_PERF.reduced?260:motion==='high'?600:motion==='medium'?900:1350;
   stage.classList.remove('upgrade-success','upgrade-hold');void stage.offsetWidth;stage.classList.add('upgrading');
   core.dataset.icon=cfg.icon;if(status)status.textContent=`${cfg.name} 강화 판정 중...`;
   if(levelUp){levelUp.textContent=`Lv.${fromLv} → ?`;levelUp.classList.remove('show','hold');}
   spawnLabUpgradeParticles(success?cfg.icon:'◆');
   setTimeout(()=>{
     stage.classList.add(success?'upgrade-success':'upgrade-hold');
-    if(levelUp){levelUp.textContent=success?`LEVEL UP · Lv.${toLv}`:`MAINTAIN · Lv.${fromLv}`;levelUp.classList.toggle('hold',!success);levelUp.classList.add('show');}
+    if(levelUp){levelUp.textContent=success?`강화 성공 · Lv.${toLv}`:`유지 · Lv.${fromLv}`;levelUp.classList.toggle('hold',!success);levelUp.classList.add('show');}
     if(status)status.textContent=success?`강화 성공 · ${cfg.name} Lv.${toLv}`:`강화 유지 · ${cfg.name} Lv.${fromLv}`;
   },Math.max(100,Math.round(duration*.54)));
   setTimeout(()=>{stage.classList.remove('upgrading','upgrade-success','upgrade-hold');if(levelUp)levelUp.classList.remove('show','hold');done();},duration);
 }
 function buyLabPart(key=selectedLabPartKey){
   if(actionLocked)return;
-  if(level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');return;}
+  if(level()>=51){showToast('🔒 연구소는 51단계부터 비활성화됩니다.');return;}
   const cfg=RESEARCH_DATA[key],d=state.runData;if(!cfg)return;
   selectedLabPartKey=key;d.research=Object.assign(emptyResearch(),d.research||{});d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
   const lv=researchLevel(key,d),cost=researchCost(key,d);
@@ -1556,7 +1728,7 @@ function buyLabPart(key=selectedLabPartKey){
 }
 function buyLabTranscend(key=selectedLabPartKey){
   if(actionLocked)return;
-  if(level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');return;}
+  if(level()>=51){showToast('🔒 연구소는 51단계부터 비활성화됩니다.');return;}
   const cfg=RESEARCH_DATA[key],d=state.runData;
   if(!cfg||researchLevel(key,d)<RESEARCH_MAX){showToast('🔒 코어를 Lv.5까지 강화해야 초월할 수 있습니다.');return;}
   const rank=coreTranscendLevel(key,d),cost=coreTranscendCost(key,d),odds=coreTranscendOdds(key,d);
@@ -1568,7 +1740,7 @@ function buyLabTranscend(key=selectedLabPartKey){
   if(success)d.coreTranscend[key]=rank+1;
   save();setActionLocked(true);
   const stage=document.getElementById('labUpgradeStage'),levelUp=document.getElementById('labUpgradeLevelUp'),status=document.getElementById('labUpgradeStatus');
-  const duration=(motionPreset()==='low'||JION_PERF.reduced)?260:850;
+  const mode=motionPreset(),duration=JION_PERF.reduced?260:mode==='high'?580:mode==='medium'?850:1150;
   if(stage){stage.classList.remove('upgrade-success','upgrade-hold');void stage.offsetWidth;stage.classList.add('upgrading','transcend-upgrading');}
   if(status)status.textContent=`✨ ${cfg.name} 초월 판정 중...`;
   if(levelUp){levelUp.textContent=`TRANSCEND · ${coreTranscendLabel(rank+1)}`;levelUp.classList.remove('show','hold');}
@@ -1585,19 +1757,9 @@ function buyLabTranscend(key=selectedLabPartKey){
     showToast(success?`✨ ${cfg.name} 초월 ${coreTranscendLabel(rank+1)} 성공 · 코어 효과 +${(rank+1)*8}%`:`◆ 초월 실패 · ${cost.toLocaleString('ko-KR')}P 소모 · 초월 등급 유지`);
   },duration);
 }
-function toggleLabPart(key=selectedLabPartKey){
-  if(actionLocked)return;
-  if(level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');return;}
-  const cfg=RESEARCH_DATA[key],d=state.runData;if(!cfg||researchLevel(key,d)<=0)return;
-  d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
-  if(isResearchEquipped(key,d))d.equippedParts=equippedResearchKeys(d).filter(v=>v!==String(key));
-  else d.equippedParts.push(String(key));
-  d.equippedParts=equippedResearchKeys(d);save();render();showToast(`${cfg.icon} ${cfg.name} ${isResearchEquipped(key,d)?'장착 완료 · 효과 적용':'장착 해제 · 효과 미적용'}`);
-}
 function bindLabButtons(){
   document.querySelectorAll('#labView [data-lab-select]').forEach(b=>b.onclick=()=>{if(actionLocked)return;selectedLabPartKey=b.dataset.labSelect;renderLabView();});
   const upgrade=document.getElementById('labUpgradeBtn');if(upgrade)upgrade.onclick=()=>buyLabPart(selectedLabPartKey);
-  const equip=document.getElementById('labEquipBtn');if(equip)equip.onclick=()=>toggleLabPart(selectedLabPartKey);
   const transcend=document.getElementById('labTranscendBtn');if(transcend)transcend.onclick=()=>buyLabTranscend(selectedLabPartKey);
 }
 
@@ -1737,7 +1899,7 @@ function bindFusionButtons(){
 
 function setGameView(view){
   if(actionLocked)return;
-  if(view==='lab'&&level()>=52){showToast('🔒 연구소는 52단계부터 비활성화됩니다.');view='enhance';}
+  if(view==='lab'&&level()>=51){showToast('🔒 연구소는 51단계부터 비활성화됩니다.');view='enhance';}
   if(view!=='lab'&&fusionGaugeRunning)cancelFusionOverclock(false);
   currentGameView=['enhance','shop','lab','storage'].includes(view)?view:'enhance';
   closeModal();
@@ -1756,43 +1918,130 @@ function setGameView(view){
 }
 function storageHTML(){
   state.storageSlots=normalizeStorageSlots(state.storageSlots);
-  const d=state.runData,l=level(),full=state.storageSlots.every(Boolean);
+  const l=level(),full=state.storageSlots.every(Boolean);
   const current=l>0?`<div class="storage-current-card"><div><small>CURRENT ODOR</small><h3>+${l} · ${DB[String(l)]?.name?.replace(/^\d+단계\s*:\s*/,'')||'지온 냄새'}</h3><p>예상 가치 <b>${formatGold(dbPrice(l))}</b></p></div><button class="glass-btn storage-store-btn" data-storage-store ${full?'disabled':''}>${full?'보관함 가득 참':'현재 냄새 보관'}</button></div>`:`<div class="storage-current-card empty-current"><div><small>CURRENT ODOR</small><h3>현재 보관할 냄새가 없습니다</h3><p>강화한 냄새를 최대 6개까지 보관할 수 있습니다.</p></div></div>`;
-  const slots=state.storageSlots.map((slot,i)=>slot?`<article class="storage-slot filled"><div class="storage-slot-no">SLOT ${i+1}</div><div class="storage-slot-stage">+${slot.level}</div><h3>${DB[String(slot.level)]?.name?.replace(/^\d+단계\s*:\s*/,'')||'보관 냄새'}</h3><p>예상 가치 <b>${formatGold(dbPrice(slot.level))}</b></p><button class="glass-btn" data-storage-withdraw="${i}" ${l>0?'disabled':''}>${l>0?'현재 냄새 처리 후 꺼내기':'꺼내기'}</button></article>`:`<article class="storage-slot empty"><div class="storage-slot-no">SLOT ${i+1}</div><div class="storage-empty-icon">📦</div><h3>빈 보관 슬롯</h3><p>현재 냄새를 이곳에 안전하게 보관할 수 있습니다.</p></article>`).join('');
+  const slots=state.storageSlots.map((slot,i)=>{
+    if(!slot)return `<article class="storage-slot empty"><div class="storage-slot-no">SLOT ${i+1}</div><div class="storage-empty-icon">📦</div><h3>빈 보관 슬롯</h3><p>현재 냄새를 이곳에 안전하게 보관할 수 있습니다.</p></article>`;
+    const levelData=DB[String(slot.level)]||DB['0'];
+    return `<article class="storage-slot filled" style="--storage-card-color:${levelData.color||'#7dd3fc'}"><div class="storage-slot-no">SLOT ${i+1}</div><div class="card-art odor-capsule-art storage-card-art" data-storage-art="${slot.level}" style="--card:${levelData.color||'#7dd3fc'}" role="img" aria-label="${slot.level}단계 보관 캡슐 미리보기">
+      <div class="art-grid"></div><div class="art-lens"></div><div class="art-scan"></div><div class="capsule-back-glow"></div>
+      <div class="storage-capsule-aura"></div>
+      <div class="capsule-shell storage-capsule-shell">
+        <div class="capsule-rim capsule-rim-top"></div><div class="capsule-rim capsule-rim-bottom"></div>
+        <div class="capsule-liquid"></div>
+        <div class="capsule-vapor"></div>
+        <div class="capsule-bubbles"><i></i><i></i><i></i><i></i></div>
+        <div class="storage-capsule-core">+${slot.level}</div>
+      </div>
+      <span class="storage-capsule-orbit orbit-one"></span><span class="storage-capsule-orbit orbit-two"></span>
+    </div><div class="storage-slot-stage">+${slot.level}</div><h3>${levelData.name?.replace(/^\d+단계\s*:\s*/,'')||'보관 냄새'}</h3><p>예상 가치 <b>${formatGold(dbPrice(slot.level))}</b></p><button class="glass-btn" data-storage-withdraw="${i}">${l>0?'교체하기':'꺼내기'}</button></article>`;
+  }).join('');
   return `${current}<div class="storage-slot-grid">${slots}</div>`;
 }
-function renderStorageView(){const root=document.getElementById('storagePageContent');if(!root)return;root.innerHTML=storageHTML();bindStorageButtons();}
+function renderStorageView(){
+  const root=document.getElementById('storagePageContent');if(!root)return;
+  root.innerHTML=storageHTML();
+  root.querySelectorAll('[data-storage-art]').forEach(art=>{
+    const storedLevel=Math.max(0,Math.min(MAX_LEVEL,Number(art.dataset.storageArt)||0));
+    const storedData=DB[String(storedLevel)]||DB['0'];
+    updateOdorCapsuleVisual(art,storedLevel,storedData);
+  });
+  bindStorageButtons();
+}
 function storeCurrentCard(){
   if(actionLocked)return;const l=level();if(l<=0){showToast('보관할 냄새가 없습니다.');return;}
   state.storageSlots=normalizeStorageSlots(state.storageSlots);const idx=state.storageSlots.findIndex(v=>!v);if(idx<0){showToast('📦 보관함이 가득 찼습니다.');return;}
   state.storageSlots[idx]={level:l,storedAt:Date.now(),warpSaleLock:Math.max(0,Number(state.runData.warpSaleLock)||0)};state.storageCount=Math.max(0,Number(state.storageCount)||0)+1;
-  const d=state.runData;d.prev_level=l;d.level=0;d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);save();render();renderStorageView();showToast(`📦 ${l}단계 냄새를 SLOT ${idx+1}에 보관했습니다.`);
+  const d=state.runData;d.prev_level=l;d.level=0;d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=0;resetCombo(d);autoLowerMotionForStage(0,l);save();render();renderStorageView();showToast(`📦 ${l}단계 냄새를 SLOT ${idx+1}에 보관했습니다.`);
+}
+/* JINAM 1.4: show the recovered capsule entering the enhancement chamber. */
+let activeStorageWithdrawFx=null;
+function playStorageWithdrawFx(recoveredLevel, slotIndex){
+  const stage=document.getElementById('threeWrap');
+  if(!stage)return;
+  activeStorageWithdrawFx?.remove();
+  const levelSafe=Math.max(0,Math.min(MAX_LEVEL,Math.floor(Number(recoveredLevel)||0)));
+  const color=DB[String(levelSafe)]?.color||'#7dd3fc';
+  const fx=document.createElement('div');
+  fx.className='storage-withdraw-fx';
+  fx.style.setProperty('--withdraw-color',color);
+  fx.setAttribute('aria-hidden','true');
+  fx.innerHTML=`
+    <div class="storage-withdraw-portal"><span class="storage-withdraw-ring"></span><span class="storage-withdraw-ring ring-2"></span>
+      <div class="storage-withdraw-core"><span>✦</span><strong>+${levelSafe}</strong></div>
+    </div>
+    <div class="storage-withdraw-label"><small>STORAGE · SLOT ${slotIndex+1}</small><b>카드 꺼내기 완료</b><span>+${levelSafe}단계 복원</span></div>
+    <div class="storage-withdraw-flare"></div>`;
+  stage.appendChild(fx);
+  stage.classList.add('storage-withdraw-revealing');
+  activeStorageWithdrawFx=fx;
+  const cleanup=()=>{
+    if(activeStorageWithdrawFx!==fx)return;
+    fx.remove();activeStorageWithdrawFx=null;
+    stage.classList.remove('storage-withdraw-revealing');
+  };
+  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
+    cleanup();return;
+  }
+  fx.addEventListener('animationend',e=>{if(e.target===fx)cleanup();});
+  setTimeout(cleanup,2000);
+}
+function playStorageSwapFx(slotIndex){
+  const current=document.querySelector('#storagePageContent .storage-current-card');
+  const slot=document.querySelectorAll('#storagePageContent .storage-slot')[slotIndex];
+  for(const el of [current,slot]){
+    if(!el)continue;
+    el.classList.remove('storage-swap-reveal');
+    void el.offsetWidth;
+    el.classList.add('storage-swap-reveal');
+    el.addEventListener('animationend',()=>el.classList.remove('storage-swap-reveal'),{once:true});
+  }
 }
 function withdrawStoredCard(index){
-  if(actionLocked)return;state.storageSlots=normalizeStorageSlots(state.storageSlots);const i=Number(index),slot=state.storageSlots[i];if(!slot)return;
-  if(level()>0){showToast('현재 냄새를 먼저 판매·경매·보관해야 합니다.');return;}
-  const d=state.runData;d.prev_level=slot.level;d.level=slot.level;d.max_level=Math.max(Number(d.max_level)||0,slot.level);d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=Math.max(0,Number(slot.warpSaleLock)||0);resetCombo(d);unlockReachedWarps(d);state.storageSlots[i]=null;save();render();setGameView('enhance');showToast(`📦 SLOT ${i+1}에서 ${slot.level}단계 냄새를 꺼냈습니다. · 강화 화면으로 이동`);
+  if(actionLocked)return;
+  state.storageSlots=normalizeStorageSlots(state.storageSlots);
+  const i=Number(index),slot=state.storageSlots[i];if(!slot)return;
+  const d=state.runData,currentLevel=level(),currentWarpLock=Math.max(0,Number(d.warpSaleLock)||0);
+  const storedLevel=Number(slot.level)||0,storedWarpLock=Math.max(0,Number(slot.warpSaleLock)||0);
+  d.prev_level=currentLevel;
+  d.level=storedLevel;
+  d.max_level=Math.max(Number(d.max_level)||0,storedLevel);
+  d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=storedWarpLock;resetCombo(d);unlockReachedWarps(d);
+  if(currentLevel>0){
+    slot.level=currentLevel;slot.storedAt=Date.now();slot.warpSaleLock=currentWarpLock;
+    autoLowerMotionForStage(storedLevel,currentLevel);
+    save();render();renderStorageView();setGameView('storage');
+    playStorageSwapFx(i);
+    showToast(`🔁 SLOT ${i+1}과 현재 냄새를 교체했습니다. (+${currentLevel}단계 보관)`);
+  }else{
+    state.storageSlots[i]=null;
+    autoLowerMotionForStage(storedLevel,currentLevel);
+    save();render();setGameView('enhance');
+    playStorageWithdrawFx(storedLevel,i);
+    showToast(`📦 SLOT ${i+1}에서 ${storedLevel}단계 냄새를 꺼냈습니다. · 강화 화면으로 이동`);
+  }
 }
 function bindStorageButtons(){document.querySelectorAll('[data-storage-store]').forEach(b=>b.onclick=storeCurrentCard);document.querySelectorAll('[data-storage-withdraw]').forEach(b=>b.onclick=()=>withdrawStoredCard(b.dataset.storageWithdraw));}
 function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>16개 코어를 Lv.5까지 강화한 뒤 포인트를 사용해 초월 V까지 성장시킬 수 있습니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
 
 function probabilityTableHTML(){
-  const rows=Array.from({length:55},(_,target)=>{
-    const source=target,stage=target+1,[s,down,destroy,hold]=PROB[String(source)]||[0,0,0,0];
-    return `<tr><td><b>${stage}단계</b><small>${source} → ${stage}</small></td><td class="success">${Number(s).toFixed(1)}%</td><td class="down">${Number(down).toFixed(1)}%</td><td class="destroy">${Number(destroy).toFixed(1)}%</td><td class="hold">${Number(hold).toFixed(1)}%</td></tr>`;
+  const rows=Array.from({length:MAX_LEVEL},(_,source)=>{
+    const stage=source+1,[success,down,destroy,hold]=PROB[String(source)]||[0,0,0,0];
+    // The cost belongs to the current stage being enhanced, while the sell price
+    // belongs to the target stage card after a successful enhancement.
+    const cost=baseEnhanceCost(source);
+    const saleValue=dbPrice(stage)*BigInt(stageSellPercent(state.runData))/100n;
+    return `<tr${source===level()?' class="prob-current-row"':''}><td><b>${stage}단계</b><small>${source} → ${stage}</small></td><td class="success">${Number(success).toFixed(1)}%</td><td class="down">${Number(down).toFixed(1)}%</td><td class="destroy">${Number(destroy).toFixed(1)}%</td><td class="hold">${Number(hold).toFixed(1)}%</td><td class="prob-price-cell">${formatGold(cost)}</td><td class="prob-sale-cell">${formatGold(saleValue)}</td><td class="prob-point-cell">${pointReward(stage).toLocaleString("ko-KR")}P</td></tr>`;
   }).join('');
-  return `<div class="modal-head probability-head"><div class="graphics-head-icon">📊</div><div><h2>1~55단계 강화 확률표</h2><p>기본 일반 강화 확률입니다. 연구소·콤보 등 실시간 보정 효과는 별도로 적용됩니다.</p></div></div><div class="probability-table-wrap"><table class="probability-table"><thead><tr><th>목표 단계</th><th>성공</th><th>하락</th><th>파괴</th><th>유지</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="modal-head probability-head"><div class="graphics-head-icon">📊</div><div><h2>1~55단계 강화 확률표</h2><p>기본 일반 강화 기준입니다. 강화 비용은 해당 단계에서 다음 단계로 올릴 때의 비용, 판매 금액은 목표 단계 카드의 일반 판매 수령액입니다. 획득 포인트는 성공 시 기본 지급량이며, 연구소·폭주·눈물 피버 보정은 제외됩니다.</p></div></div><div class="probability-table-wrap"><table class="probability-table"><thead><tr><th>목표 단계</th><th>성공</th><th>하락</th><th>파괴</th><th>유지</th><th>강화 비용</th><th>판매 금액</th><th>획득 포인트</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-function graphicsHTML(){
+function motionHTML(){
   const settings=normalizeUiSettings(state.uiSettings);
-  const choice=(group,value,title,desc)=>`<button class="graphics-choice-btn ${settings[group]===value?'active':''}" type="button" data-setting-group="${group}" data-setting-value="${value}"><strong>${title}</strong><span>${desc}</span></button>`;
-  return `<div class="modal-head graphics-head"><div class="graphics-head-icon">🎛️</div><div><h2>그래픽 설정</h2><p>기기 성능과 취향에 맞게 그래픽 품질과 모션 강도를 직접 조절할 수 있습니다.</p></div></div>
-    <div class="graphics-current-note">현재 설정 · 그래픽 <b>${settings.graphics==='high'?'상':settings.graphics==='medium'?'중':'하'}</b> · 모션 <b>${settings.motion==='high'?'상':settings.motion==='medium'?'중':'하'}</b></div>
-    <div class="graphics-settings-grid">
-      <section class="graphics-setting-card"><small>GRAPHICS QUALITY</small><h3>그래픽 품질</h3><p class="graphics-setting-desc">상: 풀 블러·광원·파티클 · 중: 광원/파티클 축소 · 하: 정적 배경 중심, 고비용 필터 최소화</p><div class="graphics-choice-grid">${choice('graphics','high','상','풀 효과 · 최대 품질')}${choice('graphics','medium','중','효과 밀도 약 40~60%')}${choice('graphics','low','하','정적 효과 · 저부하')}</div></section>
-      <section class="graphics-setting-card"><small>MOTION STRENGTH</small><h3>모션 강도</h3><p class="graphics-setting-desc">상: 전체 시네마틱 · 중: 짧고 가벼운 연출 · 하: 강화 결과 즉시 반영, 워프/룰렛/카드 공개 연출 생략</p><div class="graphics-choice-grid">${choice('motion','high','상','전체 연출')}${choice('motion','medium','중','축약 연출')}${choice('motion','low','하','즉시 처리 · 최고 성능')}</div></section>
-    </div>`;
+  const choice=(value,title,desc)=>`<button class="graphics-choice-btn ${settings.motion===value?'active':''}" type="button" data-setting-group="motion" data-setting-value="${value}"><strong>${title}</strong><span>${desc}</span></button>`;
+  return `<div class="modal-head graphics-head"><div class="graphics-head-icon">🎞️</div><div><h2>게임 모션 속도</h2><p>강화·판매·연구소 등 게임 연출의 재생 속도를 조절합니다. 기본 설정은 중(보통)입니다.</p></div></div>
+    <div class="graphics-current-note">현재 모션 속도 · <b>${settings.motion==='high'?'상':settings.motion==='medium'?'중':'하'}</b>${level()>=50?' · 50단계부터 자동으로 중(보통) 적용':''}</div>
+    <section class="graphics-setting-card"><small>GAME MOTION SPEED</small><h3>모션 속도 선택</h3><p class="graphics-setting-desc">상: 빠른 모션 · 중: 보통 속도(기본값) · 하: 느린 모션. 모션 연출 자체는 생략하지 않습니다.</p><div class="graphics-choice-grid">${choice('high','상','빠르게 재생')}${choice('medium','중','보통 속도 · 기본값')}${choice('low','하','느리게 재생')}</div></section>`;
 }
 
 function statsHTML(){
@@ -1808,7 +2057,6 @@ function statsHTML(){
   const finalClears=Math.max(0,Number(state.finalClears)||0);
   const frenzyTriggers=Math.max(0,Number(state.frenzyTriggers)||0);
   const stored=Math.max(0,Number(state.storageCount)||0);
-  const bestCombo=Math.max(Number(d.best_combo)||0,Number(d.combo)||0);
   const successRate=attempts?successes/attempts*100:0;
   const failRate=attempts?failures/attempts*100:0;
   const destroyRate=attempts?destroys/attempts*100:0;
@@ -1819,10 +2067,14 @@ function statsHTML(){
   const fmtPct=v=>`${v.toFixed(v>=10?1:2)}%`;
   const fmtNum=v=>Math.round(Number(v)||0).toLocaleString('ko-KR');
   const finalReached=(Number(d.max_level)||0)>=MAX_LEVEL;
-  return `<div class="modal-head stats-head"><div class="stats-head-icon">📈</div><div><h2>플레이 통계</h2><p>현재 세이브의 강화 기록을 한눈에 확인합니다.</p></div></div>
+  const currentShield=Math.max(0,Number(d.shield)||0);
+  const frenzyGauge=Math.max(0,Math.min(FRENZY_MAX,Number(d.frenzyGauge)||0));
+  const tearGauge=Math.max(0,Math.min(TEAR_MAX,Number(d.tearGauge)||0));
+  const tearActive=tearFeverActive(d);
+  return `<div class="modal-head stats-head"><div class="stats-head-icon">📈</div><div><h2>플레이 통계</h2><p>현재 세이브의 강화 기록과 자원, 이벤트 상태를 한눈에 확인합니다.</p></div></div>
     <div class="stats-hero">
       <div class="stats-stage-ring" style="--stats-progress:${progress.toFixed(1)}%"><div><small>MAX STAGE</small><b>${d.max_level} / ${MAX_LEVEL}</b><span>${finalReached?'FINAL COMPLETE':'진행 '+progress.toFixed(1)+'%'}</span></div></div>
-      <div class="stats-hero-copy"><small>CURRENT RUN</small><h3>${level()}단계 · ${DB[String(level())]?.name?.replace(/^\d+단계\s*:\s*/,'')||'지온 캡슐'}</h3><p>현재 콤보 <b>${d.combo||0}</b> · 최고 콤보 <b>${bestCombo}</b> · 보유 금액 <b>${formatGold(money())}</b></p></div>
+      <div class="stats-hero-copy"><small>CURRENT RUN</small><h3>${level()}단계 · ${DB[String(level())]?.name?.replace(/^\d+단계\s*:\s*/,'')||'지온 캡슐'}</h3><p>보유 금액 <b>${formatGold(money())}</b> · 포인트 <b>${fmtNum(state.points)}P</b> · 방지권 <b>${currentShield} / ${SHIELD_MAX}</b></p></div>
     </div>
     <div class="stats-section-title"><span>⚙️</span><div><small>ENHANCEMENT</small><b>강화 기록</b></div></div>
     <div class="stats-grid stats-grid-4">
@@ -1831,13 +2083,19 @@ function statsHTML(){
       <article><small>실패/유지/파괴</small><b>${fmtNum(failures)}</b><span>${fmtPct(failRate)}</span></article>
       <article><small>파괴 횟수</small><b class="stats-danger">${fmtNum(destroys)}</b><span>${fmtPct(destroyRate)}</span></article>
       <article><small>크리티컬</small><b class="stats-gold">${fmtNum(criticals)}</b><span>성공 중 ${fmtPct(critRate)}</span></article>
-      <article><small>최고 콤보</small><b>${fmtNum(bestCombo)}</b><span>현재 ${fmtNum(d.combo||0)}</span></article>
       <article><small>판매 횟수</small><b>${fmtNum(sells)}</b></article>
       <article><small>경매 횟수</small><b class="stats-gold">${fmtNum(auctions)}</b></article>
       <article><small>워프 사용</small><b>${fmtNum(warps)}</b></article>
       <article><small>FINAL 클리어</small><b class="stats-gold">${fmtNum(finalClears)}</b></article>
       <article><small>보관 횟수</small><b>${fmtNum(stored)}</b></article>
       <article><small>폭주 발동</small><b>${fmtNum(frenzyTriggers)}</b></article>
+      <article><small>최고 도달 단계</small><b>${fmtNum(d.max_level||0)}</b></article>
+    </div>
+    <div class="stats-section-title"><span>🧪</span><div><small>SYSTEM STATUS</small><b>현재 시스템 상태</b></div></div>
+    <div class="stats-grid stats-grid-3">
+      <article><small>방지권 보유</small><b class="stats-good">${fmtNum(currentShield)} / ${SHIELD_MAX}</b></article>
+      <article><small>지냄 폭주 게이지</small><b>${fmtNum(frenzyGauge)} / ${FRENZY_MAX}</b></article>
+      <article><small>지냄 눈물 게이지</small><b>${fmtNum(tearGauge)} / ${TEAR_MAX}</b><span>${tearActive?'피버 진행 중':'대기 중'}</span></article>
     </div>
     <div class="stats-section-title"><span>⭐</span><div><small>POINT ECONOMY</small><b>포인트 기록</b></div></div>
     <div class="stats-grid stats-grid-3">
@@ -1852,7 +2110,7 @@ function statsHTML(){
 function purchaseShield(type='money',fromShop=false){
   if(actionLocked)return;
   const l=level(),cost=type==='money'?shieldMoneyCost(l):shieldPointCost(l);
-  if(l<15){showToast('방지권은 15단계부터 구매할 수 있습니다.');return;}
+  if(l<30){showToast('방지권은 30단계부터 구매할 수 있습니다.');return;}
   if(shield()>=SHIELD_MAX){showToast(`방지권은 최대 ${SHIELD_MAX}개까지 보유할 수 있습니다.`);return;}
   if(type==='money'){
     if(money()<cost){showToast('방지권 구매 금액이 부족합니다.');return;}
@@ -1869,10 +2127,13 @@ function purchaseShield(type='money',fromShop=false){
 function bindModal(kind){
   document.querySelectorAll("[data-open-lab-view]").forEach(b=>b.onclick=()=>{closeModal();setGameView('lab');});
   document.querySelectorAll("[data-buy-shield]").forEach(b=>b.onclick=()=>purchaseShield(b.dataset.buyShield,true));
+  document.querySelectorAll("[data-settings-page]").forEach(b=>b.onclick=()=>showSettingsPage(b.dataset.settingsPage));
+  document.querySelectorAll("[data-settings-home]").forEach(b=>b.onclick=()=>showSettingsPage('home'));
+  document.querySelectorAll("[data-confirm-reset]").forEach(b=>b.onclick=resetGame);
   document.querySelectorAll("[data-setting-group]").forEach(b=>b.onclick=()=>{
     updateUiSetting(b.dataset.settingGroup,b.dataset.settingValue);
-    openModal('graphics');
-    showToast(`🎛️ ${b.dataset.settingGroup==='graphics'?'그래픽':'모션'} 설정이 적용되었습니다.`);
+    if(kind==='settings')showSettingsPage('motion');else openModal('motion');
+    showToast('🎞️ 게임 모션 속도가 적용되었습니다.');
   });
   document.querySelectorAll("[data-buy-warp]").forEach(b=>b.onclick=()=>{
     if(actionLocked)return;
@@ -1884,7 +2145,7 @@ function bindModal(kind){
     playWarpAnimation(w,()=>{
       if(type==="money")setMoney(money()-cost);else{state.points-=cost;state.pointsSpentTotal+=cost;}
       state.warpUses++;const prevWarp=d.level;d.prev_level=prevWarp;d.level=w;d.max_level=Math.max(d.max_level,w);d.status="SUCCESS";d.last_aux_effect="🚀 워프 완료";d.warpBoostLevel=activeResearchPower('warpTech',d);d.warpSaleLock=2;resetCombo(d);d._warpPrev=prevWarp;
-      unlockReachedWarps(d);save();render();spawnEnhanceBurst('#22d3ee',90,.18,.06,.70,'add');setTimeout(()=>spawnEnhanceBurst('#a855f7',70,.15,.055,.65,'add'),100);
+      unlockReachedWarps(d);save();render();
     },()=>{const prevWarp=Number(d._warpPrev??w);delete d._warpPrev;save();showToast(`🚀 ${w}단계 워프 완료 · 판매/경매 전 강화하기 2회 필요`);runMilestoneOnly(prevWarp,w,()=>setActionLocked(false));});
   });
 }
@@ -1939,24 +2200,17 @@ document.getElementById('quickShieldPointBuyBtn')?.addEventListener('click',()=>
 document.getElementById("berserkBtn")?.addEventListener("click",()=>enhance("berserk"));
 document.getElementById("sellBtn").onclick=sell;
 document.getElementById("auctionBtn")?.addEventListener("click",auction);
+document.getElementById('tearFeverBtn')?.addEventListener('click',activateTearFever);
 
 /* --------------------------- Lightweight visual compatibility ---------------------------
    V17.14 QA: the legacy Three.js path had no canvas and was never initialized.
    Keep only tiny compatibility helpers used by older call sites. */
-function syncSceneObject(){}
-function spawnEnhanceBurst(){ /* CSS/DOM cardBurst is the active particle renderer. */ }
-
 function playWarpAnimation(targetLevel,onShift,onComplete){
   cleanupTransientEffects();
   const motion=motionPreset();
-  if(motion==='low'){
-    if(typeof onShift==='function')onShift();
-    if(typeof onComplete==='function')requestAnimationFrame(onComplete);
-    return;
-  }
-  const old=document.getElementById('warpFxOverlay');if(old)old.remove();
+    const old=document.getElementById('warpFxOverlay');if(old)old.remove();
   const overlay=document.createElement('div');overlay.id='warpFxOverlay';overlay.className='warp-fx-overlay';
-  const warpStreakCount=motion==='medium'?Math.min(5,perfCount(24,7,4)):perfCount(24,7,4);
+  const warpStreakCount=motion==='high'?Math.min(4,perfCount(24,7,4)):motion==='medium'?Math.min(5,perfCount(24,7,4)):perfCount(24,7,4);
   overlay.innerHTML=`
     <div class="warp-fx-space"></div>
     <div class="warp-fx-streaks">${Array.from({length:warpStreakCount},(_,i)=>`<i style="--i:${i};--a:${i*(360/warpStreakCount)}deg"></i>`).join('')}</div>
@@ -1985,9 +2239,11 @@ function playWarpAnimation(targetLevel,onShift,onComplete){
 function screenShake(power=0.12, duration=.28){
   const target=document.getElementById('threeWrap');
   const motion=motionPreset();
-  if(!target||JION_PERF.reduced||motion==='low')return;
+  if(!target||JION_PERF.reduced)return;
   if(JION_PERF.mobile){power*=JION_PERF.lowPower?.45:.62;duration=Math.min(duration,.26);}
-  if(motion==='medium'){power*=.58;duration=Math.min(duration,.16);}
+  if(motion==='high'){duration=Math.min(duration,.16);}
+  else if(motion==='medium'){power*=.58;duration=Math.min(duration,.22);}
+  else{duration=Math.max(duration,.36);}
   const px=Math.max(2,Math.min(10,power*24));
   gsap.killTweensOf(target);
   gsap.fromTo(target,{x:-px,y:px*.45},{x:px,y:-px*.45,duration:.038,repeat:Math.max(2,Math.round(duration/.076)),yoyo:true,ease:'none',onComplete:()=>gsap.set(target,{x:0,y:0})});
@@ -1995,9 +2251,8 @@ function screenShake(power=0.12, duration=.28){
 function impactFlash(opacity=.75){
   const flash=document.getElementById('flashOverlay');
   const motion=motionPreset();
-  if(!flash||motion==='low')return;
+  if(!flash)return;
   flash.style.opacity='0';
-  if(motion==='medium')opacity*=.6;
   gsap.to(flash,{opacity:opacity,duration:.045,ease:'power4.out',yoyo:true,repeat:1,onComplete:()=>flash.style.opacity='0'});
 }
 /* V17.14 QA: removed unused legacy finalStageCinematic path. */
@@ -2014,8 +2269,7 @@ function animateFinal54To55(status, afterFinish=null){
   const flash=document.getElementById('flashOverlay');
   const shine=card?.querySelector('.card-shine');
   const motionMode=motionPreset();
-  if(motionMode==='low'){render();if(typeof afterFinish==='function')requestAnimationFrame(afterFinish);return;}
-  if(motionMode==='medium'){animateResult(status,afterFinish);return;}
+  if(JION_PERF.reduced){render();if(typeof afterFinish==='function')requestAnimationFrame(afterFinish);return;}
   if(!scene||!card||!motion){animateResult(status,afterFinish);return;}
 
   document.querySelectorAll('.final-common-cinematic').forEach(e=>e.remove());
@@ -2068,7 +2322,7 @@ function animateFinal54To55(status, afterFinish=null){
   const stampSub=stamp?.querySelector('span');
 
   const meta={
-    SUCCESS:['55단계 강화 성공','FINAL ASCENSION COMPLETE','#ffffff'],
+    SUCCESS:['55단계 강화 성공','최종 단계 달성','#ffffff'],
     FAILED:['강화 하락',`${MAX_LEVEL-2}단계로 하락`,'#ffffff'],
     DESTROYED:['캡슐 파괴','0단계로 붕괴','#ffffff'],
     HOLD:['강화 유지','54단계 유지','#ffffff'],
@@ -2088,6 +2342,12 @@ function animateFinal54To55(status, afterFinish=null){
     }
     if(stampTitle)stampTitle.textContent=meta[0];
     if(stampSub)stampSub.textContent=meta[1];
+    // The MAX-stage finale also receives the distinct animation for its actual result.
+    const finalFxLabels={FAILED:'하락',DESTROYED:'파괴',HOLD:'유지',SHIELD_SAVED:'방지권',CRITICAL:'크리티컬'};
+    const finalFxColors={FAILED:'#f97316',DESTROYED:'#ef4444',HOLD:'#a855f7',SHIELD_SAVED:'#3b82f6',CRITICAL:'#facc15'};
+    // 54→55 성공 시에만 나오던 파란색 결과 오버레이를 제거한다.
+    // 최종 시네마틱의 공통 연출과 나머지 결과 연출은 그대로 유지한다.
+    if(status!=='SUCCESS')resultFxHoldStyle(finalFxLabels[status]||'결과',finalFxColors[status]||'#ffffff',status);
     impactFlash(.98);
     screenShake(.56,.42);
     cardBurst('#ffffff',156,330);
@@ -2176,20 +2436,20 @@ function makeResultFx(className, html=''){
 }
 
 const HOLD_STYLE_LABELS={
-  SUCCESS:'SUCCESS',
-  FAILED:'DOWN',
-  DESTROYED:'DESTROYED',
-  HOLD:'HOLD',
-  CRITICAL:'CRITICAL',
-  SHIELD_SAVED:'SHIELD',
-  TEARS:'TEARS'
+  SUCCESS:'성공',
+  FAILED:'하락',
+  DESTROYED:'파괴',
+  HOLD:'유지',
+  CRITICAL:'크리티컬',
+  SHIELD_SAVED:'방지권',
+  TEARS:'눈물'
 };
 
 function resultFxHoldStyle(label,color,kind='hold'){
   const mp=motionPreset(),gp=graphicsPreset();
-  if(mp==='low'||gp==='low')return null;
+  if(gp==='low')return null;
   const normalizedKind=String(kind).toLowerCase();
-  const holdRingCount=mp==='medium'?Math.min(2,perfCount(5,3,2)):perfCount(5,3,2),holdTickCount=mp==='medium'?Math.min(6,perfCount(24,7,4)):perfCount(24,7,4);
+  const holdRingCount=mp==='high'?Math.min(2,perfCount(5,3,2)):mp==='medium'?Math.min(3,perfCount(5,3,2)):perfCount(5,3,2),holdTickCount=mp==='high'?Math.min(12,perfCount(24,7,4)):mp==='medium'?Math.min(18,perfCount(24,7,4)):perfCount(24,7,4);
   const rings=Array.from({length:holdRingCount},(_,i)=>`<div class="hold-ring h${i+1}"></div>`).join('');
   const ticks=Array.from({length:holdTickCount},(_,i)=>`<i class="hold-tick" style="--i:${i};--hold-count:${holdTickCount}"></i>`).join('');
   const fx=makeResultFx(`fx-hold fx-unified fx-unified-${normalizedKind}`,
@@ -2237,13 +2497,14 @@ function resultFxHoldStyle(label,color,kind='hold'){
   gsap.to(fx,{opacity:0,duration:.22,delay:.86,onComplete:()=>fx.remove()});
   return fx;
 }
-function resultFxSuccess(color){return resultFxHoldStyle('SUCCESS',color,'success');}
-function resultFxDown(color){return resultFxHoldStyle('DOWN',color,'down');}
-function resultFxHold(color){return resultFxHoldStyle('HOLD',color,'hold');}
-function resultFxCritical(color){return resultFxHoldStyle('CRITICAL',color,'critical');}
-function resultFxShield(color){return resultFxHoldStyle('SHIELD',color,'shield');}
-function resultFxDestroyed(color){return resultFxHoldStyle('DESTROYED',color,'destroyed');}
-function resultFxTears(){return resultFxHoldStyle('TEARS',RESULT_PARTICLE_COLORS.TEARS,'tears');}
+function resultFxSuccess(color){return resultFxHoldStyle('성공',color,'success');}
+function resultFxDown(color){return resultFxHoldStyle('하락',color,'down');}
+function resultFxHold(color){return resultFxHoldStyle('유지',color,'hold');}
+function resultFxCritical(color){return resultFxHoldStyle('크리티컬',color,'critical');}
+function resultFxShield(color){return resultFxHoldStyle('방지권',color,'shield');}
+function resultFxDestroyed(color){return resultFxHoldStyle('파괴',color,'destroyed');}
+function resultFxTears(){return resultFxHoldStyle('눈물',RESULT_PARTICLE_COLORS.TEARS,'tears');}
+
 
 function animateResult(status, afterFinish=null){
   const scene=document.getElementById('enhanceCardScene');
@@ -2290,8 +2551,7 @@ function animateResult(status, afterFinish=null){
     feedbackShown=true;
     commitVisual();
     resultFxHoldStyle(label,particleColor,kind);
-    feedbackForStatus(status,particleColor);
-    const scaledBurst=motionMode==='medium'?Math.max(8,Math.round(burstCount*.58)):burstCount;
+    const scaledBurst=motionMode==='high'?Math.max(6,Math.round(burstCount*.42)):motionMode==='medium'?Math.max(8,Math.round(burstCount*.58)):burstCount;
     if(scaledBurst)cardBurst(particleColor,scaledBurst,burstPower);
     if(flashAmount)impactFlash(flashAmount);
   };
@@ -2300,14 +2560,7 @@ function animateResult(status, afterFinish=null){
   if(glow)gsap.set(glow,{scale:.82,opacity:.06,background:particleColor,x:0,y:0});
   if(shine)gsap.set(shine,{x:'-70%'});
 
-  if(motionMode==='low'){
-    commitVisual();
-    if(glow){glow.style.opacity='0';glow.style.transform='none';}
-    if(flash)flash.style.opacity='0';
-    if(typeof afterFinish==='function')requestAnimationFrame(afterFinish);
-    return;
-  }
-
+  
   const finish=()=>{
     commitVisual();
     gsap.set(motion,{x:0,y:0,z:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'none'});
@@ -2321,7 +2574,6 @@ function animateResult(status, afterFinish=null){
     card.classList.add('card-motion-destroyed');
     if(sceneClass)scene.classList.add(sceneClass);
     resultFxHoldStyle(label,particleColor,kind);
-    feedbackForStatus(status,particleColor);
     playDestroyedCardSequence(card,glow,finish,particleColor,commitVisual);
     return;
   }
@@ -2399,13 +2651,11 @@ function animateResult(status, afterFinish=null){
   }
 }
 
-
-
 function resetGame(){
   if(actionLocked)return;
   const ok=window.confirm?.('현재 진행 상황과 연구소 파츠 데이터까지 모두 초기화할까요?') ?? true;
   if(!ok)return;
-  document.querySelectorAll('.card-draw-overlay,.berserk-roulette-overlay,.auction-roulette-overlay,.frenzy-event-overlay,.warp-fx-overlay,.system-choice-overlay,.result-fx-layer').forEach(e=>e.remove());
+  document.querySelectorAll('.berserk-roulette-overlay,.auction-roulette-overlay,.frenzy-event-overlay,.warp-fx-overlay,.system-choice-overlay,.result-fx-layer').forEach(e=>e.remove());
   cleanupTransientEffects();
   state=clone(INITIAL);
   save();
@@ -2490,7 +2740,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
   };
   bindButtonFx();
 
-  const numericIds=['money','points','shield','combo','frenzyValue','cardLevel','cardPrice','cardPoints','cardCost'];
+  const numericIds=['money','points','shield','combo','frenzyValue','tearValue','cardLevel','cardPrice','cardPoints','cardCost'];
   numericIds.forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     let prev=el.textContent;
@@ -2515,3 +2765,6 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
     stage.addEventListener('pointerleave',()=>{tx=0;ty=0;if(!raf)raf=requestAnimationFrame(apply);},{passive:true});
   }
 })();
+
+
+syncTearFeverTicker();
