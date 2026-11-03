@@ -7744,3 +7744,198 @@ body.odor-frenzy-active.tear-fever-active .app{background:radial-gradient(circle
 .shell{padding-top:84px!important}
 @media(max-width:900px){.shell{padding-top:64px!important}}
 @media(max-width:460px){.shell{padding-top:50px!important}}
+
+
+/* =============================================================
+   JINAM 3.0 — high-stage prism title, progressive card tremor,
+   stronger critical display, redesigned sale transfer effect.
+   ============================================================= */
+/* Level 50–55: rainbow text applies only to the card name. */
+.jinam-card-info:is([data-level="50"],[data-level="51"],[data-level="52"],[data-level="53"],[data-level="54"],[data-level="55"]) #cardName{
+  color:#fff!important;
+  background-image:linear-gradient(105deg,#ff6188 4%,#ffd76e 21%,#baff80 38%,#66e7ff 55%,#ae92ff 72%,#ff8bdf 90%,#ff6188 100%)!important;
+  background-size:220% 100%!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  filter:drop-shadow(0 0 8px rgba(199,160,255,.30));
+  animation:jinamRainbowTitle 5s linear infinite;
+}
+@keyframes jinamRainbowTitle{to{background-position:-220% 0}}
+/* Keep the tremor as a continuous idle effect, including on mobile. */
+.stage-tremor-layer.high-stage-tremor{
+  animation:highStageTremor var(--tremor-speed,.30s) steps(2,end) infinite!important;
+}
+html.jion-mobile-perf .stage-tremor-layer.high-stage-tremor{
+  animation:highStageTremor var(--tremor-speed,.30s) steps(2,end) infinite!important;
+  --tremor-x:1px!important;--tremor-x-neg:-1px!important;
+  --tremor-y:.7px!important;--tremor-y-neg:-.7px!important;
+}
+body.action-locked .stage-tremor-layer.high-stage-tremor,
+.enhance-card-scene.final-stage-cinematic .stage-tremor-layer.high-stage-tremor{
+  animation:none!important;transform:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .stage-tremor-layer.high-stage-tremor,html.jion-mobile-perf .stage-tremor-layer.high-stage-tremor,
+  .jinam-card-info #cardName{animation:none!important}
+}
+/* Make critical chance a full-width card with a clear 1-row x 2-column readout. */
+#probBox .prob-critical{
+  grid-column:1/-1!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;
+  gap:12px!important;min-height:54px!important;
+  padding:10px 13px!important;border-radius:13px!important;
+  border:1px solid rgba(250,204,21,.27)!important;
+  background:linear-gradient(115deg,rgba(180,115,25,.12),rgba(30,41,59,.55))!important;
+  text-align:left!important;letter-spacing:0!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.075)!important;
+}
+#probBox .prob-critical span{font-size:12px!important;font-weight:900!important;color:#fde68a!important;line-height:1.35}
+#probBox .prob-critical b{font-size:25px!important;font-weight:950!important;line-height:1!important;color:#facc15!important;white-space:nowrap;font-variant-numeric:tabular-nums}
+#probBox .prob-critical.disabled-critical{border-color:rgba(148,163,184,.15)!important;background:rgba(30,41,59,.36)!important}
+#probBox .prob-critical.disabled-critical span,#probBox .prob-critical.disabled-critical b{color:#94a3b8!important}
+#tearMeter #tearHint,#frenzyMeter #frenzyState,#tearMeter #tearState{display:none!important}
+#frenzyMeter .stage-status-progress-caption,#tearMeter .stage-status-progress-caption{justify-content:flex-end!important}
+/* Golden vault sale / card dissolves to light before payment confirmation. */
+.sell-transfer-fx{position:absolute;inset:0;z-index:85;pointer-events:none;display:grid;place-items:center;overflow:hidden;border-radius:inherit;isolation:isolate}
+.sell-transfer-fx::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(251,191,36,.16),rgba(1,8,20,.25) 58%,transparent);opacity:0;transition:opacity .3s}
+.sell-transfer-fx.is-transferring::before{opacity:1}
+.sell-transfer-scan{position:absolute;z-index:1;top:-30%;left:-12%;width:124%;height:17%;transform:translateY(-80%);background:linear-gradient(180deg,transparent,rgba(255,218,104,.05),rgba(255,237,177,.40),rgba(245,158,11,.07),transparent);filter:blur(4px)}
+.sell-transfer-fx.is-scanning .sell-transfer-scan{animation:jinamSellScan .75s ease-in both}
+@keyframes jinamSellScan{from{transform:translateY(-20%)}to{transform:translateY(760%)}}
+.sell-transfer-ring{position:absolute;z-index:2;left:50%;top:50%;width:min(250px,67%);aspect-ratio:1;border:2px solid rgba(253,224,71,.66);border-radius:50%;box-shadow:0 0 16px rgba(250,204,21,.45),inset 0 0 25px rgba(250,204,21,.19);opacity:0;transform:translate(-50%,-50%) scale(.5)}
+.sell-transfer-fx.is-transferring .sell-transfer-ring{animation:jinamSellRing .7s ease-out forwards}
+@keyframes jinamSellRing{0%{opacity:.8;transform:translate(-50%,-50%) scale(.45)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.75)}}
+.sell-transfer-sparks{position:absolute;inset:0;z-index:2;pointer-events:none}
+.sell-transfer-sparks i{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:#fde68a;box-shadow:0 0 9px #facc15;opacity:0;transform:translate(-50%,-50%)}
+.sell-transfer-fx.is-transferring .sell-transfer-sparks i{animation:jinamSellSpark .7s ease-out both;animation-delay:calc(var(--i)*12ms)}
+@keyframes jinamSellSpark{10%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--angle)) translateX(var(--range)) scale(.3)}}
+.sell-transfer-copy{z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 26px;border-radius:18px;border:1px solid rgba(250,204,21,.40);background:linear-gradient(145deg,rgba(33,25,13,.91),rgba(9,16,34,.93));box-shadow:0 14px 40px rgba(0,0,0,.28),0 0 30px rgba(245,158,11,.13);opacity:0;transform:translateY(12px) scale(.92);transition:opacity .23s ease,transform .23s ease}
+.sell-transfer-copy small{font-size:9px;color:#fcd34d;letter-spacing:.15em;font-weight:850}
+.sell-transfer-copy strong{font-size:clamp(20px,3vw,27px);color:#fff7ed;font-weight:950}
+.sell-transfer-copy span{font-size:clamp(16px,2.3vw,24px);color:#facc15;font-weight:950;white-space:nowrap}
+.sell-transfer-fx.is-complete .sell-transfer-copy{opacity:1;transform:translateY(0) scale(1)}
+@media(prefers-reduced-motion:reduce){.sell-transfer-scan,.sell-transfer-ring,.sell-transfer-sparks i{animation:none!important}.sell-transfer-fx .sell-transfer-copy{opacity:1!important;transform:none!important}}
+.core-upgrade-chance:empty{display:none!important}
+
+
+/* =============================================================
+   JINAM 3.1 — modest vertical compacting (critical, frenzy, tears)
+   ============================================================= */
+/* Keep the two-column critical layout, but reduce its vertical footprint. */
+#probBox .prob-critical{
+  min-height:44px!important;
+  padding:7px 12px!important;
+  gap:10px!important;
+  border-radius:12px!important;
+}
+#probBox .prob-critical span{font-size:11.5px!important;line-height:1.2!important}
+#probBox .prob-critical b{font-size:22px!important;line-height:1!important}
+
+/* Compact status panels gently; preserve all visible bonuses and controls. */
+#frenzyMeter .frenzy-hud-panel,
+#tearMeter .tears-hud-panel{padding:13px 14px 12px!important}
+#frenzyMeter .stage-status-value,
+#tearMeter .stage-status-value{
+  min-height:34px!important;
+  margin:7px 0 10px!important;
+}
+#frenzyMeter .stage-status-progress-caption,
+#tearMeter .stage-status-progress-caption{margin-bottom:6px!important}
+#frenzyMeter .stage-status-track,
+#tearMeter .stage-status-track{height:8px!important;margin-bottom:8px!important}
+#tearMeter .tear-benefits{gap:5px!important;margin:9px 0 1px!important}
+#tearMeter .tear-benefits span{padding:5px 5px!important}
+#tearMeter .tear-fever-btn{min-height:35px!important;margin-top:10px!important;padding:9px 10px!important}
+@media(max-width:760px){
+  #frenzyMeter .frenzy-hud-panel,
+  #tearMeter .tears-hud-panel{padding:7px 11px 8px!important}
+  #frenzyMeter .stage-status-value,
+  #tearMeter .stage-status-value{min-height:0!important;margin:2px 0 5px!important}
+  #frenzyMeter .stage-status-progress-caption,
+  #tearMeter .stage-status-progress-caption{margin-bottom:4px!important}
+  #frenzyMeter .stage-status-track,
+  #tearMeter .stage-status-track{height:6px!important;margin-bottom:5px!important}
+  #tearMeter .tear-benefits{gap:4px!important;margin:6px 0 0!important}
+  #tearMeter .tear-benefits span{padding:4px!important}
+  #tearMeter .tear-fever-btn{min-height:31px!important;margin-top:6px!important;padding:7px 10px!important}
+}
+
+
+/* ===========================================================
+   JINAM 3.2 · 55 RUN TIMER / ENHANCE HISTORY / ENDING CREDITS
+   =========================================================== */
+.run-timer-card{
+  position:relative;overflow:hidden;min-width:0;
+  border-radius:16px;border:1px solid rgba(125,211,252,.23);
+  background:radial-gradient(circle at 0 0,rgba(56,189,248,.11),transparent 65%),linear-gradient(150deg,rgba(18,30,48,.94),rgba(7,13,28,.95));
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 12px 25px rgba(0,0,0,.19);
+  padding:13px 14px 12px;display:flex;flex-direction:column;gap:8px;
+}
+.run-timer-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#38bdf8,transparent);opacity:.62;pointer-events:none}
+.run-timer-top{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;font-weight:900;color:#c7e9fd;letter-spacing:-.02em}
+.run-timer-spark{font-size:16px;color:#7dd3fc;margin-right:2px;vertical-align:-1px}
+.run-timer-state{font-size:9px;font-weight:800;letter-spacing:.07em;color:#94a3b8;border:1px solid rgba(148,163,184,.22);border-radius:99px;padding:3px 7px}
+.run-timer-value{display:block;letter-spacing:.025em;line-height:1.15;font-weight:950;font-size:clamp(26px,2.45vw,33px);font-variant-numeric:tabular-nums;color:#f8fafc;text-shadow:0 0 24px rgba(56,189,248,.15)}
+.run-timer-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:18px}
+.run-timer-footer small{font-size:9px;line-height:1.4;font-weight:650;color:#94a3b8}
+.run-timer-replay{background:rgba(56,189,248,.12);color:#bae6fd;border:1px solid rgba(125,211,252,.3);padding:5px 8px;border-radius:8px;cursor:pointer;font-size:9px;font-weight:850;white-space:nowrap}
+.run-timer-replay.hidden{display:none!important}
+.run-timer-card.is-running{border-color:rgba(56,189,248,.43)}
+.run-timer-card.is-running .run-timer-state{color:#67e8f9;border-color:rgba(103,232,249,.3)}
+.run-timer-card.is-complete{border-color:rgba(251,191,36,.42);background:radial-gradient(circle at top left,rgba(251,191,36,.13),transparent 70%),linear-gradient(150deg,rgba(32,26,34,.95),rgba(9,14,29,.95))}
+.run-timer-card.is-complete .run-timer-value,.run-timer-card.is-complete .run-timer-state{color:#fde68a}
+.run-timer-card.is-complete::before{background:linear-gradient(90deg,transparent,#fcd34d,transparent)}
+
+.enhance-history-list{margin-top:14px;display:grid;gap:7px;max-height:380px;overflow:auto;overscroll-behavior:contain;padding-right:3px}
+.enhance-history-entry{display:grid;grid-template-columns:65px minmax(0,1fr) minmax(82px,auto);align-items:center;gap:9px;min-height:60px;padding:10px 12px;border:1px solid rgba(148,163,184,.15);border-radius:12px;background:linear-gradient(135deg,rgba(30,41,59,.68),rgba(13,20,34,.86));}
+.history-result{display:grid;place-items:center;min-height:26px;padding:5px 7px;border-radius:8px;background:rgba(148,163,184,.13);color:#cbd5e1;font-size:10px;font-weight:900;white-space:nowrap}
+.enhance-history-entry.ok .history-result{color:#86efac;background:rgba(34,197,94,.13)}
+.enhance-history-entry.bad .history-result{color:#fca5a5;background:rgba(239,68,68,.12)}
+.history-transition,.history-amount{min-width:0;display:grid;gap:3px}
+.history-transition strong{font-size:13px;letter-spacing:-.03em;color:#f8fafc}
+.history-transition small,.history-amount small{font-size:9px;color:#94a3b8}
+.history-amount{text-align:right}
+.history-amount strong{font-size:11px;color:#f8fafc;white-space:nowrap}
+.enhance-history-empty{padding:23px 14px;text-align:center;color:#94a3b8;background:rgba(30,41,59,.45);border-radius:12px;font-size:12px}
+.history-detail-button{width:100%;margin-top:10px;border:1px solid rgba(148,163,184,.25);background:rgba(30,41,59,.63);color:#e2e8f0;font-size:11px;font-weight:800;padding:12px;border-radius:12px;cursor:pointer}
+.history-detail-button:hover{border-color:rgba(125,211,252,.55)}
+.history-summary article b{font-size:clamp(13px,1.4vw,17px)!important}
+
+.jinam-ending{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:22px 12px;background:rgba(1,5,16,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#f8fafc;isolation:isolate}
+.jinam-ending.hidden{display:none!important}
+.ending-atmosphere{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1;background:radial-gradient(circle at 52% 12%,rgba(139,92,246,.21),transparent 38%),radial-gradient(circle at 25% 90%,rgba(56,189,248,.1),transparent 45%)}
+.ending-atmosphere i{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(216,180,254,.2);box-shadow:0 0 90px rgba(168,85,247,.07);transform:translate(-50%,-50%)}
+.ending-atmosphere i:nth-child(1){width:440px;height:440px;animation:endingHalo 10s linear infinite}
+.ending-atmosphere i:nth-child(2){width:660px;height:660px;animation:endingHalo 15s linear infinite reverse;opacity:.65}
+.ending-atmosphere i:nth-child(3){width:920px;height:920px;opacity:.24}
+.ending-panel{position:relative;width:min(510px,100%);margin:auto;padding:20px 24px 24px;border:1px solid rgba(216,180,254,.34);border-radius:25px;background:linear-gradient(160deg,rgba(20,26,47,.97),rgba(7,11,27,.97));box-shadow:inset 0 1px rgba(255,255,255,.14),0 36px 100px rgba(0,0,0,.56);text-align:center;overflow:hidden}
+.ending-panel::before{content:"";position:absolute;left:15%;right:15%;top:0;height:2px;background:linear-gradient(90deg,transparent,#f0abfc,#7dd3fc,transparent);box-shadow:0 0 23px #a78bfa}
+.ending-show .ending-panel{animation:endingEnter .7s cubic-bezier(.16,1,.3,1) both}
+.ending-topline{display:flex;justify-content:space-between;align-items:center;color:#aeb9d1;font-size:9px;font-weight:850;letter-spacing:.16em}
+.ending-x{width:28px;height:28px;display:grid;place-items:center;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2);border-radius:50%;color:#e2e8f0;font-size:17px;cursor:pointer}
+.ending-emblem{position:relative;width:100px;height:100px;margin:3px auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;border:2px solid rgba(216,180,254,.6);border-radius:50%;background:radial-gradient(circle at 34% 20%,rgba(255,255,255,.20),transparent 34%),linear-gradient(145deg,rgba(126,34,206,.35),rgba(14,116,144,.2));box-shadow:inset 0 0 24px rgba(167,139,250,.3),0 0 52px rgba(192,132,252,.23)}
+.ending-emblem span{font-size:42px;font-weight:1000;letter-spacing:-.09em;line-height:1.05;background:linear-gradient(110deg,#fde68a,#fff,#f0abfc,#67e8f9);color:transparent;background-clip:text;-webkit-background-clip:text}
+.ending-emblem small{font-size:10px;color:#e9d5ff;font-weight:900;letter-spacing:.22em}
+.ending-small{font-size:9px;letter-spacing:.22em;font-weight:900;color:#c4b5fd}
+.ending-head h2{font-size:clamp(25px,6vw,33px);margin:7px 0 5px;font-weight:950;letter-spacing:-.045em}
+.ending-head p{font-size:12px;color:#aab7d0;margin:0 0 16px}
+.ending-time-box{border:1px solid rgba(192,132,252,.26);background:linear-gradient(145deg,rgba(76,29,149,.15),rgba(8,47,73,.19));border-radius:17px;padding:14px 12px 12px;display:grid;gap:6px}
+.ending-time-box small{font-size:11px;color:#d8b4fe;font-weight:750}
+.ending-time-box strong{font-size:clamp(36px,7vw,48px);font-weight:950;letter-spacing:.03em;line-height:1.15;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 30px rgba(216,180,254,.3)}
+.ending-time-box span{font-size:10px;color:#aab7d0}
+.ending-recap{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.ending-recap>div{display:grid;gap:4px;padding:11px 6px;border:1px solid rgba(148,163,184,.14);background:rgba(148,163,184,.055);border-radius:11px}
+.ending-recap small{font-size:9px;color:#94a3b8}.ending-recap strong{font-size:14px}
+.ending-credits{position:relative;height:105px;overflow:hidden;margin:14px 0 14px;mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.ending-credits-roll{display:flex;align-items:center;flex-direction:column;gap:7px;color:#b5c4da;font-size:10px;animation:endingCreditsRoll 16s linear infinite}
+.ending-credits-roll strong{color:#f5f3ff;font-size:19px;letter-spacing:.25em}.ending-credits-roll small{font-size:9px;color:#c4b5fd;letter-spacing:.2em}.ending-credits-thanks{color:#fde68a!important;letter-spacing:.14em;font-weight:900}
+.ending-continue{width:100%;min-height:45px;border-radius:13px;border:1px solid rgba(216,180,254,.48);background:linear-gradient(115deg,#6d28d9,#7c3aed,#155e75);color:#fff;font-size:13px;font-weight:900;box-shadow:0 14px 27px rgba(88,28,135,.32);cursor:pointer}
+.ending-x:focus-visible,.ending-continue:focus-visible,.run-timer-replay:focus-visible{outline:2px solid #7dd3fc;outline-offset:3px}
+body.ending-visible{overflow:hidden}
+@keyframes endingEnter{from{opacity:0;transform:translateY(24px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes endingHalo{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes endingCreditsRoll{from{transform:translateY(100px)}to{transform:translateY(-170px)}}
+@media(max-width:760px){.run-timer-card{padding:12px 13px}.run-timer-value{font-size:29px}.ending-panel{padding:16px 15px 18px}.ending-credits{height:90px}}
+@media(max-width:440px){.enhance-history-entry{grid-template-columns:56px minmax(0,1fr) minmax(74px,auto);gap:5px;padding:9px 8px}.history-transition strong{font-size:11px}.history-transition small,.history-amount small{font-size:8px}.history-amount strong{font-size:10px}.history-result{font-size:9px;padding:4px}.ending-time-box strong{font-size:36px}}
+@media(prefers-reduced-motion:reduce){.ending-show .ending-panel,.ending-atmosphere i,.ending-credits-roll{animation:none!important}}

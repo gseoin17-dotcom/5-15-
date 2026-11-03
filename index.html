@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>JINAM 2.9 | 냄새 강화 게임</title>
+  <title>JINAM 3.3 | 냄새 강화 게임</title>
   <meta name="theme-color" content="#070b16">
   <meta name="description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <link rel="canonical" href="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="JINAM">
-  <meta property="og:title" content="JINAM 2.9 | 냄새 강화 게임">
+  <meta property="og:title" content="JINAM 3.3 | 냄새 강화 게임">
   <meta property="og:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta property="og:url" content="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
@@ -20,10 +20,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="지냄 강화하기 게임 링크 썸네일">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="JINAM 2.9 | 냄새 강화 게임">
+  <meta name="twitter:title" content="JINAM 3.3 | 냄새 강화 게임">
   <meta name="twitter:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
-  <link rel="stylesheet" href="style.css?v=2.9-save-fix">
+  <link rel="stylesheet" href="style.css?v=3.3-ui">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
       <span class="intro-spark intro-spark-b"></span>
       <span class="intro-spark intro-spark-c"></span>
     </div>
-    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>2.8</span></h1>
+    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>3.3</span></h1>
     <button id="startGameBtn" class="intro-start-btn" type="button">
       <span>게임 시작</span><span aria-hidden="true">→</span>
     </button>
@@ -67,7 +67,7 @@
         </nav>
       </div>
       <div class="brand-block brand-logo brand-logo-centered brand-minimal" aria-label="JINAM">
-        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>2.8</span></span>
+        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>3.3</span></span>
       </div>
     </header>
 
@@ -93,7 +93,7 @@
         <div class="action-grid" id="mainActionGrid">
           <button id="enhanceBtn" class="glass-btn action-primary" type="button">강화하기</button>
           <button id="berserkBtn" class="glass-btn berserk-btn wide" type="button">광폭 강화 · 35단계 해금</button>
-          <div id="berserkInfo" class="berserk-info">35~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~5단계 랜덤 상승</div>
+          <div id="berserkInfo" class="berserk-info">30~48단계 전용 · 성공 --% · 파괴 --% · 성공 시 +2~5단계 랜덤 상승</div>
 <button id="sellBtn" class="glass-btn action-primary" type="button">판매하기</button>
           <button id="auctionBtn" class="glass-btn auction-btn auction-wide-btn wide" type="button">경매하기</button>
           <div id="auctionInfo" class="auction-info">강화한 냄새가 있으면 어느 단계에서든 경매할 수 있습니다.</div>
@@ -202,7 +202,7 @@
                   <small id="quickShieldPointPrice">0P</small>
                 </div>
               </div>
-              <small id="shieldQuickBuyHint">30단계부터 구매 가능</small>
+              <small id="shieldQuickBuyHint">20단계부터 구매 가능</small>
             </div>
           </div>
 
@@ -211,11 +211,11 @@
               <div class="stage-status-accent" aria-hidden="true"></div>
               <div class="frenzy-hud-topline stage-status-topline">
                 <span class="frenzy-hud-eyebrow stage-status-eyebrow"><i aria-hidden="true"></i> 지냄 폭주</span>
-                <span id="frenzyState" class="frenzy-hud-rank stage-status-rank">READY</span>
+                
               </div>
               <div class="frenzy-hud-value stage-status-value"><strong id="frenzyValue">0%</strong></div>
               <div class="frenzy-hud-progress-caption stage-status-progress-caption">
-                <span>JINAM FRENZY</span><span id="frenzyMeta">100%에서 발동</span>
+                <span id="frenzyMeta">100%에서 자동 발동</span>
               </div>
               <div class="frenzy-track stage-status-track" aria-hidden="true"><i id="frenzyFill"></i></div>
               <small id="frenzyHint">실패·유지·파괴 시 충전 · 100%에서 랜덤 이벤트</small>
@@ -227,23 +227,29 @@
               <div class="stage-status-accent" aria-hidden="true"></div>
               <div class="tears-hud-topline stage-status-topline">
                 <span class="tears-hud-eyebrow stage-status-eyebrow"><i aria-hidden="true"></i> 지냄 눈물</span>
-                <span id="tearState" class="tears-hud-rank stage-status-rank">CHARGE</span>
+                
               </div>
               <div class="tears-hud-value stage-status-value"><strong id="tearValue">0%</strong></div>
               <div class="tears-hud-progress-caption stage-status-progress-caption">
-                <span>TEAR FEVER</span><span id="tearMeta">100% 달성 후 발동</span>
+                <span id="tearMeta">100% 달성 후 발동</span>
               </div>
               <div class="tear-track stage-status-track" aria-hidden="true"><i id="tearFill"></i></div>
-              <small id="tearHint">성공 +2% · 크리티컬 +4% 충전 | 20초 동안 5가지 혜택</small>
+              
               <div class="tear-benefits" aria-label="피버타임 보너스">
                 <span>✦ 포인트 <b>×2</b></span>
-                <span>✦ 비용 <b>-30%</b></span>
-                <span>✦ 성공 <b>+6%p</b></span>
-                <span>✦ 파괴 <b>-5%p</b></span>
-                <span>✦ 크리티컬 <b>+5%p</b></span>
+                <span>✦ 비용 <b>-35%</b></span>
+                <span>✦ 성공 <b>+7%p</b></span>
+                <span>✦ 파괴 <b>-6%p</b></span>
+                <span>✦ 크리티컬 <b>+6%p</b></span>
               </div>
               <button id="tearFeverBtn" class="tear-fever-btn is-charging" type="button" aria-label="지냄 눈물 충전 중, 눌러서 안내 보기">💧 충전 중 · 0 / 100%</button>
             </div>
+          </div>
+
+          <div id="runTimerCard" class="run-timer-card" role="group" aria-label="55단계 강화 도전 타이머">
+            <div class="run-timer-top"><span><span class="run-timer-spark">◷</span> 55단계 도전 타이머</span><span id="runTimerState" class="run-timer-state">준비</span></div>
+            <strong id="runTimerValue" class="run-timer-value" role="timer" aria-live="off">00:00:00</strong>
+            <div class="run-timer-footer"><small id="runTimerHint">첫 강화 시 자동 시작</small><button id="runTimerReplay" type="button" class="run-timer-replay hidden">엔딩 다시 보기</button></div>
           </div>
         </div>
 
@@ -337,8 +343,33 @@
 </div>
 <div id="tearFeverBanner" class="tear-fever-banner" role="status" aria-live="polite">
   <div class="tear-fever-banner-top"><span>💜 JINAM TEARS · FEVER TIME</span><strong id="tearFeverTimer">20s</strong></div>
-  <div class="tear-fever-banner-benefits">포인트 ×2 · 비용 -30% · 성공 +6%p · 파괴 -5%p · 크리티컬 +5%p</div>
+  <div class="tear-fever-banner-benefits">포인트 ×2 · 비용 -35% · 성공 +7%p · 파괴 -6%p · 크리티컬 +6%p</div>
   <div class="tear-fever-duration-track"><i id="tearFeverDurationFill"></i></div>
+</div>
+<div id="jinamEnding" class="jinam-ending hidden" role="dialog" aria-modal="true" aria-labelledby="endingTitle" tabindex="-1">
+  <div class="ending-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="ending-panel">
+    <div class="ending-topline"><span>JINAM · FINAL CHAPTER</span><button id="endingCloseTop" class="ending-x" type="button" aria-label="엔딩 닫기">×</button></div>
+    <div class="ending-emblem" aria-hidden="true"><span>55</span><small>MAX</small></div>
+    <div class="ending-head">
+      <span class="ending-small">MISSION COMPLETE</span>
+      <h2 id="endingTitle">55단계 달성</h2>
+      <p>마지막 강화까지 도달했습니다.</p>
+    </div>
+    <div class="ending-time-box"><small>강화 완료까지 걸린 시간</small><strong id="endingTime">00:00:00</strong><span id="endingBest">최고 기록: --:--:--</span></div>
+    <div class="ending-recap"><div><small>이번 도전 강화 횟수</small><strong id="endingAttempts">0회</strong></div><div><small>총 55단계 클리어</small><strong id="endingTotalClears">1회</strong></div></div>
+    <div class="ending-credits" aria-label="엔딩 크레딧">
+      <div class="ending-credits-roll">
+        <small>THE END</small>
+        <strong>JINAM</strong>
+        <span>냄새의 끝, 55단계</span>
+        <span>강화의 모든 순간을 지나</span>
+        <span>마침내 최고 단계에 도착했습니다.</span>
+        <span class="ending-credits-thanks">THANK YOU FOR PLAYING</span>
+      </div>
+    </div>
+    <button id="endingCloseBtn" type="button" class="ending-continue">게임으로 돌아가기</button>
+  </div>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
@@ -379,7 +410,7 @@
 (function(){
   'use strict';
   // 다음 업데이트 때 이 값만 1.2, 1.3…으로 올리면 화면 전체에 반영됩니다.
-  const VERSION = '2.9';
+  const VERSION = '3.3';
   document.querySelectorAll('[data-jinam-version]').forEach(el=>el.textContent=VERSION);
   document.title = `JINAM ${VERSION} | 냄새 강화 게임`;
   const intro=document.getElementById('gameIntro');
@@ -404,6 +435,6 @@
   // Starting is a real user action; there is no timer or progress/loading screen.
 })();
 </script>
-<script defer src="game.js?v=2.9-save-fix"></script>
+<script defer src="game.js?v=3.3-ui"></script>
 </body>
 </html>
