@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>JINAM 3.3 | 냄새 강화 게임</title>
+  <title>JINAM 3.6 | 냄새 강화 게임</title>
   <meta name="theme-color" content="#070b16">
   <meta name="description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <link rel="canonical" href="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="JINAM">
-  <meta property="og:title" content="JINAM 3.3 | 냄새 강화 게임">
+  <meta property="og:title" content="JINAM 3.6 | 냄새 강화 게임">
   <meta property="og:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta property="og:url" content="https://gseoin17-dotcom.github.io/5-15-/">
   <meta property="og:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
@@ -20,10 +20,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="지냄 강화하기 게임 링크 썸네일">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="JINAM 3.3 | 냄새 강화 게임">
+  <meta name="twitter:title" content="JINAM 3.6 | 냄새 강화 게임">
   <meta name="twitter:description" content="냄새를 강화하고 55단계에 도전하는 웹 강화 게임.">
   <meta name="twitter:image" content="https://gseoin17-dotcom.github.io/5-15-/thumbnail_v1797_final.png">
-  <link rel="stylesheet" href="style.css?v=3.3-ui">
+  <link rel="stylesheet" href="style.css?v=3.6-ui">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
       <span class="intro-spark intro-spark-b"></span>
       <span class="intro-spark intro-spark-c"></span>
     </div>
-    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>3.3</span></h1>
+    <h1 id="gameIntroTitle">JINAM <span class="intro-version" data-jinam-version>3.6</span></h1>
     <button id="startGameBtn" class="intro-start-btn" type="button">
       <span>게임 시작</span><span aria-hidden="true">→</span>
     </button>
@@ -67,7 +67,7 @@
         </nav>
       </div>
       <div class="brand-block brand-logo brand-logo-centered brand-minimal" aria-label="JINAM">
-        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>3.3</span></span>
+        <span class="header-wordmark">JINAM <span class="header-version" data-jinam-version>3.6</span></span>
       </div>
     </header>
 
@@ -148,7 +148,6 @@
                   <span id="cardSerial"></span>
                   <span id="cardTier"></span>
                 </div>
-                <div class="card-shine"></div>
               </article>
               </div>
               </div>
@@ -263,61 +262,45 @@
       </div>
     </section>
 
-    <section id="labView" class="lab-view hidden" aria-label="냄새 연구소">
-      <div class="lab-page-shell">
-        <div class="lab-page-heading lab-page-heading-compact">
-          <div class="lab-sub-tabs" role="tablist" aria-label="연구소 기능 선택">
-            <button id="labUpgradeModeBtn" class="lab-sub-tab active" type="button" role="tab" aria-selected="true">⚙️ 코어 강화</button>
-            <button id="labFusionModeBtn" class="lab-sub-tab" type="button" role="tab" aria-selected="false">🔬 코어 융합</button>
+    <section id="labView" class="lab-view hidden" aria-label="지냄 코어 연구소">
+      <div class="lab-page-shell lab34-shell">
+        <header class="lab34-header">
+          <div class="lab34-brand">
+            <span class="lab34-emblem" aria-hidden="true">🧬</span>
+            <div><small>JINAM LABORATORY</small><h2>코어 연구소</h2><p>나만의 코어를 선택하고 강화하세요.</p></div>
           </div>
-          <div class="lab-page-wallet lab-point-wallet-only">
-            <span>⭐ 보유 포인트</span>
-            <strong id="labPointWallet">0P</strong>
+          <div class="lab34-summary">
+            <div class="lab34-progress-card"><small>성장한 코어</small><strong id="labCoreProgress">0 / 16</strong><div class="lab34-progress-track"><i id="labCoreProgressFill"></i></div></div>
+            <div class="lab-page-wallet lab-point-wallet-only"><span>보유 포인트</span><strong id="labPointWallet">0P</strong></div>
           </div>
-        </div>
-
-        <div id="labUpgradeSection" class="lab-upgrade-layout">
-          <aside class="lab-core-select-panel">
-            <div class="lab-upgrade-section-head"><h3>강화할 코어 선택</h3><span>16 CORE</span></div>
-            <div id="labCorePicker" class="lab-core-picker"></div>
+        </header>
+        <div id="labUpgradeSection" class="lab-upgrade-layout lab34-layout">
+          <aside class="lab-core-select-panel lab34-picker-panel">
+            <div class="lab34-panel-heading"><div><small>MY CORES</small><h3>코어 선택</h3></div><span>16종</span></div>
+            <div id="labCorePicker" class="lab-core-picker" aria-label="보유 코어 목록"></div>
           </aside>
-
-          <section class="lab-upgrade-machine-panel" aria-label="연구소 코어 강화 장치">
-            <div id="labUpgradeStage" class="lab-upgrade-stage">
+          <section class="lab-upgrade-machine-panel lab34-detail-panel" aria-label="코어 강화">
+            <div class="lab34-detail-eyebrow"><span>CORE UPGRADE</span><span id="labLevelBadge" class="lab34-level-badge">LV.0 / 5</span></div>
+            <div id="labUpgradeStage" class="lab-upgrade-stage lab34-stage">
               <div class="lab-stage-grid" aria-hidden="true"></div>
-              <div class="lab-stage-beam beam-a" aria-hidden="true"></div>
-              <div class="lab-stage-beam beam-b" aria-hidden="true"></div>
-              <div class="lab-stage-ring ring-a" aria-hidden="true"></div>
-              <div class="lab-stage-ring ring-b" aria-hidden="true"></div>
-              <div class="lab-stage-ring ring-c" aria-hidden="true"></div>
+              <div class="lab-stage-beam beam-a" aria-hidden="true"></div><div class="lab-stage-beam beam-b" aria-hidden="true"></div>
+              <div class="lab-stage-ring ring-a" aria-hidden="true"></div><div class="lab-stage-ring ring-b" aria-hidden="true"></div><div class="lab-stage-ring ring-c" aria-hidden="true"></div>
               <div id="labUpgradeParticles" class="lab-upgrade-particles" aria-hidden="true"></div>
-              <div id="labUpgradeCore" class="lab-upgrade-core">
-                <span id="labUpgradeIcon">🧬</span>
-                <i></i><i></i><i></i>
-              </div>
+              <div id="labUpgradeCore" class="lab-upgrade-core"><span id="labUpgradeIcon">🧬</span><i></i><i></i><i></i></div>
               <div id="labUpgradeFlash" class="lab-upgrade-flash" aria-hidden="true"></div>
               <div id="labUpgradeLevelUp" class="lab-upgrade-levelup" aria-live="polite"></div>
             </div>
-
-            <div class="lab-selected-core-title">
-              <small id="labSelectedSlot">CORE PART</small>
+            <div class="lab-selected-core-title lab34-selected-title">
+              <small id="labSelectedSlot">성공 확률 · Lv.0 / 5</small>
               <h2 id="labSelectedName">악취 촉매 코어</h2>
-              <div id="labSelectedMetric" class="lab-selected-metric"></div>
             </div>
             <div id="labSelectedLevels" class="lab-selected-levels"></div>
-            <div class="lab-upgrade-cost-card">
-              <span id="labUpgradeCostLabel">강화 비용 · 실패 시에도 소모</span>
-              <strong id="labUpgradeCost">0P</strong>
-              <small id="labUpgradeCostHint">포인트를 사용합니다</small>
-            </div>
-            <button id="labUpgradeBtn" class="glass-btn lab-upgrade-main-btn" type="button">⭐ 포인트로 강화</button>
-            <div id="labUpgradeStatus" class="lab-upgrade-status">강화할 코어를 선택하세요.</div>
+            <div id="labSelectedMetric" class="lab-selected-metric"></div>
+            <div class="lab-upgrade-cost-card"><span id="labUpgradeCostLabel">다음 코어 강화 비용</span><strong id="labUpgradeCost">0P</strong><small id="labUpgradeCostHint"></small></div>
+            <button id="labUpgradeBtn" class="glass-btn lab-upgrade-main-btn" type="button">코어 강화하기</button>
+            <div id="labUpgradeStatus" class="lab-upgrade-status" aria-live="polite"></div>
           </section>
         </div>
-
-        <section id="labFusionSection" class="lab-fusion-panel hidden" aria-label="코어 융합">
-          <div id="labFusionContent"></div>
-        </section>
       </div>
     </section>
 
@@ -410,7 +393,7 @@
 (function(){
   'use strict';
   // 다음 업데이트 때 이 값만 1.2, 1.3…으로 올리면 화면 전체에 반영됩니다.
-  const VERSION = '3.3';
+  const VERSION = '3.6';
   document.querySelectorAll('[data-jinam-version]').forEach(el=>el.textContent=VERSION);
   document.title = `JINAM ${VERSION} | 냄새 강화 게임`;
   const intro=document.getElementById('gameIntro');
@@ -435,6 +418,6 @@
   // Starting is a real user action; there is no timer or progress/loading screen.
 })();
 </script>
-<script defer src="game.js?v=3.3-ui"></script>
+<script defer src="game.js?v=3.6-ui"></script>
 </body>
 </html>

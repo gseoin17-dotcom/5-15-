@@ -93,16 +93,13 @@ const LEGACY_AUX_TO_RESEARCH = {
 };
 const LEGACY_V13_PRICE = {"0":0,"1":150,"2":400,"3":600,"4":800,"5":3000,"6":3500,"7":6100,"8":10000,"9":20000,"10":35100,"11":160000,"12":350000,"13":1000000,"14":3000000,"15":7500000,"16":14200000,"17":20000000,"18":30000000,"19":47500000,"20":68300000,"21":101000000,"22":160000000,"23":230000000,"24":300000000,"25":400000000,"26":1800000000,"27":2500000000,"28":5500000000,"29":10500000000,"30":20000000000,"31":45000000000,"32":90000000000,"33":200000000000,"34":500000000000,"35":1000000000000,"36":2500000000000,"37":6000000000000,"38":15000000000000,"39":35000000000000,"40":80000000000000,"41":180000000000000,"42":400000000000000,"43":900000000000000,"44":2000000000000000,"45":4500000000000000,"46":10000000000000000,"47":22000000000000000,"48":50000000000000000,"49":120000000000000000,"50":280000000000000000,"51":600000000000000000,"52":1300000000000000000,"53":3000000000000000000,"54":7000000000000000000,"55":15000000000000000000};
 const RESEARCH_MAX=5;
-const LAB_COST_MULTIPLIER=.55;
-const CORE_FUSION_MIN_LEVEL=5;
+const LAB_LOCK_LEVEL=50;
+const FRENZY_LOCK_LEVEL=45;
+const TEAR_LOCK_LEVEL=50; // 50~55단계에서는 지냄 눈물 사용 불가
+const LAB_COST_MULTIPLIER=.715; // JINAM 3.5: core upgrade prices +30% vs 3.4
+const LEGACY_LAB_V25_REFUND_MULTIPLIER=.55; // Preserve actual historical investment refund basis
 const CORE_FUSION_COST=300000;
 const CORE_FUSION_RESET_REFUND_RATE=.50;
-const CORE_FUSION_GRADES=[
-  {min:47,max:53,name:"PERFECT",boost:.30,label:"완벽 공명"},
-  {min:42,max:58,name:"GREAT",boost:.24,label:"고출력 공명"},
-  {min:34,max:66,name:"GOOD",boost:.18,label:"안정 공명"},
-  {min:24,max:76,name:"STABLE",boost:.12,label:"기본 공명"}
-];
 const RESEARCH_DATA={
   catalyst:{icon:"🧬",slot:"CORE",name:"악취 촉매 코어",desc:"강화 성공 확률을 높이는 고농축 촉매 코어.",effect:"성공 확률",unit:"+0.8%p",cost:[3000,9000,27000,80000,240000],success:[92,84,75,64,52]},
   safety:{icon:"🛡️",slot:"ARMOR",name:"안정화 실드 플레이트",desc:"파괴 에너지를 흡수해 일부를 유지 판정으로 전환합니다.",effect:"파괴 확률",unit:"-0.9%p",cost:[2500,7500,22000,65000,195000],success:[90,81,71,60,48]},
@@ -144,7 +141,7 @@ function normalizeFusionLinks(input,research={}){
   for(const raw of src){
     const a=String(raw?.a||''),b=String(raw?.b||'');
     if(!RESEARCH_DATA[a]||!RESEARCH_DATA[b]||a===b||used.has(a)||used.has(b))continue;
-    if((Number(research?.[a])||0)<CORE_FUSION_MIN_LEVEL||(Number(research?.[b])||0)<CORE_FUSION_MIN_LEVEL)continue;
+    if((Number(research?.[a])||0)<RESEARCH_MAX||(Number(research?.[b])||0)<RESEARCH_MAX)continue;
     const boost=Math.max(.12,Math.min(.30,Number(raw?.boost)||.12));
     const grade=boost>=.275?'PERFECT':boost>=.215?'GREAT':boost>=.15?'GOOD':'STABLE';
     const parsedCost=Number(raw?.cost);
@@ -155,7 +152,7 @@ function normalizeFusionLinks(input,research={}){
   return out;
 }
 const INITIAL = {
-  schemaVersion:47,
+  schemaVersion:48,
   enhanceAttempts:0,warpUses:0,sellCount:0,auctionCount:0,finalClears:0,frenzyTriggers:0,
   storageCount:0,storageSlots:normalizeStorageSlots(),
   points:0,lastPointReward:0,pointsEarnedTotal:0,pointsSpentTotal:0,
@@ -163,7 +160,7 @@ const INITIAL = {
   enhanceHistory:[],
   runTimer:{startedAt:0,finishedAt:0,lastDurationMs:0,bestDurationMs:0,clears:0,attempts:0},
   uiSettings:normalizeUiSettings({graphics:'high',motion:'medium'}),
-  runData:{level:0,prev_level:0,max_level:0,money:"200000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],fusionLinks:[],frenzyGauge:0,frenzyEvent:null,tearGauge:0,tearFeverUntil:0,warpBoostLevel:0,warpSaleLock:0,
+  runData:{level:0,prev_level:0,max_level:0,money:"200000",status:"READY",shield:0,combo:0,best_combo:0,last_aux_effect:"",research:emptyResearch(),equippedParts:[],frenzyGauge:0,frenzyEvent:null,tearGauge:0,tearFeverUntil:0,warpBoostLevel:0,warpSaleLock:0,
     unlocked_warps:Object.fromEntries(WARP_LEVELS.map(w=>[w,false]))}
 };
 
@@ -189,7 +186,7 @@ if(state.runData.level===MAX_LEVEL && state.runTimer.startedAt && !state.runTime
 }
 // Persist one-time refund marker immediately to prevent duplicate migration after a reload.
 try{
-  if(state.labV24Migrated||state.labV25Migrated){
+  if(state.labV24Migrated||state.labV25Migrated||state.labV34FusionRemoved){
     const prepared=JSON.stringify(state);
     localStorage.setItem('jion_smell_game_v3',prepared);
     localStorage.setItem('jion_smell_game_v3_backup',prepared);
@@ -202,13 +199,6 @@ let toastTimer = null;
 let actionLocked = false;
 let currentGameView = "enhance";
 let selectedLabPartKey = Object.keys(RESEARCH_DATA)[0] || "catalyst";
-let fusionSelectedKeys=[];
-let fusionGaugeRunning=false;
-let fusionGaugePosition=0;
-let fusionGaugeStartedAt=0;
-let fusionGaugeRaf=0;
-let fusionLastResult=null;
-let currentLabSubView='upgrade';
 let currentSettingsPage='home';
 let devMode = false;
 let delPressCount = 0;
@@ -270,14 +260,15 @@ function normalizeRunData(d){
   const validOwned=Object.keys(RESEARCH_DATA).filter(key=>out.research[key]>0);
   // V18 Classic: every owned core activates automatically; there is no manual equip button.
   out.equippedParts=[...validOwned];
-  out.fusionLinks=normalizeFusionLinks(out.fusionLinks,out.research);
+  // Former fusion links are only read once during 3.4 save migration.
+  delete out.fusionLinks;
   delete out.labPresets;
   delete out.labPresetNames;
 
   out.frenzyGauge=Math.max(0,Math.min(FRENZY_MAX,Number(out.frenzyGauge)||0));
   const ev=out.frenzyEvent;if(!ev||!FRENZY_EVENT_TYPES.includes(ev.type)||Number(ev.turns||0)<=0)out.frenzyEvent=null;else out.frenzyEvent={type:ev.type,turns:Math.max(1,Math.min(6,Number(ev.turns)||1)),maxTurns:Math.max(1,Math.min(6,Number(ev.maxTurns)||Number(ev.turns)||1)),label:String(ev.label||''),desc:String(ev.desc||'')};
   out.tearGauge=Math.max(0,Math.min(100,Number(out.tearGauge)||0));
-  out.tearFeverUntil=Math.max(0,Number(out.tearFeverUntil)||0);
+  out.tearFeverUntil=out.level>=TEAR_LOCK_LEVEL?0:Math.max(0,Number(out.tearFeverUntil)||0);
   out.warpSaleLock=Math.max(0,Math.min(6,Number(out.warpSaleLock)||0));
   out.warpBoostLevel=Math.max(0,Math.min(RESEARCH_MAX*1.5,Number(out.warpBoostLevel)||0));
   if(out.level===0){out.warpBoostLevel=0;out.warpSaleLock=0;}
@@ -337,7 +328,7 @@ function applyLabV25Migration(s,saved){
       ?Math.max(Number(research.saleOptimizer)||0,Number(research.resale)||0)
       :Number(research[item.key])||0;
     const level=Math.max(0,Math.min(RESEARCH_MAX,Math.floor(rawLevel)));
-    for(let i=0;i<level;i++)refunded+=Math.ceil(item.levels[i]*LAB_COST_MULTIPLIER/100)*100;
+    for(let i=0;i<level;i++)refunded+=Math.ceil(item.levels[i]*LEGACY_LAB_V25_REFUND_MULTIPLIER/100)*100;
   }
   for(const link of (Array.isArray(original.fusionLinks)?original.fusionLinks:[])){
     const a=link?.a==='resale'?'saleOptimizer':String(link?.a||'');
@@ -350,6 +341,21 @@ function applyLabV25Migration(s,saved){
     s.labV25Refund=refunded;
   }
   s.labV25Migrated=true;
+  return s;
+}
+
+// JINAM 3.4: retire core fusion. Refund only valid completed links once.
+function migrateFusionRemoval(s,saved){
+  if(saved?.labV34FusionRemoved){
+    s.labV34FusionRemoved=true;
+    delete s.runData.fusionLinks;
+    return s;
+  }
+  const active=normalizeFusionLinks(saved?.runData?.fusionLinks,s.runData.research);
+  const refund=active.reduce((sum,link)=>sum+Math.floor(link.cost*CORE_FUSION_RESET_REFUND_RATE),0);
+  if(refund>0){s.points=Math.max(0,Number(s.points)||0)+refund;s.labV34FusionRefund=refund;}
+  s.labV34FusionRemoved=true;
+  delete s.runData.fusionLinks;
   return s;
 }
 
@@ -383,13 +389,13 @@ function loadState(){
     const saved=readJinamSave();
     if(!saved)return clone(INITIAL);
     if(saved.schemaVersion>=15&&saved.runData){
-      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=47;
-      return cleanRemovedSystems(applyLabV25Migration(applyLabV24Migration(s,saved),saved));
+      const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=48;
+      return cleanRemovedSystems(migrateFusionRemoval(applyLabV25Migration(applyLabV24Migration(s,saved),saved),saved));
     }
     if(saved.schemaVersion>=13&&saved.runData){
       const s=Object.assign(clone(INITIAL),saved);s.runData=normalizeRunData(saved.runData);s.uiSettings=normalizeUiSettings(saved.uiSettings);
       if(saved.schemaVersion<14)s.runData.money=scaleLegacyMoney(saved.runData.money,s.runData.max_level||s.runData.level).toString();
-      if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=47;return cleanRemovedSystems(applyLabV25Migration(applyLabV24Migration(s,saved),saved));
+      if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';s.schemaVersion=48;return cleanRemovedSystems(migrateFusionRemoval(applyLabV25Migration(applyLabV24Migration(s,saved),saved),saved));
     }
     const s=Object.assign(clone(INITIAL),saved),a=(saved.seasonData||{})[1]||{},b=(saved.seasonData||{})[2]||{};
     const bMax=Math.max(0,Number(b.max_level)||0),bLevel=Math.max(0,Number(b.level)||0),hadSecond=Number(saved.rebirthCount)>0||bMax>0||bLevel>0||Number(saved.currentSeason)===2;
@@ -398,10 +404,11 @@ function loadState(){
     s.runData=normalizeRunData(Object.assign({},src,{level:currentUnified,prev_level:currentUnified,max_level:maxUnified,auxInventory:legacyAux}));
     const oldCombined=toMoneyInt(a.money||0)+toMoneyInt(b.money||0);s.runData.money=scaleLegacyMoney(oldCombined,maxUnified||currentUnified).toString();s.runData.shield=Math.min(SHIELD_MAX,(Number(a.shield)||0)+(Number(b.shield)||0));s.runData.unlocked_warps=clone(INITIAL.runData.unlocked_warps);for(const w of WARP_LEVELS)if(maxUnified>=w)s.runData.unlocked_warps[w]=true;
     s.uiSettings=normalizeUiSettings(saved.uiSettings);if(Number(saved.schemaVersion||0)<40)s.uiSettings.motion='medium';
-    s.schemaVersion=47;return cleanRemovedSystems(applyLabV25Migration(applyLabV24Migration(s,saved),saved));
+    s.schemaVersion=48;return cleanRemovedSystems(migrateFusionRemoval(applyLabV25Migration(applyLabV24Migration(s,saved),saved),saved));
   }catch(e){return clone(INITIAL);}
 }
 function save(){
+  stopTearFeverAtLimit(state.runData);
   // Keep the most recent good snapshot separately before replacing the active save.
   let serialized;
   try{serialized=JSON.stringify(state);}catch(err){console.error('[JINAM] Cannot serialize save:',err);return false;}
@@ -501,19 +508,14 @@ function equippedResearchKeys(d=state.runData){
   return keys;
 }
 function isResearchEquipped(key,d=state.runData){return researchLevel(key,d)>0&&equippedResearchKeys(d).includes(String(key));}
-function activeResearchLevel(key,d=state.runData){return Number(d?.level)>=51?0:(isResearchEquipped(key,d)?researchLevel(key,d):0);}
-function fusionLinkForCore(key,d=state.runData){return (Array.isArray(d?.fusionLinks)?d.fusionLinks:[]).find(link=>link?.a===key||link?.b===key)||null;}
-function fusionBonusForCore(key,d=state.runData){const link=fusionLinkForCore(key,d);return link?Math.max(0,Math.min(.30,Number(link.boost)||0)):0;}
-function activeResearchPower(key,d=state.runData){
-  const lv=activeResearchLevel(key,d);
-  return lv>0?lv*(1+fusionBonusForCore(key,d)):0;
-}
+function activeResearchLevel(key,d=state.runData){return Number(d?.level)>=LAB_LOCK_LEVEL?0:(isResearchEquipped(key,d)?researchLevel(key,d):0);}
+function activeResearchPower(key,d=state.runData){return activeResearchLevel(key,d);}
 function equippedPartCount(d=state.runData){return equippedResearchKeys(d).length;}
 function researchCost(key,d=state.runData){const lv=researchLevel(key,d),cfg=RESEARCH_DATA[key];if(!cfg||lv>=RESEARCH_MAX)return null;const base=Number(cfg.cost[lv]||0);return Math.ceil(base*LAB_COST_MULTIPLIER/100)*100;}
 function labUpgradeOdds(key,lv=researchLevel(key)){const cfg=RESEARCH_DATA[key],idx=Math.max(0,Math.min(RESEARCH_MAX-1,Number(lv)||0));const success=Math.max(0,Math.min(100,Number(cfg?.success?.[idx]??100)));return {success,hold:100-success};}
 function labUpgradeOddsText(key,lv=researchLevel(key)){const o=labUpgradeOdds(key,lv);return `성공 ${o.success}% · 유지 ${o.hold}%`;}
 function labUpgradeScheduleText(key){const cfg=RESEARCH_DATA[key];if(!cfg)return '';return cfg.success.map((v,i)=>`Lv.${i+1} ${v}%/${100-v}%`).join(' · ');}
-function currentFrenzyEvent(d=state.runData){if(Number(d?.level)>=50)return null;const ev=d.frenzyEvent;return ev&&FRENZY_EVENT_TYPES.includes(ev.type)&&Number(ev.turns||0)>0?ev:null;}
+function currentFrenzyEvent(d=state.runData){if(Number(d?.level)>=FRENZY_LOCK_LEVEL)return null;const ev=d.frenzyEvent;return ev&&FRENZY_EVENT_TYPES.includes(ev.type)&&Number(ev.turns||0)>0?ev:null;}
 function frenzyEventIs(type,d=state.runData){return currentFrenzyEvent(d)?.type===type;}
 function stagePointMultiplier(d=state.runData){return (1+activeResearchPower('insight',d)*.07)*(frenzyEventIs('points',d)?2:1)*(tearFeverActive(d)?2:1);}
 function stageSellPercent(d=state.runData){return 100;}
@@ -556,12 +558,14 @@ function warpMoneyCost(lvl,d=state.runData){
   return reduced;
 }
 function shieldPointCost(lvl,d=state.runData){
-  return Math.max(1,Math.round(basePointReward(lvl)*7));
+  // JINAM 3.5: 7x -> 9.1x base points (+30%).
+  return Math.max(1,Math.round(basePointReward(lvl)*9.1));
 }
 
 function shieldMoneyCost(lvl,d=state.runData){
-  const scaled=(baseEnhanceCost(lvl)*450n+99n)/100n;
-  return scaled>75000n?scaled:75000n;
+  // JINAM 3.5: 4.5x -> 5.85x enhance cost (+30%), minimum 97,500.
+  const scaled=(baseEnhanceCost(lvl)*585n+99n)/100n;
+  return scaled>97500n?scaled:97500n;
 }
 function finalBalanceProbabilities(base,lvl=level()){
   return base.map(Number);
@@ -618,7 +622,7 @@ function consumeFrenzyEventTurn(previousEvent,d=state.runData){
   if(d.frenzyEvent.turns<=0)d.frenzyEvent=null;
 }
 function addFrenzyCharge(amount,d=state.runData){
-  if(Number(d?.level)>=50){d.frenzyGauge=0;d.frenzyEvent=null;return null;}
+  if(Number(d?.level)>=FRENZY_LOCK_LEVEL){d.frenzyGauge=0;d.frenzyEvent=null;return null;}
   if(amount<=0)return null;
   d.frenzyGauge=Math.min(FRENZY_MAX,(Number(d.frenzyGauge)||0)+amount);
   if(d.frenzyGauge>=FRENZY_MAX&&!currentFrenzyEvent(d)){
@@ -634,7 +638,7 @@ function frenzyChargeForStatus(status,d=state.runData){
   return baseGain>0?Math.max(1,Math.round(baseGain*chargeMult)):0;
 }
 function updateFrenzyAfterEnhance(status,previousEvent,d=state.runData){
-  if(Number(d?.level)>=50){d.frenzyGauge=0;d.frenzyEvent=null;return null;}
+  if(Number(d?.level)>=FRENZY_LOCK_LEVEL){d.frenzyGauge=0;d.frenzyEvent=null;return null;}
   consumeFrenzyEventTurn(previousEvent,d);
   if(Number(d.frenzyGauge||0)>=FRENZY_MAX&&!currentFrenzyEvent(d)){d.frenzyGauge=0;return activateRandomFrenzyEvent(d);}
   return addFrenzyCharge(frenzyChargeForStatus(status,d),d);
@@ -642,22 +646,35 @@ function updateFrenzyAfterEnhance(status,previousEvent,d=state.runData){
 const TEAR_MAX=100;
 const TEAR_FEVER_DURATION=20000;
 let tearFeverInterval=null;
-function tearFeverActive(d=state.runData){return Number(d?.tearFeverUntil||0)>Date.now();}
-function tearFeverRemaining(d=state.runData){return Math.max(0,Number(d?.tearFeverUntil||0)-Date.now());}
+function tearFeverActive(d=state.runData){
+  return Number(d?.level)<TEAR_LOCK_LEVEL && Number(d?.tearFeverUntil||0)>Date.now();
+}
+function tearFeverRemaining(d=state.runData){
+  return Number(d?.level)>=TEAR_LOCK_LEVEL?0:Math.max(0,Number(d?.tearFeverUntil||0)-Date.now());
+}
+function stopTearFeverAtLimit(d=state.runData){
+  if(Number(d?.level)<TEAR_LOCK_LEVEL)return false;
+  const wasRunning=Number(d.tearFeverUntil||0)>0;
+  d.tearFeverUntil=0;
+  if(tearFeverInterval!==null){clearInterval(tearFeverInterval);tearFeverInterval=null;}
+  return wasRunning;
+}
 function tearChargeForSuccess(status,isCritical=false){
   if(isCritical||status==='CRITICAL')return 4;
   if(status==='SUCCESS')return 2;
   return 0;
 }
 function addTearCharge(amount,d=state.runData){
-  if(amount<=0||tearFeverActive(d))return;
+  if(Number(d?.level)>=TEAR_LOCK_LEVEL||amount<=0||tearFeverActive(d))return;
   d.tearGauge=Math.min(TEAR_MAX,Math.max(0,Number(d.tearGauge)||0)+amount);
 }
 function updateTearAfterEnhance(status,d=state.runData,isCritical=false){
+  if(stopTearFeverAtLimit(d))return; // 49→50 이상 진입 시 즉시 종료
+  if(Number(d?.level)>=TEAR_LOCK_LEVEL)return; // 50단계 이상 충전 불가
   addTearCharge(tearChargeForSuccess(status,isCritical)*(1+activeResearchPower('tearCondenser',d)*.15),d);
 }
 function canActivateTearFever(d=state.runData){
-  return !tearFeverActive(d)&&Math.max(0,Number(d?.tearGauge)||0)>=TEAR_MAX;
+  return Number(d?.level)<TEAR_LOCK_LEVEL&&!tearFeverActive(d)&&Math.max(0,Number(d?.tearGauge)||0)>=TEAR_MAX;
 }
 function syncTearFeverTicker(){
   const active=tearFeverActive(state.runData);
@@ -678,6 +695,7 @@ function syncTearFeverTicker(){
 function activateTearFever(){
   const d=state.runData;
   if(actionLocked){showToast('강화 연출이 끝난 후 다시 눌러주세요.');return;}
+  if(Number(d.level)>=TEAR_LOCK_LEVEL){stopTearFeverAtLimit(d);showToast('💜 지냄 눈물은 50단계부터 사용할 수 없습니다.');render();return;}
   if(tearFeverActive(d)){showToast('💜 지냄 눈물 피버타임 진행 중');return;}
   if((Number(d.tearGauge)||0)<TEAR_MAX){showToast(`💜 지냄 눈물 ${Math.floor(d.tearGauge||0)}% · 성공으로 100%를 채우면 발동할 수 있어요`);return;}
   d.tearGauge=0;
@@ -871,7 +889,7 @@ function syncActionButtons(){
   const quickPointBuy=document.getElementById('quickShieldPointBuyBtn');
   if(quickPointBuy)quickPointBuy.disabled=actionLocked||level()<SHIELD_PURCHASE_LEVEL||shield()>=SHIELD_MAX||state.points<shieldPointCost(level());
   document.querySelectorAll("[data-modal]").forEach(b=>b.disabled=actionLocked);
-  document.querySelectorAll("[data-game-view]").forEach(b=>{b.disabled=actionLocked||(b.dataset.gameView==='lab'&&level()>=51);});
+  document.querySelectorAll("[data-game-view]").forEach(b=>{b.disabled=actionLocked||(b.dataset.gameView==='lab'&&level()>=LAB_LOCK_LEVEL);});
   const reset=document.getElementById("resetBtn");if(reset)reset.disabled=actionLocked;
 }
 
@@ -1126,6 +1144,7 @@ function enhance(mode="normal"){
       add+=1;appendAuxEffect("💣 변이 코어 추가 +1단계");
     }
     d.level=Math.min(MAX_LEVEL,d.level+add);d.status=status;d.max_level=Math.max(d.max_level,d.level);state.enhanceSuccesses++;if(isCritical)state.criticalCount++;
+    stopTearFeverAtLimit(d); // 보너스 정산 전에 피버를 종료해 50+단계 효과를 차단
     let mult=registerEnhanceSuccess(d);
     rewardPoints(d.level,mult);
     updateTearAfterEnhance(d.status,d,isCritical);
@@ -1366,6 +1385,7 @@ function updateStageBackground(l=level()){
 
 function render(){
   const d=data(),sd=state.runData,l=level();
+  stopTearFeverAtLimit(sd);
   updateStageBackground(l);
   if(currentGameView==='lab')renderLabView();
   if(currentGameView==='storage')renderStorageView();
@@ -1391,16 +1411,16 @@ function render(){
     const hint=document.getElementById('shieldQuickBuyHint');
     if(hint)hint.textContent=l<SHIELD_PURCHASE_LEVEL?`${SHIELD_PURCHASE_LEVEL}단계부터 구매 가능`:shield()>=SHIELD_MAX?'방지권 최대 보유': '빠른 구매 · 버튼 옆 가격 확인';
   }
-  const labTab=document.querySelector('[data-game-view="lab"]');if(labTab){const closed=level()>=51;labTab.disabled=closed;labTab.classList.toggle('system-locked',closed);labTab.textContent=closed?'🔒 연구소':'연구소';}
+  const labTab=document.querySelector('[data-game-view="lab"]');if(labTab){const closed=level()>=LAB_LOCK_LEVEL;labTab.disabled=closed;labTab.classList.toggle('system-locked',closed);labTab.textContent=closed?'🔒 연구소':'연구소';}
   const frenzyMeter=document.getElementById('frenzyMeter'),frenzyFill=document.getElementById('frenzyFill'),frenzyValue=document.getElementById('frenzyValue'),frenzyHint=document.getElementById('frenzyHint'),frenzyState=document.getElementById('frenzyState'),frenzyMeta=document.getElementById('frenzyMeta'),activeFrenzy=currentFrenzyEvent(sd);
   const frenzyPct=Math.max(0,Math.min(FRENZY_MAX,Number(sd.frenzyGauge)||0));
-  const frenzyClosed=level()>=50;
+  const frenzyClosed=level()>=FRENZY_LOCK_LEVEL;
   if(frenzyClosed){sd.frenzyGauge=0;sd.frenzyEvent=null;}
   if(frenzyFill)frenzyFill.style.width=(frenzyClosed?0:frenzyPct)+'%';
   if(frenzyValue)frenzyValue.textContent=frenzyClosed?'OFF':activeFrenzy?`ACTIVE · ${activeFrenzy.turns}회`:`${Math.round(frenzyPct)}%`;
   if(frenzyState)frenzyState.textContent=frenzyClosed?'OFF':activeFrenzy?'ACTIVE':frenzyPct>=100?'READY':'CHARGE';
   if(frenzyMeta)frenzyMeta.textContent=frenzyClosed?'시스템 종료':activeFrenzy?`${activeFrenzy.turns}회 남음`:'100%에서 자동 발동';
-  if(frenzyHint)frenzyHint.textContent=frenzyClosed?'50단계부터 지냄 폭주 종료':activeFrenzy?`${activeFrenzy.label.replace(/^\S+\s*/,'')} · ${activeFrenzy.desc}`:'실패·유지·파괴 시 충전 · 100%에서 랜덤 이벤트';
+  if(frenzyHint)frenzyHint.textContent=frenzyClosed?'45단계부터 지냄 폭주 종료':activeFrenzy?`${activeFrenzy.label.replace(/^\S+\s*/,'')} · ${activeFrenzy.desc}`:'실패·유지·파괴 시 충전 · 100%에서 랜덤 이벤트';
   if(frenzyMeter){frenzyMeter.classList.toggle('active',!!activeFrenzy&&!frenzyClosed);frenzyMeter.classList.toggle('system-off',frenzyClosed);}
   document.body.classList.toggle('odor-frenzy-active',!!activeFrenzy&&!frenzyClosed);
   const frenzyBanner=document.getElementById('odorFrenzyBanner');
@@ -1412,18 +1432,24 @@ function render(){
   if(frenzyBannerBonus)frenzyBannerBonus.textContent=activeFrenzy?`${activeFrenzy.label} · ${activeFrenzy.desc}`:'랜덤 강화 효과 적용 중';
   if(frenzyBannerFill)frenzyBannerFill.style.width=`${activeFrenzy?Math.round(activeFrenzy.turns/Math.max(1,activeFrenzy.maxTurns||activeFrenzy.turns)*100):0}%`;
   const tearMeter=document.getElementById('tearMeter'),tearFill=document.getElementById('tearFill'),tearValue=document.getElementById('tearValue'),tearHint=document.getElementById('tearHint'),tearState=document.getElementById('tearState'),tearMeta=document.getElementById('tearMeta'),tearBtn=document.getElementById('tearFeverBtn');
-  const tearGauge=Math.max(0,Math.min(TEAR_MAX,Number(sd.tearGauge)||0)),tearActive=tearFeverActive(sd),tearRemaining=Math.ceil(tearFeverRemaining(sd)/1000);
-  if(tearFill)tearFill.style.width=(tearActive?100:tearGauge)+'%';
-  if(tearValue)tearValue.textContent=tearActive?`FEVER ${tearRemaining}s`:`${Math.round(tearGauge)}%`;
-  if(tearState)tearState.textContent=tearActive?'ACTIVE':tearGauge>=TEAR_MAX?'READY':'CHARGE';
-  if(tearMeta)tearMeta.textContent=tearActive?`${tearRemaining}초 남음`:tearGauge>=TEAR_MAX?'버튼을 눌러 발동':'100% 달성 후 발동';
-  if(tearMeter){tearMeter.classList.toggle('active',tearActive);tearMeter.classList.toggle('ready',!tearActive&&tearGauge>=TEAR_MAX);}
+  const tearClosed=l>=TEAR_LOCK_LEVEL;
+  const tearGauge=Math.max(0,Math.min(TEAR_MAX,Number(sd.tearGauge)||0)),tearActive=!tearClosed&&tearFeverActive(sd),tearRemaining=tearClosed?0:Math.ceil(tearFeverRemaining(sd)/1000);
+  if(tearFill)tearFill.style.width=tearClosed?'0%':(tearActive?100:tearGauge)+'%';
+  if(tearValue)tearValue.textContent=tearClosed?'OFF':tearActive?`FEVER ${tearRemaining}s`:`${Math.round(tearGauge)}%`;
+  if(tearState)tearState.textContent=tearClosed?'OFF':tearActive?'ACTIVE':tearGauge>=TEAR_MAX?'READY':'CHARGE';
+  if(tearMeta)tearMeta.textContent=tearClosed?'50단계부터 사용 불가':tearActive?`${tearRemaining}초 남음`:tearGauge>=TEAR_MAX?'버튼을 눌러 발동':'100% 달성 후 발동';
+  if(tearHint&&tearClosed)tearHint.textContent='50단계부터 지냄 눈물 사용 불가';
+  if(tearMeter){
+    tearMeter.classList.toggle('active',tearActive);
+    tearMeter.classList.toggle('ready',!tearClosed&&!tearActive&&tearGauge>=TEAR_MAX);
+    tearMeter.classList.toggle('system-off',tearClosed);
+  }
   if(tearBtn){
-    tearBtn.disabled=tearActive;
-    tearBtn.classList.toggle('is-ready',!tearActive&&tearGauge>=TEAR_MAX);
-    tearBtn.classList.toggle('is-charging',!tearActive&&tearGauge<TEAR_MAX);
-    tearBtn.setAttribute('aria-label',tearActive?`피버타임 진행 중 ${tearRemaining}초`:tearGauge>=TEAR_MAX?'지냄 눈물 피버타임 발동':`지냄 눈물 ${Math.round(tearGauge)}퍼센트 충전 중, 눌러서 안내 보기`);
-    tearBtn.textContent=tearActive?`💜 피버타임 진행 중 · ${tearRemaining}s`:tearGauge>=TEAR_MAX?'💜 지금 피버타임 발동!':`💧 충전 중 · ${Math.round(tearGauge)} / 100%`;
+    tearBtn.disabled=tearClosed||tearActive;
+    tearBtn.classList.toggle('is-ready',!tearClosed&&!tearActive&&tearGauge>=TEAR_MAX);
+    tearBtn.classList.toggle('is-charging',!tearClosed&&!tearActive&&tearGauge<TEAR_MAX);
+    tearBtn.setAttribute('aria-label',tearClosed?'50단계부터 지냄 눈물 사용 불가':tearActive?`피버타임 진행 중 ${tearRemaining}초`:tearGauge>=TEAR_MAX?'지냄 눈물 피버타임 발동':`지냄 눈물 ${Math.round(tearGauge)}퍼센트 충전 중, 눌러서 안내 보기`);
+    tearBtn.textContent=tearClosed?'💜 지냄 눈물 사용 불가':tearActive?`💜 피버타임 진행 중 · ${tearRemaining}s`:tearGauge>=TEAR_MAX?'💜 지금 피버타임 발동!':`💧 충전 중 · ${Math.round(tearGauge)} / 100%`;
   }
   document.body.classList.toggle('tear-fever-active',tearActive);
   const banner=document.getElementById('tearFeverBanner');
@@ -1431,7 +1457,7 @@ function render(){
   const durationFill=document.getElementById('tearFeverDurationFill');
   if(banner)banner.classList.toggle('show',tearActive);
   if(timerText)timerText.textContent=`${tearRemaining}s`;
-  if(durationFill)durationFill.style.width=`${Math.max(0,tearFeverRemaining(sd)/TEAR_FEVER_DURATION*100)}%`;
+  if(durationFill)durationFill.style.width=tearClosed?'0%':`${Math.max(0,tearFeverRemaining(sd)/TEAR_FEVER_DURATION*100)}%`;
   syncTearFeverTicker();
   paintRunTimer();
   const activeEl=document.getElementById("auxActive"),activeHint=document.getElementById("auxHint"),equippedCount=equippedPartCount(sd);if(activeEl)activeEl.textContent=`${equippedCount}개 적용`;if(activeHint){activeHint.textContent='강화한 코어 효과 자동 적용';activeHint.classList.remove('hidden');}
@@ -1840,14 +1866,14 @@ const RESEARCH_GROUPS=[
 ];
 function labCorePickerHTML(){
   const d=state.runData;
-  return RESEARCH_GROUPS.map(group=>`<div class="lab-core-group-heading"><b>${group.title}</b><small>${group.hint}</small></div>`+group.keys.map(key=>{
+  return RESEARCH_GROUPS.map(group=>`<div class="lab-core-group-heading lab34-group-heading"><b>${group.title}</b></div>`+group.keys.map(key=>{
     const cfg=RESEARCH_DATA[key];if(!cfg)return '';
-    const lv=researchLevel(key,d),selected=key===selectedLabPartKey,link=fusionLinkForCore(key,d);
-    const value=lv?researchEffectValueText(key,lv):'아직 효과 없음';
-    return `<button class="lab-core-choice lab-core-simple ${selected?'selected':''} ${lv?'owned':''} ${lv===RESEARCH_MAX?'maxed':''}" type="button" data-lab-select="${key}" aria-pressed="${selected}">
+    const lv=researchLevel(key,d),selected=key===selectedLabPartKey;
+    const value=lv?researchEffectValueText(key,lv):'미강화';
+    return `<button class="lab-core-choice lab34-core-choice ${selected?'selected':''} ${lv?'owned':''} ${lv===RESEARCH_MAX?'maxed':''}" type="button" data-lab-select="${key}" aria-pressed="${selected}">
       <span class="lab-core-choice-icon">${cfg.icon}</span>
       <span class="lab-core-choice-copy"><b>${cfg.name}</b><span class="lab-core-choice-effect">${value}</span></span>
-      <span class="lab-core-choice-level">${lv===RESEARCH_MAX?'MAX':`Lv.${lv}/5`}${link?'<small>융합</small>':''}</span>
+      <span class="lab-core-choice-level">${lv===RESEARCH_MAX?'MAX':`Lv.${lv}`}</span>
     </button>`;
   }).join('')).join('');
 }
@@ -1856,7 +1882,12 @@ function renderLabView(){
   if(!RESEARCH_DATA[selectedLabPartKey])selectedLabPartKey=Object.keys(RESEARCH_DATA)[0];
   const d=state.runData,key=selectedLabPartKey,cfg=RESEARCH_DATA[key],lv=researchLevel(key,d),cost=researchCost(key,d),maxed=lv>=RESEARCH_MAX;
   const wallet=document.getElementById('labPointWallet');if(wallet)wallet.textContent=state.points.toLocaleString('ko-KR')+'P';
+  const grown=Object.keys(RESEARCH_DATA).filter(k=>researchLevel(k,d)>0).length;
+  const progress=document.getElementById('labCoreProgress'),fill=document.getElementById('labCoreProgressFill');
+  if(progress)progress.textContent=`${grown} / ${Object.keys(RESEARCH_DATA).length}`;
+  if(fill)fill.style.width=`${grown/Object.keys(RESEARCH_DATA).length*100}%`;
   picker.innerHTML=labCorePickerHTML();
+  const badge=document.getElementById('labLevelBadge');if(badge)badge.textContent=lv===RESEARCH_MAX?'MAX':`LV.${lv} / ${RESEARCH_MAX}`;
   const icon=document.getElementById('labUpgradeIcon'),slot=document.getElementById('labSelectedSlot'),name=document.getElementById('labSelectedName'),metric=document.getElementById('labSelectedMetric');
   if(icon)icon.textContent=cfg.icon;
   if(slot)slot.textContent=`${cfg.effect} · Lv.${lv} / ${RESEARCH_MAX}`;
@@ -1864,8 +1895,8 @@ function renderLabView(){
   if(metric){
     const current=lv?researchEffectValueText(key,lv):'효과 없음';
     const next=maxed?'최대 강화 완료':researchEffectValueText(key,lv+1);
-    const chance=labUpgradeOdds(key,lv),fusionBoost=fusionBonusForCore(key,d);
-    metric.innerHTML=`<div class="core-compare"><div class="core-compare-box"><small>현재 · Lv.${lv}</small><strong>${current}</strong></div><span class="core-compare-arrow">→</span><div class="core-compare-box next"><small>${maxed?'완료':'강화 후 · Lv.'+(lv+1)}</small><strong>${next}</strong></div></div>${fusionBoost?`<p class="core-fusion-bonus">🔬 융합 장착 효과 +${Math.round(fusionBoost*100)}%</p>`:''}<div class="core-upgrade-chance">${maxed?'':`성공 ${chance.success}% · 유지 ${chance.hold}% · 실패해도 코어 레벨은 유지`}</div>`;
+    const chance=labUpgradeOdds(key,lv);
+    metric.innerHTML=`<div class="core-compare"><div class="core-compare-box"><small>현재 · Lv.${lv}</small><strong>${current}</strong></div><span class="core-compare-arrow">→</span><div class="core-compare-box next"><small>${maxed?'완료':'강화 후 · Lv.'+(lv+1)}</small><strong>${next}</strong></div></div><div class="core-upgrade-chance">${maxed?'':`성공 ${chance.success}% · 유지 ${chance.hold}% · 실패해도 코어 레벨은 유지`}</div>`;
   }
   const levels=document.getElementById('labSelectedLevels');if(levels)levels.innerHTML=Array.from({length:RESEARCH_MAX},(_,i)=>`<i class="${i<lv?'on':''}"><span>${i+1}</span></i>`).join('');
   const costCard=document.querySelector('.lab-upgrade-cost-card');costCard?.classList.toggle('hidden',maxed);
@@ -1875,7 +1906,7 @@ function renderLabView(){
   if(costHint)costHint.textContent=maxed?'최대 레벨 달성':state.points<(cost||0)?`포인트가 ${((cost||0)-state.points).toLocaleString('ko-KR')}P 부족합니다`:`보유 ${state.points.toLocaleString('ko-KR')}P · 실패 시에도 비용 소모`;
   const btn=document.getElementById('labUpgradeBtn');if(btn){btn.classList.remove('hidden','is-transcend');btn.disabled=actionLocked||maxed||state.points<(cost||0);btn.textContent=maxed?'Lv.5 MAX · 강화 완료':`Lv.${lv+1} 강화하기` ;}
   const status=document.getElementById('labUpgradeStatus');if(status&&!document.getElementById('labUpgradeStage')?.classList.contains('upgrading'))status.textContent=maxed?'':`현재 Lv.${lv} · 성공 시 Lv.${lv+1}, 실패 시 현재 레벨 유지`;
-  renderLabFusion();bindLabButtons();bindLabSubTabs();syncLabSubView();
+  bindLabButtons();
 }
 function spawnLabUpgradeParticles(icon='✦'){
   const box=document.getElementById('labUpgradeParticles');if(!box)return;
@@ -1906,7 +1937,7 @@ function playLabUpgradeAnimation(cfg,fromLv,toLv,success,done=()=>{}){
 }
 function buyLabPart(key=selectedLabPartKey){
   if(actionLocked)return;
-  if(level()>=51){showToast('🔒 연구소는 51단계부터 비활성화됩니다.');return;}
+  if(level()>=LAB_LOCK_LEVEL){showToast('🔒 연구소는 50단계부터 비활성화됩니다.');return;}
   const cfg=RESEARCH_DATA[key],d=state.runData;if(!cfg)return;
   selectedLabPartKey=key;d.research=Object.assign(emptyResearch(),d.research||{});d.equippedParts=Array.isArray(d.equippedParts)?d.equippedParts:[];
   const lv=researchLevel(key,d),cost=researchCost(key,d);
@@ -1931,144 +1962,9 @@ function bindLabButtons(){
   const upgrade=document.getElementById('labUpgradeBtn');if(upgrade)upgrade.onclick=()=>buyLabPart(selectedLabPartKey);
 }
 
-function syncLabSubView(){
-  const upgrade=document.getElementById('labUpgradeSection'),fusion=document.getElementById('labFusionSection');
-  const upgradeBtn=document.getElementById('labUpgradeModeBtn'),fusionBtn=document.getElementById('labFusionModeBtn');
-  const isFusion=currentLabSubView==='fusion';
-  if(upgrade)upgrade.classList.toggle('hidden',isFusion);
-  if(fusion)fusion.classList.toggle('hidden',!isFusion);
-  if(upgradeBtn){upgradeBtn.classList.toggle('active',!isFusion);upgradeBtn.setAttribute('aria-selected',!isFusion?'true':'false');}
-  if(fusionBtn){fusionBtn.classList.toggle('active',isFusion);fusionBtn.setAttribute('aria-selected',isFusion?'true':'false');}
-}
-function setLabSubView(view){
-  if(actionLocked)return;
-  const next=view==='fusion'?'fusion':'upgrade';
-  if(fusionGaugeRunning&&next!=='fusion')cancelFusionOverclock(false);
-  currentLabSubView=next;
-  syncLabSubView();
-  if(currentLabSubView==='fusion')renderLabFusion();
-}
-function bindLabSubTabs(){
-  const upgradeBtn=document.getElementById('labUpgradeModeBtn'),fusionBtn=document.getElementById('labFusionModeBtn');
-  if(upgradeBtn)upgradeBtn.onclick=()=>setLabSubView('upgrade');
-  if(fusionBtn)fusionBtn.onclick=()=>setLabSubView('fusion');
-}
-
-function fusionGradeForPosition(pos){
-  const p=Math.max(0,Math.min(100,Number(pos)||0));
-  return CORE_FUSION_GRADES.find(g=>p>=g.min&&p<=g.max)||null;
-}
-function fusionCoreAvailable(key,d=state.runData){return researchLevel(key,d)>=CORE_FUSION_MIN_LEVEL&&!fusionLinkForCore(key,d);}
-function labFusionHTML(){
-  const d=state.runData;d.fusionLinks=normalizeFusionLinks(d.fusionLinks,d.research);
-  fusionSelectedKeys=fusionSelectedKeys.filter(k=>fusionCoreAvailable(k,d)).slice(0,2);
-  const cards=Object.entries(RESEARCH_DATA).map(([key,cfg])=>{
-    const lv=researchLevel(key,d),link=fusionLinkForCore(key,d),selected=fusionSelectedKeys.includes(key),available=lv>=CORE_FUSION_MIN_LEVEL&&!link;
-    const stateText=link?`융합 완료 · +${Math.round((Number(link.boost)||0)*100)}%`:lv<CORE_FUSION_MIN_LEVEL?`Lv.${lv}/5`:'융합 가능';
-    return `<button type="button" class="fusion-core-card ${selected?'selected':''} ${link?'fused':''}" data-fusion-core="${key}" ${available?'':'disabled'}><span>${cfg.icon}</span><div><small>${cfg.slot}</small><b>${cfg.name}</b><em>${stateText}</em></div></button>`;
-  }).join('');
-  const chosen=fusionSelectedKeys.map(k=>`${RESEARCH_DATA[k].icon} ${RESEARCH_DATA[k].name}`).join(' + ')||'Lv.5 코어 2개를 선택하세요';
-  const canStart=fusionSelectedKeys.length===2&&!fusionGaugeRunning&&state.points>=CORE_FUSION_COST;
-  const links=d.fusionLinks.length?d.fusionLinks.map((link,index)=>{const a=RESEARCH_DATA[link.a],b=RESEARCH_DATA[link.b],refund=Math.floor((Number(link.cost)||0)*CORE_FUSION_RESET_REFUND_RATE);return `<div class="fusion-link-row"><span>${a.icon} ${a.name}</span><i>×</i><span>${b.icon} ${b.name}</span><b>${link.grade} · 효과 +${Math.round(link.boost*100)}%</b><button class="fusion-reset-btn" type="button" data-fusion-reset="${index}">↻ 초기화${refund>0?` · ${refund.toLocaleString('ko-KR')}P 환급`:''}</button></div>`;}).join(''):'<div class="fusion-empty">아직 완성된 코어 융합이 없습니다.</div>';
-  const result=fusionLastResult?`<div class="fusion-last-result ${fusionLastResult.success?'success':'fail'}"><b>${fusionLastResult.title}</b><span>${fusionLastResult.desc}</span></div>`:'';
-  const costText=CORE_FUSION_COST.toLocaleString('ko-KR');
-  const statusText=fusionGaugeRunning?'게이지를 보고 원하는 순간에 멈추세요.':fusionSelectedKeys.length<2?'두 코어를 선택하면 오버클럭을 시작할 수 있습니다.':state.points<CORE_FUSION_COST?`포인트 부족 · ${costText}P 필요`:`준비 완료 · 오버클럭 비용 ${costText}P`;
-  return `<div class="fusion-head"><div><h3>🔬 코어 융합</h3><p>Lv.5 코어 2개를 선택하고 오버클럭 게이지를 직접 멈추세요. 중앙에 가까울수록 두 코어의 장착 효과가 더 크게 증폭됩니다. 코어는 소모되지 않습니다.</p></div><b>${d.fusionLinks.length} FUSION</b></div><div class="fusion-layout"><div class="fusion-core-grid">${cards}</div><div class="fusion-machine"><div class="fusion-selected-pair">${chosen}</div><div class="fusion-gauge-wrap"><div class="fusion-gauge-zones"><i class="zone-stable"></i><i class="zone-good"></i><i class="zone-great"></i><i class="zone-perfect"></i></div><div id="fusionGaugeNeedle" class="fusion-gauge-needle" style="left:${fusionGaugePosition}%"></div><div class="fusion-gauge-center"></div></div><div class="fusion-grade-guide"><span>STABLE +12%</span><span>GOOD +18%</span><span>GREAT +24%</span><span>PERFECT +30%</span></div><div class="fusion-cost-line"><span>오버클럭 비용</span><b>${costText}P</b><small>초기화 시 성공 융합 비용의 50% 환급</small></div><button id="fusionOverclockBtn" class="glass-btn fusion-overclock-btn ${fusionGaugeRunning?'running':''}" type="button" ${(!fusionGaugeRunning&&!canStart)?'disabled':''}>${fusionGaugeRunning?'⏹ 게이지 멈추기':'⚡ 오버클럭 시작'}</button><div id="fusionStatus" class="fusion-status">${statusText}</div>${result}</div></div><div class="fusion-links"><h4>완성된 융합 공명</h4>${links}</div>`;
-}
-function renderLabFusion(){const root=document.getElementById('labFusionContent');if(!root)return;root.innerHTML=labFusionHTML();bindFusionButtons();}
-function toggleFusionCore(key){
-  if(actionLocked||fusionGaugeRunning||!fusionCoreAvailable(key))return;
-  if(fusionSelectedKeys.includes(key))fusionSelectedKeys=fusionSelectedKeys.filter(k=>k!==key);
-  else if(fusionSelectedKeys.length<2)fusionSelectedKeys=[...fusionSelectedKeys,key];
-  else fusionSelectedKeys=[fusionSelectedKeys[1],key];
-  fusionLastResult=null;renderLabFusion();
-}
-function updateFusionGauge(ts){
-  if(!fusionGaugeRunning)return;
-  if(!fusionGaugeStartedAt)fusionGaugeStartedAt=ts;
-  const cycle=1500,phase=((ts-fusionGaugeStartedAt)%cycle)/cycle;
-  fusionGaugePosition=phase<.5?phase*200:(1-phase)*200;
-  const needle=document.getElementById('fusionGaugeNeedle');if(needle)needle.style.left=`${fusionGaugePosition}%`;
-  fusionGaugeRaf=requestAnimationFrame(updateFusionGauge);
-}
-function syncFusionRunningUi(){
-  const d=state.runData,btn=document.getElementById('fusionOverclockBtn'),status=document.getElementById('fusionStatus');
-  if(btn){
-    btn.disabled=false;
-    btn.classList.toggle('running',fusionGaugeRunning);
-    btn.textContent=fusionGaugeRunning?'⏹ 게이지 멈추기':'⚡ 오버클럭 시작';
-    if(!fusionGaugeRunning){
-      const canStart=fusionSelectedKeys.length===2&&state.points>=CORE_FUSION_COST;
-      btn.disabled=!canStart;
-    }
-  }
-  if(status)status.textContent=fusionGaugeRunning?'게이지를 보고 원하는 순간에 멈추세요.':'오버클럭이 중지되었습니다.';
-  document.querySelectorAll('#labFusionContent [data-fusion-core]').forEach(card=>{
-    card.disabled=fusionGaugeRunning||!fusionCoreAvailable(card.dataset.fusionCore,d);
-  });
-  document.querySelectorAll('#labFusionContent [data-fusion-reset]').forEach(reset=>reset.disabled=fusionGaugeRunning);
-}
-function cancelFusionOverclock(showMessage=true){
-  if(!fusionGaugeRunning)return;
-  fusionGaugeRunning=false;
-  fusionGaugeStartedAt=0;
-  if(fusionGaugeRaf)cancelAnimationFrame(fusionGaugeRaf);
-  fusionGaugeRaf=0;
-  syncFusionRunningUi();
-  if(showMessage)showToast('⚡ 오버클럭 취소 · 포인트는 소모되지 않았습니다.');
-}
-function startFusionOverclock(){
-  if(fusionGaugeRunning)return;
-  const d=state.runData;fusionSelectedKeys=fusionSelectedKeys.filter(k=>fusionCoreAvailable(k,d)).slice(0,2);
-  if(fusionSelectedKeys.length!==2){showToast('🔬 Lv.5 코어 2개를 선택하세요.');renderLabFusion();return;}
-  if(state.points<CORE_FUSION_COST){showToast(`⭐ 오버클럭에 ${CORE_FUSION_COST.toLocaleString('ko-KR')}P가 필요합니다.`);renderLabFusion();return;}
-  fusionGaugeRunning=true;fusionGaugeStartedAt=0;fusionGaugePosition=0;fusionLastResult=null;currentLabSubView='fusion';
-  syncLabSubView();
-  syncFusionRunningUi();
-  if(fusionGaugeRaf)cancelAnimationFrame(fusionGaugeRaf);
-  fusionGaugeRaf=requestAnimationFrame(updateFusionGauge);
-}
-function stopFusionOverclock(){
-  if(!fusionGaugeRunning)return;
-  fusionGaugeRunning=false;fusionGaugeStartedAt=0;if(fusionGaugeRaf)cancelAnimationFrame(fusionGaugeRaf);fusionGaugeRaf=0;
-  const d=state.runData,[a,b]=fusionSelectedKeys,grade=fusionGradeForPosition(fusionGaugePosition),accuracy=Math.max(0,Math.round(100-Math.abs(50-fusionGaugePosition)*2));
-  if(!a||!b||!fusionCoreAvailable(a,d)||!fusionCoreAvailable(b,d)){
-    fusionSelectedKeys=[];fusionLastResult={success:false,title:'융합 취소',desc:'선택한 코어 상태가 변경되었습니다.'};render();return;
-  }
-  if(state.points<CORE_FUSION_COST){fusionLastResult={success:false,title:'오버클럭 취소',desc:`포인트가 부족합니다. ${CORE_FUSION_COST.toLocaleString('ko-KR')}P가 필요합니다.`};render();return;}
-  state.points-=CORE_FUSION_COST;state.pointsSpentTotal+=CORE_FUSION_COST;
-  if(!grade){
-    fusionLastResult={success:false,title:'OVERHEAT · 융합 실패',desc:`정밀도 ${accuracy}% · ${CORE_FUSION_COST.toLocaleString('ko-KR')}P 소모 · 코어는 유지됩니다.`};
-    save();render();showToast('🔥 오버클럭 과열 · 코어 융합 실패');return;
-  }
-  d.fusionLinks=normalizeFusionLinks([...(d.fusionLinks||[]),{a,b,boost:grade.boost,grade:grade.name,cost:CORE_FUSION_COST,createdAt:Date.now()}],d.research);
-  d.equippedParts=equippedResearchKeys(d);
-  fusionLastResult={success:true,title:`${grade.name} · ${grade.label}`,desc:`정밀도 ${accuracy}% · 두 코어 장착 효과 +${Math.round(grade.boost*100)}%`};
-  fusionSelectedKeys=[];save();render();showToast(`🔬 ${grade.name} 융합 성공 · 장착 중인 코어 효과 즉시 적용 +${Math.round(grade.boost*100)}%`);
-}
-function resetFusionLink(index){
-  if(fusionGaugeRunning)return;
-  const d=state.runData;d.fusionLinks=normalizeFusionLinks(d.fusionLinks,d.research);
-  const i=Math.max(0,Math.floor(Number(index)||0)),link=d.fusionLinks[i];if(!link)return;
-  const refund=Math.floor((Number(link.cost)||0)*CORE_FUSION_RESET_REFUND_RATE);
-  const a=RESEARCH_DATA[link.a],b=RESEARCH_DATA[link.b];
-  d.fusionLinks=d.fusionLinks.filter((_,idx)=>idx!==i);
-  if(refund>0)state.points+=refund;
-  fusionSelectedKeys=[];
-  fusionLastResult={success:true,title:'융합 효과 초기화',desc:`${a?.name||link.a} + ${b?.name||link.b} 연결 해제${refund>0?` · ${refund.toLocaleString('ko-KR')}P 환급`:''} · 다시 융합할 수 있습니다.`};
-  d.equippedParts=equippedResearchKeys(d);
-  save();render();showToast(`↻ 코어 융합 초기화${refund>0?` · ${refund.toLocaleString('ko-KR')}P 환급`:''}`);
-}
-function bindFusionButtons(){
-  document.querySelectorAll('#labFusionContent [data-fusion-core]').forEach(btn=>btn.onclick=()=>toggleFusionCore(btn.dataset.fusionCore));
-  const btn=document.getElementById('fusionOverclockBtn');if(btn)btn.onclick=()=>{if(fusionGaugeRunning)stopFusionOverclock();else startFusionOverclock();};
-  document.querySelectorAll('#labFusionContent [data-fusion-reset]').forEach(btn=>btn.onclick=()=>resetFusionLink(btn.dataset.fusionReset));
-}
-
 function setGameView(view){
   if(actionLocked)return;
-  if(view==='lab'&&level()>=51){showToast('🔒 연구소는 51단계부터 비활성화됩니다.');view='enhance';}
-  if(view!=='lab'&&fusionGaugeRunning)cancelFusionOverclock(false);
+  if(view==='lab'&&level()>=LAB_LOCK_LEVEL){showToast('🔒 연구소는 50단계부터 비활성화됩니다.');view='enhance';}
   currentGameView=['enhance','shop','lab','storage'].includes(view)?view:'enhance';
   closeModal();
   const main=document.querySelector('main.layout'),shop=document.getElementById('shopView'),lab=document.getElementById('labView'),storage=document.getElementById('storageView');
@@ -2174,7 +2070,7 @@ function withdrawStoredCard(index){
   d.prev_level=currentLevel;
   d.level=storedLevel;
   d.max_level=Math.max(Number(d.max_level)||0,storedLevel);
-  d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=storedWarpLock;resetCombo(d);unlockReachedWarps(d);
+  d.status='READY';d.last_aux_effect='';d.warpBoostLevel=0;d.warpSaleLock=storedWarpLock;resetCombo(d);unlockReachedWarps(d);stopTearFeverAtLimit(d);
   if(currentLevel>0){
     slot.level=currentLevel;slot.storedAt=Date.now();slot.warpSaleLock=currentWarpLock;
     autoLowerMotionForStage(storedLevel,currentLevel);
@@ -2190,7 +2086,7 @@ function withdrawStoredCard(index){
   }
 }
 function bindStorageButtons(){document.querySelectorAll('[data-storage-store]').forEach(b=>b.onclick=storeCurrentCard);document.querySelectorAll('[data-storage-withdraw]').forEach(b=>b.onclick=()=>withdrawStoredCard(b.dataset.storageWithdraw));}
-function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>냄새 연구소</h2><p>18종 코어를 Lv.5까지 강화하고 두 코어를 융합해 보너스를 얻을 수 있습니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
+function researchHTML(){return `<div class="modal-head research-modal-head"><div class="research-head-icon">🔬</div><div><h2>코어 연구소</h2><p>16종 코어를 Lv.5까지 강화할 수 있습니다.</p></div></div><button class="glass-btn" data-open-lab-view>연구소로 이동</button>`;}
 
 function probabilityTableHTML(){
   const rows=Array.from({length:MAX_LEVEL},(_,source)=>{
@@ -2240,8 +2136,6 @@ function statsHTML(){
   const tearActive=tearFeverActive(d);
   const researched=Object.keys(RESEARCH_DATA).filter(key=>number(d.research?.[key])>0).length;
   const coreCount=Object.keys(RESEARCH_DATA).length;
-  const links=Array.isArray(d.fusionLinks)?d.fusionLinks:[];
-  const fusionCapacity=Math.floor(coreCount/2);
   const run=state.runTimer;
   const runState=run.finishedAt?'마지막 클리어':run.startedAt?'진행 중':'시작 전';
   const runTime=run.startedAt?formatRunDuration(getRunElapsedMs(run)):'—';
@@ -2272,8 +2166,6 @@ function statsHTML(){
     <div class="stats-section-title"><span>🔬</span><div><small>LAB & STORAGE</small><b>연구소 · 보관함</b></div></div>
     <div class="stats-grid stats-grid-3">
       <article><small>강화한 코어</small><b>${fmtNum(researched)} / ${coreCount}</b></article>
-      <article><small>활성 융합</small><b>${fmtNum(links.length)} / ${fusionCapacity}</b></article>
-      <article><small>PERFECT 융합</small><b class="stats-gold">${fmtNum(links.filter(link=>link.grade==='PERFECT').length)}</b></article>
       <article><small>보관함 사용</small><b>${fmtNum(stored)}회</b></article>
       <article><small>현재 보관</small><b>${fmtNum((state.storageSlots||[]).filter(Boolean).length)} / 6</b></article>
     </div>
@@ -2281,7 +2173,7 @@ function statsHTML(){
     <div class="stats-grid stats-grid-3">
       <article><small>폭주 발동</small><b>${fmtNum(frenzyTriggers)}회</b></article>
       <article><small>폭주 게이지</small><b>${fmtNum(frenzyGauge)} / ${FRENZY_MAX}</b></article>
-      <article><small>눈물 게이지</small><b>${fmtNum(tearGauge)} / ${TEAR_MAX}</b><span>${tearActive?'피버 진행 중':'대기 중'}</span></article>
+      <article><small>눈물 게이지</small><b>${fmtNum(tearGauge)} / ${TEAR_MAX}</b><span>${level()>=TEAR_LOCK_LEVEL?'50단계부터 사용 불가':tearActive?'피버 진행 중':'대기 중'}</span></article>
       <article><small>방지권 보유</small><b>${fmtNum(shieldCount)} / ${SHIELD_MAX}</b></article>
     </div>
     <div class="stats-section-title"><span>⏱</span><div><small>FINAL RUN</small><b>55단계 도전</b></div></div>
@@ -2331,7 +2223,7 @@ function bindModal(kind){
     if(currentGameView==='shop')setGameView('enhance');else closeModal();setActionLocked(true);
     playWarpAnimation(w,()=>{
       if(type==="money")setMoney(money()-cost);else{state.points-=cost;state.pointsSpentTotal+=cost;}
-      state.warpUses++;const prevWarp=d.level;d.prev_level=prevWarp;d.level=w;d.max_level=Math.max(d.max_level,w);d.status="SUCCESS";d.last_aux_effect="🚀 워프 완료";d.warpBoostLevel=activeResearchPower('warpTech',d);d.warpSaleLock=6;resetCombo(d);d._warpPrev=prevWarp;
+      state.warpUses++;const prevWarp=d.level;d.prev_level=prevWarp;d.level=w;d.max_level=Math.max(d.max_level,w);d.status="SUCCESS";d.last_aux_effect="🚀 워프 완료";d.warpBoostLevel=activeResearchPower('warpTech',d);d.warpSaleLock=6;resetCombo(d);stopTearFeverAtLimit(d);d._warpPrev=prevWarp;
       unlockReachedWarps(d);save();render();
     },()=>{const prevWarp=Number(d._warpPrev??w);delete d._warpPrev;save();showToast(`🚀 ${w}단계 워프 완료 · 판매/경매 전 강화하기 6회 필요`);runMilestoneOnly(prevWarp,w,()=>setActionLocked(false));});
   });
@@ -2461,7 +2353,6 @@ function animateFinal54To55(status, afterFinish=null, onResultReveal=null){
   const motion=document.getElementById('cardResultMotionLayer')||card;
   const glow=document.getElementById('cardStatusGlow');
   const flash=document.getElementById('flashOverlay');
-  const shine=card?.querySelector('.card-shine');
   const motionMode=motionPreset();
   if(JION_PERF.reduced){
     if(typeof onResultReveal==='function')onResultReveal();
@@ -2477,7 +2368,7 @@ function animateFinal54To55(status, afterFinish=null, onResultReveal=null){
   document.querySelectorAll('.final-common-cinematic').forEach(e=>e.remove());
   clearResultFx();
   clearDestroySnapshot();
-  gsap.killTweensOf([motion,glow,flash,shine]);
+  gsap.killTweensOf([motion,glow,flash]);
   if(typeof window.jionCardTiltSettle==='function')window.jionCardTiltSettle();
 
   // Remove every prior result tint before the FINAL sequence starts so the
@@ -2568,7 +2459,6 @@ function animateFinal54To55(status, afterFinish=null, onResultReveal=null){
 
   gsap.set(motion,{x:0,y:0,z:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'none',transformOrigin:'50% 52%'});
   if(glow)gsap.set(glow,{scale:.82,opacity:.08,background:'#ffffff',x:0,y:0});
-  if(shine)gsap.set(shine,{x:'-80%'});
   gsap.set(overlay,{opacity:0});
   gsap.set(copy,{opacity:0,y:18,scale:.96});
   gsap.set(gates,{opacity:0,scale:1.58,rotation:-42});
@@ -2619,9 +2509,6 @@ function animateFinal54To55(status, afterFinish=null, onResultReveal=null){
 
   if(glow){
     gsap.to(glow,{scale:1.45,opacity:.28,duration:1.0,ease:'sine.inOut',yoyo:true,repeat:3});
-  }
-  if(shine){
-    gsap.to(shine,{x:'190%',duration:1.05,delay:2.80,ease:'power2.inOut'});
   }
 }
 
@@ -2717,11 +2604,10 @@ function animateResult(status, afterFinish=null){
   const motion=document.getElementById('cardResultMotionLayer')||card;
   const glow=document.getElementById('cardStatusGlow');
   const flash=document.getElementById('flashOverlay');
-  const shine=card?.querySelector('.card-shine');
   if(!scene||!card||!wrap||!motion){if(typeof afterFinish==='function')afterFinish();return;}
 
   // Result movement owns a dedicated wrapper, separate from other animations.
-  gsap.killTweensOf([motion,glow,flash,shine]);
+  gsap.killTweensOf([motion,glow,flash]);
   if(typeof window.jionCardTiltSettle==='function')window.jionCardTiltSettle();
   scene.classList.remove('status-success','status-critical','status-failed','status-hold','status-destroyed','status-shield','final-stage-cinematic','final-success-impact','final-destroy-impact');
   card.classList.remove('card-motion-success','card-motion-down','card-motion-destroyed','card-motion-hold','card-motion-critical','card-motion-shield','card-motion-tears');
@@ -2761,7 +2647,6 @@ function animateResult(status, afterFinish=null){
 
   gsap.set(motion,{x:0,y:0,z:0,rotation:0,rotationX:0,rotationY:0,scale:1,opacity:1,filter:'none',transformOrigin:'50% 52%'});
   if(glow)gsap.set(glow,{scale:.82,opacity:.06,background:particleColor,x:0,y:0});
-  if(shine)gsap.set(shine,{x:'-70%'});
 
   
   const finish=()=>{
@@ -2793,7 +2678,6 @@ function animateResult(status, afterFinish=null){
         .to(motion,{y:-5,scale:1.012,duration:.18,ease:'sine.inOut'})
         .to(motion,{y:0,scale:1,duration:.22,ease:'power2.out'});
       if(glow)gsap.to(glow,{scale:1.56,opacity:.40,duration:.20,yoyo:true,repeat:1,ease:'power2.out',delay:.09});
-      if(shine)gsap.to(shine,{x:'170%',duration:.46,delay:.11,ease:'power2.out'});
       gsap.delayedCall(.28,()=>cardBurst(particleColor,44,145));
       break;
 
@@ -2824,7 +2708,6 @@ function animateResult(status, afterFinish=null){
         .to(motion,{y:-6,z:18,scale:1.035,rotationY:-2.2,rotationX:.8,duration:.18,ease:'sine.inOut'})
         .to(motion,{y:0,z:0,scale:1,rotationY:0,rotationX:0,duration:.26,ease:'power2.out'});
       if(glow)gsap.to(glow,{scale:2.0,opacity:.66,duration:.16,yoyo:true,repeat:1,ease:'power3.out',delay:.08});
-      if(shine)gsap.to(shine,{x:'190%',duration:.34,delay:.10,ease:'power3.out'});
       gsap.delayedCall(.23,()=>cardBurst('#fff7b2',60,195));
       break;
 

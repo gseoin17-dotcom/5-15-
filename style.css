@@ -7939,3 +7939,83 @@ body.ending-visible{overflow:hidden}
 @media(max-width:760px){.run-timer-card{padding:12px 13px}.run-timer-value{font-size:29px}.ending-panel{padding:16px 15px 18px}.ending-credits{height:90px}}
 @media(max-width:440px){.enhance-history-entry{grid-template-columns:56px minmax(0,1fr) minmax(74px,auto);gap:5px;padding:9px 8px}.history-transition strong{font-size:11px}.history-transition small,.history-amount small{font-size:8px}.history-amount strong{font-size:10px}.history-result{font-size:9px;padding:4px}.ending-time-box strong{font-size:36px}}
 @media(prefers-reduced-motion:reduce){.ending-show .ending-panel,.ending-atmosphere i,.ending-credits-roll{animation:none!important}}
+
+
+/* ================================================================
+   JINAM 3.4 · REIMAGINED SINGLE-PAGE CORE RESEARCH LAB
+   ================================================================ */
+.lab34-shell{width:min(1280px,100%)!important;margin:auto}
+.lab34-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:20px 23px;border:1px solid rgba(52,211,153,.28);border-radius:24px;background:radial-gradient(circle at 1% 0%,rgba(20,184,166,.20),transparent 48%),linear-gradient(145deg,rgba(16,30,48,.93),rgba(8,14,28,.97));box-shadow:0 18px 48px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.09)}
+.lab34-brand{display:flex;align-items:center;gap:15px;min-width:0}
+.lab34-emblem{display:grid;place-items:center;flex-shrink:0;width:58px;height:58px;border-radius:17px;border:1px solid rgba(110,231,183,.37);background:linear-gradient(145deg,rgba(16,185,129,.21),rgba(8,145,178,.15));box-shadow:0 0 24px rgba(16,185,129,.13);font-size:29px}
+.lab34-brand small{font-size:9px;color:#6ee7b7;font-weight:900;letter-spacing:.16em}
+.lab34-brand h2{margin:4px 0 3px;font-size:clamp(21px,3vw,28px);font-weight:950;letter-spacing:-.05em}
+.lab34-brand p{margin:0;color:#94a3b8;font-size:11px}
+.lab34-summary{display:flex;align-items:stretch;gap:11px;flex-wrap:wrap}
+.lab34-progress-card,.lab34-header .lab-page-wallet{min-width:148px;padding:11px 14px;text-align:left;border:1px solid rgba(148,163,184,.17);background:rgba(10,19,34,.58);border-radius:13px}
+.lab34-progress-card small,.lab34-header .lab-page-wallet span{display:block;color:#9aaec4;font-size:10px;letter-spacing:0;font-weight:750}
+.lab34-progress-card strong{display:block;margin:4px 0 7px;color:#a7f3d0;font-size:18px;font-weight:950}
+.lab34-progress-track{height:5px;border-radius:20px;overflow:hidden;background:rgba(148,163,184,.18)}
+.lab34-progress-track i{display:block;width:0;height:100%;background:linear-gradient(90deg,#34d399,#22d3ee);transition:width .25s}
+.lab34-header .lab-point-wallet-only strong{font-size:clamp(17px,2vw,22px);margin-top:8px;line-height:1.15}
+.lab34-layout{display:grid!important;grid-template-columns:minmax(280px,0.95fr) minmax(0,1.35fr)!important;align-items:start!important;gap:17px!important;margin-top:16px!important}
+.lab34-picker-panel,.lab34-detail-panel{border:1px solid rgba(148,163,184,.19)!important;border-radius:22px!important;background:linear-gradient(155deg,rgba(17,28,46,.95),rgba(5,12,26,.97))!important;box-shadow:inset 0 1px rgba(255,255,255,.07),0 15px 36px rgba(0,0,0,.18)!important}
+.lab34-picker-panel{padding:17px!important}
+.lab34-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.lab34-panel-heading small{font-size:9px;color:#6ee7b7;font-weight:850;letter-spacing:.12em}
+.lab34-panel-heading h3{margin:3px 0 0;font-size:17px;font-weight:950}
+.lab34-panel-heading>span{padding:5px 10px;color:#6ee7b7;font-weight:900;font-size:10px;background:rgba(16,185,129,.11);border:1px solid rgba(52,211,153,.15);border-radius:100px}
+.lab34-picker-panel .lab-core-picker{display:block!important;max-height:690px!important;padding:0 5px 4px 0;overflow-y:auto}
+.lab34-picker-panel .lab34-group-heading{margin:17px 0 9px;padding:8px 10px;background:rgba(148,163,184,.075);border-left:3px solid #34d399;border-radius:5px 9px 9px 5px;color:#a7f3d0;font-size:11px;font-weight:950}
+.lab34-picker-panel .lab34-group-heading:first-child{margin-top:0}
+.lab34-picker-panel [hidden]{display:none!important}
+.lab34-picker-panel .lab34-core-choice{display:grid!important;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;min-height:69px;width:100%;margin-bottom:7px;padding:10px 11px!important;border:1px solid rgba(148,163,184,.17)!important;border-radius:13px!important;background:linear-gradient(145deg,rgba(30,41,59,.6),rgba(15,23,42,.8))!important;color:#f8fafc;transition:background .16s,border-color .16s,transform .16s;box-shadow:none!important}
+.lab34-picker-panel .lab34-core-choice:hover{transform:translateX(2px);border-color:rgba(94,234,212,.55)!important}
+.lab34-picker-panel .lab34-core-choice.selected{background:linear-gradient(130deg,rgba(16,185,129,.18),rgba(8,145,178,.12))!important;border-color:rgba(52,211,153,.74)!important;box-shadow:inset 0 0 0 1px rgba(52,211,153,.11),0 6px 20px rgba(16,185,129,.075)!important}
+.lab34-core-choice .lab-core-choice-icon{width:42px;height:42px;font-size:23px;background:rgba(15,118,110,.16);border-radius:11px}
+.lab34-core-choice .lab-core-choice-copy b{font-size:12px!important;letter-spacing:-.025em;line-height:1.3}
+.lab34-core-choice .lab-core-choice-effect{display:block;margin-top:4px!important;font-size:10px!important;color:#91a6be!important;line-height:1.4}
+.lab34-core-choice .lab-core-choice-level{font-size:10px!important;border-radius:9px;background:rgba(148,163,184,.11);padding:6px 8px;white-space:nowrap;color:#cbd5e1}
+.lab34-core-choice.maxed .lab-core-choice-level{color:#86efac;background:rgba(16,185,129,.14)}
+.lab34-detail-panel{padding:17px 19px 23px!important}
+.lab34-detail-eyebrow{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px;font-weight:950;letter-spacing:.15em;color:#6ee7b7;text-align:left}
+.lab34-level-badge{padding:6px 10px;border-radius:8px;background:rgba(20,184,166,.13);border:1px solid rgba(52,211,153,.2);font-size:11px;color:#a7f3d0;letter-spacing:0}
+.lab34-detail-panel .lab34-stage{height:225px!important;margin:10px 0 14px!important;border:1px solid rgba(52,211,153,.17)!important;box-shadow:inset 0 0 35px rgba(6,182,212,.05);background:radial-gradient(circle at 50% 45%,rgba(20,184,166,.18),transparent 36%),linear-gradient(180deg,#101e31,#07101e)!important}
+.lab34-detail-panel .lab-upgrade-core{width:99px;height:99px}
+.lab34-detail-panel .lab-upgrade-core>span{font-size:42px}
+.lab34-detail-panel .lab34-selected-title{padding:0 5px;text-align:center}
+.lab34-detail-panel .lab34-selected-title small{font-size:10px;color:#6ee7b7;letter-spacing:.025em}
+.lab34-detail-panel .lab34-selected-title h2{margin:6px 0 10px!important;font-size:clamp(19px,2.2vw,24px)!important;letter-spacing:-.04em}
+.lab34-detail-panel .lab-selected-levels{max-width:100%!important;gap:7px;margin:10px 1px 15px!important}
+.lab34-detail-panel .lab-selected-levels i{height:11px}
+.lab34-detail-panel .lab-selected-metric{padding:0 2px}
+.lab34-detail-panel .core-compare{display:grid!important;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)!important;gap:7px!important;margin:0 0 12px!important}
+.lab34-detail-panel .core-compare-box{padding:12px 9px!important;min-height:78px!important;border-radius:12px!important}
+.lab34-detail-panel .core-compare-box small{font-size:10px!important;color:#94a3b8!important}
+.lab34-detail-panel .core-compare-box strong{font-size:clamp(11px,1.35vw,15px)!important;line-height:1.4!important}
+.lab34-detail-panel .core-compare-arrow{align-self:center;font-size:20px!important;color:#6ee7b7!important}
+.lab34-detail-panel .core-upgrade-chance{margin:6px 1px 13px!important;font-size:11px!important;color:#cbd5e1!important}
+.lab34-detail-panel .lab-upgrade-cost-card{max-width:none!important;margin:12px 0!important;padding:13px 15px!important;border-radius:13px}
+.lab34-detail-panel .lab-upgrade-cost-card>span{font-size:11px!important}
+.lab34-detail-panel .lab-upgrade-cost-card>strong{font-size:19px!important}
+.lab34-detail-panel .lab-upgrade-cost-card>small{font-size:10px!important;line-height:1.4}
+.lab34-detail-panel .lab-upgrade-main-btn{width:100%!important;max-width:none!important;min-height:50px!important;margin:0!important;border-radius:13px!important;font-size:14px!important;font-weight:950!important;background:linear-gradient(115deg,rgba(5,150,105,.48),rgba(8,145,178,.38))!important}
+.lab34-detail-panel .lab-upgrade-main-btn:hover:not(:disabled){filter:brightness(1.17)}
+.lab34-detail-panel .lab-upgrade-main-btn:disabled{opacity:.48}
+.lab34-detail-panel .lab-upgrade-status{font-size:10px!important;line-height:1.5!important;margin-top:11px!important}
+@media(max-width:980px){.lab34-layout{grid-template-columns:minmax(250px,.9fr) minmax(0,1.2fr)!important}.lab34-picker-panel{padding:13px!important}.lab34-detail-panel{padding:14px!important}}
+@media(max-width:760px){.lab34-header{padding:14px!important;gap:13px}.lab34-brand{gap:11px}.lab34-emblem{width:46px;height:46px;border-radius:13px;font-size:23px}.lab34-summary{width:100%}.lab34-progress-card,.lab34-header .lab-page-wallet{flex:1;min-width:0}.lab34-layout{grid-template-columns:1fr!important;gap:13px!important}.lab34-picker-panel .lab-core-picker{max-height:290px!important}.lab34-detail-panel .lab34-stage{height:200px!important}}
+@media(max-width:420px){.lab34-progress-card,.lab34-header .lab-page-wallet{padding:10px}.lab34-header .lab-point-wallet-only strong{font-size:17px}.lab34-detail-panel .core-compare-box strong{font-size:11px!important}.lab34-detail-panel .lab34-stage{height:188px!important}.lab34-core-choice .lab-core-choice-copy b{font-size:11px!important}}
+
+/* No constant reflective sweep on the card, capsule or hologram.
+   Keep the separate enhancement result FX and final milestone cinematic. */
+#enhanceCard .card-shine,#enhanceCard .art-scan,
+#enhanceCard .card-glass::after,.card-3d-layer::before{display:none!important;animation:none!important;content:none!important}
+/* Search filtering outranks the core button grid display rule. */
+#labCorePicker [data-lab-select][hidden],
+#labCorePicker .lab34-group-heading[hidden]{display:none!important}
+
+/* JINAM 3.6 · 50단계 이후 지냄 눈물 잠금 표시 */
+#tearMeter.system-off .stage-status-panel{opacity:.65;filter:saturate(.5)}
+#tearMeter.system-off .tear-track>i{width:0!important}
+#tearMeter.system-off .tear-fever-btn{cursor:not-allowed;opacity:.52;pointer-events:none}
